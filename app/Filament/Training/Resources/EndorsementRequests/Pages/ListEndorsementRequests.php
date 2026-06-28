@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\EndorsementRequests\Pages;
+namespace App\Filament\Training\Resources\EndorsementRequests\Pages;
 
-use App\Filament\Admin\Resources\EndorsementRequests\EndorsementRequestResource;
+use App\Filament\Training\Resources\EndorsementRequests\EndorsementRequestResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 

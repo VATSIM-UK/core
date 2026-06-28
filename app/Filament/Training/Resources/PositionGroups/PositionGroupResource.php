@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Admin\Resources\PositionGroups;
+namespace App\Filament\Training\Resources\PositionGroups;
 
-use App\Filament\Admin\Resources\PositionGroups\Pages\ListPositionGroups;
-use App\Filament\Admin\Resources\PositionGroups\Pages\ViewPositionGroup;
-use App\Filament\Admin\Resources\PositionGroups\RelationManagers\MembershipEndorsementRelationManager;
+use App\Filament\Training\Resources\PositionGroups\Pages\ListPositionGroups;
+use App\Filament\Training\Resources\PositionGroups\Pages\ViewPositionGroup;
+use App\Filament\Training\Resources\PositionGroups\RelationManagers\MembershipEndorsementRelationManager;
 use App\Models\Atc\PositionGroup;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
@@ -21,7 +21,7 @@ class PositionGroupResource extends Resource
 
     protected static ?string $modelLabel = 'Tier Endorsements';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Mentoring';
+    protected static string|\UnitEnum|null $navigationGroup = 'Endorsements';
 
     public static function infolist(Schema $schema): Schema
     {

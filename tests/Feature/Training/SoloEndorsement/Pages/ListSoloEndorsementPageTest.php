@@ -1,15 +1,15 @@
 <?php
 
-namespace Tests\Feature\Admin\SoloEndorsement\Pages;
+namespace Tests\Feature\Training\SoloEndorsement\Pages;
 
-use App\Filament\Admin\Resources\SoloEndorsements\Pages\ListSoloEndorsements;
+use App\Filament\Training\Resources\SoloEndorsements\Pages\ListSoloEndorsements;
 use App\Models\Atc\Position;
 use App\Models\Mship\Account\Endorsement;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
-use Tests\Feature\Admin\BaseAdminTestCase;
+use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
-class ListSoloEndorsementPageTest extends BaseAdminTestCase
+class ListSoloEndorsementPageTest extends BaseTrainingPanelTestCase
 {
     use DatabaseTransactions;
 
@@ -17,12 +17,12 @@ class ListSoloEndorsementPageTest extends BaseAdminTestCase
     {
         parent::setUp();
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
     }
 
     public function test_can_access_list_page_with_permission()
     {
-        $this->adminUser->givePermissionTo('endorsement.view.*');
+        $this->panelUser->givePermissionTo('endorsement.view.*');
 
         Livewire::test(ListSoloEndorsements::class)
             ->assertSee('Solo Endorsements');
@@ -36,7 +36,7 @@ class ListSoloEndorsementPageTest extends BaseAdminTestCase
 
     public function test_only_displays_solo_endorsements_with_expiry()
     {
-        $this->adminUser->givePermissionTo('endorsement.view.*');
+        $this->panelUser->givePermissionTo('endorsement.view.*');
 
         $soloEndorsement = Endorsement::factory()->create([
             'endorsable_type' => Position::class,
@@ -57,7 +57,7 @@ class ListSoloEndorsementPageTest extends BaseAdminTestCase
 
     public function test_only_displays_active_solo_endorsements_by_default()
     {
-        $this->adminUser->givePermissionTo('endorsement.view.*');
+        $this->panelUser->givePermissionTo('endorsement.view.*');
 
         $soloEndorsement = Endorsement::factory()->create([
             'endorsable_type' => Position::class,
@@ -78,7 +78,7 @@ class ListSoloEndorsementPageTest extends BaseAdminTestCase
 
     public function test_filter_can_be_changed_to_expired_endorsements()
     {
-        $this->adminUser->givePermissionTo('endorsement.view.*');
+        $this->panelUser->givePermissionTo('endorsement.view.*');
 
         $soloEndorsement = Endorsement::factory()->create([
             'endorsable_type' => Position::class,
@@ -100,7 +100,7 @@ class ListSoloEndorsementPageTest extends BaseAdminTestCase
 
     public function test_filter_can_be_changed_to_all_endorsements()
     {
-        $this->adminUser->givePermissionTo('endorsement.view.*');
+        $this->panelUser->givePermissionTo('endorsement.view.*');
 
         $soloEndorsement = Endorsement::factory()->create([
             'endorsable_type' => Position::class,

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\SoloEndorsements;
+namespace App\Filament\Training\Resources\SoloEndorsements;
 
-use App\Filament\Admin\Resources\SoloEndorsements\Pages\ListSoloEndorsements;
+use App\Filament\Training\Resources\SoloEndorsements\Pages\ListSoloEndorsements;
 use App\Models\Atc\Position;
 use App\Models\Mship\Account\Endorsement;
 use Filament\Resources\Resource;
@@ -23,7 +23,7 @@ class SoloEndorsementResource extends Resource
 
     protected static ?string $modelLabel = 'Solo Endorsements';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Mentoring';
+    protected static string|\UnitEnum|null $navigationGroup = 'Endorsements';
 
     public static function getEloquentQuery(): Builder
     {

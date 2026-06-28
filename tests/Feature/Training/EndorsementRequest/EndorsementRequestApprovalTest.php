@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Feature\Admin\EndorsementRequest;
+namespace Tests\Feature\Training\EndorsementRequest;
 
-use App\Filament\Admin\Resources\EndorsementRequests\Pages\ListEndorsementRequests;
+use App\Filament\Training\Resources\EndorsementRequests\Pages\ListEndorsementRequests;
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
@@ -13,9 +13,9 @@ use App\Notifications\Mship\Endorsement\TierEndorsementNotification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
-use Tests\Feature\Admin\BaseAdminTestCase;
+use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
-class EndorsementRequestApprovalTest extends BaseAdminTestCase
+class EndorsementRequestApprovalTest extends BaseTrainingPanelTestCase
 {
     use DatabaseTransactions;
 
@@ -23,7 +23,7 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
     {
         parent::setUp();
 
-        $this->adminUser->givePermissionTo('endorsement-request.access');
+        $this->panelUser->givePermissionTo('endorsement-request.access');
 
         Notification::fake();
     }
@@ -35,9 +35,9 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
             'endorsable_id' => PositionGroup::factory()->create()->id,
         ]);
 
-        $this->adminUser->givePermissionTo('endorsement-request.approve.*');
+        $this->panelUser->givePermissionTo('endorsement-request.approve.*');
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
         Livewire::test(ListEndorsementRequests::class)
             ->assertCanSeeTableRecords([$endorsementRequest])
             ->callTableAction('approve', record: $endorsementRequest->id, data: [
@@ -59,7 +59,7 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
             'endorsable_id' => PositionGroup::factory()->create()->id,
         ]);
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
         Livewire::test(ListEndorsementRequests::class)
             ->assertCanSeeTableRecords([$endorsementRequest])
             ->assertTableActionHidden('approve', $endorsementRequest->id);
@@ -67,16 +67,14 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
 
     public function test_sends_notification_to_user_for_permanent_endorsement_when_approved()
     {
-        Notification::fake();
-
         $endorsementRequest = EndorsementRequest::factory()->create([
             'endorsable_type' => PositionGroup::class,
             'endorsable_id' => PositionGroup::factory()->create()->id,
         ]);
 
-        $this->adminUser->givePermissionTo('endorsement-request.approve.*');
+        $this->panelUser->givePermissionTo('endorsement-request.approve.*');
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
         Livewire::test(ListEndorsementRequests::class)
             ->assertCanSeeTableRecords([$endorsementRequest])
             ->callTableAction('approve', record: $endorsementRequest->id, data: [
@@ -107,9 +105,9 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
             'endorsable_id' => Position::factory()->create()->id,
         ]);
 
-        $this->adminUser->givePermissionTo('endorsement-request.approve.*');
+        $this->panelUser->givePermissionTo('endorsement-request.approve.*');
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
         Livewire::test(ListEndorsementRequests::class)
             ->assertCanSeeTableRecords([$endorsementRequest])
             ->assertTableActionVisible('approve', $endorsementRequest->id)
@@ -125,7 +123,6 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
             'actioned_type' => EndorsementRequest::STATUS_APPROVED,
         ]);
 
-        // check the subject of the request was sent the notification
         Notification::assertSentTo($endorsementRequest->account, SoloEndorsementNotification::class);
     }
 
@@ -140,9 +137,9 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
             'endorsable_id' => Position::factory()->create()->id,
         ]);
 
-        $this->adminUser->givePermissionTo('endorsement-request.approve.*');
+        $this->panelUser->givePermissionTo('endorsement-request.approve.*');
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
         Livewire::test(ListEndorsementRequests::class)
             ->assertCanSeeTableRecords([$endorsementRequest])
             ->assertTableActionVisible('approve', $endorsementRequest->id)
@@ -158,7 +155,6 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
             'actioned_type' => EndorsementRequest::STATUS_APPROVED,
         ]);
 
-        // check the subject of the request was not sent the notification
         Notification::assertNotSentTo($endorsementRequest->account, SoloEndorsementNotification::class);
     }
 
@@ -169,9 +165,9 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
             'endorsable_id' => Position::factory()->create()->id,
         ]);
 
-        $this->adminUser->givePermissionTo('endorsement-request.approve.*');
+        $this->panelUser->givePermissionTo('endorsement-request.approve.*');
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
         Livewire::test(ListEndorsementRequests::class)
             ->assertCanSeeTableRecords([$endorsementRequest])
             ->assertTableActionVisible('approve', record: $endorsementRequest)
@@ -193,7 +189,7 @@ class EndorsementRequestApprovalTest extends BaseAdminTestCase
             'endorsable_id' => Position::factory()->create()->id,
         ]);
 
-        Livewire::actingAs($this->adminUser);
+        Livewire::actingAs($this->panelUser);
         Livewire::test(ListEndorsementRequests::class)
             ->assertCanSeeTableRecords([$endorsementRequest])
             ->assertTableActionHidden('approve', $endorsementRequest->id);
