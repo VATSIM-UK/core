@@ -1,6 +1,6 @@
 <div
 	class="overflow-y-auto overflow-x-hidden max-h-[600px] relative rounded-lg border border-gray-200 dark:border-white/10 custom-scrollbar">
-	<div class="w-full">
+	<div class="w-full relative">
 		<div
 			class="flex sticky top-0 bg-gray-50 dark:bg-gray-800/95 backdrop-blur-sm z-30 shadow-sm border-b border-gray-200 dark:border-white/10">
 			<div
@@ -14,6 +14,11 @@
 						{{ str_pad($hour, 2, '0', STR_PAD_LEFT) }}
 					</div>
 				@endforeach
+
+				@if ($nowLinePercent !== null)
+					<div class="absolute inset-y-0 z-40 pointer-events-none" data-gantt-now-line
+						style="left: calc({{ $nowLinePercent }}% - 1px); width: 2px; background-color: #ef4444;"></div>
+				@endif
 			</div>
 		</div>
 
@@ -74,6 +79,11 @@
 					</div>
 
 					<div class="flex-1 relative">
+						@if ($nowLinePercent !== null)
+							<div class="absolute inset-y-0 z-30 pointer-events-none" data-gantt-now-line
+								style="left: calc({{ $nowLinePercent }}% - 1px); width: 2px; background-color: #ef4444;"></div>
+						@endif
+
 						<div class="absolute inset-0 flex pointer-events-none">
 							@foreach ($hours as $hour)
 								<div class="flex-1 border-r border-gray-100 dark:border-white/[0.02]"></div>
