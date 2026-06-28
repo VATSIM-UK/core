@@ -29,7 +29,8 @@ class EndorsementCreationRelationManagerTest extends BaseTrainingPanelTestCase
         $positionGroup = PositionGroup::factory()->create();
         $accountToEndorse = Account::factory()->create();
 
-        $this->actingAsAdminUser(['training.access', 'endorsement.create.*']);
+        $this->actingAs($this->panelUser);
+        $this->panelUser->givePermissionTo('endorsement.create.*');
 
         Livewire::test(MembershipEndorsementRelationManager::class, ['ownerRecord' => $positionGroup, 'pageClass' => ViewWaitingList::class])
             ->assertTableActionExists('create')

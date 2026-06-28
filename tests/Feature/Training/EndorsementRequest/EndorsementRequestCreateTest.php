@@ -148,7 +148,7 @@ class EndorsementRequestCreateTest extends BaseTrainingPanelTestCase
             ->call('create');
 
         Notification::assertSentTo($otherUserWithPermission, EndorsementRequestCreated::class);
-        Notification::assertSentTo($this->adminUser, EndorsementRequestCreated::class);
+        Notification::assertSentTo($this->panelUser, EndorsementRequestCreated::class);
         Notification::assertNotSentTo($userWithoutPermission, EndorsementRequestCreated::class);
     }
 }
