@@ -123,6 +123,7 @@ class MentoringSessionsService
 
             $session->update([
                 'cancelled_datetime' => now(),
+                'session_done' => 1,
             ]);
 
             CancelReason::create([
