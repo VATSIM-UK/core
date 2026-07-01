@@ -3,6 +3,7 @@
 namespace App\Services\Markdown;
 
 use League\CommonMark\Environment\EnvironmentBuilderInterface;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\Table\Table;
 use Spatie\LaravelMarkdown\MarkdownRenderer;
 
@@ -13,5 +14,6 @@ class CustomMarkdownRenderer extends MarkdownRenderer
         parent::configureCommonMarkEnvironment($environment);
 
         $environment->addRenderer(Table::class, new TableNodeRenderer);
+        $environment->addRenderer(Image::class, new ImageNodeRenderer);
     }
 }
