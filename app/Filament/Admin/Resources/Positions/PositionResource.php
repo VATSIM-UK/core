@@ -15,6 +15,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\UrlColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -38,16 +39,25 @@ class PositionResource extends Resource
             TextInput::make('callsign')
                 ->required()
                 ->maxLength(191)
-                ->unique(ignorable: fn (?Position $record): ?Position => $record),
+                ->unique(ignorable: fn (?Position $record): ?Position => $record)
+                ->disabled(fn (?Position $record): bool => $record?->ukcp_position_id !== null)
+                ->helperText(fn (?Position $record): ?string => $record?->ukcp_position_id !== null
+                    ? 'Synced from UKCP'
+                    : null
+                ),
             TextInput::make('name')
                 ->required()
                 ->maxLength(191),
             Grid::make(3)->schema([
                 TextInput::make('frequency')
-                    ->helperText('MHz (e.g. 123.450)')
+                    ->helperText(fn (?Position $record): ?string => $record?->ukcp_position_id !== null
+                        ? 'Synced from UKCP'
+                        : 'MHz (e.g. 123.450)'
+                    )
                     ->required()
                     ->numeric()
-                    ->step(0.001),
+                    ->step(0.001)
+                    ->disabled(fn (?Position $record): bool => $record?->ukcp_position_id !== null),
                 Select::make('type')
                     ->required()
                     ->options(Position::typeOptions())
@@ -92,6 +102,15 @@ class PositionResource extends Resource
                 TextColumn::make('type')
                     ->label('Type')
                     ->sortable(),
+                UrlColumn::make('ukcp_position_id')
+                    ->label('UKCP Source')
+                    ->url(fn (Position $record): ?string => $record->ukcp_position_id
+                        ? "https://ukcp.vatsim.uk/controller-positions/{$record->ukcp_position_id}"
+                        : null
+                    )
+                    ->openUrlInNewTab()
+                    ->icon('heroicon-o-arrow-top-right-on-square')
+                    ->color('gray'),
                 IconColumn::make('virtual')
                     ->label('Virtual')
                     ->boolean()

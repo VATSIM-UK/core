@@ -90,7 +90,7 @@ class SyncUkcpPositions extends Job implements ShouldQueue
             }
         }
 
-        // REMOVALS — soft-delete UKCP-synced positions that no longer exist in UKCP
+        // REMOVALS - soft-delete UKCP-synced positions that no longer exist in UKCP
         $positionsToRemove = Position::whereNotNull('ukcp_position_id')
             ->whereNotIn('ukcp_position_id', $ukcpIds);
 
