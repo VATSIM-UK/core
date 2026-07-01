@@ -35,7 +35,9 @@ class SyncUkcpPositions extends Job implements ShouldQueue
             return;
         }
 
-        $corePositions = Position::all()->keyBy('callsign');
+        // Index Core positions by both callsign and ukcp_position_id for flexible matching
+        $coreByCallsign = Position::all()->keyBy('callsign');
+        $coreByUkcpId = Position::whereNotNull('ukcp_position_id')->get()->keyBy('ukcp_position_id');
         $ukcpIds = $ukcpPositions->pluck('id');
 
         $created = 0;
@@ -43,17 +45,30 @@ class SyncUkcpPositions extends Job implements ShouldQueue
         $flagged = 0;
 
         foreach ($ukcpPositions as $ukcpPosition) {
-            $core = $corePositions->get($ukcpPosition->callsign);
+            $core = $coreByUkcpId->get($ukcpPosition->id) // Match by UKCP ID first (survives callsign changes)
+                ?? $coreByCallsign->get($ukcpPosition->callsign); // Fall back to callsign (first-time linking)
 
             if ($core) {
-                // UPDATE - only frequency and ukcp_position_id, preserve everything else
-                if ($core->frequency !== $ukcpPosition->frequency || $core->ukcp_position_id !== $ukcpPosition->id) {
-                    if (! $this->dryRun) {
-                        $core->update([
-                            'frequency' => $ukcpPosition->frequency,
-                            'ukcp_position_id' => $ukcpPosition->id,
-                        ]);
-                    }
+                // Determine what needs updating
+                $changes = [];
+
+                if ($core->callsign !== $ukcpPosition->callsign) {
+                    $changes['callsign'] = $ukcpPosition->callsign;
+                }
+
+                if ((float) $core->frequency !== (float) $ukcpPosition->frequency) {
+                    $changes['frequency'] = $ukcpPosition->frequency;
+                }
+
+                if ($core->ukcp_position_id !== $ukcpPosition->id) {
+                    $changes['ukcp_position_id'] = $ukcpPosition->id;
+                }
+
+                if (! empty($changes) && ! $this->dryRun) {
+                    $core->update($changes);
+                }
+
+                if (! empty($changes)) {
                     $updated++;
                 }
             } else {

@@ -290,6 +290,44 @@ class SyncUkcpPositionsTest extends TestCase
     }
 
     #[Test]
+    public function it_updates_callsign_when_ukcp_renames_a_position(): void
+    {
+        // Core has position linked to UKCP id 1
+        Position::factory()->create([
+            'callsign' => 'EGBB_APP',
+            'ukcp_position_id' => 1,
+            'name' => 'Birmingham Approach',
+            'type' => Position::TYPE_APPROACH,
+        ]);
+
+        // UKCP renames it but keeps id 1
+        $ukcpPositions = new Collection([
+            $this->buildUkcpPosition(1, 'EGBB_APP_2', 123.950),
+        ]);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) use ($ukcpPositions) {
+            $mock->shouldReceive('getAllControllerPositions')
+                ->once()
+                ->andReturn($ukcpPositions);
+        });
+
+        (new SyncUkcpPositions)->handle(app(UKCP::class));
+
+        // Old callsign was updated to the new one (not soft-deleted)
+        $this->assertDatabaseMissing('positions', [
+            'callsign' => 'EGBB_APP',
+            'deleted_at' => null,
+        ]);
+
+        // New callsign exists with same UKCP id and preserved metadata
+        $this->assertDatabaseHas('positions', [
+            'callsign' => 'EGBB_APP_2',
+            'ukcp_position_id' => 1,
+            'name' => 'Birmingham Approach',
+        ]);
+    }
+
+    #[Test]
     public function it_handles_empty_api_response_gracefully(): void
     {
         Position::factory()->create([
