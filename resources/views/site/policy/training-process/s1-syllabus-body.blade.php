@@ -30,10 +30,10 @@ Alongside the guidance in other sections of this syllabus, mentors and instructo
 | Grade | Description |
 | :--- | :--- |
 | Not covered | The student has not covered this competency. |
-| Covered | Key facts and concepts can be recalled, with some understanding shown. If the student has demonstrated pracical application, it will be with significant mentor input. |
-| Developing | Knowledge is satisfactorily applied to practical situations with some mentor input. A strong understanding is shown, either explicity, or implicitly. |
-| Good | Routine situations are handled with little mentor input; more uncommon situations are handled with some mentor input. Understanding of multiple competencies is integrated either explicity or implicitly. |
-| Test standard | Most situations are handled with minimal mentor input. Appropriate consideration is given to the long term effects of actions. Decisions can be justified with an explaination as to why they chose to take it rather than an alternative. |
+| Covered | Key facts and concepts can be recalled, with some understanding shown. If the student has demonstrated practical application, it will be with significant mentor input. |
+| Developing | Knowledge is satisfactorily applied to practical situations with some mentor input. A strong understanding is shown, either explicitly, or implicitly. |
+| Good | Routine situations are handled with little mentor input; more uncommon situations are handled with some mentor input. Understanding of multiple competencies is integrated either explicitly or implicitly. |
+| Test standard | Most situations are handled with minimal mentor input. Appropriate consideration is given to the long term effects of actions. Decisions can be justified with an explanation as to why they chose to take it rather than an alternative. |
 
 ## Section 3 | Theoretical Knowledge Syllabus
 
@@ -95,7 +95,7 @@ The student should be able to:
 - Identify and find the following types of charts:
     - Aerodrome chart
     - Aircraft ground movement/parking/docking chart
-    - Standard Instrument Departure chats
+    - Standard Instrument Departure charts
 - Identify the following features on the above charts:
     - Taxiways
     - Location signs
@@ -134,7 +134,7 @@ The student should be able to:
 
 The student should be able to:
 
-- State a basic defition of:
+- State a basic definition of:
     - Wind
     - Temperature
     - Humidity
@@ -288,7 +288,7 @@ The lesson plans presented below should be taught to students in the order that 
 
 There are times where it may be beneficial to repeat a specific lesson or set of lessons, or combine lessons. Mentors are encouraged to do this where it is beneficial to do so.
 
-At the beginning of each session, whether it is one of the lessons in this document, or an ad-hoc lesson, outline to the student what the objectives of the lesson are, and how we intend to achive them. This may include running though the 'Aims' section of the lesson plan. This may also be a simple recognition that the purpose of the lesson is to get a feel for where the student is, or to see what issue arise in the session. Nevertheless, the importance of a clear brief cannot be stressed enough.
+At the beginning of each session, whether it is one of the lessons in this document, or an ad-hoc lesson, outline to the student what the objectives of the lesson are, and how we intend to achieve them. This may include running though the 'Aims' section of the lesson plan. This may also be a simple recognition that the purpose of the lesson is to get a feel for where the student is, or to see what issue arise in the session. Nevertheless, the importance of a clear brief cannot be stressed enough.
 
 After the completion of lesson 4, a student should be in a good position to pass their exam. If further lessons are required after the completion of lesson 4, mentors should list the aims of any further ad-hoc mentoring sessions in the 'additional comments' box.
 
@@ -313,7 +313,7 @@ As a mentor, you can use the aircraft in the SweatBoxes to help you demonstrate 
 | :--- | :--- |
 | Environment | SweatBox |
 | Duration | 1 - 1.5 hours |
-| Objectives | 1. Connect to SweatBox</br>2. Discuss the roles and aeras of responsibilities of the GMP, GMC, and AIR controllers</br>3. Select a runway for use</br>4. Talk though the aerodrome layout and 'standard' taxi routings</br>5. Practise coordinating an initial logon to the network</br>6. Generate an ATIS</br>7. Explain the use of status blocks and scratch pads. Give a brief introduction to how scratchpads can be used, but emphasiese that the student can use them however they want</br>8. Explain and practise issing IFR clearances and mandatory readback items</br>9. Explain and practise using push-back and start-up instructions</br>10. Explain and practise issuing taxi instructions</br>11. Define and practise using the correct handoff procedure |
+| Objectives | 1. Connect to SweatBox</br>2. Discuss the roles and areas of responsibilities of the GMP, GMC, and AIR controllers</br>3. Select a runway for use</br>4. Talk though the aerodrome layout and 'standard' taxi routings</br>5. Practise coordinating an initial logon to the network</br>6. Generate an ATIS</br>7. Explain the use of status blocks and scratch pads. Give a brief introduction to how scratchpads can be used, but emphasise that the student can use them however they want</br>8. Explain and practise issuing IFR clearances and mandatory readback items</br>9. Explain and practise using push-back and start-up instructions</br>10. Explain and practise issuing taxi instructions</br>11. Define and practise using the correct handoff procedure |
 | Student notes and resources | [S1 - Aerodrome Control e-learning course](https://moodle.vatsim.uk/course/view.php?id=67)</br>[Aeronautical Chart Symbols](https://www.aurora.nats.co.uk/htmlAIP/Publications/2021-01-28-AIRAC/html/eAIP/EG-GEN-2.3-en-GB.html#GEN-2.3) |
 
 ### 5.3 Lesson 2

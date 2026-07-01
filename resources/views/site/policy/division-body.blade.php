@@ -379,7 +379,7 @@ reconnecting.
 
 2.6.f(i) Appropriate seniority for this clause is considered the same as guided in 2.6.e.
 
-2.6.g A request to vacate from 2. 6 .e and 2.6.f must be followed with a notification to the ATC Training
+2.6.g A request to vacate from 2.6.e and 2.6.f must be followed with a notification to the ATC Training
 Department of the controlling witnessed. The ATC Training Department or a suitable working group
 will then decide what further action shall be taken.
 
