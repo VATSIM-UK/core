@@ -62,8 +62,6 @@ class PositionResource extends Resource
                     ->preload()
                     ->searchable(),
             ])->columnSpanFull(),
-            Toggle::make('sub_station')
-                ->label('Sub Station'),
             Toggle::make('temporarily_endorsable')
                 ->label('Temporarily Endorsable'),
             Toggle::make('virtual')
@@ -99,11 +97,6 @@ class PositionResource extends Resource
                     ->boolean()
                     ->trueColor('warning')
                     ->falseColor('gray'),
-                IconColumn::make('sub_station')
-                    ->label('Sub Station')
-                    ->boolean()
-                    ->trueColor('info')
-                    ->falseColor('gray'),
                 IconColumn::make('temporarily_endorsable')
                     ->label('Temp. Endorsable')
                     ->boolean()
@@ -117,7 +110,6 @@ class PositionResource extends Resource
                 SelectFilter::make('type')
                     ->options(Position::typeOptions()),
                 TernaryFilter::make('virtual'),
-                TernaryFilter::make('sub_station'),
                 TernaryFilter::make('temporarily_endorsable'),
             ])
             ->recordActions([
