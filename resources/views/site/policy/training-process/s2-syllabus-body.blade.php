@@ -176,8 +176,8 @@ Flight Rules and Airspace Classification<br>8. Radiotelephony<br>9. Releases and
 | Duration | 2 hours |
 | Environment | Sweatbox |
 | Resources | [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37) |
-| Covered Topics | 1.Transfer of Traffic / Handoffs and Sector Ownership<br>2.Traffic Information<br>3.Altimetry and
-Meteorology<br>4.VFR Departures<br>5.VFR Arrivals<br>6.VFR Transits<br>7.Non-Standard IFR Departures |
+| Covered Topics | 1. Training Aerodrome Overview<br>2. Sequencing<br>3. Transfer of Traffic / Handoffs and Sector Ownership<br>4. Traffic Information<br>5. Altimetry and
+Meteorology<br>6. VFR Departures<br>7. VFR Arrivals<br>8. VFR Transits<br>9. Non-Standard IFR Departures |
 
 ### 4.3 Lesson Three
 | Title | VFR Circuits and Integration With IFR |
