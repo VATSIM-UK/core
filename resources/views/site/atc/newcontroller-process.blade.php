@@ -1,15 +1,14 @@
 <x-markdown>
 ## OBS -> S1 Training Process
 
-[comment]: # (Using raw HTML so image is centered.)
-<img class="img-responsive center-block" src="/images/obs_s1_process.png" alt="TGNC Flow Diagram">
+![TGNC Flow Diagram](/images/obs_s1_process.png)
 
 ### Step 1 - Join the Waiting List
 In order to join the New Controller waiting list:
 
 - Navigate to [Waiting Lists]({{ route('mship.waiting-lists.index') }})
 - Click on the 'Self Enrol' button on the 'OBS -> S1' waiting list.
-<img class="img-responsive center-block" src="/images/obss1selfenrol.png" alt="TGNC ScreenShot 1">
+![TGNC ScreenShot 1](/images/obss1selfenrol.png)
 
 Joining the New Controller waiting list will automatically place you on the waiting list for an Introduction to ATC
 (OBS_PT1) group session.
@@ -17,7 +16,7 @@ The group sessions are run as and when training capacity allows for new students
 This may be once per month however we may delay this subject to the availability of our mentors throughout the year.
 To be eligible for an invite for the seminar, you MUST complete the [OBS > S1 CTS Theory
 Exam](https://cts.vatsim.uk/theory/setup.php).
-<img class="img-responsive center-block" src="/images/tgnc_theory.png" alt="TGNC ScreenShot 3">
+![TGNC ScreenShot 3](/images/tgnc_theory.png)
 
 The content to assist with this exam can be found on our Moodle Platform and the [S1 Aerodrome Control Moodle
 Course](https://moodle.vatsim.uk/course/view.php?id=67).

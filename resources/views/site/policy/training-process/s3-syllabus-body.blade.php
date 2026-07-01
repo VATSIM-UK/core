@@ -106,7 +106,7 @@ Block one aims to introduce student controllers to the basic concept of approach
     - Establishing aircraft on Visual Approaches.
 - Co-ordination
     - Receiving or negotiating Inbound Releases and understanding the implications of various release types.
-    - Understanding the ‘PRAWNS’ pneumonic to facilitate controller handovers.
+    - Understanding the ‘PRAWNS’ mnemonic to facilitate controller handovers.
     - Working split positions (INT/FIN splits).
 
 ### Block Two
