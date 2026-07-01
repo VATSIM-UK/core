@@ -6,6 +6,7 @@ use App\Models\Mship\Account;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -159,6 +160,35 @@ class UKCP
             Log::info("UKCP Client Exception {$e->getMessage()} when marking notification read");
 
             return [];
+        }
+    }
+
+    /**
+     * Fetch all controller positions from the UKCP API.
+     *
+     * Returns a collection of objects with: id (int), callsign (string),
+     * frequency (float), description (string|null).
+     *
+     * @return Collection<object{id: int, callsign: string, frequency: float, description: string|null}>
+     */
+    public function getAllControllerPositions(): Collection
+    {
+        try {
+            $response = $this->client->get(
+                config('services.ukcp.url').'/api/controller',
+                [
+                    'headers' => [
+                        'Authorization' => 'Bearer '.$this->apiKey,
+                    ],
+                    'timeout' => 15,
+                ]
+            );
+
+            return collect(json_decode($response->getBody()->getContents()));
+        } catch (ClientException|GuzzleException $e) {
+            Log::error("UKCP Client Exception when fetching controller positions: {$e->getMessage()}");
+
+            return collect();
         }
     }
 
