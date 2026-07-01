@@ -15,7 +15,6 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\UrlColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -102,14 +101,14 @@ class PositionResource extends Resource
                 TextColumn::make('type')
                     ->label('Type')
                     ->sortable(),
-                UrlColumn::make('ukcp_position_id')
-                    ->label('UKCP Source')
+                TextColumn::make('ukcp_position_id')
+                    ->label('UKCP')
+                    ->formatStateUsing(fn ($state): ?string => $state ? "[{$state}]" : null)
                     ->url(fn (Position $record): ?string => $record->ukcp_position_id
                         ? "https://ukcp.vatsim.uk/controller-positions/{$record->ukcp_position_id}"
                         : null
                     )
                     ->openUrlInNewTab()
-                    ->icon('heroicon-o-arrow-top-right-on-square')
                     ->color('gray'),
                 IconColumn::make('virtual')
                     ->label('Virtual')
