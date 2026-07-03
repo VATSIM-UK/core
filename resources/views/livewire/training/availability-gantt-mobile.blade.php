@@ -36,7 +36,7 @@
 						@endphp
 
 						@if ($student->pending_position)
-							<div class="mt-0.5">
+							<div class="mt-0.5 shrink-0 max-w-full overflow-visible">
 								<x-filament::badge :color="$badgeColor" size="sm">
 									{{ $student->pending_position }}
 								</x-filament::badge>
@@ -74,6 +74,11 @@
 						<div class="h-16 border-b border-gray-100 dark:border-white/[0.02]"></div>
 					@endforeach
 				</div>
+
+				@if ($nowLinePercent !== null)
+					<div class="absolute inset-x-0 z-30 pointer-events-none" data-gantt-now-line
+						style="top: calc({{ $nowLinePercent }}% - 1px); height: 2px; background-color: #ef4444;"></div>
+				@endif
 
 				@foreach ($students as $student)
 					<div

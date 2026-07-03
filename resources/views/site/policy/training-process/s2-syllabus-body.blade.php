@@ -166,9 +166,7 @@ progression.
 | Duration | 1.5 hours |
 | Environment | Seminar |
 | Resources | [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37) |
-| Covered Topics | 1. Euroscope Setup<br>2. Area of Responsibility<br>3. Takeoff and Landing Clearances<br>4.
-Conditional Clearances<br>5. Use of Datablocks and Scratchpads<br>6. Handover Coordination (RAWNS, CRAFT)<br>7.
-Flight Rules and Airspace Classification<br>8. Radiotelephony<br>9. Releases and Checks|
+| Covered Topics | 1. Euroscope Setup<br>2. Area of Responsibility<br>3. Takeoff and Landing Clearances<br>4. Conditional Clearances<br>5. Use of Datablocks and Scratchpads<br>6. Handover Coordination (RAWNS, CRAFT)<br>7. Flight Rules and Airspace Classification<br>8. Radiotelephony<br>9. Releases and Checks|
 
 ### 4.2 Lesson Two
 | Title | VFR Departures, Arrivals and Transits |
@@ -176,8 +174,7 @@ Flight Rules and Airspace Classification<br>8. Radiotelephony<br>9. Releases and
 | Duration | 2 hours |
 | Environment | Sweatbox |
 | Resources | [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37) |
-| Covered Topics | 1.Transfer of Traffic / Handoffs and Sector Ownership<br>2.Traffic Information<br>3.Altimetry and
-Meteorology<br>4.VFR Departures<br>5.VFR Arrivals<br>6.VFR Transits<br>7.Non-Standard IFR Departures |
+| Covered Topics | 1. Training Aerodrome Overview<br>2. Sequencing<br>3. Transfer of Traffic / Handoffs and Sector Ownership<br>4. Traffic Information<br>5. Altimetry and Meteorology<br>6. VFR Departures<br>7. VFR Arrivals<br>8. VFR Transits<br>9. Non-Standard IFR Departures |
 
 ### 4.3 Lesson Three
 | Title | VFR Circuits and Integration With IFR |
@@ -185,9 +182,7 @@ Meteorology<br>4.VFR Departures<br>5.VFR Arrivals<br>6.VFR Transits<br>7.Non-Sta
 | Duration | 2 hours |
 | Environment | Sweatbox |
 | Resources | [S2 Moodle Course](https://moodle.vatsim.uk/course/view.php?id=37) |
-| Covered topics | 1. Missed Approaches<br>2. Land After<br>3. IFR/VFR Integration<br>4. Gap Strategies and
-Coordination with APC<br>5. VFR Circuits<br>6. Situational Awareness and Communication Priority<br>7. (Extra time to
-cover competencies at student request / mentor recommendation) |
+| Covered topics | 1. Missed Approaches<br>2. Land After<br>3. IFR/VFR Integration<br>4. Gap Strategies and Coordination with APC<br>5. VFR Circuits<br>6. Situational Awareness and Communication Priority<br>7. (Extra time to cover competencies at student request / mentor recommendation) |
 
 ---
 
@@ -226,7 +221,7 @@ The student should be able to:
 - Issue decisive, concise instructions that do not contain superfluous words or phrases;
 - Displays an appreciation of where non-standard phraseology may be appropriate;
 
-### 5.6 Workload Management and Temperment
+### 5.6 Workload Management and Temperament
 The student should be able to:
 - Apply an appropriate rate of speech for the situation that they are in;
 - Clearly plan their instructions before keying up on frequency;

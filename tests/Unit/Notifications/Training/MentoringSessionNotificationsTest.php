@@ -65,7 +65,7 @@ class MentoringSessionNotificationsTest extends TestCase
         $this->assertSame('Session report finished', $mail->subject);
         $this->assertSame('emails.training.mentoring_report_filed', $mail->view);
         $this->assertSame(
-            ['subject', 'recipient', 'session'],
+            ['subject', 'recipient', 'session', 'reportUrl'],
             array_keys($mail->viewData),
         );
         $this->assertSame($this->session->id, $mail->viewData['session']->id);

@@ -24,6 +24,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\Permission\Models\Role;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
 class ConductMentoringSessionTest extends BaseTrainingPanelTestCase
@@ -189,8 +190,9 @@ class ConductMentoringSessionTest extends BaseTrainingPanelTestCase
 
         Carbon::setTestNow(now()->parse($this->session->taken_date.' '.$this->session->taken_from)->addMinutes(6));
 
+        Role::firstOrCreate(['name' => 'ATC APP Instructor', 'guard_name' => 'web']);
         $tgi = Account::factory()->create();
-        $tgi->givePermissionTo('training.mentors.manage.atc');
+        $tgi->assignRole('ATC APP Instructor');
 
         app(MentoringReportService::class)->markNoShow($this->session->fresh(), false);
 
@@ -239,5 +241,91 @@ class ConductMentoringSessionTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->mentor)
             ->test(AcceptedMentoringSessionsTable::class)
             ->assertTableActionVisible('conduct', $this->session);
+    }
+
+    #[Test]
+    public function it_notifies_all_tgis_with_the_matching_role(): void
+    {
+        Notification::fake();
+
+        Role::firstOrCreate(['name' => 'ATC APP Instructor', 'guard_name' => 'web']);
+        $tgiOne = Account::factory()->create();
+        $tgiOne->assignRole('ATC APP Instructor');
+        $tgiTwo = Account::factory()->create();
+        $tgiTwo->assignRole('ATC APP Instructor');
+
+        Carbon::setTestNow(now()->parse($this->session->taken_date.' '.$this->session->taken_from)->addMinutes(6));
+
+        app(MentoringReportService::class)->markNoShow($this->session->fresh(), false);
+
+        Notification::assertSentTo($tgiOne, StudentMentoringNoShow::class);
+        Notification::assertSentTo($tgiTwo, StudentMentoringNoShow::class);
+
+        Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function it_does_not_notify_tgis_with_a_different_category_role(): void
+    {
+        Notification::fake();
+
+        Role::firstOrCreate(['name' => 'ATC APP Instructor', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'ATC TWR Instructor', 'guard_name' => 'web']);
+        $correctTgi = Account::factory()->create();
+        $correctTgi->assignRole('ATC APP Instructor');
+        $wrongTgi = Account::factory()->create();
+        $wrongTgi->assignRole('ATC TWR Instructor');
+
+        Carbon::setTestNow(now()->parse($this->session->taken_date.' '.$this->session->taken_from)->addMinutes(6));
+
+        app(MentoringReportService::class)->markNoShow($this->session->fresh(), false);
+
+        Notification::assertSentTo($correctTgi, StudentMentoringNoShow::class);
+        Notification::assertNotSentTo($wrongTgi, StudentMentoringNoShow::class);
+
+        Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function it_notifies_only_the_tgi_for_the_matching_category(): void
+    {
+        Notification::fake();
+
+        TrainingPosition::factory()->create([
+            'cts_positions' => ['EGKK_TWR'],
+            'category' => 'S2 Training',
+        ]);
+
+        $twrProgSheet = ProgSheet::factory()->create();
+
+        $twrSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGKK_TWR',
+            'progress_sheet_id' => $twrProgSheet->prog_sheet_id,
+            'taken' => 1,
+            'taken_date' => now()->subHour()->format('Y-m-d'),
+            'taken_from' => now()->subHour()->format('H:i:s'),
+            'taken_to' => now()->format('H:i:s'),
+            'taken_time' => now()->subDays(3),
+            'session_done' => 0,
+            'filed' => null,
+        ]);
+
+        Role::firstOrCreate(['name' => 'ATC APP Instructor', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'ATC TWR Instructor', 'guard_name' => 'web']);
+        $appTgi = Account::factory()->create();
+        $appTgi->assignRole('ATC APP Instructor');
+        $twrTgi = Account::factory()->create();
+        $twrTgi->assignRole('ATC TWR Instructor');
+
+        Carbon::setTestNow(now()->parse($twrSession->taken_date.' '.$twrSession->taken_from)->addMinutes(6));
+
+        app(MentoringReportService::class)->markNoShow($twrSession->fresh(), false);
+
+        Notification::assertSentTo($twrTgi, StudentMentoringNoShow::class);
+        Notification::assertNotSentTo($appTgi, StudentMentoringNoShow::class);
+
+        Carbon::setTestNow();
     }
 }

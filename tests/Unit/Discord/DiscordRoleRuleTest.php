@@ -2,15 +2,18 @@
 
 namespace Tests\Unit\Discord;
 
+use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Cts\Member;
 use App\Models\Discord\DiscordRoleRule;
 use App\Models\Mship\Account;
+use App\Models\Mship\Account\Endorsement;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use App\Models\Roster;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
@@ -94,6 +97,42 @@ class DiscordRoleRuleTest extends TestCase
             [[false, false], [false, false], [true, true], [false, false], [false, false], true],
             [[false, false], [false, false], [false, false], [true, true], [false, false], true],
             [[false, false], [false, false], [false, false], [false, false], [true, true], true],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('positionTypeProvider')]
+    public function test_solo_endorsement_position_type_requirement(?int $positionType, ?int $endorsedPositionType, bool $expired, bool $expected): void
+    {
+        $account = Account::factory()->create();
+
+        $rule = DiscordRoleRule::factory()->create([
+            'position_type' => $positionType,
+        ]);
+
+        if ($endorsedPositionType !== null) {
+            $position = Position::factory()->create(['type' => $endorsedPositionType]);
+
+            Endorsement::factory()->create([
+                'account_id' => $account->id,
+                'endorsable_type' => Position::class,
+                'endorsable_id' => $position->id,
+                'expires_at' => $expired ? now()->subDay() : now()->addDays(30),
+                'created_by' => Account::factory(),
+            ]);
+        }
+
+        $this->assertEquals($expected, $rule->accountSatisfies($account->fresh()));
+    }
+
+    public static function positionTypeProvider(): array
+    {
+        return [
+            'no position_type set' => [null, null, false, true],
+            'active solo endorsement on matching enroute position' => [Position::TYPE_ENROUTE, Position::TYPE_ENROUTE, false, true],
+            'solo endorsement on different position type' => [Position::TYPE_ENROUTE, Position::TYPE_APPROACH, false, false],
+            'expired solo endorsement on matching position' => [Position::TYPE_ENROUTE, Position::TYPE_ENROUTE, true, false],
+            'no solo endorsement at all' => [Position::TYPE_ENROUTE, null, false, false],
         ];
     }
 }

@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class AvailabilityService
 {
+    public const MINIMUM_SLOT_DURATION_MINUTES = 45;
+
     public function resolveMemberId(int $cid): ?int
     {
         return Member::where('cid', $cid)->value('id');
@@ -52,10 +54,19 @@ class AvailabilityService
         return "{$hours}h {$rem}m";
     }
 
+    public function meetsMinimumDuration(Carbon $startUtc, Carbon $endUtc): bool
+    {
+        return $startUtc->diffInMinutes($endUtc) >= static::MINIMUM_SLOT_DURATION_MINUTES;
+    }
+
     public function isSlotValid(int $studentId, Carbon $startUtc, Carbon $endUtc, ?int $ignoreId = null): array
     {
         if ($startUtc->greaterThanOrEqualTo($endUtc)) {
             return [false, 'The availability end time must be after the start time.'];
+        }
+
+        if (! $this->meetsMinimumDuration($startUtc, $endUtc)) {
+            return [false, 'Availability slots must be at least '.static::MINIMUM_SLOT_DURATION_MINUTES.' minutes long.'];
         }
 
         if ($startUtc->isPast()) {

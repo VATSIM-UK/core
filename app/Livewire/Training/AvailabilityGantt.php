@@ -206,10 +206,23 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         $startTimelineHour = max(0, $minHour - 1);
         $endTimelineHour = min(23, $maxHour + 1);
 
+        $nowLinePercent = null;
+
+        if (Carbon::parse($this->date)->isToday()) {
+            $now = now();
+            $nowMinutesFromMidnight = $now->hour * 60 + $now->minute;
+            $timelineStartMinutes = $startTimelineHour * 60;
+            $totalTimelineMinutes = ($endTimelineHour - $startTimelineHour + 1) * 60;
+            $relativeNowMinutes = $nowMinutesFromMidnight - $timelineStartMinutes;
+
+            $nowLinePercent = max(0, min(100, ($relativeNowMinutes / $totalTimelineMinutes) * 100));
+        }
+
         return view('livewire.training.availability-gantt', [
             'students' => $students,
             'hours' => range($startTimelineHour, $endTimelineHour),
             'displayDate' => Carbon::parse($this->date),
+            'nowLinePercent' => $nowLinePercent,
         ]);
     }
 

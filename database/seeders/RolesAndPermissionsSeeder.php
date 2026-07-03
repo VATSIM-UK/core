@@ -97,6 +97,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.mentoring.sessions.*',
             'training.mentoring.sessions.reallocate.*',
 
+            'training.statistics.view.*',
+            'training.statistics.view.atc',
+
             // Account Permissions
             'account.self',
             'account.view-insensitive.*',
@@ -284,6 +287,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'roster.restriction.create',
             'roster.restriction.remove',
             'atc.stats',
+
+            // Discord
+            'discord.tag.view',
+            'discord.tag.manage',
 
         ];
 

@@ -13,7 +13,9 @@ use App\Notifications\Training\StudentMentoringNoShow;
 use App\Repositories\Cts\MentoringReportRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Spatie\Permission\Exceptions\RoleDoesNotExist;
 
 class MentoringReportService
 {
@@ -208,9 +210,22 @@ class MentoringReportService
             return;
         }
 
-        $permissionName = 'training.mentors.manage.'.MentorPermissionService::categoryType($category);
+        $tgiRoleName = MentorPermissionService::tgiRoleForCategory($category);
 
-        $recipients = Account::permission($permissionName)->get();
+        if (! $tgiRoleName) {
+            return;
+        }
+
+        try {
+            $recipients = Account::role($tgiRoleName)->get();
+        } catch (RoleDoesNotExist $e) {
+            Log::warning("TGI notification skipped: role '{$tgiRoleName}' does not exist.", [
+                'session_id' => $session->id,
+                'category' => $category,
+            ]);
+
+            return;
+        }
 
         foreach ($recipients as $recipient) {
             $recipient->notify(new StudentMentoringNoShow($session));

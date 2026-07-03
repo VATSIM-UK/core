@@ -17,6 +17,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\CalendarLinks\Link;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
 class UpcomingMentoringSessionsTest extends BaseTrainingPanelTestCase
@@ -373,6 +374,39 @@ class UpcomingMentoringSessionsTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->panelUser)
             ->test(PendingMentoringReportsTable::class, ['category' => $category])
             ->assertCanNotSeeTableRecords([$session]);
+    }
+
+    #[Test]
+    public function it_builds_calendar_link_object_with_correct_properties(): void
+    {
+        $this->panelUser->givePermissionTo('training.mentors.view.atc');
+
+        $category = MentorPermissionService::atcCategories()[0];
+        $this->createTrainingPosition($category, 'EGLL_APP');
+
+        $mentorCtsMember = $this->getOrCreateCtsMember($this->panelUser);
+        $student = Account::factory()->create();
+        $studentCtsMember = $this->getOrCreateCtsMember($student);
+
+        $sessionId = $this->insertSession(
+            $mentorCtsMember->id,
+            $studentCtsMember->id,
+            'EGLL_APP',
+            takenDate: Carbon::tomorrow()->format('Y-m-d H:i:s'),
+        );
+        DB::connection('cts')->table('sessions')->where('id', $sessionId)->update(['taken_to' => '12:00:00']);
+        $session = Session::on('cts')->find($sessionId);
+
+        $method = new \ReflectionMethod(UpcomingMentoringSessions::class, 'buildCalendarLinkObject');
+        $page = new UpcomingMentoringSessions;
+        $link = $method->invoke($page, $session);
+
+        $this->assertInstanceOf(Link::class, $link);
+        $this->assertSame('Mentoring Session - EGLL_APP', $link->title);
+        $this->assertSame($session->taken_date.' 10:00:00', $link->from->format('Y-m-d H:i:s'));
+        $this->assertSame($session->taken_date.' 12:00:00', $link->to->format('Y-m-d H:i:s'));
+        $this->assertStringContainsString('Position: EGLL_APP', $link->description);
+        $this->assertSame('EGLL_APP', $link->address);
     }
 
     #[Test]

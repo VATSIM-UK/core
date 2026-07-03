@@ -11,7 +11,7 @@
 
     <p>Please note that the times displayed are in Zulu/GMT.</p>
 
-    <p>To stop receiving these alerts, you can amend your email settings in the STUDENT menu.</p>
+    <p>To stop receiving these alerts, you can amend your email settings in the <a href="{{ route('filament.training.pages.email-settings') }}">Training Panel</a>.</p>
 @stop
 
 @section('signature')

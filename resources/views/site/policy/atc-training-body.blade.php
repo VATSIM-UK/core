@@ -101,7 +101,7 @@ To be eligible for Military ADC Training, S2+ members must:
 
 ### 1.9 Military APP (S3+)
 
-To be eligible for Military APP Training, S 3 + members must:
+To be eligible for Military APP Training, S3+ members must:
 
 - Be on the active controlling roster;
 - Not have significant negative feedback;

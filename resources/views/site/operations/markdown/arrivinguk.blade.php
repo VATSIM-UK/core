@@ -13,16 +13,16 @@ If you need to descend before you enter an online controller’s airspace, then 
 The main London sector groups (**North**, **South**, **Central**, and **West**) are shown below.
 Sometimes these sectors are combined using the `LON_SC_CTR` or `LON_CTR` callsigns.
 
-<img class="img-responsive center-block" src="/images/egtt-sectors-2023-11.png" alt="diagram of main London sectors">
+![Diagram of main London sectors](/images/egtt-sectors-2023-11.png)
 
 **Example:**
 
 If `LON_CTR`, `LON_S_CTR`, and `LON_W_CTR` are online:
 
-- <span style="color:red">**Red (North)**</span> — controlled by `LON_CTR`
-- <span style="color:yellow">**Yellow (Central)**</span> — controlled by `LON_CTR`
-- <span style="color:blue">**Blue (South)**</span> — controlled by `LON_S_CTR`
-- <span style="color:green">**Green (West)**</span> — controlled by `LON_W_CTR`
+- **Red (North)** — controlled by `LON_CTR`
+- **Yellow (Central)** — controlled by `LON_CTR`
+- **Blue (South)** — controlled by `LON_S_CTR`
+- **Green (West)** — controlled by `LON_W_CTR`
 
 ---
 
@@ -49,7 +49,7 @@ These may be combined using:
 - It is **especially important** to descend according to your STAR when **only LTC sectors are online**.
 - Do **not wait** for a "contact me" before starting descent.
 
-<img class="img-responsive center-block" src="/images/egtc-sectors-2023-11.png" alt="diagram of London TMA split sectors">
+![Diagram of London TMA split sectors](/images/egtc-sectors-2023-11.png)
 
 ---
 
@@ -63,6 +63,6 @@ The diagram below shows the two main **upper splits**.
 
 Further Scottish splits may be used during events.
 
-<img class="img-responsive center-block" src="/images/egpx-sectors-2023-11.png" alt="diagram of main Scottish sectors">
+![Diagram of main Scottish sectors](/images/egpx-sectors-2023-11.png)
 
 </x-markdown>

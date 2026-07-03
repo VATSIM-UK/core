@@ -1,7 +1,4 @@
-<x-filament-panels::page x-data="{}" x-init="if (!$wire.browserTimezone) {
-    $wire.setBrowserTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone)
-}
-$watch('$wire.data.date_range', (value) => {
+<x-filament-panels::page x-data="{}" x-init="$watch('$wire.data.date_range', (value) => {
     if (value?.start && !value?.end) {
         $wire.set('data.date_range', { start: value.start, end: value.start })
     }
@@ -30,8 +27,7 @@ $watch('$wire.data.date_range', (value) => {
 			<x-filament::section>
 				<x-slot name="heading">Add Availability</x-slot>
 				<x-slot name="description">
-					All times are currently entered and shown in
-					<strong>{{ $this->getTimezoneLabel($this->timezone) }}</strong>.
+					All times are in Zulu.
 				</x-slot>
 
 				{{ $this->form }}
@@ -49,7 +45,7 @@ $watch('$wire.data.date_range', (value) => {
 			<x-filament::section>
 				<x-slot name="heading">My Availability</x-slot>
 				<x-slot name="description">
-					Future slots adjusted to <strong>{{ $this->getTimezoneLabel($this->timezone) }}</strong>.
+					All slots are shown in Zulu.
 				</x-slot>
 
 				{{ $this->table }}
@@ -57,4 +53,7 @@ $watch('$wire.data.date_range', (value) => {
 		</div>
 	</div>
 	<x-filament-actions::modals />
+
+	@livewire(\App\Livewire\Training\MyAcceptedMentoringSessionsTable::class)
+
 </x-filament-panels::page>
