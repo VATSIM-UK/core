@@ -3,11 +3,13 @@
 namespace App\Models\Atc;
 
 use App\Models\Airport;
+use App\Models\Booking;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 
@@ -69,6 +71,11 @@ class Position extends Model implements Endorseable
     public function positionGroups(): BelongsToMany
     {
         return $this->belongsToMany(PositionGroup::class, 'position_group_positions', 'position_id', 'position_group_id');
+    }
+
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
     }
 
     public function getMinimumVatsimQualificationAttribute()
