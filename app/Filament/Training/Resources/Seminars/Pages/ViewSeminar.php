@@ -6,6 +6,8 @@ use App\Filament\Training\Resources\Seminars\SeminarResource;
 use App\Filament\Training\Resources\Seminars\Widgets\SeminarStatsOverview;
 use App\Services\Training\SeminarInvitationService;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewSeminar extends ViewRecord
@@ -69,6 +71,17 @@ class ViewSeminar extends ViewRecord
                     ]);
                 })
                 ->visible(fn () => auth()->user()->can('training.seminars.manage.*')),
+
+            ActionGroup::make([
+                EditAction::make()
+                    ->label('Edit Seminar')
+                    ->visible(fn () => auth()->user()->can('training.seminars.manage.*')),
+            ])
+                ->label('Actions')
+                ->icon('heroicon-o-cog-6-tooth')
+                ->color('gray')
+                ->visible(fn () => auth()->user()->can('training.seminars.manage.*')),
+
         ];
     }
 

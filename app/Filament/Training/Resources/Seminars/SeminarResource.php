@@ -11,6 +11,7 @@ use App\Filament\Training\Resources\Seminars\RelationManagers\InvitationsRelatio
 use App\Filament\Training\Resources\Seminars\RelationManagers\WaitingListRelationManager;
 use App\Models\Training\Seminar\Seminar;
 use App\Models\Training\WaitingList;
+use Carbon\Carbon;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -19,6 +20,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
@@ -51,19 +53,22 @@ class SeminarResource extends Resource
         return $schema->components([
             Section::make('Seminar Details')
                 ->schema([
-                    TextInput::make('name')->required()->maxLength(255),
+                    Grid::make(2)->schema([
+                        TextInput::make('name')->required()->maxLength(255),
+
+                        Select::make('waiting_list_id')
+                            ->label('Waiting List')
+                            ->options(WaitingList::query()->orderBy('name')->pluck('name', 'id'))
+                            ->searchable()
+                            ->required(),
+                    ]),
                     Textarea::make('description')
                         ->rows(5)
                         ->columnSpanFull(),
-                    Select::make('waiting_list_id')
-                        ->label('Waiting List')
-                        ->options(WaitingList::query()->orderBy('name')->pluck('name', 'id'))
-                        ->searchable()
-                        ->required(),
                 ])->columnSpanFull(),
             Section::make('Schedule')
                 ->schema([
-                    DatePicker::make('date')->required(),
+                    DatePicker::make('date')->required()->afterOrEqual('today')->minDate(Carbon::today()),
                     TimePicker::make('from')->seconds(false)->required(),
                     TimePicker::make('to')->seconds(false)->required(),
                 ])->columns(3),

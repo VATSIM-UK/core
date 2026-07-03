@@ -3,6 +3,7 @@
 namespace App\Filament\Training\Resources\Seminars\Pages;
 
 use App\Filament\Training\Resources\Seminars\SeminarResource;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateSeminar extends CreateRecord
@@ -14,5 +15,11 @@ class CreateSeminar extends CreateRecord
         $data['created_by'] = auth()->id();
 
         return $data;
+    }
+
+    protected function getCreateAnotherFormAction(): Action
+    {
+        return parent::getCreateAnotherFormAction()
+            ->hidden();
     }
 }
