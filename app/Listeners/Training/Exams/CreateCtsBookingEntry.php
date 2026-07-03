@@ -1,33 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Listeners\Training\Exams;
 
 use App\Events\Training\Exams\ExamAccepted;
-use App\Models\Cts\Booking;
+use App\Models\Atc\Position;
+use App\Models\Booking;
+use App\Services\BookingService;
+use Carbon\Carbon;
 
 class CreateCtsBookingEntry
 {
-    /**
-     * Handle the event.
-     */
     public function handle(ExamAccepted $event): void
     {
         $examBooking = $event->examBooking;
 
-        // Create a CTS booking entry for the exam
-        Booking::create([
-            'date' => $examBooking->taken_date,
-            'from' => $examBooking->taken_from,
-            'to' => $examBooking->taken_to,
-            'position' => $examBooking->position_1,
+        $position = Position::where('callsign', $examBooking->position_1)->first();
+
+        app(BookingService::class)->create([
+            'position_id' => $position?->id,
             'member_id' => $examBooking->student_id,
-            'type' => 'EX', // Exam type
-            'type_id' => $event->examBooking->id,
-            'time_booked' => now(),
-            'local_id' => 0,
-            'groupID' => null,
-            'eurobook_id' => null,
-            'eurobook_import' => 0,
+            'type' => Booking::TYPE_EXAM,
+            'starts_at' => Carbon::parse($examBooking->taken_date.' '.$examBooking->taken_from),
+            'ends_at' => Carbon::parse($examBooking->taken_date.' '.$examBooking->taken_to),
+            'bookable_type' => $examBooking::class,
+            'bookable_id' => $examBooking->id,
         ]);
     }
 }
