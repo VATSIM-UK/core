@@ -126,11 +126,12 @@ class SeminarResource extends Resource
                     ->dateTime('H:i'),
 
                 TextColumn::make('capacity')
+                    ->counts('attendees')
                     ->label('Capacity')
-                    ->state(fn ($record) => "{$record->attendees()->count()} / {$record->capacity}")
+                    ->state(fn ($record) => "{$record->attendees_count} / {$record->capacity}")
                     ->badge()
                     ->color(fn ($record) => match (true) {
-                        $record->attendees()->count() >= $record->capacity => 'warning',
+                        $record->attendees_count >= $record->capacity => 'warning',
                         default => 'success',
                     }),
 

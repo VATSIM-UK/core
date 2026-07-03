@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Mship\Training;
 
 use App\Enums\SeminarInvitationStatus;
+use App\Http\Controllers\BaseController;
 use App\Models\Training\Seminar\SeminarInvitation;
 use App\Services\Training\SeminarInvitationService;
 
-class SeminarInvitationController extends \App\Http\Controllers\BaseController
+class SeminarInvitationController extends BaseController
 {
     public function accept(string $token, SeminarInvitationService $service)
     {

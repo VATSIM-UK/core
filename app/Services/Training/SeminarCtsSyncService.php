@@ -20,14 +20,14 @@ class SeminarCtsSyncService
         $groupSession = GroupSession::query()->updateOrCreate(
             ['group_session_id' => $seminar->cts_group_session_id],
             [
-                'rts_id' => $this->ctsRtsId(),
+                'rts_id' => 14, // Hardcoded OBS->S1 id
                 'name' => $seminar->name,
                 'description' => mb_substr(($seminar->description ?? $seminar->name), 0, 60),
                 'date' => $seminar->date->format('Y-m-d'),
                 'from' => $seminar->from,
                 'to' => $seminar->to,
                 'min_target_rating' => 0,
-                'max_target_rating' => 12,
+                'max_target_rating' => 12, // Allow any ratings for the time being
                 'min_mentor_rating' => 0,
                 'max_mentors' => 10,
                 'max_students' => $seminar->capacity,
