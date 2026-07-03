@@ -55,6 +55,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        DB::table('bookings')->truncate();
+        DB::table('bookings')->whereNotNull('cts_booking_id')->delete();
     }
 };
