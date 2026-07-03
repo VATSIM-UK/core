@@ -21,7 +21,7 @@ class BookingRepository
     public function getBookings(Carbon $date): Collection
     {
         $bookings = Booking::whereDate('starts_at', $date->toDateString())
-            ->with('member')
+            ->with('member', 'position')
             ->orderBy('starts_at')
             ->get();
 
@@ -37,7 +37,7 @@ class BookingRepository
     {
         $bookings = Booking::whereDate('starts_at', Carbon::now()->toDateString())
             ->liveAtc()
-            ->with('member')
+            ->with('member', 'position')
             ->orderBy('starts_at')
             ->get();
 
@@ -49,7 +49,7 @@ class BookingRepository
         $bookings = Booking::whereDate('starts_at', Carbon::now()->toDateString())
             ->liveAtc()
             ->notEvent()
-            ->with('member')
+            ->with('member', 'position')
             ->orderBy('starts_at')
             ->get();
 

@@ -12,11 +12,13 @@ class BookingService
 {
     public function create(array $data): Booking
     {
-        $this->validateOverlap(
-            Carbon::parse($data['starts_at']),
-            Carbon::parse($data['ends_at']),
-            $data['position_id']
-        );
+        if ($data['position_id'] !== null) {
+            $this->validateOverlap(
+                Carbon::parse($data['starts_at']),
+                Carbon::parse($data['ends_at']),
+                $data['position_id']
+            );
+        }
 
         return Booking::create($data);
     }
@@ -27,7 +29,7 @@ class BookingService
         $endsAt = Carbon::parse($data['ends_at'] ?? $booking->ends_at);
         $positionId = $data['position_id'] ?? $booking->position_id;
 
-        if ($startsAt->ne($booking->starts_at) || $endsAt->ne($booking->ends_at) || $positionId !== $booking->position_id) {
+        if ($positionId !== null && ($startsAt->ne($booking->starts_at) || $endsAt->ne($booking->ends_at) || $positionId !== $booking->position_id)) {
             $this->validateOverlap($startsAt, $endsAt, $positionId, $booking->id);
         }
 
