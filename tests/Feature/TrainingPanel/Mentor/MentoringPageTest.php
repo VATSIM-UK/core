@@ -505,6 +505,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->mentor)
             ->test(AcceptedMentoringSessionsTable::class)
             ->assertDontSee('View Student Overview');
+    }
 
     public function availability_gantt_shows_now_line_when_viewing_today(): void
     {
