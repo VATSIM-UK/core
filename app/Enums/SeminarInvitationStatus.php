@@ -46,8 +46,6 @@ enum SeminarInvitationStatus: string
             self::Attending,
             self::NotInterested,
             self::CannotAttend,
-            self::RemovedNoResponse,
-            self::RemovedTwoCannotAttend,
         ], true);
     }
 }
