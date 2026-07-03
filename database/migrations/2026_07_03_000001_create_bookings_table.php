@@ -14,7 +14,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger('position_id')->nullable();
             $table->foreign('position_id')->references('id')->on('positions')->nullOnDelete();
-            $table->foreignId('member_id')->nullable()->constrained('mship_account');
+            $table->unsignedInteger('member_id')->nullable();
+            $table->foreign('member_id')->references('id')->on('mship_account');
             $table->string('type', 20);
             $table->dateTime('starts_at');
             $table->dateTime('ends_at');
