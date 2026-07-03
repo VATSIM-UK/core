@@ -105,6 +105,10 @@ class Kernel extends ConsoleKernel
             ->dailyAt('11:00')
             ->graceTimeInMinutes(15);
 
+        $schedule->command('training:check-for-expired-seminar-invitations')
+            ->dailyAt('11:30')
+            ->graceTimeInMinutes(15);
+
         // === By Quarter === //
         $schedule->command('roster:update', [
             Carbon::now()->subMonths(3),
