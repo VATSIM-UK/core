@@ -6,7 +6,7 @@
 		<div class="panel-body">
 			<div class="alert alert-danger">
 				<strong>This invitation is no longer valid.</strong>
-				@if ($invitation->status instanceof \App\Enums\SeminarInvitationStatus && $invitation->status->isResponded())
+				@if ($invitation->status->isResponded())
 					You have already responded to this invitation.
 				@elseif($invitation->seminar->isClosed())
 					The seminar has already started or been closed.
