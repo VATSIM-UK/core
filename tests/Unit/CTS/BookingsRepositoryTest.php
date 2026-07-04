@@ -61,16 +61,16 @@ class BookingsRepositoryTest extends TestCase
             'position_id' => $position->id,
             'member_id' => $member->id,
             'type' => Booking::TYPE_STANDARD,
-            'starts_at' => $this->knownDate->copy()->setHour(17),
-            'ends_at' => $this->knownDate->copy()->setHour(19),
+            'starts_at' => Carbon::parse($this->today.' 17:00:00'),
+            'ends_at' => Carbon::parse($this->today.' 19:00:00'),
         ]);
 
         $bookingTodayTwo = Booking::factory()->create([
             'position_id' => $position->id,
             'member_id' => $member->id,
             'type' => Booking::TYPE_MENTORING,
-            'starts_at' => $this->knownDate->copy()->setHour(18),
-            'ends_at' => $this->knownDate->copy()->setHour(20),
+            'starts_at' => Carbon::parse($this->today.' 18:00:00'),
+            'ends_at' => Carbon::parse($this->today.' 20:00:00'),
         ]);
 
         $bookings = $this->subjectUnderTest->getTodaysBookings();
