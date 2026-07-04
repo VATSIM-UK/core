@@ -130,12 +130,12 @@ class BookingsRepositoryTest extends TestCase
         $this->assertEquals([
             'id' => (string) $member->id,
             'name' => $member->name,
-        ], $bookings->get(0)['member']);
+        ], $bookings->get(0)->member);
 
         $this->assertEquals([
             'id' => '',
             'name' => 'Hidden',
-        ], $bookings->get(1)['member']);
+        ], $bookings->get(1)->member);
     }
 
     #[Test]
@@ -216,8 +216,8 @@ class BookingsRepositoryTest extends TestCase
         $todaysAtcBookings = $this->subjectUnderTest->getTodaysLiveAtcBookings();
 
         $this->assertEquals($todaysBookings->toArray(), $todaysAtcBookings->toArray());
-        $this->assertEquals($morning->id, (int) $todaysBookings[0]['id']);
-        $this->assertEquals($afternoon->id, (int) $todaysBookings[1]['id']);
-        $this->assertEquals($night->id, (int) $todaysBookings[2]['id']);
+        $this->assertEquals($morning->id, (int) $todaysBookings->get(0)->id);
+        $this->assertEquals($afternoon->id, (int) $todaysBookings->get(1)->id);
+        $this->assertEquals($night->id, (int) $todaysBookings->get(2)->id);
     }
 }

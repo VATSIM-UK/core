@@ -90,12 +90,12 @@ class BookingServiceTest extends TestCase
         $position = Position::factory()->create();
         $booking = Booking::factory()->create([
             'position_id' => $position->id,
-            'notes' => 'Original',
+            'type' => Booking::TYPE_STANDARD,
         ]);
 
-        $updated = $this->service->update($booking, ['notes' => 'Updated']);
+        $updated = $this->service->update($booking, ['type' => Booking::TYPE_EVENT]);
 
-        $this->assertEquals('Updated', $updated->notes);
+        $this->assertEquals(Booking::TYPE_EVENT, $updated->type);
     }
 
     #[Test]
