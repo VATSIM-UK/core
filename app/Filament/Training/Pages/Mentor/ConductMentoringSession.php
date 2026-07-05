@@ -177,23 +177,17 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
                             ->label('Date & Time')
                             ->getStateUsing(fn () => "{$this->session->taken_date} | {$this->session->taken_from} - {$this->session->taken_to}"),
                         Callout::make('adjacent_atc')
-                            ->visible(fn () => $this->adjacentAtcPositions->isNotEmpty())
+                            ->visible(fn () => NetworkdataAtc::adjacentPositionsForMentoringSession($this->session)->isNotEmpty())
                             ->icon('heroicon-m-signal')
                             ->color('primary')
                             ->columnSpanFull()
                             ->heading('Adjacent ATC Online')
-                            ->description(
-                                $this->adjacentAtcPositions
-                                    ->map(fn (NetworkdataAtc $atc) => $atc->callsign)
-                                    ->implode(', ')
+                            ->description(fn () => NetworkdataAtc::adjacentPositionsForMentoringSession($this->session)
+                                ->map(fn (NetworkdataAtc $atc) => $atc->callsign)
+                                ->implode(', ')
                             ),
                     ])->columns(2),
             ]);
-    }
-
-    public function getAdjacentAtcPositionsProperty(): \Illuminate\Support\Collection
-    {
-        return NetworkdataAtc::adjacentPositionsForMentoringSession($this->session);
     }
 
     public function form(Schema $schema): Schema
