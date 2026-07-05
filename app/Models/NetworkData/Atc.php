@@ -344,7 +344,8 @@ class Atc extends Model
      * Find adjacent ATC positions on the same aerodrome that were active during a mentoring session.
      *
      * This detects controllers on other positions at the same aerodrome during the session.
-     * We exclude the position being mentored on.
+     * We exclude the position being mentored on. Only controllers with at least 15 minutes
+     * of overlap with the session are included.
      *
      * If the student was not on the VATSIM network during the session (e.g. a sweatbox session),
      * an empty collection is returned since there can be no adjacent positions to detect.
@@ -381,7 +382,19 @@ class Atc extends Model
                     ->orWhere('disconnected_at', '>', $sessionStart);
             })
             ->get()
+            ->filter(fn (self $atc) => static::sessionOverlapMinutes($atc, $sessionStart, $sessionEnd) >= 15)
             ->unique('callsign')
             ->values();
+    }
+
+    /**
+     * Calculate the overlap in minutes between a network ATC session and a mentoring session.
+     */
+    private static function sessionOverlapMinutes(self $atc, \Carbon\Carbon $sessionStart, \Carbon\Carbon $sessionEnd): int
+    {
+        $overlapStart = $atc->connected_at->max($sessionStart);
+        $overlapEnd = ($atc->disconnected_at ?? now())->min($sessionEnd);
+
+        return max(0, (int) $overlapStart->diffInMinutes($overlapEnd));
     }
 }
