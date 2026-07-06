@@ -92,10 +92,18 @@ class TrainingPlace extends Model
             return false;
         }
 
+        $member = $this->account->member;
+
+        if (! $member) {
+            return false;
+        }
+
         return CancelReason::query()
+            ->select('cancel_reason.*')
             ->join('exam_book', 'cancel_reason.sesh_id', '=', 'exam_book.id')
             ->where('cancel_reason.sesh_type', 'EX')
             ->where('exam_book.position_1', $position)
+            ->where('exam_book.student_id', $member->id)
             ->exists();
     }
 
