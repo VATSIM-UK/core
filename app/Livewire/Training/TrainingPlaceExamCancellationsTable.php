@@ -3,6 +3,7 @@
 namespace App\Livewire\Training;
 
 use App\Models\Cts\CancelReason;
+use App\Models\Cts\Member;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -51,12 +52,14 @@ class TrainingPlaceExamCancellationsTable extends Component implements HasForms,
     private function cancellationsQuery()
     {
         $position = $this->trainingPlace->trainingPosition?->exam_callsign ?? $this->trainingPlace->trainingPosition?->position?->callsign;
+        $student = Member::where('cid', $this->trainingPlace->account_id)->first();
 
         return CancelReason::query()
             ->select('cancel_reason.*')
             ->join('exam_book', 'cancel_reason.sesh_id', '=', 'exam_book.id')
             ->where('cancel_reason.sesh_type', 'EX')
             ->where('exam_book.position_1', $position)
+            ->where('exam_book.student_id', $student->id)
             ->orderBy('cancel_reason.date', 'desc');
     }
 }
