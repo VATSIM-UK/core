@@ -135,7 +135,9 @@
 							to request access to the Moodle Course
 						</p>
 					@else
-						<button class="btn btn-info center-block" disabled>Request Moodle Course</button>
+						<p>
+							You must meet all conditions before you can request access to the moodle course.
+						</p>
 					@endif
 				</div>
 			</div>
