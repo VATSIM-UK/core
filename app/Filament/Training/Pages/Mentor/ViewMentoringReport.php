@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Training\Pages\Mentor;
 
 use App\Filament\Training\Concerns\InteractsWithCtsRichEditorNotes;
+use App\Filament\Training\Pages\MyTraining\MyMentoringHistory;
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Filament\Training\Support\MentoringReportLayout;
 use App\Filament\Training\Support\MentoringReportScores;
@@ -62,8 +63,15 @@ class ViewMentoringReport extends Page implements HasInfolists
     {
         $category = session('mentoring.category', '');
 
+        if (auth()->user()?->can('viewAny', Session::class)) {
+            $url = MentoringHistory::getUrl(array_filter(['category' => $category]));
+        } else {
+            $url = MyMentoringHistory::getUrl();
+        }
+
         return [
-            MentoringHistory::getUrl(array_filter(['category' => $category])) => 'Mentoring History', '' => 'Session Report',
+            $url => 'Mentoring History',
+            '' => 'Session Report',
         ];
     }
 

@@ -15,19 +15,6 @@ class MentoringPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Mentoring panel pages are gated behind the training beta flag.
-     * Temporary until mentoring pages are released publically.
-     */
-    public function before(Account $user, string $ability): ?bool
-    {
-        if (app()->isProduction() && ! $user->can('training.beta')) {
-            return false;
-        }
-
-        return null;
-    }
-
     // View permissions
 
     /**
@@ -85,7 +72,8 @@ class MentoringPolicy
         }
 
         // Students should always be able to view their own reports
-        if ($session->student_id === $user->id) {
+        $member = Member::where('cid', $user->id)->first();
+        if ($member && $session->student_id === $member->id) {
             return true;
         }
 
@@ -156,7 +144,13 @@ class MentoringPolicy
             return true;
         }
 
-        return $this->isAssignedMentor($user, $session);
+        if ($this->isAssignedMentor($user, $session)) {
+            return true;
+        }
+
+        $member = Member::where('cid', $user->id)->first();
+
+        return $member && $session->student_id === $member->id;
     }
 
     /**

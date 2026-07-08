@@ -49,8 +49,8 @@ class WaitingListCapacityFeatureTest extends TestCase
         ]);
 
         // Fill the waiting list to capacity
-        $account1 = Account::factory()->create();
-        $account2 = Account::factory()->create();
+        $account1 = Account::factory()->createQuietly();
+        $account2 = Account::factory()->createQuietly();
         $waitingList->addToWaitingList($account1, $this->privacc);
         $waitingList->addToWaitingList($account2, $this->privacc);
 
@@ -79,7 +79,7 @@ class WaitingListCapacityFeatureTest extends TestCase
 
         // Add many users to test unlimited capacity
         for ($i = 0; $i < 100; $i++) {
-            $user = Account::factory()->create();
+            $user = Account::factory()->createQuietly();
             $waitingList->addToWaitingList($user, $this->privacc);
         }
 
@@ -118,8 +118,8 @@ class WaitingListCapacityFeatureTest extends TestCase
         ]);
 
         // Fill the second list to capacity
-        $user1 = Account::factory()->create();
-        $user2 = Account::factory()->create();
+        $user1 = Account::factory()->createQuietly();
+        $user2 = Account::factory()->createQuietly();
         $fullList->addToWaitingList($user1, $this->privacc);
         $fullList->addToWaitingList($user2, $this->privacc);
 
@@ -155,11 +155,11 @@ class WaitingListCapacityFeatureTest extends TestCase
         ]);
 
         // Add one user initially
-        $account1 = Account::factory()->create();
+        $account1 = Account::factory()->createQuietly();
         $waitingList->addToWaitingList($account1, $this->privacc);
 
         // Simulate another user filling the last spot while the first user is on the page
-        $account2 = Account::factory()->create();
+        $account2 = Account::factory()->createQuietly();
         $waitingList->addToWaitingList($account2, $this->privacc);
 
         // Now the original user tries to enroll (should be denied by policy - 403)

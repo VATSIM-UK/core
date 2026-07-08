@@ -40,7 +40,7 @@ class ValidationTest extends TestCase
     public function it_returns_a_json_response()
     {
         $qualification = Qualification::code('S2')->first();
-        $account = Account::factory()->create();
+        $account = Account::factory()->createQuietly();
         $account->addQualification($qualification);
         $account->addState(State::findByCode('DIVISION'));
         $position = Position::factory()->create([

@@ -29,27 +29,19 @@ The rubric approximately follows the first five objectives from the cognitive do
 - Analyse
 - Evaluate
 
-Not every student will precisely fit the definition for a single grade. The mentor's judgement and experience will
-be needed to decide which grade to award for a given competency.
+Not every student will precisely fit the definition for a single grade. The mentor's judgement and experience will be needed to decide which grade to award for a given competency.
 
-Before submission for practical examination, a student must have passed the S1 theory exam, have reached 'Good' in
-all competencies, and should have reached 'Test Standard' in most competencies.
+Before submission for practical examination, a student must have passed the S1 theory exam, have reached 'Good' in all competencies, and should have reached 'Test Standard' in most competencies.
 
-Alongside the guidance in other sections of this syllabus, mentors and instructors will need to use their judgement
-and experience to decide when it is appropriate to submit a student for practical examination.
+Alongside the guidance in other sections of this syllabus, mentors and instructors will need to use their judgement and experience to decide when it is appropriate to submit a student for practical examination.
 
 | Grade | Description |
 | :--- | :--- |
 | Not covered | The student has not covered this competency. |
-| Covered | Key facts and concepts can be recalled, with some understanding shown. If the student has demonstrated
-pracical application, it will be with significant mentor input. |
-| Developing | Knowledge is satisfactorily applied to practical situations with some mentor input. A strong
-understanding is shown, either explicity, or implicitly. |
-| Good | Routine situations are handled with little mentor input; more uncommon situations are handled with some
-mentor input. Understanding of multiple competencies is integrated either explicity or implicitly. |
-| Test standard | Most situations are handled with minimal mentor input. Appropriate consideration is given to the
-long term effects of actions. Decisions can be justified with an explaination as to why they chose to take it rather
-than an alternative. |
+| Covered | Key facts and concepts can be recalled, with some understanding shown. If the student has demonstrated practical application, it will be with significant mentor input. |
+| Developing | Knowledge is satisfactorily applied to practical situations with some mentor input. A strong understanding is shown, either explicitly, or implicitly. |
+| Good | Routine situations are handled with little mentor input; more uncommon situations are handled with some mentor input. Understanding of multiple competencies is integrated either explicitly or implicitly. |
+| Test standard | Most situations are handled with minimal mentor input. Appropriate consideration is given to the long term effects of actions. Decisions can be justified with an explanation as to why they chose to take it rather than an alternative. |
 
 ---
 

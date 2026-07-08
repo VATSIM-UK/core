@@ -205,24 +205,24 @@ class WaitingListTest extends TestCase
         $this->waitingList->save();
 
         // check defaults when column not set.
-        $this->assertEquals((object) ['check_atc_hours' => true, 'check_cts_theory_exam' => true], $this->waitingList->feature_toggles_formatted);
+        $this->assertEquals((object) ['check_atc_hours' => true, 'check_cts_theory_exam' => true, 'is_vt' => false], $this->waitingList->feature_toggles_formatted);
 
         $this->waitingList->feature_toggles = ['check_atc_hours' => true];
         $this->waitingList->save();
 
         // check_cts_theory_exam is not set, so it should default to true
-        $this->assertEquals((object) ['check_atc_hours' => true, 'check_cts_theory_exam' => true], $this->waitingList->feature_toggles_formatted);
+        $this->assertEquals((object) ['check_atc_hours' => true, 'check_cts_theory_exam' => true, 'is_vt' => false], $this->waitingList->feature_toggles_formatted);
 
         $this->waitingList->feature_toggles = ['check_cts_theory_exam' => true];
 
         // check_atc_hours is not set, so it should default to true
-        $this->assertEquals((object) ['check_atc_hours' => true, 'check_cts_theory_exam' => true], $this->waitingList->feature_toggles_formatted);
+        $this->assertEquals((object) ['check_atc_hours' => true, 'check_cts_theory_exam' => true, 'is_vt' => false], $this->waitingList->feature_toggles_formatted);
 
         $this->waitingList->feature_toggles = ['check_atc_hours' => false, 'check_cts_theory_exam' => false];
         $this->waitingList->save();
 
         // both values are false set so return value
-        $this->assertEquals((object) ['check_atc_hours' => false, 'check_cts_theory_exam' => false], $this->waitingList->feature_toggles_formatted);
+        $this->assertEquals((object) ['check_atc_hours' => false, 'check_cts_theory_exam' => false, 'is_vt' => false], $this->waitingList->feature_toggles_formatted);
     }
 
     #[Test]

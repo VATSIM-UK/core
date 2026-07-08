@@ -1,7 +1,7 @@
 @extends('emails.messages.post')
 
 @section('body')
-    <p>Thank you for accepting a mentoring session for VATISM UK. Details of your accepted session are shown below:</p>
+    <p>Thank you for accepting a mentoring session for VATSIM UK. Details of your accepted session are shown below:</p>
 
     <ul>
         <li>
@@ -17,9 +17,9 @@
 
     <p>Please note that the times displayed are in Zulu/GMT.</p>
 
-    <p>You student has been sent an e-mail reminding them to prepare for the session, including refering to relevant reference material and previous mentoring session reports. If they have failed to do so, please inform the TGI and consider whether the session should be delayed.</p>
+    <p>Your student has been sent an e-mail reminding them to prepare for the session, including referring to relevant reference material and previous mentoring session reports. If they have failed to do so, please inform the TGI and consider whether the session should be delayed.</p>
 
-    <p>To stop receiving these alerts, you can amend your email settings in the STUDENT menu.</p>
+    <p>To stop receiving these alerts, you can amend your email settings in the <a href="{{ route('filament.training.pages.email-settings') }}">Training Panel</a>.</p>
 @stop
 
 @section('signature')

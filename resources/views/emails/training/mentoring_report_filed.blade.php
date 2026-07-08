@@ -6,6 +6,8 @@
         Position: {{ $session->position }}<br>
         Session date: {{ $session->taken_date }} {{ $session->taken_from }} - {{ $session->taken_to }}
     </p>
+
+    <p>You can view your mentoring report <a href="{{ $reportUrl }}">here</a>.</p>
 @stop
 
 @section('signature')

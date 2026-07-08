@@ -45,7 +45,7 @@
     <p>
         Should you choose to book this position on the CTS, you should only book for the period of this validation and may
         not assume the validation will be renewed.
-        As with all ATC bookings, the length of a booking should be of appropriate length and bookings of execessive length
+        As with all ATC bookings, the length of a booking should be of appropriate length and bookings of excessive length
         are discouraged.
         In addition, gaps should be present between bookings to avoid becoming overwhelmed.
     </p>

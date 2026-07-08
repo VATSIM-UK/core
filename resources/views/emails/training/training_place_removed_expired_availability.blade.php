@@ -3,7 +3,7 @@
 @section('body')
     <p>In accordance with the <a href="https://www.vatsim.uk/policy/atc-training-policy">ATC Training Policy</a>, as we’ve
         not heard from you on the above and you still do not have either a Session Request or Availability in the CTS, your
-        training place on has been removed and will shortly be reallocated.</p>
+        training place has been removed and will shortly be reallocated.</p>
 
     <p>As no session request and availability were submitted within the five-day period, your training place has been
         removed as of {{ $removal_date }}. This allows the next person on the waiting list to receive training.</p>

@@ -80,9 +80,14 @@ class GenerateATCTrainingQuarterlyStats extends BasePage implements HasForms
         $endDate = $startDate->copy()->addMonths(3);
 
         $this->statistics = collect([
-            'Completed Mentoring Sessions' => ATCTrainingStats::completedMentoringSessions($startDate, $endDate),
-            'Exam Passes' => ATCTrainingStats::examPasses($startDate, $endDate),
+            'Mentoring Sessions' => ATCTrainingStats::completedMentoringSessionsByTG($startDate, $endDate),
+            'Exams Conducted' => ATCTrainingStats::examsConductedByTG($startDate, $endDate),
+            'Rating Upgrades Per TG' => ATCTrainingStats::ratingUpgradesByTG($startDate, $endDate),
             'Issued Position Group Endorsements' => ATCTrainingStats::issuedPositionGroupEndorsements($startDate, $endDate),
+            'Heathrow Endorsements Issued' => ATCTrainingStats::heathrowEndorsementsIssued($startDate, $endDate),
+            'ATC Waiting List Counts' => ATCTrainingStats::atcWaitingListCounts(),
+            'ATC Waiting List Removals (Inactivity)' => ATCTrainingStats::atcWaitingListRemovals($startDate, $endDate),
+            'Mentors Per TG' => ATCTrainingStats::mentorsByTG($startDate, $endDate),
             'Roster' => [
                 ['name' => 'Roster Update', 'value' => ATCTrainingStats::rosterUpdateLink($startDate, $endDate)],
             ],

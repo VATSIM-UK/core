@@ -38,7 +38,6 @@ use Filament\Support\Enums\TextSize;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Validation\ValidationException;
-use Livewire\Attributes\Session as LivewireSession;
 
 class ConductMentoringSession extends Page implements HasForms, HasInfolists
 {
@@ -68,8 +67,7 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
     /** @var array<int, FieldScore> */
     public array $bestScores = [];
 
-    #[LivewireSession('mentoringAdditionalComments.{sessionId}')]
-    public ?string $additionalComments = '';
+    public ?array $additionalCommentsData = ['body' => ''];
 
     protected function getForms(): array
     {
@@ -118,11 +116,11 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
         $this->form->fill(['criteria' => $criteriaData]);
 
         $storedComments = $repository->getExistingAdditionalComments($this->session);
-        if ($storedComments !== null && $this->additionalComments === '') {
-            $this->additionalComments = $storedComments;
+        if ($storedComments !== null) {
+            $this->additionalCommentsForm->fill([
+                'body' => $this->ctsRichEditorHtmlForHydration($storedComments),
+            ]);
         }
-
-        $this->additionalCommentsForm->fill();
     }
 
     protected function getHeaderActions(): array
@@ -179,23 +177,17 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
                             ->label('Date & Time')
                             ->getStateUsing(fn () => "{$this->session->taken_date} | {$this->session->taken_from} - {$this->session->taken_to}"),
                         Callout::make('adjacent_atc')
-                            ->visible(fn () => $this->adjacentAtcPositions->isNotEmpty())
+                            ->visible(fn () => NetworkdataAtc::adjacentPositionsForMentoringSession($this->session)->isNotEmpty())
                             ->icon('heroicon-m-signal')
                             ->color('primary')
                             ->columnSpanFull()
                             ->heading('Adjacent ATC Online')
-                            ->description(
-                                $this->adjacentAtcPositions
-                                    ->map(fn (NetworkdataAtc $atc) => $atc->callsign)
-                                    ->implode(', ')
+                            ->description(fn () => NetworkdataAtc::adjacentPositionsForMentoringSession($this->session)
+                                ->map(fn (NetworkdataAtc $atc) => $atc->callsign)
+                                ->implode(', ')
                             ),
                     ])->columns(2),
             ]);
-    }
-
-    public function getAdjacentAtcPositionsProperty(): \Illuminate\Support\Collection
-    {
-        return NetworkdataAtc::adjacentPositionsForMentoringSession($this->session);
     }
 
     public function form(Schema $schema): Schema
@@ -225,6 +217,7 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
     public function additionalCommentsForm(Schema $schema): Schema
     {
         return $schema
+            ->statePath('additionalCommentsData')
             ->components([
                 Section::make('Additional Comments')
                     ->columnSpanFull()
@@ -233,14 +226,8 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
                             $this->mentoringReportNotesEditor(TrainingRichEditor::make('body'))
                                 ->columnSpanFull()
                                 ->extraInputAttributes(['style' => 'min-height: 200px;']),
-                            function ($state): void {
-                                $this->additionalComments = $state;
-                                $this->markDirty();
-                            },
-                        )
-                            ->afterStateHydrated(fn ($component) => $component->state(
-                                $this->ctsRichEditorHtmlForHydration($this->additionalComments)
-                            )),
+                            fn ($state): mixed => $this->markDirty(),
+                        ),
                         Actions::make([
                             Action::make('submit_report')
                                 ->label('Submit Report')
@@ -314,7 +301,7 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
             app(MentoringReportService::class)->saveDraft(
                 $this->session,
                 $criteriaData,
-                $this->ctsRichContentNotesForCts($this->additionalComments),
+                $this->ctsRichContentNotesForCts($this->additionalCommentsData['body'] ?? ''),
             );
 
             $this->hasUnsavedChanges = false;

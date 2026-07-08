@@ -29,6 +29,35 @@ class SessionRepository
             ->where('taken', 1);
     }
 
+    public function getPastAcceptedSessionsForStudentQuery(int $studentId): Builder
+    {
+        return Session::query()
+            ->with(['student', 'mentor'])
+            ->where('student_id', $studentId)
+            ->where('taken', 1)
+            ->where(function (Builder $query) {
+                $query->whereDate('taken_date', '<', now()->toDateString())
+                    ->orWhere(function (Builder $query) {
+                        $query->whereDate('taken_date', now()->toDateString())
+                            ->where('taken_to', '<', now()->toTimeString());
+                    });
+            });
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function getPositionsForStudent(int $studentId): array
+    {
+        return Session::query()
+            ->where('student_id', $studentId)
+            ->where('taken', 1)
+            ->distinct()
+            ->orderBy('position')
+            ->pluck('position')
+            ->all();
+    }
+
     public function getUpcomingAcceptedSessionsForPositionsQuery(array $positionCallsigns): Builder
     {
         return $this->getAllAcceptedSessionsForPositionsQuery($positionCallsigns)
@@ -36,7 +65,13 @@ class SessionRepository
             ->whereNull('filed')
             ->whereNull('cancelled_datetime')
             ->where('noShow', 0)
-            ->where('taken_date', '>=', now());
+            ->where(function (Builder $query) {
+                $query->whereDate('taken_date', '>', now()->toDateString())
+                    ->orWhere(function (Builder $query) {
+                        $query->whereDate('taken_date', now()->toDateString())
+                            ->where('taken_from', '>', now()->toTimeString());
+                    });
+            });
     }
 
     public function getPendingReportSessionsForPositionsQuery(array $positionCallsigns): Builder
@@ -46,7 +81,13 @@ class SessionRepository
             ->whereNull('filed')
             ->whereNull('cancelled_datetime')
             ->where('noShow', 0)
-            ->where('taken_date', '<', now());
+            ->where(function (Builder $query) {
+                $query->whereDate('taken_date', '<', now()->toDateString())
+                    ->orWhere(function (Builder $query) {
+                        $query->whereDate('taken_date', now()->toDateString())
+                            ->where('taken_to', '<', now()->toTimeString());
+                    });
+            });
     }
 
     public function getTotalSessionsForPosition(string $positionCallsign)
@@ -84,5 +125,12 @@ class SessionRepository
             ->whereIn('position', $positionCallsigns)
             ->whereNotNull('cancelled_datetime')
             ->count();
+    }
+
+    public function getSessionsForMentor(int $mentorId): Builder
+    {
+        return Session::query()
+            ->with(['student', 'mentor'])
+            ->where('mentor_id', $mentorId);
     }
 }

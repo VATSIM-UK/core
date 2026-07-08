@@ -4,12 +4,15 @@ namespace App\Services\Training;
 
 use App\Models\Cts\Availability;
 use App\Models\Cts\CancelReason;
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedStudentNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionCancelledByStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledMentorNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionCancelledStudentConfirmationNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionReallocatedNewMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionReallocatedOldMentorNotification;
@@ -120,6 +123,7 @@ class MentoringSessionsService
 
             $session->update([
                 'cancelled_datetime' => now(),
+                'session_done' => 1,
             ]);
 
             CancelReason::create([
@@ -203,8 +207,15 @@ class MentoringSessionsService
                 break;
 
             case 'cancelled':
-                $studentAccount->notify(new MentoringSessionCancelledStudentNotification($session, $data['cancellerAccount'], $data['reason']));
-                $mentorAccount->notify(new MentoringSessionCancelledMentorNotification($session, $data['reason']));
+                $cancellerAccount = $data['cancellerAccount'];
+
+                if ($cancellerAccount->id === $studentAccount->id) {
+                    $mentorAccount->notify(new MentoringSessionCancelledByStudentNotification($session, $data['reason']));
+                    $studentAccount->notify(new MentoringSessionCancelledStudentConfirmationNotification($session));
+                } else {
+                    $studentAccount->notify(new MentoringSessionCancelledStudentNotification($session, $cancellerAccount, $data['reason']));
+                    $mentorAccount->notify(new MentoringSessionCancelledMentorNotification($session, $data['reason']));
+                }
                 break;
 
             case 'reallocated':
@@ -228,6 +239,33 @@ class MentoringSessionsService
             default:
                 throw new Exception("Unknown notification action: {$action}");
         }
+    }
+
+    public function checkForOverlappingBookings(string $callsign, string $date, string $takenFrom, string $takenTo, ?int $ignoreSessionId = null): Session|ExamBooking|null
+    {
+        $overlappingSession = Session::query()
+            ->where('position', $callsign)
+            ->whereDate('taken_date', $date)
+            ->where('taken_from', '<', $takenTo)
+            ->where('taken_to', '>', $takenFrom)
+            ->whereNull('cancelled_datetime')
+            ->when($ignoreSessionId, function ($query, $ignoreSessionId) {
+                $query->where('id', '!=', $ignoreSessionId);
+            })
+            ->first();
+
+        if ($overlappingSession) {
+            return $overlappingSession;
+        }
+
+        return ExamBooking::query()
+            ->where('position_1', $callsign)
+            ->whereDate('taken_date', $date)
+            ->where('taken_from', '<', $takenTo)
+            ->where('taken_to', '>', $takenFrom)
+            ->where('taken', 1)
+            ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
+            ->first();
     }
 
     private function validateSessionTimes(Availability $availability, string $takenFrom, string $takenTo): void

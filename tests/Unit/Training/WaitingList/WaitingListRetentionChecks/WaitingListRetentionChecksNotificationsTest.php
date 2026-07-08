@@ -6,6 +6,7 @@ use App\Jobs\Training\ActionWaitingListRetentionCheckRemoval;
 use App\Jobs\Training\SendWaitingListRetentionCheck;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList\WaitingListRetentionCheck;
+use App\Notifications\Training\WaitingListRetentionCheckAccountNotification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Log;
 use PHPUnit\Framework\Attributes\Test;
@@ -216,5 +217,51 @@ class WaitingListRetentionChecksNotificationsTest extends TestCase
         $this->assertNotNull($retentionCheck->token);
         $this->assertTrue($retentionCheck->expires_at->isFuture());
         $this->assertNotNull($retentionCheck->email_sent_at);
+    }
+
+    #[Test]
+    public function it_sends_vt_specific_email_view_for_vt_waiting_lists()
+    {
+        $waitingList = $this->createList(['feature_toggles' => ['is_vt' => true]]);
+        $account = Account::factory()->create([
+            'id' => 1,
+        ]);
+
+        $waitingListAccount = $waitingList->addToWaitingList($account, $this->privacc);
+
+        $job = new SendWaitingListRetentionCheck($waitingListAccount);
+        $job->handle();
+
+        $retentionCheck = WaitingListRetentionCheck::where('waiting_list_account_id', $waitingListAccount->id)
+            ->where('status', WaitingListRetentionCheck::STATUS_PENDING)
+            ->first();
+
+        $notification = new WaitingListRetentionCheckAccountNotification($retentionCheck);
+        $mailMessage = $notification->toMail($account);
+
+        $this->assertEquals('emails.training.waiting_list_retention_check_vt', $mailMessage->view);
+    }
+
+    #[Test]
+    public function it_sends_standard_email_view_for_non_vt_waiting_lists()
+    {
+        $waitingList = $this->createList(['feature_toggles' => ['is_vt' => false]]);
+        $account = Account::factory()->create([
+            'id' => 1,
+        ]);
+
+        $waitingListAccount = $waitingList->addToWaitingList($account, $this->privacc);
+
+        $job = new SendWaitingListRetentionCheck($waitingListAccount);
+        $job->handle();
+
+        $retentionCheck = WaitingListRetentionCheck::where('waiting_list_account_id', $waitingListAccount->id)
+            ->where('status', WaitingListRetentionCheck::STATUS_PENDING)
+            ->first();
+
+        $notification = new WaitingListRetentionCheckAccountNotification($retentionCheck);
+        $mailMessage = $notification->toMail($account);
+
+        $this->assertEquals('emails.training.waiting_list_retention_check', $mailMessage->view);
     }
 }

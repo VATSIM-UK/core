@@ -5,6 +5,7 @@ namespace App\Libraries;
 use App\Exceptions\Discord\DiscordUserInviteException;
 use App\Exceptions\Discord\DiscordUserNotFoundException;
 use App\Exceptions\Discord\GenericDiscordException;
+use App\Models\Discord\DiscordTag;
 use App\Models\Mship\Account;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
@@ -263,6 +264,275 @@ class Discord
         }
 
         return $response->json();
+    }
+
+    /*
+     * Temporarily mutes the user and purges their recent messages
+     */
+    public function softBan(Account $account, int $muteDurationDays, string $reason = 'Soft ban'): void
+    {
+        // time out the user
+        $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/members/{$account->discord_id}";
+        $context = [
+            'action' => 'softBan_timeout',
+            'account_id' => $account->id,
+            'discord_id' => $account->discord_id,
+            'mute_duration_days' => $muteDurationDays,
+            'reason' => $reason,
+        ];
+
+        $expiresAt = now()->addDays($muteDurationDays)->format('Y-m-d\TH:i:s.uP');
+
+        $response = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->patch($endpoint, ['communication_disabled_until' => $expiresAt]),
+            $context
+        );
+
+        if ($response->failed()) {
+            Log::error('Failed to timeout Discord user', $context + ['status' => $response->status(), 'body' => $response->json()]);
+            throw new GenericDiscordException($response);
+        }
+
+        // delete recent cached messages
+        $cacheKey = "discord:user:{$account->discord_id}:messages";
+        $cachedMessages = Cache::get($cacheKey, []);
+
+        $messagesByChannel = collect($cachedMessages)->groupBy('channel_id');
+        foreach ($messagesByChannel as $channelId => $messages) {
+            $messageIds = collect($messages)->pluck('message_id')->unique()->values()->toArray();
+            $this->bulkDeleteMessages($channelId, $messageIds);
+        }
+
+        Cache::forget($cacheKey);
+    }
+
+    /**
+     * Fetch recent messages from a channel
+     *
+     * @return array List of message arrays, newest first
+     */
+    public function getChannelMessages(string $channelId, int $limit = 100): array
+    {
+        $endpoint = "{$this->base_url}/channels/{$channelId}/messages";
+        $context = [
+            'action' => 'getChannelMessages',
+            'channel_id' => $channelId,
+        ];
+
+        $response = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->get($endpoint, ['limit' => $limit]),
+            $context
+        );
+
+        if ($response->failed()) {
+            Log::warning('Failed to get channel messages', $context + ['status' => $response->status()]);
+
+            return [];
+        }
+
+        return $response->json() ?? [];
+    }
+
+    public function deleteMessage(string $channelId, string $messageId): bool
+    {
+        $endpoint = "{$this->base_url}/channels/{$channelId}/messages/{$messageId}";
+        $context = [
+            'action' => 'deleteMessage',
+            'channel_id' => $channelId,
+            'message_id' => $messageId,
+        ];
+
+        $response = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->delete($endpoint),
+            $context
+        );
+
+        if ($response->status() === 404) {
+            return true;
+        }
+
+        return $this->result($response, $context);
+    }
+
+    public function bulkDeleteMessages(string $channelId, array $messageIds): bool
+    {
+        $count = count($messageIds);
+
+        if ($count === 1) {
+            return $this->deleteMessage($channelId, $messageIds[0]);
+        }
+
+        if ($count > 100) {
+            foreach (array_chunk($messageIds, 100) as $chunk) {
+                $this->bulkDeleteMessages($channelId, $chunk);
+            }
+
+            return true;
+        }
+
+        $endpoint = "{$this->base_url}/channels/{$channelId}/messages/bulk-delete";
+        $context = [
+            'action' => 'bulkDeleteMessages',
+            'channel_id' => $channelId,
+            'message_ids' => $messageIds,
+        ];
+
+        $response = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->post($endpoint, ['messages' => $messageIds]),
+            $context
+        );
+
+        if ($response->failed()) {
+            Log::error('Failed to bulk delete Discord messages', $context + ['status' => $response->status(), 'body' => $response->json()]);
+            throw new GenericDiscordException($response);
+        }
+
+        return true;
+    }
+
+    public function editMessage(string $channelId, string $messageId, array $newContent): bool
+    {
+        $endpoint = "{$this->base_url}/channels/{$channelId}/messages/{$messageId}";
+        $context = [
+            'action' => 'editMessage',
+            'channel_id' => $channelId,
+            'message_id' => $messageId,
+            'new_content' => $newContent,
+        ];
+
+        $response = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->patch($endpoint, $newContent),
+            $context
+        );
+
+        return $this->result($response, $context);
+    }
+
+    public function syncTagCommands(): void
+    {
+        $applicationId = config('services.discord.client_id');
+
+        if (! $applicationId) {
+            Log::error('Cannot sync tag commands: no Discord client ID configured');
+
+            return;
+        }
+
+        $tags = DiscordTag::all();
+
+        if ($tags->isEmpty()) {
+            $this->deleteGuildCommand('tag', $applicationId);
+
+            return;
+        }
+
+        $choices = $tags->map(fn (DiscordTag $tag) => [
+            'name' => $tag->key,
+            'value' => $tag->key,
+        ])->values()->toArray();
+
+        if (count($choices) > 25) {
+            Log::warning('Too many tags for slash command choices, truncating to the first 25');
+            $choices = array_slice($choices, 0, 25);
+        }
+
+        $commandPayload = [
+            'name' => 'tag',
+            'description' => 'Display a tag',
+            'options' => [
+                [
+                    'type' => 3, // STRING
+                    'name' => 'key',
+                    'description' => 'The tag to display',
+                    'required' => true,
+                    'choices' => $choices,
+                ],
+            ],
+        ];
+
+        $this->upsertGuildCommand($commandPayload, $applicationId);
+    }
+
+    /**
+     * Create or update a guild slash command.
+     */
+    private function upsertGuildCommand(array $commandPayload, string $applicationId): void
+    {
+        $listEndpoint = "{$this->base_url}/applications/{$applicationId}/guilds/{$this->guild_id}/commands";
+        $context = ['action' => 'listGuildCommands'];
+
+        $response = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->get($listEndpoint),
+            $context
+        );
+
+        if ($response->failed()) {
+            Log::error('Failed to list guild commands', $context + ['status' => $response->status()]);
+
+            return;
+        }
+
+        $existingCommands = $response->json() ?? [];
+        $existing = collect($existingCommands)->firstWhere('name', $commandPayload['name']);
+
+        if ($existing) {
+            $endpoint = "{$listEndpoint}/{$existing['id']}";
+            $context = ['action' => 'updateGuildCommand', 'command' => $commandPayload['name']];
+
+            $response = $this->rateLimitedRequest(
+                fn () => Http::withHeaders($this->headers)->patch($endpoint, $commandPayload),
+                $context
+            );
+        } else {
+            $context = ['action' => 'createGuildCommand', 'command' => $commandPayload['name']];
+
+            $response = $this->rateLimitedRequest(
+                fn () => Http::withHeaders($this->headers)->post($listEndpoint, $commandPayload),
+                $context
+            );
+        }
+
+        if ($response->failed()) {
+            Log::error('Failed to sync guild command', $context + ['status' => $response->status(), 'body' => $response->json()]);
+
+            return;
+        }
+
+        $choicesCount = count($commandPayload['options'][0]['choices'] ?? []);
+        Log::info("Synced /{$commandPayload['name']} command with {$choicesCount} choices");
+    }
+
+    /**
+     * Delete a guild slash command by name.
+     */
+    private function deleteGuildCommand(string $commandName, string $applicationId): void
+    {
+        $listEndpoint = "{$this->base_url}/applications/{$applicationId}/guilds/{$this->guild_id}/commands";
+        $context = ['action' => 'listGuildCommands'];
+
+        $response = $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->get($listEndpoint),
+            $context
+        );
+
+        if ($response->failed()) {
+            return;
+        }
+
+        $existingCommands = $response->json() ?? [];
+        $existing = collect($existingCommands)->firstWhere('name', $commandName);
+
+        if (! $existing) {
+            return;
+        }
+
+        $endpoint = "{$listEndpoint}/{$existing['id']}";
+        $context = ['action' => 'deleteGuildCommand', 'command' => $commandName];
+
+        $this->rateLimitedRequest(
+            fn () => Http::withHeaders($this->headers)->delete($endpoint),
+            $context
+        );
     }
 
     // --- Internal helpers ---

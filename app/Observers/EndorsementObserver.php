@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Events\Mship\Endorsement\PositionEndorsementAdded;
 use App\Events\Mship\Endorsement\TierEndorsementAdded;
+use App\Jobs\Mship\SyncToDiscord;
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account\Endorsement;
@@ -30,6 +31,8 @@ class EndorsementObserver
         if ($endorsement->endorsable_type == Position::class && $accountIsHomeMember && $endorsement->expires()) {
             event(new PositionEndorsementAdded($endorsement, $endorsement->account));
         }
+
+        $this->syncSoloEndorsementToDiscord($endorsement);
     }
 
     /**
@@ -37,7 +40,9 @@ class EndorsementObserver
      */
     public function updated(Endorsement $endorsement): void
     {
-        //
+        $endorsement->load('account');
+
+        $this->syncSoloEndorsementToDiscord($endorsement);
     }
 
     /**
@@ -45,7 +50,9 @@ class EndorsementObserver
      */
     public function deleted(Endorsement $endorsement): void
     {
-        //
+        $endorsement->load('account');
+
+        $this->syncSoloEndorsementToDiscord($endorsement);
     }
 
     /**
@@ -53,7 +60,9 @@ class EndorsementObserver
      */
     public function restored(Endorsement $endorsement): void
     {
-        //
+        $endorsement->load('account');
+
+        $this->syncSoloEndorsementToDiscord($endorsement);
     }
 
     /**
@@ -61,6 +70,22 @@ class EndorsementObserver
      */
     public function forceDeleted(Endorsement $endorsement): void
     {
-        //
+        $endorsement->load('account');
+
+        $this->syncSoloEndorsementToDiscord($endorsement);
+    }
+
+    /**
+     * Dispatch a Discord sync for solo endorsements
+     */
+    private function syncSoloEndorsementToDiscord(Endorsement $endorsement): void
+    {
+        if ($endorsement->endorsable_type !== Position::class) {
+            return;
+        }
+
+        if ($endorsement->account && $endorsement->account->discord_id) {
+            SyncToDiscord::dispatch($endorsement->account);
+        }
     }
 }

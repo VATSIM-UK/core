@@ -4,7 +4,7 @@
 
     <p>We write to inform you that the previous offer for a training place on {{ $position->name }}
         ({{ $position->callsign }}) has been rescinded.
-        <br>The reasons for this is: {{ $reason }}.
+        <br>The reason for this is: {{ $reason }}.
     </p>
 
     <p>Owing to the fact that the offer has been rescinded rather than you being removed from the waiting list, your

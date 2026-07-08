@@ -4,6 +4,7 @@ namespace App\Livewire\Training;
 
 use App\Filament\Training\Pages\Mentor\Concerns\RemembersTrainingGroupCategory;
 use App\Models\Cts\Availability;
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Training\Mentoring\MentoringScope;
@@ -199,10 +200,23 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         $startTimelineHour = max(0, $minHour - 1);
         $endTimelineHour = min(23, $maxHour + 1);
 
+        $nowLinePercent = null;
+
+        if (Carbon::parse($this->date)->isToday()) {
+            $now = now();
+            $nowMinutesFromMidnight = $now->hour * 60 + $now->minute;
+            $timelineStartMinutes = $startTimelineHour * 60;
+            $totalTimelineMinutes = ($endTimelineHour - $startTimelineHour + 1) * 60;
+            $relativeNowMinutes = $nowMinutesFromMidnight - $timelineStartMinutes;
+
+            $nowLinePercent = max(0, min(100, ($relativeNowMinutes / $totalTimelineMinutes) * 100));
+        }
+
         return view('livewire.training.availability-gantt', [
             'students' => $students,
             'hours' => range($startTimelineHour, $endTimelineHour),
             'displayDate' => Carbon::parse($this->date),
+            'nowLinePercent' => $nowLinePercent,
         ]);
     }
 
@@ -283,8 +297,17 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                                     return $timeOptions;
                                 }
 
+                                [$startH, $startM] = explode(':', $startTime);
+                                $startMinutes = (int) $startH * 60 + (int) $startM;
+                                $minEndMinutes = $startMinutes + 45;
+
                                 return collect($timeOptions)
-                                    ->filter(fn ($label, $key) => $key > $startTime)
+                                    ->filter(function ($label, $key) use ($minEndMinutes) {
+                                        [$h, $m] = explode(':', $key);
+                                        $keyMinutes = (int) $h * 60 + (int) $m;
+
+                                        return $keyMinutes >= $minEndMinutes;
+                                    })
                                     ->toArray();
                             })
                             ->default(array_key_last($timeOptions))
@@ -316,12 +339,53 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
                             return $sessionStart->isAfter(now()) && now()->diffInHours($sessionStart, false) < 24;
                         }),
+
+                    Callout::make('overlapping_booking')
+                        ->heading(function (Get $get) use ($availability, $pendingSession) {
+                            $overlap = $this->getOverlappingBooking($get, $availability, $pendingSession);
+
+                            if (! $overlap) {
+                                return '';
+                            }
+
+                            return $overlap instanceof Session ? 'Overlapping Session Detected' : 'Overlapping Exam Detected';
+                        })
+                        ->description(function (Get $get) use ($availability, $pendingSession) {
+                            $overlap = $this->getOverlappingBooking($get, $availability, $pendingSession);
+
+                            if (! $overlap) {
+                                return '';
+                            }
+
+                            $type = $overlap instanceof Session ? 'session' : 'exam';
+                            $from = $overlap->taken_from;
+                            $to = $overlap->taken_to;
+
+                            return "There is already a {$type} booked on this position from {$from} to {$to}.";
+                        })
+                        ->danger()
+                        ->visible(function (Get $get) use ($availability, $pendingSession) {
+                            return $this->getOverlappingBooking($get, $availability, $pendingSession) !== null;
+                        }),
                 ];
             })
             ->action(function (array $data, array $arguments, MentoringSessionsService $mentoringService) {
                 $availability = Availability::findOrFail($arguments['availability_id']);
                 $student = Member::findOrFail($availability->student_id);
                 $formattedDate = Carbon::parse($availability->date)->format('d/m/Y');
+
+                $from = Carbon::parse($data['taken_from']);
+                $to = Carbon::parse($data['taken_to']);
+
+                if ($from->diffInMinutes($to) < 45) {
+                    Notification::make()
+                        ->title('Session Too Short')
+                        ->body('The session must be at least 45 minutes long.')
+                        ->danger()
+                        ->send();
+
+                    return;
+                }
 
                 $success = $mentoringService->acceptSession($availability->id, auth()->user(), $data['taken_from'], $data['taken_to']);
 
@@ -348,6 +412,24 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
     public function getStudentsPerPageProperty(): int
     {
         return self::STUDENTS_PER_PAGE;
+    }
+
+    protected function getOverlappingBooking(Get $get, Availability $availability, ?Session $pendingSession): Session|ExamBooking|null
+    {
+        $takenFrom = $get('taken_from');
+        $takenTo = $get('taken_to');
+
+        if (! $takenFrom || ! $takenTo || ! $pendingSession) {
+            return null;
+        }
+
+        return app(MentoringSessionsService::class)->checkForOverlappingBookings(
+            $pendingSession->position,
+            $availability->date,
+            $takenFrom,
+            $takenTo,
+            $pendingSession->id
+        );
     }
 
     protected function generateTimeOptions(?string $minTime = null, ?string $maxTime = null): array

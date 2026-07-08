@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\View;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\CalendarLinks\Link;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
 class MyPendingExamsTest extends BaseTrainingPanelTestCase
@@ -74,7 +75,7 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
         Member::factory()->recycle($noAccessAccount)->create(['cid' => $noAccessAccount->id]);
 
         $this->actingAs($noAccessAccount)
-            ->get('/training/my-pending-exams')
+            ->get('/training/my-training/pending-exams')
             ->assertNotFound();
     }
 
@@ -229,5 +230,27 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
                 return $mail->viewData['reason'] === $reason;
             },
         );
+    }
+
+    #[Test]
+    public function it_builds_calendar_link_object_with_correct_properties_when_exam_is_scheduled(): void
+    {
+        $this->examBooking->update([
+            'taken' => 1,
+            'taken_date' => '2026-07-15',
+            'taken_from' => '14:00:00',
+            'taken_to' => '16:00:00',
+        ]);
+
+        $method = new \ReflectionMethod(MyPendingExams::class, 'buildCalendarLinkObject');
+        $page = new MyPendingExams;
+        $link = $method->invoke($page, $this->examBooking);
+
+        $this->assertInstanceOf(Link::class, $link);
+        $this->assertSame("Practical Exam - {$this->examBooking->exam}", $link->title);
+        $this->assertSame('2026-07-15 14:00:00', $link->from->format('Y-m-d H:i:s'));
+        $this->assertSame('2026-07-15 16:00:00', $link->to->format('Y-m-d H:i:s'));
+        $this->assertStringContainsString("Exam Type: {$this->examBooking->exam}", $link->description);
+        $this->assertStringContainsString('EGKK_TWR', $link->address);
     }
 }

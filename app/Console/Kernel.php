@@ -60,6 +60,10 @@ class Kernel extends ConsoleKernel
             ->hourlyAt(5)
             ->graceTimeInMinutes(10);
 
+        $schedule->command('teamspeak:sync-atc-groups')
+            ->hourlyAt(45)
+            ->withoutOverlapping();
+
         // === By Day === //
         $schedule->command('telescope:prune')
             ->dailyAt('03:30')

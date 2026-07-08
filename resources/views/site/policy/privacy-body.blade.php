@@ -29,7 +29,7 @@ targeted services and improve system security (including location, and number of
 
 Some parts of our systems are accessible without registration or authentication. Despite not being required to
 log in to these services with personal credentials, data regarding your visit will be logged. These include
-cookies (within your browser – see 2 .4 below), IP addresses and other data which may result in you being
+cookies (within your browser – see 2.4 below), IP addresses and other data which may result in you being
 identifiable. If you wish to utilise our services while retaining anonymity, this is possible by taking appropriate
 anonymisation measures within your browser’s settings.
 
@@ -85,7 +85,7 @@ contacting privacy@vatsim.uk, where that data did not originate from VATSIM. For
 across the entire network, requests should be submitted in accordance with VATSIM’s Privacy Policy.
 5. You have the right to request we restrict the processing of your data. In the event of a dispute, we
 may restrict your ability to connect to our services.
-6. You have the right to object to our legitimate interests (which we assert in section 2 .1 1 ). While your
+6. You have the right to object to our legitimate interests (which we assert in section 2.11 ). While your
 objection is being considered, processing of your data may be frozen, and this may restrict your ability
 to connect to our services.
 

@@ -14,8 +14,7 @@ Heathrow offers a total of three endorsements:
 - Approach (Director)
 
 ## Training Process
-<img src="/images/heathrow-flow.svg" alt="Heathrow Flow Diagram"
-    style="max-width: 100%; height: auto; min-width: 300px; width: 25%;">
+![Heathrow Flow Diagram](/images/heathrow-flow.svg)
 
 1. Complete the Moodle course for the endorsement you are requesting. All members have access to the Heathrow Moodle
 courses:

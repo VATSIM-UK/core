@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
 
@@ -32,7 +32,7 @@ jobs:
 
       - name: Node Cache
         id: node-cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             node_modules
@@ -45,7 +45,7 @@ jobs:
         run: npm ci
 
       - name: Composer Cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             vendor
@@ -77,7 +77,7 @@ jobs:
         experimental: [false]
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
 
@@ -94,7 +94,7 @@ jobs:
           node-version: "24"
 
       - name: Composer Cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             vendor
@@ -106,7 +106,7 @@ jobs:
 
       - name: Node Cache
         id: node-cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: node_modules
           key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -147,7 +147,15 @@ jobs:
         run: php artisan serve -q &
 
       - name: Execute Tests
-        run: php artisan test --parallel --processes=4 --recreate-databases
+        run: php artisan test --parallel --processes=4 --recreate-databases --log-junit=junit.xml
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          report_type: test_results
+          files: junit.xml
 
   trigger-deploy:
     name: Trigger Deploy

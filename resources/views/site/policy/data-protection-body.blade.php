@@ -80,7 +80,7 @@ authorities voluntarily, even if not legally required to do so.
 
 ### 2.4 Key Risks
 
-Key risks are detailed in Section 4 .5 of this document.
+Key risks are detailed in Section 4.5 of this document.
 
 ## Section 3 | Responsibilities
 

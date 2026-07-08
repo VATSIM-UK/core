@@ -13,7 +13,7 @@ jobs:
       cancel-in-progress: false
     steps:
       - name: Checkout Codes
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: ${{ github.event.client_payload.ref }}
@@ -72,7 +72,7 @@ jobs:
           node-version: '24'
 
       - name: Composer Cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: vendor
           key: composer-${{ hashFiles('**/composer.lock') }}
@@ -81,7 +81,7 @@ jobs:
             composer-
 
       - name: Node Cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: node_modules
           key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -199,6 +199,12 @@ jobs:
 
             # Clear stale job overlap locks from Redis
             # $PHP_PATH artisan tinker --execute="foreach(Cache::connection()->keys('*laravel-queue-overlap:*') as \$k) { Cache::connection()->del(\$k); }"
+
+            # Generate sitemap
+            $PHP_PATH artisan sitemap:generate
+
+            # Restart Discord bot
+            sudo systemctl restart core-discord-honeypot
 
             # Start Applications / Services
             $PHP_PATH artisan up

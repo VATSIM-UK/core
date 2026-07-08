@@ -265,7 +265,7 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             "CREATE TABLE `sessions` (
-              `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+              `id` int unsigned NOT NULL AUTO_INCREMENT,
               `rts_id` smallint unsigned NOT NULL DEFAULT '0',
               `position` varchar(20) NOT NULL DEFAULT '',
               `progress_sheet_id` mediumint NOT NULL,
@@ -329,7 +329,7 @@ class MockCtsDatabase
 
         DB::connection('cts')->statement(
             "CREATE TABLE `exam_book` (
-          `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+          `id` int unsigned NOT NULL AUTO_INCREMENT,
           `rts_id` smallint unsigned NOT NULL DEFAULT '0',
           `student_id` int unsigned NOT NULL DEFAULT '0',
           `student_rating` tinyint unsigned NOT NULL DEFAULT '0',
@@ -466,7 +466,7 @@ class MockCtsDatabase
         DB::connection('cts')->statement(
             "CREATE TABLE `cancel_reason` (
             `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-            `sesh_id` smallint(5) unsigned NOT NULL DEFAULT '0',
+            `sesh_id` int unsigned NOT NULL DEFAULT '0',
             `sesh_type` char(2) NOT NULL DEFAULT '',
             `reason` longtext NOT NULL,
             `used` tinyint(3) unsigned NOT NULL DEFAULT '0',
@@ -547,6 +547,50 @@ class MockCtsDatabase
             `type` varchar(255) NOT NULL DEFAULT '',
             `text` longtext NOT NULL,
             PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+        );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `email_settings_rts` (
+            `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+            `member_id` int unsigned NOT NULL DEFAULT '0',
+            `rts_id` smallint unsigned NOT NULL DEFAULT '0',
+            `stu_seshconf` tinyint unsigned NOT NULL DEFAULT '1',
+            `stu_groupseshconf` tinyint unsigned NOT NULL DEFAULT '1',
+            `stu_seshacc` tinyint unsigned NOT NULL DEFAULT '1',
+            `stu_seshcancel` tinyint unsigned NOT NULL DEFAULT '1',
+            `stu_seshfail` tinyint unsigned NOT NULL DEFAULT '1',
+            `stu_avail` tinyint unsigned NOT NULL DEFAULT '1',
+            `stu_examconf` tinyint unsigned NOT NULL DEFAULT '1',
+            `stu_examacc` tinyint unsigned NOT NULL DEFAULT '1',
+            `stu_examcancel` tinyint unsigned NOT NULL DEFAULT '1',
+            `stu_examfail` tinyint unsigned NOT NULL DEFAULT '1',
+            `men_newsesh` tinyint unsigned NOT NULL DEFAULT '1',
+            `men_seshconf` tinyint unsigned NOT NULL DEFAULT '1',
+            `men_seshcancel` tinyint unsigned NOT NULL DEFAULT '1',
+            `men_seshfail` tinyint unsigned NOT NULL DEFAULT '1',
+            `rtsm_join` tinyint unsigned NOT NULL DEFAULT '1',
+            `updated` datetime DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            KEY `member_id` (`member_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+        );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `email_settings_gen` (
+            `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+            `member_id` int unsigned NOT NULL DEFAULT '0',
+            `exam_new` tinyint unsigned NOT NULL DEFAULT '0',
+            `exam_conf` tinyint unsigned NOT NULL DEFAULT '0',
+            `exam_cancel` tinyint unsigned NOT NULL DEFAULT '0',
+            `exam_fail` tinyint unsigned NOT NULL DEFAULT '0',
+            `exam_fwd` tinyint unsigned NOT NULL DEFAULT '0',
+            `adm_unver` tinyint unsigned NOT NULL DEFAULT '0',
+            `adm_treex` tinyint unsigned NOT NULL DEFAULT '0',
+            `mem_hrts` tinyint(1) NOT NULL DEFAULT '0',
+            `updated` datetime DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            KEY `member_id` (`member_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
         );
     }
@@ -646,5 +690,7 @@ class MockCtsDatabase
         DB::connection('cts')->statement('DROP TABLE IF EXISTS `prog_sheet_fields`;');
         DB::connection('cts')->statement('DROP TABLE IF EXISTS `report_sheet`;');
         DB::connection('cts')->statement('DROP TABLE IF EXISTS `report_notes`;');
+        DB::connection('cts')->statement('DROP TABLE IF EXISTS `email_settings_rts`;');
+        DB::connection('cts')->statement('DROP TABLE IF EXISTS `email_settings_gen`;');
     }
 }

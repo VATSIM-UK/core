@@ -3,26 +3,14 @@
 namespace App\Services\Admin;
 
 use App\Models\Mship\Account\Endorsement;
+use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingList\RemovalReason;
+use App\Models\Training\WaitingList\WaitingListAccount;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class ATCTrainingStats
 {
-    public static function completedMentoringSessions(Carbon $startDate, Carbon $endDate)
-    {
-        return DB::connection('cts')
-            ->table('sessions')
-            ->select('rts.name', DB::raw('count(*) as total'))
-            ->join('rts', 'sessions.rts_id', '=', 'rts.id')
-            ->whereBetween('taken_date', [$startDate, $endDate])
-            ->whereNull('cancelled_datetime')
-            ->where('noShow', '=', 0)
-            ->groupBy('rts_id')
-            ->get()
-            ->flatMap(fn ($value) => [['name' => $value->name, 'value' => $value->total]])
-            ->toArray();
-    }
-
     public static function issuedPositionGroupEndorsements(Carbon $startDate, Carbon $endDate)
     {
         return Endorsement::with('endorsable')
@@ -32,20 +20,6 @@ class ATCTrainingStats
             ->select(['position_groups.name', 'position_groups.id', DB::raw('count(*) as total')])
             ->get()
             ->flatMap(fn ($value) => [['name' => $value->name, 'value' => $value->total]])
-            ->toArray();
-    }
-
-    public static function examPasses(Carbon $startDate, Carbon $endDate)
-    {
-        return DB::connection('cts')
-            ->table('practical_results')
-            ->select('exam', DB::raw('count(*) as total'))
-            ->whereBetween('date', [$startDate, $endDate])
-            ->where('result', '=', 'P')
-            ->whereNotIn('exam', ['P1', 'P2', 'P3'])
-            ->groupBy('exam')
-            ->get()
-            ->flatMap(fn ($value) => [['name' => $value->exam, 'value' => $value->total]])
             ->toArray();
     }
 
@@ -156,5 +130,216 @@ class ATCTrainingStats
 
         return null;
 
+    }
+
+    private static function getCallsignToCategoryMap(): array
+    {
+        $positions = DB::table('training_positions')
+            ->whereNotNull('category')
+            ->whereNotNull('cts_positions')
+            ->get(['category', 'cts_positions']);
+
+        $map = [];
+        foreach ($positions as $tp) {
+            $callsigns = json_decode($tp->cts_positions, true) ?? [];
+            foreach ($callsigns as $callsign) {
+                $map[$callsign] = $tp->category;
+            }
+        }
+
+        return $map;
+    }
+
+    public static function completedMentoringSessionsByTG(Carbon $startDate, Carbon $endDate): array
+    {
+        $callsignToCategory = self::getCallsignToCategoryMap();
+
+        $sessions = DB::connection('cts')
+            ->table('sessions')
+            ->select('position', DB::raw('count(*) as total'))
+            ->whereBetween('taken_date', [$startDate, $endDate])
+            ->whereNull('cancelled_datetime')
+            ->where('noShow', '=', 0)
+            ->groupBy('position')
+            ->get();
+
+        $categoryCounts = [];
+        foreach ($sessions as $session) {
+            $category = $callsignToCategory[$session->position] ?? 'Other';
+            $categoryCounts[$category] = ($categoryCounts[$category] ?? 0) + $session->total;
+        }
+
+        ksort($categoryCounts);
+
+        $result = collect($categoryCounts)
+            ->map(fn ($count, $name) => ['name' => $name, 'value' => $count])
+            ->values()
+            ->toArray();
+        $result[] = ['name' => 'Total', 'value' => array_sum($categoryCounts)];
+
+        return $result;
+    }
+
+    public static function examsConductedByTG(Carbon $startDate, Carbon $endDate): array
+    {
+        $examToCategory = [
+            'OBS' => 'OBS to S1 Training',
+            'TWR' => 'S2 Training',
+            'APP' => 'S3 Training',
+            'CTR' => 'C1 Training',
+        ];
+
+        $results = DB::connection('cts')
+            ->table('practical_results')
+            ->select('exam', DB::raw('count(*) as total'))
+            ->whereBetween('date', [$startDate, $endDate])
+            ->whereNotIn('exam', ['P1', 'P2', 'P3'])
+            ->groupBy('exam')
+            ->get();
+
+        $categoryCounts = [];
+        foreach ($results as $result) {
+            $category = $examToCategory[$result->exam] ?? $result->exam;
+            $categoryCounts[$category] = ($categoryCounts[$category] ?? 0) + $result->total;
+        }
+
+        ksort($categoryCounts);
+
+        $result = collect($categoryCounts)
+            ->map(fn ($count, $name) => ['name' => $name, 'value' => $count])
+            ->values()
+            ->toArray();
+        $result[] = ['name' => 'Total', 'value' => array_sum($categoryCounts)];
+
+        return $result;
+    }
+
+    public static function ratingUpgradesByTG(Carbon $startDate, Carbon $endDate): array
+    {
+        $qualToCategory = [
+            'S1' => 'OBS to S1 Training',
+            'S2' => 'S2 Training',
+            'S3' => 'S3 Training',
+            'C1' => 'C1 Training',
+        ];
+
+        $upgrades = DB::table('mship_account_qualification')
+            ->join('mship_qualification', 'mship_qualification.id', '=', 'mship_account_qualification.qualification_id')
+            ->where('mship_qualification.type', '=', 'atc')
+            ->whereBetween('mship_account_qualification.created_at', [$startDate, $endDate])
+            ->whereNull('mship_account_qualification.deleted_at')
+            ->select('mship_qualification.code')
+            ->get();
+
+        $categoryCounts = [];
+        foreach ($upgrades as $upgrade) {
+            $category = $qualToCategory[$upgrade->code] ?? null;
+
+            if ($category) {
+                $categoryCounts[$category] = ($categoryCounts[$category] ?? 0) + 1;
+            }
+        }
+
+        ksort($categoryCounts);
+
+        $result = collect($categoryCounts)
+            ->map(fn ($count, $name) => ['name' => $name, 'value' => $count])
+            ->values()
+            ->toArray();
+        $result[] = ['name' => 'Total', 'value' => array_sum($categoryCounts)];
+
+        return $result;
+    }
+
+    public static function heathrowEndorsementsIssued(Carbon $startDate, Carbon $endDate): array
+    {
+        $endorsements = Endorsement::with('endorsable')
+            ->whereBetween('mship_account_endorsement.created_at', [$startDate, $endDate])
+            ->join('position_groups', 'position_groups.id', 'mship_account_endorsement.endorsable_id')
+            ->whereIn('position_groups.name', ['Heathrow (TWR)', 'Heathrow (APP)', 'Heathrow (GND)'])
+            ->groupBy('position_groups.id', 'position_groups.name')
+            ->select(['position_groups.name', 'position_groups.id', DB::raw('count(*) as total')])
+            ->get()
+            ->flatMap(fn ($value) => [['name' => $value->name, 'value' => $value->total]])
+            ->toArray();
+
+        $total = collect($endorsements)->sum('value');
+        $endorsements[] = ['name' => 'Total', 'value' => $total];
+
+        return $endorsements;
+    }
+
+    public static function atcWaitingListCounts(): array
+    {
+        $lists = WaitingList::where('department', WaitingList::ATC_DEPARTMENT)->get();
+
+        $counts = $lists->map(fn ($list) => [
+            'name' => $list->name,
+            'value' => $list->waitingListAccounts->count(),
+        ])->toArray();
+
+        $total = collect($counts)->sum('value');
+        $counts[] = ['name' => 'Total', 'value' => $total];
+
+        return $counts;
+    }
+
+    public static function atcWaitingListRemovals(Carbon $startDate, Carbon $endDate): array
+    {
+        $lists = WaitingList::where('department', WaitingList::ATC_DEPARTMENT)->get();
+        $listIds = $lists->pluck('id');
+
+        $removals = WaitingListAccount::onlyTrashed()
+            ->whereIn('list_id', $listIds)
+            ->where('removal_type', RemovalReason::Inactivity->value)
+            ->whereBetween('deleted_at', [$startDate, $endDate])
+            ->select('list_id', DB::raw('count(*) as total'))
+            ->groupBy('list_id')
+            ->get()
+            ->keyBy('list_id');
+
+        $counts = $lists->map(fn ($list) => [
+            'name' => $list->name,
+            'value' => $removals->get($list->id)?->total ?? 0,
+        ])->toArray();
+
+        $total = collect($counts)->sum('value');
+        $counts[] = ['name' => 'Total', 'value' => $total];
+
+        return $counts;
+    }
+
+    public static function mentorsByTG(Carbon $startDate, Carbon $endDate): array
+    {
+        $callsignToCategory = self::getCallsignToCategoryMap();
+
+        $mentorSessions = DB::connection('cts')
+            ->table('sessions')
+            ->select('sessions.position', 'sessions.mentor_id')
+            ->whereBetween('taken_date', [$startDate, $endDate])
+            ->whereNull('cancelled_datetime')
+            ->whereNotNull('mentor_id')
+            ->where('noShow', '=', 0)
+            ->whereIn('sessions.position', array_keys($callsignToCategory))
+            ->get();
+
+        $mentorsByCategory = [];
+        foreach ($mentorSessions as $session) {
+            $category = $callsignToCategory[$session->position] ?? null;
+            if ($category) {
+                $mentorsByCategory[$category][$session->mentor_id] = true;
+            }
+        }
+
+        $result = collect($mentorsByCategory)
+            ->map(fn ($mentors, $category) => ['name' => $category, 'value' => count($mentors)])
+            ->sortBy('name')
+            ->values()
+            ->toArray();
+
+        $total = collect($result)->sum('value');
+        $result[] = ['name' => 'Total', 'value' => $total];
+
+        return $result;
     }
 }
