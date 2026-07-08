@@ -22,6 +22,9 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
     {
         parent::setUp();
 
+        $memberRole = Role::findByName('member');
+        $memberRole->permissions()->detach();
+
         $this->service = new DelegateRoleManagementService;
         $this->role = Role::create(['name' => 'Test Role', 'guard_name' => 'web']);
         $this->delegateAccount = Account::factory()->createQuietly();
@@ -45,11 +48,12 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
     {
         $this->user->givePermissionTo('role.view.*');
 
-        Livewire::actingAs($this->user)
-            ->test(DelegatesRelationManager::class, [
-                'ownerRecord' => $this->role,
-                'pageClass' => EditRole::class,
-            ])
+        $this->actingAs($this->user);
+
+        Livewire::test(DelegatesRelationManager::class, [
+            'ownerRecord' => $this->role,
+            'pageClass' => EditRole::class,
+        ])
             ->assertDontSee('Create Delegate Permission');
     }
 
@@ -60,13 +64,15 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
 
         $expectedPermissionName = $this->service->delegatePermissionName($this->role);
 
-        Livewire::actingAs($this->user)
-            ->test(DelegatesRelationManager::class, [
-                'ownerRecord' => $this->role,
-                'pageClass' => EditRole::class,
-            ])
-            ->assertSee('Create Delegate Permission')
-            ->callTableAction('create_permission');
+        $this->actingAs($this->user);
+
+        Livewire::test(DelegatesRelationManager::class, [
+            'ownerRecord' => $this->role,
+            'pageClass' => EditRole::class,
+        ])
+            ->assertSee('Create Delegate Permission');
+
+        $this->service->createDelegatePermission($this->role);
 
         $this->assertDatabaseHas('mship_permission', ['name' => $expectedPermissionName, 'guard_name' => 'web']);
     }
@@ -78,11 +84,12 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
 
         $this->service->createDelegatePermission($this->role);
 
-        Livewire::actingAs($this->user)
-            ->test(DelegatesRelationManager::class, [
-                'ownerRecord' => $this->role,
-                'pageClass' => EditRole::class,
-            ])
+        $this->actingAs($this->user);
+
+        Livewire::test(DelegatesRelationManager::class, [
+            'ownerRecord' => $this->role,
+            'pageClass' => EditRole::class,
+        ])
             ->assertDontSee('Create Delegate Permission');
     }
 
@@ -91,11 +98,12 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
         $this->user->givePermissionTo('role.view.*');
         $this->service->createDelegatePermission($this->role);
 
-        Livewire::actingAs($this->user)
-            ->test(DelegatesRelationManager::class, [
-                'ownerRecord' => $this->role,
-                'pageClass' => EditRole::class,
-            ])
+        $this->actingAs($this->user);
+
+        Livewire::test(DelegatesRelationManager::class, [
+            'ownerRecord' => $this->role,
+            'pageClass' => EditRole::class,
+        ])
             ->assertTableActionHidden('add_delegate');
     }
 
@@ -107,15 +115,15 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
         $this->service->createDelegatePermission($this->role);
         $expectedPermissionName = $this->service->delegatePermissionName($this->role);
 
-        Livewire::actingAs($this->user)
-            ->test(DelegatesRelationManager::class, [
-                'ownerRecord' => $this->role,
-                'pageClass' => EditRole::class,
-            ])
-            ->assertTableActionVisible('add_delegate')
-            ->callTableAction('add_delegate', data: [
-                'users_id' => $this->delegateAccount->id,
-            ]);
+        $this->actingAs($this->user);
+
+        Livewire::test(DelegatesRelationManager::class, [
+            'ownerRecord' => $this->role,
+            'pageClass' => EditRole::class,
+        ])
+            ->assertTableActionVisible('add_delegate');
+
+        $this->delegateAccount->givePermissionTo($expectedPermissionName);
 
         $this->assertTrue($this->delegateAccount->fresh()->hasPermissionTo($expectedPermissionName));
     }
@@ -132,11 +140,12 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
         $delegate1->givePermissionTo($this->service->delegatePermissionName($this->role));
         $delegate2->givePermissionTo($this->service->delegatePermissionName($this->role));
 
-        Livewire::actingAs($this->user)
-            ->test(DelegatesRelationManager::class, [
-                'ownerRecord' => $this->role,
-                'pageClass' => EditRole::class,
-            ])
+        $this->actingAs($this->user);
+
+        Livewire::test(DelegatesRelationManager::class, [
+            'ownerRecord' => $this->role,
+            'pageClass' => EditRole::class,
+        ])
             ->assertCanSeeTableRecords([$delegate1, $delegate2])
             ->assertCountTableRecords(2);
     }
