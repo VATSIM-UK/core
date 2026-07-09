@@ -57,8 +57,9 @@ class PositionResource extends Resource
                         }
                     }),
                 Select::make('positionGroups')
-                    ->label('Position Group')
+                    ->label('Position Groups')
                     ->relationship('positionGroups', 'name')
+                    ->multiple()
                     ->preload()
                     ->searchable(),
             ])->columnSpanFull(),
@@ -110,7 +111,7 @@ class PositionResource extends Resource
                     ->trueColor('success')
                     ->falseColor('gray'),
                 TextColumn::make('positionGroups.name')
-                    ->label('Position Group')
+                    ->label('Position Groups')
                     ->badge(),
             ])
             ->filters([
