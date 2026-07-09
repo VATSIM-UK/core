@@ -37,13 +37,24 @@ class Renew extends Component
 
     public function nextPage()
     {
+        if (! $this->canReactivate()) {
+            abort(403);
+        }
+
         $this->page++;
+    }
+
+    private function canReactivate(): bool
+    {
+        $lastLogon = AtcNetworkdataService::getLatestNetworkdataForAccount(auth()->user())?->disconnected_at;
+
+        return $lastLogon && Carbon::now()->diffInMonths($lastLogon) <= 18;
     }
 
     public function render(UKCP $ukcp)
     {
-        $lastLogon = AtcNetworkdataService::getLatestNetworkdataForAccount(auth()->user())?->disconnected_at;
-        $canReactivate = $lastLogon && Carbon::now()->diffInMonths($lastLogon) <= 18;
+        $canReactivate = $this->canReactivate();
+        $lastLogon = $canReactivate ? AtcNetworkdataService::getLatestNetworkdataForAccount(auth()->user())->disconnected_at : null;
 
         return view('livewire.roster.renew', [
             'notifications' => $this->notifications,
@@ -55,6 +66,10 @@ class Renew extends Component
 
     public function reactivate()
     {
+        if (! $this->canReactivate()) {
+            abort(403);
+        }
+
         Roster::create([
             'account_id' => auth()->user()->id,
         ]);

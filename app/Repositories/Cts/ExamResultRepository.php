@@ -33,6 +33,14 @@ class ExamResultRepository
             ->get();
     }
 
+    public function studentHasPendingExam(string $type, int $studentId): bool
+    {
+        return ExamBooking::where('exam', $type)
+            ->where('student_id', $studentId)
+            ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
+            ->exists();
+    }
+
     public function createPracticalResult(ExamBooking $examBooking, string $result, ?string $additionalComments)
     {
         $practicalResult = PracticalResult::create([

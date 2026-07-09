@@ -71,6 +71,11 @@ class ExamSetup extends Page implements HasForms
 
         $trainingPosition = TrainingPosition::where('position_id', $validated['data']['position'])->firstOrFail();
         $ctsMember = Member::where('id', $validated['data']['student'])->first();
+        $examType = $trainingPosition->position->examLevel;
+
+        if ($this->hasPendingExam($ctsMember, $examType)) {
+            return;
+        }
 
         $service = new ExamForwardingService;
         $service->forwardForExam($ctsMember, $trainingPosition, Auth::user()->id);
@@ -91,6 +96,10 @@ class ExamSetup extends Page implements HasForms
 
         $trainingPosition = TrainingPosition::whereJsonContains('cts_positions', $position->callsign)->firstOrFail();
         $ctsMember = Member::where('id', $this->dataOBS['student_obs'])->first();
+
+        if ($this->hasPendingExam($ctsMember, 'OBS')) {
+            return;
+        }
 
         $service = new ExamForwardingService;
         $service->forwardForObsExam($ctsMember, $trainingPosition);
@@ -218,11 +227,26 @@ class ExamSetup extends Page implements HasForms
         $ctsMember = Member::where('id', $validated['dataPilot']['student_pilot'])->first();
         $examType = $validated['dataPilot']['exam_type'];
 
+        if ($this->hasPendingExam($ctsMember, $examType)) {
+            return;
+        }
+
         $service = new ExamForwardingService;
         $service->forwardForPilotExam($ctsMember, $examType, Auth::user()->id);
         $service->notifySuccess(PilotExamType::from($examType)->label());
 
         return redirect()->route('filament.training.pages.exam-setup');
+    }
+
+    private function hasPendingExam(Member $ctsMember, string $examType): bool
+    {
+        if ((new ExamResultRepository)->studentHasPendingExam($examType, $ctsMember->id)) {
+            (new ExamForwardingService)->notifyError("This student already has a pending {$examType} exam.");
+
+            return true;
+        }
+
+        return false;
     }
 
     public function formPilot(Schema $schema): Schema

@@ -13,6 +13,14 @@
         "laravel-boost": {
             "command": "php",
             "args": ["artisan", "boost:mcp"]
+        },
+        "filamentphp": {
+            "command": "npx",
+            "args": ["-y", "filamentphp-mcp"]
+        },
+        "linear": {
+            "command": "npx",
+            "args": ["-y", "mcp-remote", "https://mcp.linear.app/mcp"]
         }
     }
 }
