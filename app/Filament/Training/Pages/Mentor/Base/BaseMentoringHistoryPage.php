@@ -159,7 +159,7 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
                             return 'By Mentor';
                         }
 
-                        return 'By Other';
+                        return $cancelledById ? "By {$cancelledById}" : 'By Unknown';
                     }
 
                     return null;
