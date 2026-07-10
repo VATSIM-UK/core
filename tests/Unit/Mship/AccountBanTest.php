@@ -96,4 +96,21 @@ class AccountBanTest extends TestCase
             'repealed_at' => now(),
         ]);
     }
+
+    #[Test]
+    public function it_creates_permanent_ban_when_reason_is_permanent()
+    {
+        $reason = Reason::factory()->permanent()->create();
+
+        $ban = $this->account->addBan($reason, 'Permanent ban reason', 'Note', $this->privacc);
+
+        $this->assertDatabaseHas('mship_account_ban', [
+            'account_id' => $this->account->id,
+            'reason_id' => $reason->id,
+            'period_finish' => null,
+        ]);
+
+        $this->assertNull($ban->fresh()->period_finish);
+        $this->assertEquals('Permanent', $ban->period_amount_string);
+    }
 }

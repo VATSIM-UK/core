@@ -7,8 +7,12 @@
 	<h3>Since</h2>
 		<p>{{ $ban->period_start->toDayDateTimeString() }} ({{ $ban->period_start->diffForHumans() }}).</p>
 		<h3>Expiry</h2>
-			<p>Your ban is due to expire on {{ $ban->period_finish->toDayDateTimeString() }} UTC
-				({{ $ban->period_finish->diffForHumans() }})</p>
+			@if ($ban->period_finish)
+				<p>Your ban is due to expire on {{ $ban->period_finish->toDayDateTimeString() }} UTC
+					({{ $ban->period_finish->diffForHumans() }})</p>
+			@else
+				<p>Your ban is <strong>permanent</strong> and does not have an expiry date.</p>
+			@endif
 			<p>If you believe this to be an error, please contact the VATSIM UK Community team at <a
 					href="https://helpdesk.vatsim.uk">https://helpdesk.vatsim.uk</a> who will be able to assist further.</p>
 		@stop

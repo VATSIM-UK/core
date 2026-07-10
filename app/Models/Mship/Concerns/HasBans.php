@@ -52,7 +52,11 @@ trait HasBans
         $ban->reason_id = $banReason->id;
         $ban->reason_extra = $banExtraReason;
         $ban->period_start = Carbon::now()->second(0);
-        $ban->period_finish = Carbon::now()->addHours($banReason->period_hours)->second(0);
+        if ($banReason->is_permanent) {
+            $ban->period_finish = null;
+        } else {
+            $ban->period_finish = Carbon::now()->addHours($banReason->period_hours)->second(0);
+        }
         $ban->save();
 
         $ban->notes()->save($note);
