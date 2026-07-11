@@ -2,6 +2,7 @@
 
 namespace App\Models\Training\Seminar;
 
+use App\Enums\SeminarInvitationStatus;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
@@ -88,7 +89,7 @@ class Seminar extends Model
 
     public function spacesRemaining(): int
     {
-        return $this->capacity - $this->attendees()->count() - $this->invitations()->where('status', 'sent')->count();
+        return $this->capacity - $this->attendees()->count() - $this->invitations()->where('status', SeminarInvitationStatus::Sent->value)->count();
     }
 
     public function canInvite(): bool

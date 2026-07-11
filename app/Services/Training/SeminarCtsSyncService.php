@@ -71,9 +71,4 @@ class SeminarCtsSyncService
             'cts_group_sessions_student_id' => $groupSessionStudent->group_sessions_student_id,
         ])->saveQuietly();
     }
-
-    private function ctsRtsId(): int
-    {
-        return (int) config('services.training.cts_rts_id', 0);
-    }
 }

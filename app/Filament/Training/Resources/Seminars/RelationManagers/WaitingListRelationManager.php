@@ -53,7 +53,7 @@ class WaitingListRelationManager extends RelationManager
 
                         app(SeminarInvitationService::class)->createInvitation(
                             $this->ownerRecord,
-                            app(Account::class)->findOrFail($account),
+                            Account::query()->findOrFail($account),
                         );
 
                         Notification::make()
