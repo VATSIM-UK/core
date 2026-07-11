@@ -47,8 +47,8 @@
 								<p><strong>{{ $bar['label'] }}</strong>
 								<div class="progress" data-toggle="tooltip" title="{{ $bar['label'] }}">
 									<div class="progress-bar {{ $met ? 'progress-bar-success' : 'progress-bar-warning' }}" role="progressbar"
-										style="width: {{ min(($bar['hours'] / $bar['required']) * 100, 100) }}%"
-										aria-valuemin="0" aria-valuemax="{{ $bar['required'] }}">
+										style="width: {{ min(($bar['hours'] / $bar['required']) * 100, 100) }}%" aria-valuemin="0"
+										aria-valuemax="{{ $bar['required'] }}">
 										{{ floor($bar['hours']) }} / {{ $bar['required'] }} Hrs
 									</div>
 								</div>
