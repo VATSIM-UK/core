@@ -63,7 +63,7 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
             $endorsementProgress = [];
             $endorsementChain = ['Heathrow (GND)', 'Heathrow (TWR)', 'Heathrow (APP)'];
 
-            foreach ($endorsementChain as $i => $pgName) {
+            foreach ($endorsementChain as $pgName) {
                 $pg = $heathrowPositionGroups->get($pgName);
                 if (! $pg || in_array($pg->id, $existingEndorsements)) {
                     continue;
