@@ -44,10 +44,11 @@
 							<h4>{{ $ep['name'] }}</h4>
 							@foreach ($ep['bars'] as $bar)
 								@php $met = $bar['hours'] >= $bar['required']; @endphp
-								<p><strong>{{ $bar['label'] }}</strong>
+								<p><strong>{{ $bar['label'] }}</strong></p>
 								<div class="progress" data-toggle="tooltip" title="{{ $bar['label'] }}">
 									<div class="progress-bar {{ $met ? 'progress-bar-success' : 'progress-bar-warning' }}" role="progressbar"
-										style="width: {{ min(($bar['hours'] / $bar['required']) * 100, 100) }}%" aria-valuemin="0"
+										style="width: {{ min(($bar['hours'] / $bar['required']) * 100, 100) }}%"
+										aria-valuenow="{{ min($bar['hours'], $bar['required']) }}" aria-valuemin="0"
 										aria-valuemax="{{ $bar['required'] }}">
 										{{ floor($bar['hours']) }} / {{ $bar['required'] }} Hrs
 									</div>
