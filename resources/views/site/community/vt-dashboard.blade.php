@@ -18,7 +18,7 @@
 				</p>
 
 				<div class="alert alert-danger">
-					<h3 style="margin-top: 0">TFP, P1, P2, P3, S3 and C1 Visiting Closed</h3>
+					<h3 style="margin-top: 0">The Flying Program (TFP), P1, P2, P3, S3 and C1 Visiting Closed</h3>
 					<p>We are currently <strong>not accepting applications</strong> for these due to incredibly high demand
 						leading to long wait times.</p>
 					<p><strong>Applications to transfer or to visit Shanwick are unaffected.</strong></p>
