@@ -9,6 +9,7 @@ use App\Filament\Training\Pages\MyTraining\MyMentoringHistory;
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Filament\Training\Support\MentoringReportLayout;
 use App\Filament\Training\Support\MentoringReportScores;
+use App\Infolists\Components\ProgressEntry;
 use App\Livewire\Training\CriteriaCategoryTable;
 use App\Livewire\Training\SessionCriteriaTable;
 use App\Models\Cts\Session;
@@ -246,9 +247,8 @@ class ViewMentoringReport extends Page implements HasInfolists
 
                 $previousScore = MentoringReportScores::previousScore($scoreMap, $sheet->field_id, $previousSession);
                 $bestScore = MentoringReportScores::bestScore($scoreMap, $sheet->field_id);
-                $bestScoreSessionId = MentoringReportScores::bestScoreSessionId($scoreMap, $sheet->field_id);
 
-                $sheetRows[] = Grid::make(14)
+                $sheetRows[] = Grid::make(4)
                     ->schema([
                         Grid::make(1)
                             ->extraAttributes(['class' => 'gap-0'])
@@ -268,39 +268,14 @@ class ViewMentoringReport extends Page implements HasInfolists
                                     ->prose()
                                     ->extraAttributes(['style' => 'word-break:break-word'])
                                     ->hidden(blank($sheet->notes)),
-                            ])->columnSpan(8),
+                            ])->columnSpan(3),
 
-                        TextEntry::make("field_best_{$uniqueKey}")
-                            ->label('Best')
-                            ->state($bestScore)
-                            ->badge()
-                            ->icon('heroicon-m-trophy')
-                            ->url(function () use ($bestScoreSessionId, $bestScore, $sheet): ?string {
-                                if (! $bestScoreSessionId || $bestScoreSessionId === $this->session->id) {
-                                    return null;
-                                }
-
-                                if ($sheet->field_score === $bestScore) {
-                                    return null;
-                                }
-
-                                return static::getUrl(['sessionId' => $bestScoreSessionId]);
-                            })
-                            ->openUrlInNewTab()
-                            ->columnSpan(2),
-
-                        TextEntry::make("field_previous_{$uniqueKey}")
-                            ->label('Previous')
-                            ->state($previousScore)
-                            ->badge()
-                            ->icon('heroicon-m-clock')
-                            ->columnSpan(2),
-
-                        TextEntry::make("field_score_{$uniqueKey}")
-                            ->label('Current')
+                        ProgressEntry::make("field_progress_{$uniqueKey}")
                             ->state($sheet->field_score)
-                            ->badge()
-                            ->columnSpan(2),
+                            ->previous($previousScore)
+                            ->best($bestScore)
+                            ->hiddenLabel()
+                            ->columnSpan(1),
                     ])
                     ->extraAttributes(['class' => MentoringReportLayout::CRITERION_ROW_CLASSES]);
             }
