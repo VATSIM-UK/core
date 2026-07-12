@@ -24,7 +24,9 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class SeminarResource extends Resource
 {
@@ -58,7 +60,10 @@ class SeminarResource extends Resource
 
                         Select::make('waiting_list_id')
                             ->label('Waiting List')
-                            ->options(WaitingList::query()->orderBy('name')->pluck('name', 'id'))
+                            ->options(WaitingList::query()
+                                ->where('department', WaitingList::ATC_DEPARTMENT)
+                                ->orderBy('name')
+                                ->pluck('name', 'id'))
                             ->searchable()
                             ->required(),
                     ]),
@@ -97,8 +102,19 @@ class SeminarResource extends Resource
             Section::make('Schedule & Settings')
                 ->schema([
                     TextEntry::make('date')->date('d/m/Y'),
-                    TextEntry::make('from'),
-                    TextEntry::make('to'),
+                    TextEntry::make('time_range')
+                        ->label('Time')
+                        ->state(fn ($record) => $record)
+                        ->formatStateUsing(function ($record) {
+                            if (! $record->from || ! $record->to) {
+                                return null;
+                            }
+
+                            $from = Carbon::parse($record->from)->format('H:i');
+                            $to = Carbon::parse($record->to)->format('H:i');
+
+                            return "{$from} - {$to}";
+                        }),
                     TextEntry::make('capacity'),
                     TextEntry::make('invitation_expiry_days')->label('Invitation Expiry (Days)'),
                 ])->columns(3),
@@ -117,13 +133,19 @@ class SeminarResource extends Resource
                     ->date('d/m/Y')
                     ->sortable(),
 
-                TextColumn::make('from')
-                    ->label('From')
-                    ->dateTime('H:i'),
+                TextColumn::make('time_range')
+                    ->label('Time')
+                    ->state(fn ($record) => $record)
+                    ->formatStateUsing(function ($record) {
+                        if (! $record->from || ! $record->to) {
+                            return null;
+                        }
 
-                TextColumn::make('to')
-                    ->label('To')
-                    ->dateTime('H:i'),
+                        $from = Carbon::parse($record->from)->format('H:i');
+                        $to = Carbon::parse($record->to)->format('H:i');
+
+                        return "{$from} - {$to}";
+                    }),
 
                 TextColumn::make('capacity')
                     ->counts('attendees')
@@ -141,6 +163,18 @@ class SeminarResource extends Resource
                     ->badge()
                     ->color(fn ($record) => $record->closed_at ? 'danger' : 'success')
                     ->icon(fn ($record) => $record->closed_at ? 'heroicon-o-lock-closed' : 'heroicon-o-check-circle'),
+            ])
+            ->filters([
+                SelectFilter::make('status')
+                    ->options([
+                        'open' => 'Open',
+                        'closed' => 'Closed',
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        return $query
+                            ->when($data['value'] === 'open', fn ($q) => $q->whereNull('closed_at'))
+                            ->when($data['value'] === 'closed', fn ($q) => $q->whereNotNull('closed_at'));
+                    }),
             ])
             ->recordActions([
                 ViewAction::make(),

@@ -54,14 +54,6 @@ class SeminarInvitationFactory extends Factory
         ]);
     }
 
-    public function expired(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'status' => SeminarInvitationStatus::Expired,
-            'responded_at' => now(),
-        ]);
-    }
-
     public function removedNoResponse(): static
     {
         return $this->state(fn (array $attributes) => [

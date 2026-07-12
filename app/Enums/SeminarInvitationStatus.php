@@ -10,7 +10,6 @@ enum SeminarInvitationStatus: string
     case Attending = 'attending';
     case NotInterested = 'not_interested';
     case CannotAttend = 'cannot_attend';
-    case Expired = 'expired';
     case RemovedNoResponse = 'removed_no_response';
     case RemovedTwoCannotAttend = 'removed_two_cannot_attend';
 
@@ -21,7 +20,6 @@ enum SeminarInvitationStatus: string
             self::Attending => 'Attending',
             self::NotInterested => 'Not Interested',
             self::CannotAttend => 'Cannot Attend',
-            self::Expired => 'Expired',
             self::RemovedNoResponse => 'Removed (No Response)',
             self::RemovedTwoCannotAttend => 'Removed (Two Cannot Attend)',
         };
@@ -34,7 +32,6 @@ enum SeminarInvitationStatus: string
             self::Attending => 'success',
             self::NotInterested => 'danger',
             self::CannotAttend => 'warning',
-            self::Expired => 'danger',
             self::RemovedNoResponse => 'danger',
             self::RemovedTwoCannotAttend => 'danger',
         };

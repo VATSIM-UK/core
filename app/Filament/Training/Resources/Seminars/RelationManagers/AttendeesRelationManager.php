@@ -4,8 +4,9 @@ namespace App\Filament\Training\Resources\Seminars\RelationManagers;
 
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Models\Training\Seminar\SeminarAttendee;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
-use App\Models\Training\WaitingList\WaitingListAccount;
+use App\Models\Training\WaitingList\WaitingListAccount; // Imported TrainingPlace Model
 use App\Services\Training\TrainingPlaceService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -31,9 +32,11 @@ class AttendeesRelationManager extends RelationManager
             ])
             ->recordActions([
                 Action::make('createTrainingPlace')
-                    ->label('Create Training Place')
+                    ->label(fn (SeminarAttendee $record) => $this->hasTrainingPlace($record) ? 'Training Place Already Exists' : 'Create Training Place')
                     ->icon('heroicon-o-academic-cap')
-                    ->color('success')
+                    ->modalDescription('Manually create a training place for this student. This does not send an offer email.')
+                    ->color(fn (SeminarAttendee $record) => $this->hasTrainingPlace($record) ? 'gray' : 'success')
+                    ->disabled(fn (SeminarAttendee $record) => $this->hasTrainingPlace($record))
                     ->visible(fn () => auth()->user()->can('training.seminars.manage.*')
                         && ($this->ownerRecord->relationLoaded('waitingList')
                             ? $this->ownerRecord->waitingList !== null
@@ -81,5 +84,23 @@ class AttendeesRelationManager extends RelationManager
                             ->send();
                     }),
             ]);
+    }
+
+    protected function hasTrainingPlace(SeminarAttendee $record): bool
+    {
+        $availablePositionIds = $this->ownerRecord
+            ->loadMissing('waitingList.trainingPositions')
+            ->waitingList?->trainingPositions
+            ->pluck('id')
+            ->toArray() ?? [];
+
+        if (empty($availablePositionIds)) {
+            return false;
+        }
+
+        return TrainingPlace::query()
+            ->where('account_id', $record->account_id)
+            ->whereIn('training_position_id', $availablePositionIds)
+            ->exists();
     }
 }
