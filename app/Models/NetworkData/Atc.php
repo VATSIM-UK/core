@@ -62,6 +62,8 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc withCallsignIn($callsigns)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withoutTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc withoutAfis()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc atMinimumQualification($vatsimLevel)
  *
  * @mixin \Eloquent
  */
@@ -233,6 +235,23 @@ class Atc extends Model
     public static function scopePositionIsWithinUK($query)
     {
         return $query->isUk();
+    }
+
+    public static function scopeWithoutAfis($query)
+    {
+        return $query->where(function ($subQuery) {
+            return $subQuery->where('callsign', 'not like', '%\_I\_TWR')
+                ->where('callsign', 'not like', '%\_I\_\_TWR')
+                ->where('callsign', 'not like', '%\_R\_TWR')
+                ->where('callsign', 'not like', '%\_R\_\_TWR');
+        });
+    }
+
+    public static function scopeAtMinimumQualification($query, $vatsimLevel)
+    {
+        return $query->whereHas('qualification', function ($q) use ($vatsimLevel) {
+            $q->where('vatsim', '>=', $vatsimLevel);
+        });
     }
 
     public function account()

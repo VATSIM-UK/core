@@ -60,6 +60,14 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
                 ->pluck('endorsable_id')
                 ->toArray();
 
+            $atcQualificationLevel = $this->account->qualification_atc?->vatsim ?? 0;
+
+            $gndPgId = $heathrowPositionGroups->get('Heathrow (GND)')?->id;
+            $twrPgId = $heathrowPositionGroups->get('Heathrow (TWR)')?->id;
+
+            $hasGndEndorsement = $gndPgId && in_array($gndPgId, $existingEndorsements);
+            $hasTwrEndorsement = $twrPgId && in_array($twrPgId, $existingEndorsements);
+
             $endorsementProgress = [];
             $endorsementChain = ['Heathrow (GND)', 'Heathrow (TWR)', 'Heathrow (APP)'];
 
@@ -69,10 +77,22 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
                     continue;
                 }
 
+                $eligible = match ($pgName) {
+                    'Heathrow (GND)' => $atcQualificationLevel >= 3,
+                    'Heathrow (TWR)' => $atcQualificationLevel >= 3 && $hasGndEndorsement,
+                    'Heathrow (APP)' => $atcQualificationLevel >= 4 && $hasTwrEndorsement,
+                };
+
+                if (! $eligible) {
+                    continue;
+                }
+
                 switch ($pgName) {
                     case 'Heathrow (GND)':
                         $delGndTwr = fn () => $this->account->networkDataAtc()
                             ->isUK()
+                            ->withoutAfis()
+                            ->atMinimumQualification(3)
                             ->where(function (Builder $b) {
                                 $b->where('facility_type', Atc::TYPE_DEL)
                                     ->orWhere('facility_type', Atc::TYPE_GND)
@@ -96,11 +116,14 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
                                 $b->where('facility_type', Atc::TYPE_GND)
                                     ->orWhere('facility_type', Atc::TYPE_DEL);
                             })
+                            ->atMinimumQualification(3)
                             ->whereBetween('connected_at', [Carbon::now()->subMonths(3), Carbon::now()])
                             ->sum('minutes_online') / 60;
 
                         $ukTwr = fn () => $this->account->networkDataAtc()
                             ->isUK()
+                            ->withoutAfis()
+                            ->atMinimumQualification(3)
                             ->where('facility_type', Atc::TYPE_TWR);
 
                         $endorsementProgress[] = [
@@ -118,11 +141,13 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
                         $heathrowTwrRecent = $this->account->networkDataAtc()
                             ->where('callsign', 'like', 'EGLL%')
                             ->where('facility_type', Atc::TYPE_TWR)
+                            ->atMinimumQualification(4)
                             ->whereBetween('connected_at', [Carbon::now()->subMonths(3), Carbon::now()])
                             ->sum('minutes_online') / 60;
 
                         $ukApp = fn () => $this->account->networkDataAtc()
                             ->isUK()
+                            ->atMinimumQualification(4)
                             ->where('facility_type', Atc::TYPE_APP);
 
                         $endorsementProgress[] = [
