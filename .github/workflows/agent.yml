@@ -1,4 +1,4 @@
-name: PR Agent (VATSIM-UK Core Optimized)
+name: PR Agent
 
 on:
   pull_request_target:
@@ -28,12 +28,13 @@ jobs:
 
           OPENAI__API_BASE: "https://opencode.ai/zen/go/v1"
           OPENAI__KEY: ${{ secrets.OPENCODE_API_KEY }}
-          CONFIG__MODEL: "openai/deepseek-v4-pro"
+          CONFIG__MODEL: "openai/deepseek-v4-flash"
 
           CONFIG__IGNORE__GLOB: "['*.lock', 'composer.lock', 'package-lock.json', 'public/build/*', 'storage/*', 'bootstrap/cache/*', 'vendor/*', 'node_modules/*', 'junit.xml']"
 
           PR_REVIEWER__INLINE_CODE_COMMENTS: "true"
 
+          PR_CODE_SUGGESTIONS__COMMITABLE_CODE_SUGGESTIONS: "true"
           PR_CODE_SUGGESTIONS__SUGGESTIONS_SCORE_THRESHOLD: "7"
 
           CONFIG__CUSTOM_MODEL_MAX_TOKENS: "128000"
