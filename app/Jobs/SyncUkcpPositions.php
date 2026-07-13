@@ -100,6 +100,29 @@ class SyncUkcpPositions extends Job implements ShouldQueue
             }
         }
 
+        // TOP-DOWN: populate top_down from v2 dependency endpoint
+        $v2Positions = $ukcp->getControllerPositionsV2Dependency();
+
+        if ($v2Positions->isNotEmpty()) {
+            $v2ById = $v2Positions->keyBy('id');
+
+            $coreByUkcpId = Position::whereNotNull('ukcp_position_id')->get()->keyBy('ukcp_position_id');
+
+            foreach ($coreByUkcpId as $ukcpId => $core) {
+                $v2 = $v2ById->get($ukcpId);
+                if (! $v2) {
+                    continue;
+                }
+
+                $topDown = $v2->top_down;
+                $newValue = empty($topDown) ? [] : array_values($topDown);
+
+                if ($core->top_down !== $newValue && ! $this->dryRun) {
+                    $core->update(['top_down' => $newValue]);
+                }
+            }
+        }
+
         // REMOVALS - soft-delete UKCP-synced positions that no longer exist in UKCP
         $positionsToRemove = Position::whereNotNull('ukcp_position_id')
             ->whereNotIn('ukcp_position_id', $ukcpIds);

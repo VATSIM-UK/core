@@ -24,11 +24,13 @@ class Position extends Model implements Endorseable
         'temporarily_endorsable',
         'virtual',
         'ukcp_position_id',
+        'top_down',
     ];
 
     protected $casts = [
         'virtual' => 'boolean',
         'ukcp_position_id' => 'integer',
+        'top_down' => 'json',
     ];
 
     const TYPE_ATIS = 1;

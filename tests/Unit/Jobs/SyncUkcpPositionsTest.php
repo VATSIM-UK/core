@@ -27,6 +27,16 @@ class SyncUkcpPositionsTest extends TestCase
         ];
     }
 
+    private function buildUkcpV2Position(int $id, string $callsign, float $frequency, array $topDown): object
+    {
+        return (object) [
+            'id' => $id,
+            'callsign' => $callsign,
+            'frequency' => $frequency,
+            'top_down' => $topDown,
+        ];
+    }
+
     #[Test]
     public function it_creates_new_positions_from_ukcp_data(): void
     {
@@ -38,6 +48,10 @@ class SyncUkcpPositionsTest extends TestCase
             $mock->shouldReceive('getAllControllerPositions')
                 ->once()
                 ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
         });
 
         (new SyncUkcpPositions)->handle(app(UKCP::class));
@@ -64,6 +78,10 @@ class SyncUkcpPositionsTest extends TestCase
             $mock->shouldReceive('getAllControllerPositions')
                 ->once()
                 ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
         });
 
         (new SyncUkcpPositions)->handle(app(UKCP::class));
@@ -90,6 +108,10 @@ class SyncUkcpPositionsTest extends TestCase
             $mock->shouldReceive('getAllControllerPositions')
                 ->once()
                 ->andReturn($positions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
         });
 
         (new SyncUkcpPositions)->handle(app(UKCP::class));
@@ -121,6 +143,10 @@ class SyncUkcpPositionsTest extends TestCase
             $mock->shouldReceive('getAllControllerPositions')
                 ->once()
                 ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
         });
 
         (new SyncUkcpPositions)->handle(app(UKCP::class));
@@ -155,6 +181,10 @@ class SyncUkcpPositionsTest extends TestCase
             $mock->shouldReceive('getAllControllerPositions')
                 ->once()
                 ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
         });
 
         (new SyncUkcpPositions)->handle(app(UKCP::class));
@@ -184,6 +214,10 @@ class SyncUkcpPositionsTest extends TestCase
             $mock->shouldReceive('getAllControllerPositions')
                 ->once()
                 ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
         });
 
         // Capture the updated_at before the sync
@@ -220,6 +254,10 @@ class SyncUkcpPositionsTest extends TestCase
             $mock->shouldReceive('getAllControllerPositions')
                 ->once()
                 ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
         });
 
         (new SyncUkcpPositions)->handle(app(UKCP::class));
@@ -247,6 +285,10 @@ class SyncUkcpPositionsTest extends TestCase
             $mock->shouldReceive('getAllControllerPositions')
                 ->once()
                 ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
         });
 
         (new SyncUkcpPositions)->handle(app(UKCP::class));
@@ -273,6 +315,10 @@ class SyncUkcpPositionsTest extends TestCase
             $mock->shouldReceive('getAllControllerPositions')
                 ->once()
                 ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
         });
 
         (new SyncUkcpPositions(dryRun: true))->handle(app(UKCP::class));
@@ -309,6 +355,10 @@ class SyncUkcpPositionsTest extends TestCase
             $mock->shouldReceive('getAllControllerPositions')
                 ->once()
                 ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
         });
 
         (new SyncUkcpPositions)->handle(app(UKCP::class));
@@ -348,5 +398,192 @@ class SyncUkcpPositionsTest extends TestCase
             'callsign' => 'EGBB_APP',
             'deleted_at' => null,
         ]);
+    }
+
+    #[Test]
+    public function it_populates_top_down_from_v2_endpoint(): void
+    {
+        $position = Position::factory()->create([
+            'callsign' => 'LON_S_CTR',
+            'ukcp_position_id' => 1,
+        ]);
+
+        $ukcpPositions = new Collection([
+            $this->buildUkcpPosition(1, 'LON_S_CTR', 129.425),
+        ]);
+
+        $v2Positions = new Collection([
+            $this->buildUkcpV2Position(1, 'LON_S_CTR', 129.425, ['EGLL', 'EGKK', 'EGLF']),
+        ]);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) use ($ukcpPositions, $v2Positions) {
+            $mock->shouldReceive('getAllControllerPositions')
+                ->once()
+                ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn($v2Positions);
+        });
+
+        (new SyncUkcpPositions)->handle(app(UKCP::class));
+
+        $position->refresh();
+        $this->assertEquals(['EGLL', 'EGKK', 'EGLF'], $position->top_down);
+    }
+
+    #[Test]
+    public function it_leaves_top_down_null_for_position_not_in_v2(): void
+    {
+        $position = Position::factory()->create([
+            'callsign' => 'EGLL_TWR',
+            'ukcp_position_id' => 1,
+        ]);
+
+        $ukcpPositions = new Collection([
+            $this->buildUkcpPosition(1, 'EGLL_TWR', 118.500),
+        ]);
+
+        $v2Positions = new Collection([]);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) use ($ukcpPositions, $v2Positions) {
+            $mock->shouldReceive('getAllControllerPositions')
+                ->once()
+                ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn($v2Positions);
+        });
+
+        (new SyncUkcpPositions)->handle(app(UKCP::class));
+
+        $position->refresh();
+        $this->assertNull($position->top_down);
+    }
+
+    #[Test]
+    public function it_sets_top_down_to_empty_array_when_v2_returns_empty_array(): void
+    {
+        $position = Position::factory()->create([
+            'callsign' => 'EGLL_TWR',
+            'ukcp_position_id' => 1,
+        ]);
+
+        $ukcpPositions = new Collection([
+            $this->buildUkcpPosition(1, 'EGLL_TWR', 118.500),
+        ]);
+
+        $v2Positions = new Collection([
+            $this->buildUkcpV2Position(1, 'EGLL_TWR', 118.500, []),
+        ]);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) use ($ukcpPositions, $v2Positions) {
+            $mock->shouldReceive('getAllControllerPositions')
+                ->once()
+                ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn($v2Positions);
+        });
+
+        (new SyncUkcpPositions)->handle(app(UKCP::class));
+
+        $position->refresh();
+        $this->assertEquals([], $position->top_down);
+    }
+
+    #[Test]
+    public function it_updates_top_down_when_v2_data_changes(): void
+    {
+        $position = Position::factory()->create([
+            'callsign' => 'LON_S_CTR',
+            'ukcp_position_id' => 1,
+            'top_down' => ['EGLL'],
+        ]);
+
+        $ukcpPositions = new Collection([
+            $this->buildUkcpPosition(1, 'LON_S_CTR', 129.425),
+        ]);
+
+        $v2Positions = new Collection([
+            $this->buildUkcpV2Position(1, 'LON_S_CTR', 129.425, ['EGLL', 'EGKK', 'EGLF']),
+        ]);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) use ($ukcpPositions, $v2Positions) {
+            $mock->shouldReceive('getAllControllerPositions')
+                ->once()
+                ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn($v2Positions);
+        });
+
+        (new SyncUkcpPositions)->handle(app(UKCP::class));
+
+        $position->refresh();
+        $this->assertEquals(['EGLL', 'EGKK', 'EGLF'], $position->top_down);
+    }
+
+    #[Test]
+    public function dry_run_mode_does_not_update_top_down(): void
+    {
+        $position = Position::factory()->create([
+            'callsign' => 'LON_S_CTR',
+            'ukcp_position_id' => 1,
+        ]);
+
+        $ukcpPositions = new Collection([
+            $this->buildUkcpPosition(1, 'LON_S_CTR', 129.425),
+        ]);
+
+        $v2Positions = new Collection([
+            $this->buildUkcpV2Position(1, 'LON_S_CTR', 129.425, ['EGLL', 'EGKK']),
+        ]);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) use ($ukcpPositions, $v2Positions) {
+            $mock->shouldReceive('getAllControllerPositions')
+                ->once()
+                ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn($v2Positions);
+        });
+
+        (new SyncUkcpPositions(dryRun: true))->handle(app(UKCP::class));
+
+        $position->refresh();
+        $this->assertNull($position->top_down);
+    }
+
+    #[Test]
+    public function it_handles_v2_endpoint_returning_empty_collection(): void
+    {
+        $position = Position::factory()->create([
+            'callsign' => 'EGLL_TWR',
+            'ukcp_position_id' => 1,
+        ]);
+
+        $ukcpPositions = new Collection([
+            $this->buildUkcpPosition(1, 'EGLL_TWR', 118.500),
+        ]);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) use ($ukcpPositions) {
+            $mock->shouldReceive('getAllControllerPositions')
+                ->once()
+                ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
+        });
+
+        (new SyncUkcpPositions)->handle(app(UKCP::class));
+
+        $position->refresh();
+        $this->assertNull($position->top_down);
     }
 }

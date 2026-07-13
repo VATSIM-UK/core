@@ -192,6 +192,35 @@ class UKCP
         }
     }
 
+    /**
+     * Fetch all controller positions from the UKCP API v2 dependency endpoint.
+     *
+     * Returns a collection of objects with: id (int), callsign (string),
+     * frequency (float), and top_down (array of ICAO codes this position covers).
+     *
+     * @return Collection<object{id: int, callsign: string, frequency: float, top_down: string[]}>
+     */
+    public function getControllerPositionsV2Dependency(): Collection
+    {
+        try {
+            $response = $this->client->get(
+                config('services.ukcp.url').'/api/controller-positions-v2',
+                [
+                    'headers' => [
+                        'Authorization' => 'Bearer '.$this->apiKey,
+                    ],
+                    'timeout' => 15,
+                ]
+            );
+
+            return collect(json_decode($response->getBody()->getContents()));
+        } catch (ClientException|GuzzleException $e) {
+            Log::error("UKCP Client Exception when fetching controller positions v2: {$e->getMessage()}");
+
+            return collect();
+        }
+    }
+
     private function getStandStatusCacheKey(string $airfieldIcao): string
     {
         return sprintf('UKCP_STAND_STATUS_%s', $airfieldIcao);
