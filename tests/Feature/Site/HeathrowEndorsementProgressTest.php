@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Site;
 
+use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Endorsement;
@@ -764,11 +765,12 @@ class HeathrowEndorsementProgressTest extends TestCase
         $account = $this->createAccountWithQualification('S2');
         $positionGroups = $this->createPositionGroups(['Heathrow (GND)', 'Heathrow (TWR)']);
         $this->createEndorsement($account, $positionGroups['Heathrow (GND)']);
+        $this->createAfisPosition('EGFH_I_TWR');
         $s2Qual = Qualification::code('S2')->firstOrFail();
 
         factory(Atc::class)->create([
             'account_id' => $account->id,
-            'callsign' => 'EGKK_I_TWR',
+            'callsign' => 'EGFH_I_TWR',
             'minutes_online' => 9999,
             'facility_type' => Atc::TYPE_TWR,
             'qualification_id' => $s2Qual->id,
@@ -786,11 +788,12 @@ class HeathrowEndorsementProgressTest extends TestCase
         $account = $this->createAccountWithQualification('S2');
         $positionGroups = $this->createPositionGroups(['Heathrow (GND)', 'Heathrow (TWR)']);
         $this->createEndorsement($account, $positionGroups['Heathrow (GND)']);
+        $this->createAfisPosition('EGFH_I__TWR');
         $s2Qual = Qualification::code('S2')->firstOrFail();
 
         factory(Atc::class)->create([
             'account_id' => $account->id,
-            'callsign' => 'EGKK_I__TWR',
+            'callsign' => 'EGFH_I__TWR',
             'minutes_online' => 9999,
             'facility_type' => Atc::TYPE_TWR,
             'qualification_id' => $s2Qual->id,
@@ -808,6 +811,7 @@ class HeathrowEndorsementProgressTest extends TestCase
         $account = $this->createAccountWithQualification('S2');
         $positionGroups = $this->createPositionGroups(['Heathrow (GND)', 'Heathrow (TWR)']);
         $this->createEndorsement($account, $positionGroups['Heathrow (GND)']);
+        $this->createAfisPosition('EGKK_R_TWR');
         $s2Qual = Qualification::code('S2')->firstOrFail();
 
         factory(Atc::class)->create([
@@ -829,11 +833,12 @@ class HeathrowEndorsementProgressTest extends TestCase
     {
         $account = $this->createAccountWithQualification('S2');
         PositionGroup::factory()->create(['name' => 'Heathrow (GND)']);
+        $this->createAfisPosition('EGFH_I_TWR');
         $s2Qual = Qualification::code('S2')->firstOrFail();
 
         factory(Atc::class)->create([
             'account_id' => $account->id,
-            'callsign' => 'EGKK_I_TWR',
+            'callsign' => 'EGFH_I_TWR',
             'minutes_online' => 9999,
             'facility_type' => Atc::TYPE_TWR,
             'qualification_id' => $s2Qual->id,
@@ -875,6 +880,13 @@ class HeathrowEndorsementProgressTest extends TestCase
         }
 
         return $groups;
+    }
+
+    private function createAfisPosition(string $callsign): void
+    {
+        $afisGroup = PositionGroup::firstOrCreate(['name' => 'AFISO / AGO (S1)']);
+        $position = Position::factory()->create(['callsign' => $callsign]);
+        $afisGroup->positions()->attach($position);
     }
 
     private function createEndorsement(Account $account, PositionGroup $positionGroup): Endorsement

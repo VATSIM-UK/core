@@ -6,6 +6,7 @@ use App\Events\NetworkData\AtcSessionDeleted;
 use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\NetworkData\AtcSessionStarted;
 use App\Events\NetworkData\AtcSessionUpdated;
+use App\Models\Atc\PositionGroup;
 use App\Models\Cts\Session as CtsSession;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -239,12 +240,12 @@ class Atc extends Model
 
     public static function scopeWithoutAfis($query)
     {
-        return $query->where(function ($subQuery) {
-            return $subQuery->where('callsign', 'not like', '%\_I\_TWR')
-                ->where('callsign', 'not like', '%\_I\_\_TWR')
-                ->where('callsign', 'not like', '%\_R\_TWR')
-                ->where('callsign', 'not like', '%\_R\_\_TWR');
-        });
+        $afisGroup = PositionGroup::where('name', 'AFISO / AGO (S1)')->first();
+        if (! $afisGroup) {
+            return $query;
+        }
+
+        return $query->whereNotIn('callsign', $afisGroup->positions()->pluck('callsign'));
     }
 
     public static function scopeAtMinimumQualification($query, $vatsimLevel)
