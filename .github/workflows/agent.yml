@@ -1,0 +1,43 @@
+name: PR Agent (VATSIM-UK Core Optimized)
+
+on:
+  pull_request_target:
+    types: [opened, reopened, ready_for_review]
+  issue_comment:
+    types: [created]
+
+jobs:
+  pr_agent_job:
+    if: >-
+      github.event.sender.type != 'Bot' && (
+        (github.event_name == 'pull_request_target' && contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association)) ||
+        (github.event_name == 'issue_comment' && contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association))
+      )
+
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: write
+
+    steps:
+      - name: PR Agent action step
+        uses: the-pr-agent/pr-agent@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          OPENAI__API_BASE: "https://opencode.ai/zen/go/v1"
+          OPENAI__KEY: ${{ secrets.OPENCODE_API_KEY }}
+          CONFIG__MODEL: "openai/deepseek-v4-pro"
+
+          CONFIG__IGNORE__GLOB: "['*.lock', 'composer.lock', 'package-lock.json', 'public/build/*', 'storage/*', 'bootstrap/cache/*', 'vendor/*', 'node_modules/*', 'junit.xml']"
+
+          PR_REVIEWER__INLINE_CODE_COMMENTS: "true"
+
+          PR_CODE_SUGGESTIONS__SUGGESTIONS_SCORE_THRESHOLD: "7"
+
+          CONFIG__CUSTOM_MODEL_MAX_TOKENS: "128000"
+          PR_CODE_SUGGESTIONS__MAX_CONTEXT_TOKENS: "24000"
+
+          PR_CODE_SUGGESTIONS__EXTRA_INSTRUCTIONS: >-
+            Ignore all code-style, formatting, or indentation issues (Laravel Pint will catch these).
