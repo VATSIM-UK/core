@@ -89,7 +89,7 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
 
                 switch ($pgName) {
                     case 'Heathrow (GND)':
-                        $delGndTwr = fn () => $this->account->networkDataAtc()
+                        $delGndTwrBase = $this->account->networkDataAtc()
                             ->isUK()
                             ->withoutAfis()
                             ->withoutMilitary()
@@ -103,9 +103,9 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
                         $endorsementProgress[] = [
                             'name' => 'Heathrow DEL/GND (S2+)',
                             'bars' => [
-                                ['label' => 'Total UK DEL/GND/TWR', 'hours' => $delGndTwr()->sum('minutes_online') / 60, 'required' => 40],
-                                ['label' => 'Gatwick DEL/GND/TWR', 'hours' => (clone $delGndTwr())->where('callsign', 'like', 'EGKK%')->sum('minutes_online') / 60, 'required' => 10],
-                                ['label' => 'Manchester DEL/GND/TWR', 'hours' => (clone $delGndTwr())->where('callsign', 'like', 'EGCC%')->sum('minutes_online') / 60, 'required' => 10],
+                                ['label' => 'Total UK DEL/GND/TWR', 'hours' => (clone $delGndTwrBase)->sum('minutes_online') / 60, 'required' => 40],
+                                ['label' => 'Gatwick DEL/GND/TWR', 'hours' => (clone $delGndTwrBase)->where('callsign', 'like', 'EGKK%')->sum('minutes_online') / 60, 'required' => 10],
+                                ['label' => 'Manchester DEL/GND/TWR', 'hours' => (clone $delGndTwrBase)->where('callsign', 'like', 'EGCC%')->sum('minutes_online') / 60, 'required' => 10],
                             ],
                         ];
                         break;
@@ -121,7 +121,7 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
                             ->whereBetween('connected_at', [Carbon::now()->subMonths(3), Carbon::now()])
                             ->sum('minutes_online') / 60;
 
-                        $ukTwr = fn () => $this->account->networkDataAtc()
+                        $ukTwrBase = $this->account->networkDataAtc()
                             ->isUK()
                             ->withoutAfis()
                             ->withoutMilitary()
@@ -132,9 +132,9 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
                             'name' => 'Heathrow TWR (S2+)',
                             'bars' => [
                                 ['label' => 'Heathrow GND/DEL (last 3 months)', 'hours' => $heathrowGndRecent, 'required' => 10],
-                                ['label' => 'Total UK TWR', 'hours' => $ukTwr()->sum('minutes_online') / 60, 'required' => 100],
-                                ['label' => 'Manchester TWR', 'hours' => (clone $ukTwr())->where('callsign', 'like', 'EGCC%')->sum('minutes_online') / 60, 'required' => 30],
-                                ['label' => 'Gatwick TWR', 'hours' => (clone $ukTwr())->where('callsign', 'like', 'EGKK%')->sum('minutes_online') / 60, 'required' => 30],
+                                ['label' => 'Total UK TWR', 'hours' => (clone $ukTwrBase)->sum('minutes_online') / 60, 'required' => 100],
+                                ['label' => 'Manchester TWR', 'hours' => (clone $ukTwrBase)->where('callsign', 'like', 'EGCC%')->sum('minutes_online') / 60, 'required' => 30],
+                                ['label' => 'Gatwick TWR', 'hours' => (clone $ukTwrBase)->where('callsign', 'like', 'EGKK%')->sum('minutes_online') / 60, 'required' => 30],
                             ],
                         ];
                         break;
@@ -147,7 +147,7 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
                             ->whereBetween('connected_at', [Carbon::now()->subMonths(3), Carbon::now()])
                             ->sum('minutes_online') / 60;
 
-                        $ukApp = fn () => $this->account->networkDataAtc()
+                        $ukAppBase = $this->account->networkDataAtc()
                             ->isUK()
                             ->withoutMilitary()
                             ->atMinimumQualification(4)
@@ -157,9 +157,9 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
                             'name' => 'Heathrow APP (S3+)',
                             'bars' => [
                                 ['label' => 'Heathrow TWR (last 3 months)', 'hours' => $heathrowTwrRecent, 'required' => 10],
-                                ['label' => 'Total UK APP', 'hours' => $ukApp()->sum('minutes_online') / 60, 'required' => 120],
-                                ['label' => 'Manchester APP', 'hours' => (clone $ukApp())->where('callsign', 'like', 'EGCC%')->sum('minutes_online') / 60, 'required' => 30],
-                                ['label' => 'Gatwick APP', 'hours' => (clone $ukApp())->where('callsign', 'like', 'EGKK%')->sum('minutes_online') / 60, 'required' => 30],
+                                ['label' => 'Total UK APP', 'hours' => (clone $ukAppBase)->sum('minutes_online') / 60, 'required' => 120],
+                                ['label' => 'Manchester APP', 'hours' => (clone $ukAppBase)->where('callsign', 'like', 'EGCC%')->sum('minutes_online') / 60, 'required' => 30],
+                                ['label' => 'Gatwick APP', 'hours' => (clone $ukAppBase)->where('callsign', 'like', 'EGKK%')->sum('minutes_online') / 60, 'required' => 30],
                             ],
                         ];
                         break;
