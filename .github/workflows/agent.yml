@@ -1,14 +1,13 @@
 name: PR Agent (VATSIM-UK Core Optimized)
 
 on:
-  pull_request_target: # Necessary for OSS forks to securely fetch the OpenCode key
+  pull_request_target:
     types: [opened, reopened, ready_for_review]
   issue_comment:
     types: [created]
 
 jobs:
   pr_agent_job:
-    # Ensure only authorized maintainers trigger the billing/token pipeline
     if: >-
       github.event.sender.type != 'Bot' && (
         (github.event_name == 'pull_request_target' && contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association)) ||
