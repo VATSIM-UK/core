@@ -65,7 +65,17 @@ class SyncUkcpPositions extends Job implements ShouldQueue
                 }
 
                 if (! empty($changes) && ! $this->dryRun) {
-                    $core->update($changes);
+                    if (isset($changes['callsign']) && Position::where('callsign', $changes['callsign'])
+                        ->where('id', '!=', $core->id)
+                        ->exists()
+                    ) {
+                        Log::warning("SyncUkcpPositions: Skipping callsign update for {$core->callsign} -> {$changes['callsign']} because it would conflict with an existing position.");
+                        unset($changes['callsign']);
+                    }
+
+                    if (! empty($changes)) {
+                        $core->update($changes);
+                    }
                 }
 
                 if (! empty($changes)) {
