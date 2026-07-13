@@ -64,6 +64,7 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withoutTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc withoutAfis()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc withoutMilitary()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc atMinimumQualification($vatsimLevel)
  *
  * @mixin \Eloquent
@@ -246,6 +247,23 @@ class Atc extends Model
         }
 
         return $query->whereNotIn('callsign', $afisGroup->positions()->pluck('callsign'));
+    }
+
+    public static function scopeWithoutMilitary($query)
+    {
+        $militaryGroupNames = ['Military (APP)', 'Military (CTR)', 'Military (TWR)'];
+        $militaryCallsigns = PositionGroup::whereIn('name', $militaryGroupNames)
+            ->get()
+            ->flatMap(fn ($g) => $g->positions()->pluck('callsign'))
+            ->unique()
+            ->values()
+            ->toArray();
+
+        if (empty($militaryCallsigns)) {
+            return $query;
+        }
+
+        return $query->whereNotIn('callsign', $militaryCallsigns);
     }
 
     public static function scopeAtMinimumQualification($query, $vatsimLevel)

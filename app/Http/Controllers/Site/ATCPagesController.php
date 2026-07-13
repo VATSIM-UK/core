@@ -92,6 +92,7 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
                         $delGndTwr = fn () => $this->account->networkDataAtc()
                             ->isUK()
                             ->withoutAfis()
+                            ->withoutMilitary()
                             ->atMinimumQualification(3)
                             ->where(function (Builder $b) {
                                 $b->where('facility_type', Atc::TYPE_DEL)
@@ -123,6 +124,7 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
                         $ukTwr = fn () => $this->account->networkDataAtc()
                             ->isUK()
                             ->withoutAfis()
+                            ->withoutMilitary()
                             ->atMinimumQualification(3)
                             ->where('facility_type', Atc::TYPE_TWR);
 
@@ -147,6 +149,7 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
 
                         $ukApp = fn () => $this->account->networkDataAtc()
                             ->isUK()
+                            ->withoutMilitary()
                             ->atMinimumQualification(4)
                             ->where('facility_type', Atc::TYPE_APP);
 

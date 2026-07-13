@@ -851,6 +851,75 @@ class HeathrowEndorsementProgressTest extends TestCase
     }
 
     #[Test]
+    public function test_military_twr_callsigns_are_excluded_from_twr_bars()
+    {
+        $account = $this->createAccountWithQualification('S2');
+        $positionGroups = $this->createPositionGroups(['Heathrow (GND)', 'Heathrow (TWR)']);
+        $this->createEndorsement($account, $positionGroups['Heathrow (GND)']);
+        $this->createMilitaryPosition('Military (TWR)', 'EGDL_TWR');
+        $s2Qual = Qualification::code('S2')->firstOrFail();
+
+        factory(Atc::class)->create([
+            'account_id' => $account->id,
+            'callsign' => 'EGDL_TWR',
+            'minutes_online' => 9999,
+            'facility_type' => Atc::TYPE_TWR,
+            'qualification_id' => $s2Qual->id,
+        ]);
+
+        $this->actingAs($account)
+            ->get(route(self::ROUTE))
+            ->assertOk()
+            ->assertSee('0 / 100 Hrs');
+    }
+
+    #[Test]
+    public function test_military_app_callsigns_are_excluded_from_app_bars()
+    {
+        $account = $this->createAccountWithQualification('S3');
+        $positionGroups = $this->createPositionGroups(['Heathrow (GND)', 'Heathrow (TWR)', 'Heathrow (APP)']);
+        $this->createEndorsement($account, $positionGroups['Heathrow (GND)']);
+        $this->createEndorsement($account, $positionGroups['Heathrow (TWR)']);
+        $this->createMilitaryPosition('Military (APP)', 'EGQL_APP');
+        $s3Qual = Qualification::code('S3')->firstOrFail();
+
+        factory(Atc::class)->create([
+            'account_id' => $account->id,
+            'callsign' => 'EGQL_APP',
+            'minutes_online' => 9999,
+            'facility_type' => Atc::TYPE_APP,
+            'qualification_id' => $s3Qual->id,
+        ]);
+
+        $this->actingAs($account)
+            ->get(route(self::ROUTE))
+            ->assertOk()
+            ->assertSee('0 / 120 Hrs');
+    }
+
+    #[Test]
+    public function test_military_twr_callsigns_are_also_excluded_from_gnd_total_bars()
+    {
+        $account = $this->createAccountWithQualification('S2');
+        PositionGroup::factory()->create(['name' => 'Heathrow (GND)']);
+        $this->createMilitaryPosition('Military (TWR)', 'EGVA_TWR');
+        $s2Qual = Qualification::code('S2')->firstOrFail();
+
+        factory(Atc::class)->create([
+            'account_id' => $account->id,
+            'callsign' => 'EGVA_TWR',
+            'minutes_online' => 9999,
+            'facility_type' => Atc::TYPE_TWR,
+            'qualification_id' => $s2Qual->id,
+        ]);
+
+        $this->actingAs($account)
+            ->get(route(self::ROUTE))
+            ->assertOk()
+            ->assertSee('0 / 40 Hrs');
+    }
+
+    #[Test]
     public function test_zero_hours_shown_when_no_atc_sessions_exist()
     {
         $account = $this->createAccountWithQualification('S2');
@@ -887,6 +956,13 @@ class HeathrowEndorsementProgressTest extends TestCase
         $afisGroup = PositionGroup::firstOrCreate(['name' => 'AFISO / AGO (S1)']);
         $position = Position::factory()->create(['callsign' => $callsign]);
         $afisGroup->positions()->attach($position);
+    }
+
+    private function createMilitaryPosition(string $groupName, string $callsign): void
+    {
+        $group = PositionGroup::firstOrCreate(['name' => $groupName]);
+        $position = Position::factory()->create(['callsign' => $callsign]);
+        $group->positions()->attach($position);
     }
 
     private function createEndorsement(Account $account, PositionGroup $positionGroup): Endorsement
