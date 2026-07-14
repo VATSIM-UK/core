@@ -8,6 +8,7 @@ use App\Libraries\UKCP;
 use App\Models\Atc\Position;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SyncUkcpPositions extends Job implements ShouldQueue
@@ -27,6 +28,11 @@ class SyncUkcpPositions extends Job implements ShouldQueue
 
     public function handle(UKCP $ukcp): void
     {
+        DB::transaction(fn () => $this->doSync($ukcp));
+    }
+
+    private function doSync(UKCP $ukcp): void
+    {
         $ukcpPositions = $ukcp->getAllControllerPositions();
 
         if ($ukcpPositions->isEmpty()) {
@@ -35,21 +41,19 @@ class SyncUkcpPositions extends Job implements ShouldQueue
             return;
         }
 
-        // Index Core positions by both callsign and ukcp_position_id for flexible matching
         $coreByCallsign = Position::all()->keyBy('callsign');
         $coreByUkcpId = Position::whereNotNull('ukcp_position_id')->get()->keyBy('ukcp_position_id');
         $ukcpIds = $ukcpPositions->pluck('id');
 
         $created = 0;
         $updated = 0;
-        $flagged = 0;
+        $deleted = 0;
 
         foreach ($ukcpPositions as $ukcpPosition) {
             $core = $coreByUkcpId->get($ukcpPosition->id) // Match by UKCP ID first (survives callsign changes)
                 ?? $coreByCallsign->get($ukcpPosition->callsign); // Fall back to callsign (first-time linking)
 
             if ($core) {
-                // Determine what needs updating
                 $changes = [];
 
                 if ($core->callsign !== $ukcpPosition->callsign) {
@@ -64,7 +68,11 @@ class SyncUkcpPositions extends Job implements ShouldQueue
                     $changes['ukcp_position_id'] = $ukcpPosition->id;
                 }
 
-                if (! empty($changes) && ! $this->dryRun) {
+                if (empty($changes)) {
+                    continue;
+                }
+
+                if (! $this->dryRun) {
                     if (isset($changes['callsign']) && Position::where('callsign', $changes['callsign'])
                         ->where('id', '!=', $core->id)
                         ->exists()
@@ -75,17 +83,15 @@ class SyncUkcpPositions extends Job implements ShouldQueue
 
                     if (! empty($changes)) {
                         $core->update($changes);
+                        $updated++;
                     }
-                }
-
-                if (! empty($changes)) {
+                } elseif (! empty($changes)) {
                     $updated++;
                 }
             } else {
-                // CREATE - new position from UKCP
-                $name = $ukcpPosition->description ?: $ukcpPosition->callsign;
-
                 if (! $this->dryRun) {
+                    $name = $ukcpPosition->description ?: $ukcpPosition->callsign;
+
                     Position::create([
                         'callsign' => $ukcpPosition->callsign,
                         'name' => $name,
@@ -100,42 +106,57 @@ class SyncUkcpPositions extends Job implements ShouldQueue
             }
         }
 
-        // TOP-DOWN: populate top_down from v2 dependency endpoint
-        $v2Positions = $ukcp->getControllerPositionsV2Dependency();
+        $topDownUpdated = $this->syncTopDown($ukcp);
 
-        if ($v2Positions->isNotEmpty()) {
-            $v2ById = $v2Positions->keyBy('id');
-
-            $coreByUkcpId = Position::whereNotNull('ukcp_position_id')->get()->keyBy('ukcp_position_id');
-
-            foreach ($coreByUkcpId as $ukcpId => $core) {
-                $v2 = $v2ById->get($ukcpId);
-                if (! $v2) {
-                    continue;
-                }
-
-                $topDown = $v2->top_down;
-                $newValue = empty($topDown) ? [] : array_values($topDown);
-
-                if ($core->top_down !== $newValue && ! $this->dryRun) {
-                    $core->update(['top_down' => $newValue]);
-                }
-            }
-        }
-
-        // REMOVALS - soft-delete UKCP-synced positions that no longer exist in UKCP
+        // REMOVALS: soft-delete UKCP-synced positions that no longer exist in UKCP
         $positionsToRemove = Position::whereNotNull('ukcp_position_id')
             ->whereNotIn('ukcp_position_id', $ukcpIds);
 
         $removedCount = $positionsToRemove->count();
 
-        if (! $this->dryRun && $removedCount > 0) {
+        if ($removedCount > 0 && ! $this->dryRun) {
+            // Nullify ukcp_position_id to free the unique index for future reuse
+            $positionsToRemove->update(['ukcp_position_id' => null]);
             $positionsToRemove->delete();
         }
 
-        $flagged += $removedCount;
+        $deleted += $removedCount;
 
-        Log::info("SyncUkcpPositions complete. Created: {$created}, Updated: {$updated}, Soft-deleted: {$flagged}".($this->dryRun ? ' (DRY RUN)' : ''));
+        $dryRunLabel = $this->dryRun ? ' (DRY RUN)' : '';
+
+        Log::info("SyncUkcpPositions complete. Created: {$created}, Updated: {$updated}, Top-down updated: {$topDownUpdated}, Soft-deleted: {$deleted}{$dryRunLabel}");
+    }
+
+    private function syncTopDown(UKCP $ukcp): int
+    {
+        $v2Positions = $ukcp->getControllerPositionsV2Dependency();
+
+        if ($v2Positions->isEmpty()) {
+            return 0;
+        }
+
+        $v2ById = $v2Positions->keyBy('id');
+        $coreByUkcpId = Position::whereNotNull('ukcp_position_id')->get()->keyBy('ukcp_position_id');
+        $updated = 0;
+
+        foreach ($coreByUkcpId as $ukcpId => $core) {
+            $v2 = $v2ById->get($ukcpId);
+            if (! $v2 || ! property_exists($v2, 'top_down')) {
+                continue;
+            }
+
+            $topDown = $v2->top_down;
+            $newValue = empty($topDown) ? [] : array_values($topDown);
+
+            if ($core->top_down !== $newValue) {
+                if (! $this->dryRun) {
+                    $core->update(['top_down' => $newValue]);
+                }
+                $updated++;
+            }
+        }
+
+        return $updated;
     }
 
     public function middleware(): array

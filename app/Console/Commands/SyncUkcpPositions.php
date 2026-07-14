@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Jobs\SyncUkcpPositions as SyncUkcpPositionsJob;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class SyncUkcpPositions extends Command
@@ -16,25 +17,37 @@ class SyncUkcpPositions extends Command
 
     public function handle(): int
     {
-        $dryRun = (bool) $this->option('dry-run');
+        $lockKey = 'ukcp:sync-positions:lock';
 
-        if ($dryRun) {
-            $this->warn('DRY RUN — no changes will be written to the database.');
+        if (! Cache::add($lockKey, true, 600)) {
+            $this->warn('Another sync is already in progress. Skipping.');
+
+            return 0;
         }
 
-        $this->info('Fetching positions from UKCP API...');
+        try {
+            $dryRun = (bool) $this->option('dry-run');
 
-        $job = new SyncUkcpPositionsJob($dryRun);
-        $job->handle(app(\App\Libraries\UKCP::class));
+            if ($dryRun) {
+                $this->warn('DRY RUN - no changes will be written to the database.');
+            }
 
-        $this->info('SyncUkcpPositions job completed.');
+            $this->info('Fetching positions from UKCP API...');
 
-        if ($dryRun) {
-            $this->warn('DRY RUN — no changes were written. Run without --dry-run to apply.');
+            $job = new SyncUkcpPositionsJob($dryRun);
+            $job->handle(app(\App\Libraries\UKCP::class));
+
+            $this->info('SyncUkcpPositions job completed.');
+
+            if ($dryRun) {
+                $this->warn('DRY RUN - no changes were written. Run without --dry-run to apply.');
+            }
+
+            Log::info('ukcp:sync-positions command completed.'.($dryRun ? ' (DRY RUN)' : ''));
+
+            return 0;
+        } finally {
+            Cache::forget($lockKey);
         }
-
-        Log::info('ukcp:sync-positions command completed.'.($dryRun ? ' (DRY RUN)' : ''));
-
-        return 0;
     }
 }

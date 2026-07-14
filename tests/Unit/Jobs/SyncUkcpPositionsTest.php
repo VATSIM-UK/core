@@ -270,6 +270,93 @@ class SyncUkcpPositionsTest extends TestCase
     }
 
     #[Test]
+    public function it_nulls_ukcp_position_id_on_soft_deleted_positions(): void
+    {
+        $toRemove = Position::factory()->create([
+            'callsign' => 'EGGP_APP',
+            'ukcp_position_id' => 1,
+            'virtual' => false,
+        ]);
+
+        $ukcpPositions = new Collection([
+            $this->buildUkcpPosition(2, 'EGPH_TWR', 118.700),
+        ]);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) use ($ukcpPositions) {
+            $mock->shouldReceive('getAllControllerPositions')
+                ->once()
+                ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
+        });
+
+        (new SyncUkcpPositions)->handle(app(UKCP::class));
+
+        $this->assertSoftDeleted($toRemove);
+        $this->assertNull($toRemove->refresh()->ukcp_position_id);
+    }
+
+    #[Test]
+    public function it_allows_ukcp_id_reuse_after_soft_delete(): void
+    {
+        // Simulate: UKCP had position 1 (EGBB_APP), removed from feed, then re-added as a different position
+        Position::factory()->create([
+            'callsign' => 'EGBB_APP',
+            'ukcp_position_id' => 1,
+            'virtual' => false,
+        ]);
+
+        $ukcpPositions = new Collection([
+            $this->buildUkcpPosition(2, 'EGPH_TWR', 118.700),
+        ]);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) use ($ukcpPositions) {
+            $mock->shouldReceive('getAllControllerPositions')
+                ->once()
+                ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
+        });
+
+        (new SyncUkcpPositions)->handle(app(UKCP::class));
+
+        // Position 1 is soft-deleted with its UKCP ID nullified
+        $this->assertDatabaseHas('positions', [
+            'callsign' => 'EGBB_APP',
+            'ukcp_position_id' => null,
+        ]);
+
+        // Now UKCP reuses ID 1 for a completely new position
+        $ukcpPositions = new Collection([
+            $this->buildUkcpPosition(1, 'EGKK_TWR', 118.975),
+            $this->buildUkcpPosition(2, 'EGPH_TWR', 118.700),
+        ]);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) use ($ukcpPositions) {
+            $mock->shouldReceive('getAllControllerPositions')
+                ->once()
+                ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
+        });
+
+        (new SyncUkcpPositions)->handle(app(UKCP::class));
+
+        // The reused ID 1 should have been created without constraint violation
+        $this->assertDatabaseHas('positions', [
+            'callsign' => 'EGKK_TWR',
+            'ukcp_position_id' => 1,
+            'deleted_at' => null,
+        ]);
+    }
+
+    #[Test]
     public function it_does_not_soft_delete_core_native_positions(): void
     {
         $coreNative = Position::factory()->create([
