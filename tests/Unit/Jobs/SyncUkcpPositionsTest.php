@@ -295,7 +295,10 @@ class SyncUkcpPositionsTest extends TestCase
         (new SyncUkcpPositions)->handle(app(UKCP::class));
 
         $this->assertSoftDeleted($toRemove);
-        $this->assertNull($toRemove->refresh()->ukcp_position_id);
+        $this->assertDatabaseHas('positions', [
+            'id' => $toRemove->id,
+            'ukcp_position_id' => null,
+        ]);
     }
 
     #[Test]

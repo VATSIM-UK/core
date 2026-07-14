@@ -115,9 +115,10 @@ class SyncUkcpPositions extends Job implements ShouldQueue
         $removedCount = $positionsToRemove->count();
 
         if ($removedCount > 0 && ! $this->dryRun) {
-            // Nullify ukcp_position_id to free the unique index for future reuse
-            $positionsToRemove->update(['ukcp_position_id' => null]);
-            $positionsToRemove->delete();
+            $idsToRemove = $positionsToRemove->pluck('id');
+
+            Position::whereIn('id', $idsToRemove)->delete();
+            Position::withTrashed()->whereIn('id', $idsToRemove)->update(['ukcp_position_id' => null]);
         }
 
         $deleted += $removedCount;
