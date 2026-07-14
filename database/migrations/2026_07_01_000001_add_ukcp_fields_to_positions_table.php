@@ -17,7 +17,10 @@ return new class extends Migration
                 ->unique()
                 ->after('id');
 
-            // Soft deletes for positions removed from UKCP
+            $table->json('top_down')
+                ->nullable()
+                ->after('ukcp_position_id');
+
             $table->softDeletes()
                 ->after('updated_at');
         });
@@ -30,15 +33,16 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('positions', function (Blueprint $table) {
-            $table->dropUnique(['ukcp_position_id']);
-            $table->dropColumn('ukcp_position_id');
-            $table->dropSoftDeletes();
-        });
-
-        Schema::table('positions', function (Blueprint $table) {
             $table->boolean('sub_station')
                 ->default(false)
                 ->after('type');
+        });
+
+        Schema::table('positions', function (Blueprint $table) {
+            $table->dropUnique(['ukcp_position_id']);
+            $table->dropColumn('ukcp_position_id');
+            $table->dropColumn('top_down');
+            $table->dropSoftDeletes();
         });
     }
 };
