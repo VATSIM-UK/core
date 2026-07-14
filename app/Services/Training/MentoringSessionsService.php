@@ -60,6 +60,7 @@ class MentoringSessionsService
                 'taken_date' => $availability->date,
                 'taken_from' => $takenFrom,
                 'taken_to' => $takenTo,
+                'taken_time' => now(),
             ]);
 
             DB::afterCommit(function () use ($session) {
