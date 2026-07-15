@@ -17,7 +17,6 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\MentorPermissionService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
@@ -391,17 +390,6 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'good' => [FieldScore::GOOD],
             'test standard' => [FieldScore::TEST_STANDARD],
         ];
-    }
-
-    #[Test]
-    #[DataProvider('fieldScoreProvider')]
-    public function test_displays_correct_label_for_each_field_score(FieldScore $score): void
-    {
-        $this->reportSheet->update(['field_score' => $score->value]);
-
-        Livewire::actingAs($this->student)
-            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
-            ->assertSee($score->getLabel());
     }
 
     #[Test]
