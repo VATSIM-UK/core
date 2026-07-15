@@ -151,6 +151,10 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
                     if ($record->cancelled_datetime !== null && $record->noShow != 1) {
                         $cancelledById = $record->cancelReason?->reason_by;
 
+                        if (! $cancelledById) {
+                            return 'By Unknown';
+                        }
+
                         if ($cancelledById === $record->student_id) {
                             return 'By Student';
                         }
@@ -159,7 +163,9 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
                             return 'By Mentor';
                         }
 
-                        return $cancelledById ? "By {$cancelledById}" : 'By Unknown';
+                        $canceller = $cancelledById ? Member::find($cancelledById) : null;
+
+                        return $canceller ? "By {$canceller->cid}" : 'By Unknown';
                     }
 
                     return null;

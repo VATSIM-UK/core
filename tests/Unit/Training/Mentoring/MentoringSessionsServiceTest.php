@@ -172,6 +172,7 @@ class MentoringSessionsServiceTest extends TestCase
         $this->assertSame(Carbon::tomorrow()->format('Y-m-d'), Carbon::parse($pendingSession->taken_date)->format('Y-m-d'));
         $this->assertSame('10:00:00', Carbon::parse($pendingSession->taken_from)->format('H:i:s'));
         $this->assertSame('12:00:00', Carbon::parse($pendingSession->taken_to)->format('H:i:s'));
+        $this->assertNotNull($pendingSession->taken_time);
     }
 
     #[Test]
@@ -311,6 +312,7 @@ class MentoringSessionsServiceTest extends TestCase
         $this->assertSame('16:00:00', Carbon::parse($session->taken_to)->format('H:i:s'));
         $this->assertSame($this->mentorMember->id, $session->mentor_id);
         $this->assertSame('EGLL_APP', $session->position);
+        $this->assertNotNull($session->taken_time);
     }
 
     #[Test]
@@ -620,6 +622,7 @@ class MentoringSessionsServiceTest extends TestCase
         $this->assertSame($newMentorMember->id, $session->mentor_id);
         $this->assertSame('10:00:00', Carbon::parse($session->taken_from)->format('H:i:s'));
         $this->assertSame('12:00:00', Carbon::parse($session->taken_to)->format('H:i:s'));
+        $this->assertNotNull($session->taken_time);
     }
 
     #[Test]
