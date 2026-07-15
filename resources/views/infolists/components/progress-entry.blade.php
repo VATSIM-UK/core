@@ -43,7 +43,7 @@
 
             // Colour palette
             // fill     segment background
-            // edge_*   colour suffix for the border-t-/-b-/-l-/-r- classes
+            // edge_* colour suffix for the border-t-/-b-/-l-/-r- classes
             // swatch   `bg-*` colour for the arrow overlay's border layer
             // center   `bg-*` colour for the arrow overlay's inner layer
             // priority lower number wins when two adjacent segments touch (decides which colour a shared border gets)
@@ -114,6 +114,9 @@
          */
         $isValid = $currentVal >= 2;
         $hasPrevious = $previousVal >= 2;
+        
+        // If there is no valid previous score (or it is below 2), treat it as 1 to enable an improvement trend to >= 2.
+        $effectivePrevious = $hasPrevious ? $previousVal : 1;
         $showBestFill = $hasPrevious && $bestVal > $currentVal;
 
         // Segment State
@@ -123,22 +126,22 @@
         $arrowDirection = null;
 
         if ($isValid) {
-            if (!$hasPrevious || $currentVal === $previousVal) {
-                // No trend to show: just mark everything up to current as covered.
+            if ($currentVal === $effectivePrevious) {
+                // No trend changes: just mark everything up to current as covered.
                 foreach ($segments as $v) {
                     if ($v <= $currentVal) $segmentTokens[$v] = 'covered';
                 }
-            } elseif ($currentVal > $previousVal) {
-                // Improved: old range stays "covered", the newly gained range is highlighted green with a right-pointing arrow at the boundary.
+            } elseif ($currentVal > $effectivePrevious) {
+                // Improved: old range stays "covered", newly gained range is green.
                 foreach ($segments as $v) {
-                    $segmentTokens[$v] = ($v <= $previousVal) ? 'covered' : (($v <= $currentVal) ? 'improve' : 'default');
+                    $segmentTokens[$v] = ($v <= $effectivePrevious) ? 'covered' : (($v <= $currentVal) ? 'improve' : 'default');
                 }
                 $arrowValue = $currentVal;
                 $arrowDirection = 'right';
             } else {
                 // Declined: current range stays "covered", the lost range is highlighted red with a left-pointing arrow at the boundary.
                 foreach ($segments as $v) {
-                    $segmentTokens[$v] = ($v <= $currentVal) ? 'covered' : (($v <= $previousVal) ? 'decline' : 'default');
+                    $segmentTokens[$v] = ($v <= $currentVal) ? 'covered' : (($v <= $effectivePrevious) ? 'decline' : 'default');
                 }
                 $firstDeclined = $currentVal + 1;
                 if (in_array($firstDeclined, $segments, true)) {
