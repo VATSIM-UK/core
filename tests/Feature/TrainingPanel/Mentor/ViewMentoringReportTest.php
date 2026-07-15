@@ -638,5 +638,4 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             ->assertDontSee('Session Cancelled by')
             ->assertDontSee('This session has been marked as a student no-show.');
     }
-
 }
