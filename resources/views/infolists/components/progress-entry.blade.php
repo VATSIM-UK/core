@@ -61,6 +61,7 @@
                 ],
                 'covered' => [
                     'fill' => 'bg-cyan-200 dark:bg-cyan-600/90',
+
                     'edge_t' => 'border-t-cyan-500 dark:border-t-cyan-400/60',
                     'edge_b' => 'border-b-cyan-500 dark:border-b-cyan-400/60',
                     'edge_r' => 'border-r-cyan-500 dark:border-r-cyan-400/60',
@@ -114,13 +115,13 @@
          */
         $isValid = $currentVal >= 2;
         $hasPrevious = $previousVal >= 2;
-        
+
         // If there is no valid previous score (or it is below 2), treat it as 1 to enable an improvement trend to >= 2.
         $effectivePrevious = $hasPrevious ? $previousVal : 1;
         $showBestFill = $hasPrevious && $bestVal > $currentVal;
 
         // Segment State
-        // Decide each segment's colour token, and whether an arrow overlay is needed 
+        // Decide each segment's colour token, and whether an arrow overlay is needed
         $segmentTokens = array_fill_keys($segments, 'default');
         $arrowValue = null;
         $arrowDirection = null;
@@ -230,7 +231,7 @@
 
                         {{-- "Border" ring, visible only in the gap between outer and inner clip shapes --}}
                         <div class="absolute inset-0 {{ $style['swatch'] }}"></div>
-                        
+
                         {{-- Inner "centre" fill, clipped to the smaller inset chevron --}}
                         <div class="absolute inset-0 {{ $style['center'] }}" style="clip-path: {{ $innerClip }};"></div>
                     </div>
