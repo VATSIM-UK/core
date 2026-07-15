@@ -1,3 +1,4 @@
+{{-- blade-formatter-disable --}}
 <x-dynamic-component :component="$getEntryWrapperView()" :entry="$entry">
     @php
         // Config Values
