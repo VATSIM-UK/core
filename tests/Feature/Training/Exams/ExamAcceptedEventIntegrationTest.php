@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Training\Exams;
 
 use App\Events\Training\Exams\ExamAccepted;
-use App\Models\Cts\Booking;
+use App\Models\Atc\Position;
+use App\Models\Booking;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\PracticalExaminers;
@@ -22,14 +25,13 @@ class ExamAcceptedEventIntegrationTest extends TestCase
     use DatabaseTransactions;
 
     #[Test]
-    public function it_triggers_all_listeners_when_exam_accepted_event_is_fired()
+    public function it_triggers_all_listeners_when_exam_accepted_event_is_fired(): void
     {
-        // Fake notifications but allow events to fire normally
         Notification::fake();
 
-        // Create test data
         $studentAccount = Account::factory()->create(['email' => 'student@test.com']);
         $examinerAccount = Account::factory()->create(['email' => 'examiner@test.com']);
+        $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
 
         $student = Member::factory()->create([
             'id' => $studentAccount->id,
@@ -60,64 +62,49 @@ class ExamAcceptedEventIntegrationTest extends TestCase
             'trainee' => null,
         ]);
 
-        // Load relationships
         $examBooking->load(['student', 'examiners.primaryExaminer']);
 
-        // Verify no CTS booking exists before the event
-        $bookingCountBefore = Booking::where('type', 'EX')
-            ->where('position', 'EGKK_TWR')
-            ->where('member_id', $student->id)
+        $bookingCountBefore = Booking::where('type', Booking::TYPE_EXAM)
+            ->where('member_id', $studentAccount->id)
             ->count();
 
         $this->assertEquals(0, $bookingCountBefore);
 
-        // Fire the event
         event(new ExamAccepted($examBooking));
 
-        // Assert all three listeners were triggered:
-
-        // 1. Student notification was sent
         Notification::assertSentTo(
             $studentAccount,
             ExamAcceptedStudentNotification::class
         );
 
-        // 2. Examiner notification was sent
         Notification::assertSentTo(
             $examinerAccount,
             ExamAcceptedExaminerNotification::class
         );
 
-        // 3. CTS booking entry was created
         $this->assertDatabaseHas('bookings', [
-            'date' => $examDate->format('Y-m-d'),
-            'from' => '14:00:00',
-            'to' => '15:30:00',
-            'position' => 'EGKK_TWR',
-            'member_id' => $student->id,
-            'type' => 'EX',
-            'type_id' => $examBooking->id,
-        ], 'cts');
+            'position_id' => $position->id,
+            'member_id' => $studentAccount->id,
+            'type' => Booking::TYPE_EXAM,
+            'bookable_id' => $examBooking->id,
+        ]);
 
-        // Verify exactly one CTS booking was created
-        $bookingCountAfter = Booking::where('type', 'EX')
-            ->where('position', 'EGKK_TWR')
-            ->where('member_id', $student->id)
+        $bookingCountAfter = Booking::where('type', Booking::TYPE_EXAM)
+            ->where('member_id', $studentAccount->id)
             ->count();
 
         $this->assertEquals(1, $bookingCountAfter);
     }
 
     #[Test]
-    public function it_handles_exam_with_secondary_examiner()
+    public function it_handles_exam_with_secondary_examiner(): void
     {
-        // Fake notifications but allow events to fire normally
         Notification::fake();
 
-        // Create test data with primary and secondary examiners
         $studentAccount = Account::factory()->create(['email' => 'student@test.com']);
         $primaryExaminerAccount = Account::factory()->create(['email' => 'primary@test.com']);
         $secondaryExaminerAccount = Account::factory()->create(['email' => 'secondary@test.com']);
+        $position = Position::factory()->create(['callsign' => 'EGLL_APP']);
 
         $student = Member::factory()->create([
             'id' => $studentAccount->id,
@@ -151,31 +138,25 @@ class ExamAcceptedEventIntegrationTest extends TestCase
             'trainee' => null,
         ]);
 
-        // Load relationships
         $examBooking->load(['student', 'examiners.primaryExaminer', 'examiners.secondaryExaminer']);
 
-        // Fire the event
         event(new ExamAccepted($examBooking));
 
-        // Assert notifications were sent to all parties
         Notification::assertSentTo($studentAccount, ExamAcceptedStudentNotification::class);
         Notification::assertSentTo($primaryExaminerAccount, ExamAcceptedExaminerNotification::class);
         Notification::assertSentTo($secondaryExaminerAccount, ExamAcceptedExaminerNotification::class);
 
-        // Assert CTS booking was created
         $this->assertDatabaseHas('bookings', [
-            'date' => $examDate->format('Y-m-d'),
-            'position' => 'EGLL_APP',
-            'member_id' => $student->id,
-            'type' => 'EX',
-            'type_id' => $examBooking->id,
-        ], 'cts');
+            'position_id' => $position->id,
+            'member_id' => $studentAccount->id,
+            'type' => Booking::TYPE_EXAM,
+            'bookable_id' => $examBooking->id,
+        ]);
     }
 
     #[Test]
-    public function it_can_be_tested_with_event_fake()
+    public function it_can_be_tested_with_event_fake(): void
     {
-        // Test that the event can be properly faked when needed
         Event::fake([ExamAccepted::class]);
 
         $studentAccount = Account::factory()->create();
@@ -192,18 +173,15 @@ class ExamAcceptedEventIntegrationTest extends TestCase
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
         ]);
 
-        // Fire the event
         event(new ExamAccepted($examBooking));
 
-        // Assert the event was dispatched
         Event::assertDispatched(ExamAccepted::class, function ($event) use ($examBooking) {
             return $event->examBooking->id === $examBooking->id;
         });
 
-        // When events are faked, listeners don't run, so no booking should be created
         $this->assertDatabaseMissing('bookings', [
-            'type' => 'EX',
-            'member_id' => $student->id,
-        ], 'cts');
+            'type' => Booking::TYPE_EXAM,
+            'member_id' => $studentAccount->id,
+        ]);
     }
 }

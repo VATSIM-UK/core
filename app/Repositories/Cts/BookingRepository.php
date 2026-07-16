@@ -1,74 +1,79 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories\Cts;
 
-use App\Models\Cts\Booking;
+use App\Models\Booking;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 class BookingRepository
 {
-    public function getBookings(Carbon $date)
+    private const TYPE_MAP = [
+        Booking::TYPE_STANDARD => 'BK',
+        Booking::TYPE_EXAM => 'EX',
+        Booking::TYPE_MENTORING => 'ME',
+        Booking::TYPE_EVENT => 'EV',
+        Booking::TYPE_GROUP_SEMINAR => 'GS',
+    ];
+
+    public function getBookings(Carbon $date): Collection
     {
-        $bookings = Booking::where('date', '=', $date->toDateString())
-            ->with('member')
-            ->orderBy('from')
+        $bookings = Booking::whereDate('starts_at', $date->toDateString())
+            ->with('member', 'position')
+            ->orderBy('starts_at')
             ->get();
 
         return $this->formatBookings($bookings);
     }
 
-    public function getTodaysBookings()
+    public function getTodaysBookings(): Collection
     {
-        $bookings = Booking::where('date', '=', Carbon::now()->toDateString())
-            ->with('member')
-            ->orderBy('from')
+        return $this->getBookings(Carbon::now());
+    }
+
+    public function getTodaysLiveAtcBookings(): Collection
+    {
+        $bookings = Booking::whereDate('starts_at', Carbon::now()->toDateString())
+            ->liveAtc()
+            ->with('member', 'position')
+            ->orderBy('starts_at')
             ->get();
 
         return $this->formatBookings($bookings);
     }
 
-    public function getTodaysLiveAtcBookings()
+    public function getTodaysLiveAtcBookingsWithoutEvents(): Collection
     {
-        $bookings = Booking::where('date', '=', Carbon::now()->toDateString())
-            ->networkAtc()
-            ->with('member')
-            ->orderBy('from')
-            ->get();
-
-        return $this->formatBookings($bookings);
-    }
-
-    public function getTodaysLiveAtcBookingsWithoutEvents()
-    {
-        $bookings = Booking::where('date', '=', Carbon::now()->toDateString())
+        $bookings = Booking::whereDate('starts_at', Carbon::now()->toDateString())
+            ->liveAtc()
             ->notEvent()
-            ->networkAtc()
-            ->with('member')
-            ->orderBy('from')
+            ->with('member', 'position')
+            ->orderBy('starts_at')
             ->get();
 
         return $this->formatBookings($bookings);
     }
 
-    private function formatBookings(Collection $bookings)
+    private function formatBookings(Collection $bookings): Collection
     {
-        $bookings->transform(function ($booking) {
-            $booking->from = Carbon::parse($booking->from)->format('H:i');
-            $booking->to = Carbon::parse($booking->to)->format('H:i');
-
-            $booking->member = $this->formatMember($booking);
-            $booking->unsetRelation('member');
-
-            return $booking;
+        return $bookings->map(function (Booking $booking) {
+            return (object) [
+                'id' => (string) $booking->id,
+                'date' => $booking->starts_at->format('Y-m-d'),
+                'from' => $booking->starts_at->format('H:i'),
+                'to' => $booking->ends_at->format('H:i'),
+                'position' => $booking->position?->callsign,
+                'type' => self::TYPE_MAP[$booking->type] ?? 'BK',
+                'member' => $this->formatMember($booking),
+            ];
         });
-
-        return $bookings;
     }
 
-    private function formatMember(Booking $booking)
+    private function formatMember(Booking $booking): array
     {
-        if ($booking->type == 'EX') {
+        if ($booking->type === Booking::TYPE_EXAM) {
             return [
                 'id' => '',
                 'name' => 'Hidden',
@@ -83,7 +88,7 @@ class BookingRepository
         }
 
         return [
-            'id' => $booking->member->cid,
+            'id' => (string) $booking->member->id,
             'name' => $booking->member->name,
         ];
     }

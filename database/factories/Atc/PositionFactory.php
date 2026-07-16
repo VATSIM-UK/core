@@ -21,7 +21,6 @@ class PositionFactory extends Factory
             'name' => ucfirst(fake()->word).' '.fake()->randomElement(['Tower', 'Ground', 'Delivery', 'Approach', 'Information', 'Control']),
             'frequency' => fake()->randomFloat(3, 0, 130),
             'type' => fake()->numberBetween(1, 8),
-            'sub_station' => false,
         ];
     }
 
