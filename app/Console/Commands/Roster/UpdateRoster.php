@@ -11,6 +11,7 @@ use App\Models\Training\WaitingList\WaitingListAccount;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class UpdateRoster extends Command
 {
@@ -111,7 +112,7 @@ class UpdateRoster extends Command
         $removeFromWaitingList
             ->each(function (WaitingListAccount $waitingListAccount) use ($removal) {
                 $waitingListAccount->waitingList->removeFromWaitingList($waitingListAccount->account, $removal);
-                \Log::debug("Removed {$waitingListAccount->account->id} from {$waitingListAccount->waitingList->id} due to roster removal");
+                Log::debug("Removed {$waitingListAccount->account->id} from {$waitingListAccount->waitingList->id} due to roster removal");
             });
 
         // Not on the roster, need to be on...
@@ -119,6 +120,13 @@ class UpdateRoster extends Command
             $eligible->map(fn ($value) => ['account_id' => $value])->toArray(),
             ['account_id']
         );
+
+        $eligible->each(function ($accountId) {
+            Log::warning('Roster: Account added to roster', [
+                'account_id' => $accountId,
+                'reason' => 'Eligible via quarterly roster update',
+            ]);
+        });
 
         $rosterUpdate->update([
             'data' => [
