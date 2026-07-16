@@ -111,7 +111,7 @@ class ViewAccount extends BaseViewRecordPage
 
                             Log::warning('Roster: Account added to roster', [
                                 'account_id' => $this->record->id,
-                                'reason' => 'Added by admin #'.auth()->user()->id,
+                                'reason' => 'Added via admin panel by '.auth()->user()->id,
                             ]);
                         }
 

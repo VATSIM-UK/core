@@ -50,7 +50,7 @@ class OverrideExamReportService
 
                 Log::warning('Roster: Account added to roster', [
                     'account_id' => $account->id,
-                    'reason' => "Exam override by #{$actor->id}",
+                    'reason' => "Exam override by {$actor->id}",
                 ]);
             }
         }
