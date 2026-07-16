@@ -4,9 +4,11 @@ namespace App\Filament\Admin\Pages\VisitTransfer\Widgets;
 
 use App\Services\Admin\VisitTransferStats;
 use Carbon\Carbon;
-use Filament\Widgets\Widget;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Filament\Widgets\TableWidget;
 
-class FacilityBreakdownWidget extends Widget
+class FacilityBreakdownWidget extends TableWidget
 {
     public ?Carbon $start = null;
 
@@ -14,13 +16,29 @@ class FacilityBreakdownWidget extends Widget
 
     public ?int $type = null;
 
-    protected string $view = 'filament.widgets.visit-transfer.facility-breakdown';
-
     protected int|string|array $columnSpan = 'full';
 
-    public function getRows(): array
+    public function table(Table $table): Table
     {
-        return VisitTransferStats::byFacility($this->type, $this->start, $this->end);
-
+        return $table
+            ->records(fn () => collect(
+                VisitTransferStats::byFacility($this->type, $this->start, $this->end)
+            ))
+            ->columns([
+                TextColumn::make('name')
+                    ->label('Facility'),
+                TextColumn::make('total')
+                    ->label('Total')
+                    ->alignCenter(),
+                TextColumn::make('accepted')
+                    ->label('Accepted')
+                    ->color('success')
+                    ->alignCenter(),
+                TextColumn::make('rejected')
+                    ->label('Rejected')
+                    ->color('danger')
+                    ->alignCenter(),
+            ])
+            ->paginated(false);
     }
 }
