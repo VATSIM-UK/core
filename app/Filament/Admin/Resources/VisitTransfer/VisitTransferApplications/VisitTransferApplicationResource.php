@@ -27,6 +27,8 @@ class VisitTransferApplicationResource extends Resource
 
     protected static ?string $label = 'Applications';
 
+    protected static ?int $navigationSort = 13;
+
     public static function canAccess(): bool
     {
 
