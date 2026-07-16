@@ -9,6 +9,7 @@ use App\Models\Roster;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class UpdateRosterGanderControllers extends Command
 {
@@ -45,6 +46,13 @@ class UpdateRosterGanderControllers extends Command
                 $ganderValidatedAccountIds->map(fn ($value) => ['account_id' => $value])->toArray(),
                 ['account_id']
             );
+
+            $ganderValidatedAccountIds->each(function ($accountId) {
+                Log::warning('Roster: Account added to roster', [
+                    'account_id' => $accountId,
+                    'reason' => 'Gander Oceanic roster sync',
+                ]);
+            });
 
             $positionGroup = PositionGroup::where('name', 'Shanwick Oceanic (EGGX)')->firstOrFail();
 
