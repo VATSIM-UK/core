@@ -18,6 +18,7 @@ class CreateEndorsementRequest extends CreateRecord
     {
         return [
             $this->getCreateFormAction(),
+            $this->getCreateAnotherFormAction(),
             $this->getCreateAndApproveFormAction(),
             $this->getCancelFormAction(),
         ];
