@@ -108,11 +108,12 @@ class AccountsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->with(['account', 'account.roster', 'waitingList', 'flags']))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['account', 'account.roster', 'account.qualifications', 'waitingList', 'flags']))
             ->columns([
                 TextColumn::make('position')->getStateUsing(fn (WaitingListAccount $record) => $this->ownerRecord->positionOf($record) ?? '-')->label('Position'),
                 TextColumn::make('account_id')->label('CID')->searchable(),
                 NameColumn::make('account.name')->label('Name'),
+                TextColumn::make('atc_rating')->label('ATC')->badge()->getStateUsing(fn (WaitingListAccount $record) => $record->account->qualification_atc?->code ?? 'Missing')->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('on_roster')->boolean()->label('On Roster')->getStateUsing(fn (WaitingListAccount $record) => $record->account->onRoster())->visible(fn () => $this->ownerRecord->feature_toggles['display_on_roster'] ?? true),
                 TextColumn::make('created_at')->label('Added On')->dateTime('d/m/Y H:i:s'),
                 IconColumn::make('cts_theory_exam')->boolean()->label('CTS Theory Exam')->getStateUsing(fn (WaitingListAccount $record) => $record->theory_exam_passed)->visible(fn () => $this->ownerRecord->feature_toggles['check_cts_theory_exam'] ?? true),
