@@ -109,24 +109,24 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
         if ($this->showStudentFilter()) {
             $columns[] = TextColumn::make('student_name')
                 ->label('Student')
-                ->getStateUsing(fn ($record) => $record->student->name)
-                ->description(fn ($record) => $record->student->cid)
+                ->getStateUsing(fn ($record) => $record->student?->name)
+                ->description(fn ($record) => $record->student?->cid)
                 ->action(function ($record, $livewire) {
-                    $livewire->tableFilters['student']['value'] = $record->student->cid;
+                    $livewire->tableFilters['student']['value'] = $record->student?->cid;
                     $livewire->updatedTableFilters();
                 });
         }
 
         $columns[] = TextColumn::make('mentor_name')
             ->label('Mentor')
-            ->getStateUsing(fn ($record) => $record->mentor->name)
-            ->description(fn ($record) => $record->mentor->cid)
+            ->getStateUsing(fn ($record) => $record->mentor?->name)
+            ->description(fn ($record) => $record->mentor?->cid)
             ->action(function ($record, $livewire) {
                 if (! $this->showMentorFilter()) {
                     return;
                 }
 
-                $livewire->tableFilters['mentor']['value'] = $record->mentor->cid;
+                $livewire->tableFilters['mentor']['value'] = $record->mentor?->cid;
                 $livewire->updatedTableFilters();
             });
 

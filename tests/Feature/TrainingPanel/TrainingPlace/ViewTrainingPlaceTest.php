@@ -195,7 +195,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             'taken_date' => now()->subDays(5),
             'noShow' => 0,
             'cancelled_datetime' => null,
-            'session_done' => 1,
+            'filed' => now(),
             'taken' => 1,
         ]);
 
