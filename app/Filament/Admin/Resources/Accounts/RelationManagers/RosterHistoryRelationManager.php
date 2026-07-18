@@ -51,7 +51,7 @@ class RosterHistoryRelationManager extends RelationManager
                     })
                     ->placeholder('N/A'),
                 TextColumn::make('controlling_hours')
-                    ->label('Controlling Hours During')
+                    ->label('Hours Controlled')
                     ->getStateUsing(function ($record) {
                         $minutes = Atc::where('account_id', $record->account_id)
                             ->isUk()
