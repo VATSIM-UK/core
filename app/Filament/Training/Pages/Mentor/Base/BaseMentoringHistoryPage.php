@@ -23,6 +23,11 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
 
     abstract protected function getSessionQuery(): Builder;
 
+    protected function tableHeading(): ?string
+    {
+        return null;
+    }
+
     protected function getPositionFilterOptions(): array
     {
         return [];
@@ -79,7 +84,7 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
 
     public function table(Table $table): Table
     {
-        return $table
+        $table = $table
             ->query($this->getSessionQuery())
             ->defaultSort('taken_date', $this->defaultTableSortDirection())
             ->striped()
@@ -89,6 +94,12 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
             ->filters($this->getTableFilters())
             ->recordActions($this->tableRecordActions())
             ->emptyStateHeading($this->tableEmptyStateHeading());
+
+        if ($heading = $this->tableHeading()) {
+            $table = $table->heading($heading);
+        }
+
+        return $table;
     }
 
     protected function getTableColumns(): array
