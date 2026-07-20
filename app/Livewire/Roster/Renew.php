@@ -49,7 +49,7 @@ class Renew extends Component
     {
         $lastLogon = AtcNetworkdataService::getLatestNetworkdataForAccount(auth()->user())?->disconnected_at;
 
-        return $lastLogon && Carbon::now()->diffInMonths($lastLogon) <= 18;
+        return $lastLogon && $lastLogon->diffInMonths(Carbon::now()) <= 18;
     }
 
     public function render(UKCP $ukcp)
