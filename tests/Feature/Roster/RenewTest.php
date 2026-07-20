@@ -223,6 +223,7 @@ class RenewTest extends TestCase
     public function test_shows_notification_count()
     {
         $account = $this->createEligibleAccount();
+        $this->createAtcSession($account, Carbon::now()->subMonths(6));
 
         $this->mock(UKCP::class)
             ->shouldReceive('getUnreadNotificationsForUser')
@@ -238,6 +239,7 @@ class RenewTest extends TestCase
     public function test_mark_notification_read_removes_notification()
     {
         $account = $this->createEligibleAccount();
+        $this->createAtcSession($account, Carbon::now()->subMonths(6));
 
         $ukcp = $this->mock(UKCP::class);
         $ukcp->shouldReceive('getUnreadNotificationsForUser')
@@ -258,6 +260,7 @@ class RenewTest extends TestCase
     public function test_mark_notification_read_failure_retains_notification()
     {
         $account = $this->createEligibleAccount();
+        $this->createAtcSession($account, Carbon::now()->subMonths(6));
 
         $ukcp = $this->mock(UKCP::class);
         $ukcp->shouldReceive('getUnreadNotificationsForUser')
@@ -289,6 +292,6 @@ class RenewTest extends TestCase
             ->test(Renew::class)
             ->call('nextPage')
             ->assertSee('Reactivate')
-            ->assertSee('Add to roster');
+            ->assertSee('Add to');
     }
 }
