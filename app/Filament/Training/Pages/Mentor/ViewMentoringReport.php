@@ -218,6 +218,7 @@ class ViewMentoringReport extends Page implements HasInfolists
                         ->hiddenLabel()
                         ->html()
                         ->columnSpanFull()
+                        ->prose()
                         ->state(fn (Session $record) => $this->ctsPlainNotesForHtmlDisplay(
                             $record->reportSheets->firstWhere('field_id', 0)?->notes,
                         )),

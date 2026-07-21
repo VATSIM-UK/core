@@ -117,16 +117,46 @@ trait InteractsWithCtsRichEditorNotes
             return null;
         }
 
-        $content = $this->ctsNotesContainHtmlMarkup($notes)
-            ? $this->ctsNormalizeEmptyParagraphs($this->ctsSanitizeNotesHtml($notes))
-            : e($notes);
+        if (! $this->ctsNotesContainHtmlMarkup($notes)) {
+            return '<div style="white-space:pre-wrap;word-break:break-word">'.e($notes).'</div>';
+        }
 
-        return '<div class="cts-notes-content" style="white-space:pre-wrap;word-break:break-word">'.$content.'</div>';
+        $content = $this->ctsNormalizeEmptyParagraphs($this->ctsSanitizeNotesHtml($notes));
+
+        return $this->ctsStyleCodeBlocks($content);
+    }
+
+    /**
+     * Bare <pre><code> from the editor carries no class or wrapper Filament's typography styles can key off, so inline the box styling directly onto
+     * the tags
+     */
+    protected function ctsStyleCodeBlocks(string $html): string
+    {
+        $html = preg_replace_callback('/<pre(\s[^>]*)?>/i', function (array $m): string {
+            if (isset($m[1]) && stripos($m[1], 'style=') !== false) {
+                return $m[0];
+            }
+
+            $style = 'background:rgba(127,127,127,.12);border:1px solid rgba(127,127,127,.25);'
+                .'border-radius:.375rem;padding:.75rem 1rem;overflow-x:auto;white-space:pre-wrap;'
+                .'word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;'
+                .'font-size:.875em;line-height:1.5';
+
+            return '<pre'.($m[1] ?? '').' style="'.$style.'">';
+        }, $html) ?? $html;
+
+        return preg_replace_callback('/<code(\s[^>]*)?>/i', function (array $m): string {
+            if (isset($m[1]) && stripos($m[1], 'style=') !== false) {
+                return $m[0];
+            }
+
+            return '<code'.($m[1] ?? '').' style="background:none;padding:0">';
+        }, $html) ?? $html;
     }
 
     protected function ctsAllowedNotesHtmlTags(): string
     {
-        return '<p><br><h1><h2><h3><h4><h5><h6><strong><b><em><i><u><s><ul><ol><li><a><span>';
+        return '<p><br><h1><h2><h3><h4><h5><h6><strong><b><em><i><u><s><ul><ol><li><a><span><pre><code>';
     }
 
     protected function ctsSanitizeNotesHtml(string $html): string
