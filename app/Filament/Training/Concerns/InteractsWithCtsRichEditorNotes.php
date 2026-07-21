@@ -117,13 +117,11 @@ trait InteractsWithCtsRichEditorNotes
             return null;
         }
 
-        if (! $this->ctsNotesContainHtmlMarkup($notes)) {
-            return '<div style="white-space:pre-wrap;word-break:break-word">'.e($notes).'</div>';
-        }
+        $content = $this->ctsNotesContainHtmlMarkup($notes)
+            ? $this->ctsStyleCodeBlocks($this->ctsNormalizeEmptyParagraphs($this->ctsSanitizeNotesHtml($notes)))
+            : e($notes);
 
-        $content = $this->ctsNormalizeEmptyParagraphs($this->ctsSanitizeNotesHtml($notes));
-
-        return $this->ctsStyleCodeBlocks($content);
+        return '<div class="cts-notes-content" style="white-space:pre-wrap;word-break:break-word">'.$content.'</div>';
     }
 
     /**
