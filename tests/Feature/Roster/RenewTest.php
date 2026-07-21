@@ -207,13 +207,12 @@ class RenewTest extends TestCase
             'account_id' => $account->id,
             'original_created_at' => Carbon::now()->subMonths(12),
             'original_updated_at' => Carbon::now()->subMonths(12),
-            'created_at' => Carbon::now()->subMonths(9),
         ]);
 
         $currentQuarterStart = Carbon::now()->copy()->startOfQuarter();
         $lastQuarterStart = $currentQuarterStart->copy()->subMonths(3);
 
-        $sessionTime = $lastQuarterStart->copy()->addDays(15);
+        $sessionTime = $lastQuarterStart->copy()->addWeeks(4)->addHours(12);
 
         $this->mock(UKCP::class)
             ->shouldReceive('getUnreadNotificationsForUser')
@@ -235,13 +234,11 @@ class RenewTest extends TestCase
             'account_id' => $account->id,
             'original_created_at' => Carbon::now()->subMonths(12),
             'original_updated_at' => Carbon::now()->subMonths(12),
-            'created_at' => Carbon::now()->subMonths(9),
         ]);
 
         $currentQuarterStart = Carbon::now()->copy()->startOfQuarter();
-        $q2Start = $currentQuarterStart->copy()->subMonths(6);
 
-        $sessionTime = $q2Start->copy()->addDays(15);
+        $sessionTime = $currentQuarterStart->copy()->subMonths(5)->addWeeks(2)->addHours(12);
 
         $this->mock(UKCP::class)
             ->shouldReceive('getUnreadNotificationsForUser')
