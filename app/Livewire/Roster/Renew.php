@@ -70,10 +70,10 @@ class Renew extends Component
         $now = Carbon::now();
         $currentQuarterStart = $now->copy()->startOfQuarter();
 
-        $q1End = $currentQuarterStart->copy()->subDay();
+        $q1End = $currentQuarterStart->copy()->subDay()->endOfDay();
         $q1Start = $currentQuarterStart->copy()->subMonths(3);
 
-        $q2End = $q1Start->copy()->subDay();
+        $q2End = $q1Start->copy()->subDay()->endOfDay();
         $q2Start = $q1Start->copy()->subMonths(3);
 
         $q1Hours = $this->getQuarterlyHours($q1Start, $q1End);
