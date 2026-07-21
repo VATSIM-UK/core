@@ -30,15 +30,19 @@ class RenewTest extends TestCase
 
     private function createAtcSession(Account $account, Carbon $disconnectedAt, int $minutesDuration = 30): Atc
     {
-        return Atc::create([
+        $atc = Atc::create([
             'account_id' => $account->id,
             'callsign' => 'EGLL_TWR',
             'connected_at' => $disconnectedAt->copy()->subMinutes($minutesDuration),
             'disconnected_at' => $disconnectedAt,
             'qualification_id' => 1,
             'facility_type' => 4,
-            'minutes_online' => $minutesDuration,
         ]);
+
+        $atc->minutes_online = $minutesDuration;
+        $atc->save();
+
+        return $atc;
     }
 
     public function test_redirects_when_already_on_roster()
