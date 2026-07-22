@@ -509,7 +509,6 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
             ->assertDontSee('View Student Overview');
     }
 
-
     public function last_session_date_shows_next_session_for_future_session(): void
     {
         Carbon::setTestNow(Carbon::today()->setTime(10, 0));
