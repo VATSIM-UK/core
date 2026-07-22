@@ -72,8 +72,18 @@
 						</div>
 
 						<div class="text-xs text-gray-300 dark:text-gray-400 mt-0.5">
-							Last Session:
-							{{ $student->last_session_date ? \Carbon\Carbon::parse($student->last_session_date)->diffForHumans(null, true) . ' ago' : 'Never' }}
+							@php
+								$sessionDate = $student->last_session_date ? \Carbon\Carbon::parse($student->last_session_date) : null;
+							@endphp
+							@if ($sessionDate)
+								@if ($sessionDate->isFuture())
+									Next Session: Starts in {{ $sessionDate->diffForHumans(null, true) }}
+								@else
+									Last Session: {{ $sessionDate->diffForHumans(null, true) }} ago
+								@endif
+							@else
+								Never
+							@endif
 						</div>
 					</div>
 

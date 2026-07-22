@@ -7,12 +7,19 @@
 					<span class="text-2xl font-bold">👋 Hello, {{ auth()->user()->name_first }}!</span>
 				</div>
 				@if (!$canReactivate)
-					<span>As it has been 18 months since your last ATC session you cannot automatically reactivate your
-						roster membership.
-						<br>
-						Please <a class="text-blue-500 hover:cursor-pointer" href="mailto:atc-training@vatsim.uk">contact
-							ATC Training</a>.
-					</span>
+					@if ($lastTwoQuartersFailed)
+						<span>You have not met the minimum controlling requirements in the last two consecutive
+							quarters and cannot automatically reactivate your roster membership.
+							<br>
+							Please <a class="text-blue-500 hover:cursor-pointer" href="mailto:atc-training@vatsim.uk">contact ATC Training</a>.
+						</span>
+					@else
+						<span>As it has been 18 months since your last ATC session you cannot automatically reactivate your
+							roster membership.
+							<br>
+							Please <a class="text-blue-500 hover:cursor-pointer" href="mailto:atc-training@vatsim.uk">contact ATC Training</a>.
+						</span>
+					@endif
 				@else
 					<p>It has been a while! Our records show that your last controlling session was {{ $lastLogon }}.
 					</p>

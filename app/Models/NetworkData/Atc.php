@@ -6,6 +6,7 @@ use App\Events\NetworkData\AtcSessionDeleted;
 use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\NetworkData\AtcSessionStarted;
 use App\Events\NetworkData\AtcSessionUpdated;
+use App\Models\Atc\PositionGroup;
 use App\Models\Cts\Session as CtsSession;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -62,6 +63,9 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc withCallsignIn($callsigns)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withoutTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc withoutAfis()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc withoutMilitary()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc atMinimumQualification($vatsimLevel)
  *
  * @mixin \Eloquent
  */
@@ -235,6 +239,40 @@ class Atc extends Model
         return $query->isUk();
     }
 
+    public static function scopeWithoutAfis($query)
+    {
+        $afisGroup = PositionGroup::where('name', 'AFISO / AGO (S1)')->first();
+        if (! $afisGroup) {
+            return $query;
+        }
+
+        return $query->whereNotIn('callsign', $afisGroup->positions()->pluck('callsign'));
+    }
+
+    public static function scopeWithoutMilitary($query)
+    {
+        $militaryGroupNames = ['Military (APP)', 'Military (CTR)', 'Military (TWR)'];
+        $militaryCallsigns = PositionGroup::whereIn('name', $militaryGroupNames)
+            ->get()
+            ->flatMap(fn ($g) => $g->positions()->pluck('callsign'))
+            ->unique()
+            ->values()
+            ->toArray();
+
+        if (empty($militaryCallsigns)) {
+            return $query;
+        }
+
+        return $query->whereNotIn('callsign', $militaryCallsigns);
+    }
+
+    public static function scopeAtMinimumQualification($query, $vatsimLevel)
+    {
+        return $query->whereHas('qualification', function ($q) use ($vatsimLevel) {
+            $q->where('vatsim', '>=', $vatsimLevel);
+        });
+    }
+
     public function account()
     {
         return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id', 'id');
@@ -344,7 +382,8 @@ class Atc extends Model
      * Find adjacent ATC positions on the same aerodrome that were active during a mentoring session.
      *
      * This detects controllers on other positions at the same aerodrome during the session.
-     * We exclude the position being mentored on.
+     * We exclude the position being mentored on. Only controllers with at least 15 minutes
+     * of overlap with the session are included.
      *
      * If the student was not on the VATSIM network during the session (e.g. a sweatbox session),
      * an empty collection is returned since there can be no adjacent positions to detect.
@@ -381,7 +420,19 @@ class Atc extends Model
                     ->orWhere('disconnected_at', '>', $sessionStart);
             })
             ->get()
+            ->filter(fn (self $atc) => static::sessionOverlapMinutes($atc, $sessionStart, $sessionEnd) >= 15)
             ->unique('callsign')
             ->values();
+    }
+
+    /**
+     * Calculate the overlap in minutes between a network ATC session and a mentoring session.
+     */
+    private static function sessionOverlapMinutes(self $atc, \Carbon\Carbon $sessionStart, \Carbon\Carbon $sessionEnd): int
+    {
+        $overlapStart = $atc->connected_at->max($sessionStart);
+        $overlapEnd = ($atc->disconnected_at ?? now())->min($sessionEnd);
+
+        return max(0, (int) $overlapStart->diffInMinutes($overlapEnd));
     }
 }

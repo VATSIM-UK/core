@@ -17,6 +17,7 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Textarea;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
@@ -107,6 +108,11 @@ class ViewAccount extends BaseViewRecordPage
 
                         if (! $onRoster) {
                             Roster::create(['account_id' => $this->record->id]);
+
+                            Log::warning('Roster: Account added to roster', [
+                                'account_id' => $this->record->id,
+                                'reason' => 'Added via admin panel by '.auth()->user()->id,
+                            ]);
                         }
 
                         $this->refreshFormData(['roster_status', 'notes']);

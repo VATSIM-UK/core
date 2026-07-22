@@ -26,7 +26,7 @@ class ViewBan extends BaseViewRecordPage
                 ->color('warning')
                 ->visible(auth()->user()->can('update', $this->record))
                 ->schema([
-                    DateTimePicker::make('period_finish')->label('Finish Time')->default($this->record->period_finish)->required()->notIn($this->record->period_finish ?? ''),
+                    DateTimePicker::make('period_finish')->label('Finish Time')->default($this->record->period_finish)->nullable()->notIn($this->record->period_finish ?? '')->helperText('Leave blank for permanent ban'),
                     Grid::make(2)->columnSpanFull()->schema([
                         Textarea::make('extra_info')
                             ->required()
@@ -40,14 +40,20 @@ class ViewBan extends BaseViewRecordPage
                     ]),
                 ])
                 ->action(function (array $data, Action $action) {
-                    $finish = new Carbon($data['period_finish']);
+                    $oldFinish = $this->record->period_finish;
+                    $newFinish = $data['period_finish'] ? new Carbon($data['period_finish']) : null;
 
-                    if ($this->record->period_finish->gt($finish)) {
-                        $noteComment = 'Ban has been reduced from '.$this->record->period_finish->toDateTimeString().".\n";
+                    if ($newFinish === null) {
+                        $noteComment = 'Ban has been made permanent.'."\n";
+                    } elseif ($oldFinish === null) {
+                        $noteComment = 'Ban now has an expiry: '.$newFinish->toDateTimeString()."\n";
+                    } elseif ($oldFinish->gt($newFinish)) {
+                        $noteComment = 'Ban has been reduced from '.$oldFinish->toDateTimeString().".\n";
+                        $noteComment .= 'New finish: '.$newFinish->toDateTimeString()."\n";
                     } else {
-                        $noteComment = 'Ban has been extended from '.$this->record->period_finish->toDateTimeString().".\n";
+                        $noteComment = 'Ban has been extended from '.$oldFinish->toDateTimeString().".\n";
+                        $noteComment .= 'New finish: '.$newFinish->toDateTimeString()."\n";
                     }
-                    $noteComment .= 'New finish: '.$finish->toDateTimeString()."\n";
                     $noteComment .= $data['note'];
 
                     // Attach the note.
@@ -55,7 +61,7 @@ class ViewBan extends BaseViewRecordPage
 
                     // Modify the ban
                     $this->record->reason_extra = $this->record->reason_extra."\n".$data['extra_info'];
-                    $this->record->period_finish = $finish;
+                    $this->record->period_finish = $newFinish;
                     $this->record->save();
 
                     $this->record->account->notify(new BanModified($this->record));

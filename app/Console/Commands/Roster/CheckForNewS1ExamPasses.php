@@ -8,6 +8,7 @@ use App\Models\Mship\State;
 use App\Models\Roster;
 use App\Repositories\Cts\ExamResultRepository;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class CheckForNewS1ExamPasses extends Command
 {
@@ -49,6 +50,11 @@ class CheckForNewS1ExamPasses extends Command
             }
 
             Roster::upsert(['account_id' => $coreAccount->id], uniqueBy: ['account_id']);
+
+            Log::warning('Roster: Account added to roster', [
+                'account_id' => $coreAccount->id,
+                'reason' => 'New S1 exam pass',
+            ]);
 
             $this->info("Added account {$coreAccount->id} to the roster.");
         }
