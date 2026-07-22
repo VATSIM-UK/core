@@ -3,7 +3,6 @@
 namespace App\Filament\Training\Pages\TrainingPlace;
 
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
-use App\Filament\Training\Pages\Mentor\ViewMentoringReport;
 use App\Filament\Training\Pages\StudentOverview\ViewStudentOverview;
 use App\Filament\Training\Pages\TrainingPlace\Widgets\TrainingPlaceStatsWidget;
 use App\Filament\Training\Resources\TrainingPlaces\Pages\ListTrainingPlaces;
