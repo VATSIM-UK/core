@@ -2,12 +2,14 @@
 
 namespace App\Notifications\Training\Mentoring;
 
+use App\Enums\EmailType;
 use App\Models\Cts\Session;
+use App\Notifications\Contracts\HasEmailType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class MentoringSessionReallocatedStudentNotification extends Notification
+class MentoringSessionReallocatedStudentNotification extends Notification implements HasEmailType
 {
     use Queueable;
 
@@ -15,6 +17,11 @@ class MentoringSessionReallocatedStudentNotification extends Notification
         private Session $session,
         private string $oldMentorName,
     ) {}
+
+    public function getEmailType(): EmailType
+    {
+        return EmailType::SessionReallocated;
+    }
 
     public function via(object $notifiable): array
     {
