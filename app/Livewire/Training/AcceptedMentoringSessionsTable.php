@@ -5,9 +5,11 @@ namespace App\Livewire\Training;
 use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Filament\Training\Pages\Mentor\ConductMentoringSession;
 use App\Filament\Training\Pages\Mentor\MentoringHistory;
+use App\Filament\Training\Pages\StudentOverview\ViewStudentOverview;
 use App\Models\Cts\Availability;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Session;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\MentoringAnnouncementService;
 use App\Services\Training\MentoringReportService;
 use App\Services\Training\MentoringSessionsService;
@@ -95,6 +97,24 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                     ),
             ])
             ->actions([
+                Action::make('studentOverview')
+                    ->label('View Student Overview')
+                    ->icon('heroicon-o-user')
+                    ->color('gray')
+                    ->visible(function (Session $record): bool {
+                        return TrainingPlace::where('account_id', $record->student->cid)->exists();
+                    })
+                    ->url(function (Session $record): ?string {
+                        $trainingPlace = TrainingPlace::where('account_id', $record->student->cid)->first();
+
+                        if (! $trainingPlace) {
+                            return null;
+                        }
+
+                        return ViewStudentOverview::getUrl(['trainingPlaceId' => $trainingPlace->id]);
+                    })
+                    ->openUrlInNewTab(),
+
                 Action::make('conduct')
                     ->label('Conduct Session')
                     ->url(fn (Session $record): string => ConductMentoringSession::getUrl(['sessionId' => $record->id]))

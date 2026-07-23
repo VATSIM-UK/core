@@ -12,7 +12,18 @@
 				@foreach ($students as $student)
 					<div class="flex-1 min-w-[140px] px-3 py-2 flex flex-col justify-center text-center bg-inherit">
 						<div class="font-semibold text-xs text-gray-950 dark:text-white truncate">
-							{{ $student->name }}
+							@if ($student->trainingPlaceId)
+								<a
+									href="{{ \App\Filament\Training\Pages\StudentOverview\ViewStudentOverview::getUrl(
+									    parameters: ['trainingPlaceId' => $student->trainingPlaceId],
+									    panel: 'training',
+									) }}"
+									target="_blank" rel="noopener noreferrer">
+									{{ $student->name }}
+								</a>
+							@else
+								{{ $student->name }}
+							@endif
 						</div>
 						<div class="text-[10px] text-gray-500 dark:text-gray-400">
 							{{ $student->cid }}
