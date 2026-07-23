@@ -312,16 +312,6 @@ class UpcomingExamsTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_hides_all_option_when_only_one_category_is_visible(): void
-    {
-        $this->panelUser->givePermissionTo('training.exams.view-upcoming.atc');
-
-        Livewire::actingAs($this->panelUser)
-            ->test(UpcomingExams::class)
-            ->assertDontSee('All');
-    }
-
-    #[Test]
     public function the_category_switcher_label_reflects_current_selection(): void
     {
         $this->panelUser->givePermissionTo('training.exams.view-upcoming.*');

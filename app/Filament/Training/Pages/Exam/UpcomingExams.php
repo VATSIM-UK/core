@@ -49,8 +49,16 @@ class UpcomingExams extends Page implements HasTable
             || auth()->user()?->can('training.exams.view-upcoming.pilot');
     }
 
+    private const VALID_CATEGORIES = ['all', 'atc', 'pilot'];
+
     public function mount(): void
     {
+        if (! in_array($this->category, self::VALID_CATEGORIES, true)) {
+            $this->category = $this->defaultCategory();
+
+            return;
+        }
+
         if ($this->category === 'all') {
             if (! $this->hasMultipleVisibleCategories()) {
                 $this->category = $this->firstVisibleCategory() ?? '';
@@ -59,7 +67,7 @@ class UpcomingExams extends Page implements HasTable
             return;
         }
 
-        if (empty($this->category) || ! $this->canViewCategory($this->category)) {
+        if (! $this->canViewCategory($this->category)) {
             $this->category = $this->defaultCategory();
         }
     }
