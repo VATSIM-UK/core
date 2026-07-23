@@ -9,7 +9,6 @@ use App\Models\RosterHistory;
 use App\Services\Networkdata\AtcNetworkdataService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -114,11 +113,6 @@ class Renew extends Component
 
         Roster::create([
             'account_id' => auth()->user()->id,
-        ]);
-
-        Log::warning('Roster: Account added to roster', [
-            'account_id' => auth()->user()->id,
-            'reason' => 'Self-service renewal',
         ]);
 
         session()->flash('success', '✅ You have been reactivated on the roster! Welcome back!');

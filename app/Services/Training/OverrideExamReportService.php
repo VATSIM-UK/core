@@ -11,7 +11,6 @@ use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use App\Models\Roster;
 use App\Repositories\Cts\ExamAssessmentRepository;
-use Illuminate\Support\Facades\Log;
 
 class OverrideExamReportService
 {
@@ -47,11 +46,6 @@ class OverrideExamReportService
             $isObsExam = $practicalResult->examBooking->exam === 'OBS';
             if ($isObsExam && $newResult === ExamResultEnum::Pass && $account->hasState(State::findByCode('DIVISION'))) {
                 Roster::upsert(['account_id' => $account->id], uniqueBy: ['account_id']);
-
-                Log::warning('Roster: Account added to roster', [
-                    'account_id' => $account->id,
-                    'reason' => "Exam override by {$actor->id}",
-                ]);
             }
         }
 
