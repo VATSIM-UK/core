@@ -18,10 +18,11 @@ class ExamResultRepository
             ->get();
     }
 
-    public function getPassedExamsOfType(string $type): Collection
+    public function getPassedExamsOfType(string $type, ?\DateTimeInterface $since = null): Collection
     {
         return PracticalResult::where('result', PracticalResult::PASSED)
             ->where('exam', $type)
+            ->when($since, fn ($query) => $query->where('date', '>=', $since))
             ->get();
     }
 
