@@ -547,14 +547,16 @@ class Application extends Model
     }
 
     /** Business logic. */
-    public function setFacility(Facility $facility)
+    public function setFacility(Facility $facility, bool $overrideRestrictions = false)
     {
-        $this->guardAgainstTransferringToANonTrainingFacility($facility);
+        if (! $overrideRestrictions) {
+            $this->guardAgainstTransferringToANonTrainingFacility($facility);
 
-        $this->guardAgainstApplyingToAFacilityWithNoCapacity($facility);
+            $this->guardAgainstApplyingToAFacilityWithNoCapacity($facility);
 
-        if (! $this->meetsRatingRequirements($facility)) {
-            throw new RatingRequirementNotMetException($facility);
+            if (! $this->meetsRatingRequirements($facility)) {
+                throw new RatingRequirementNotMetException($facility);
+            }
         }
 
         $this->training_required = $facility->training_required;
