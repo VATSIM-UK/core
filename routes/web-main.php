@@ -100,6 +100,18 @@ Route::group([
         Route::get('training-place-offer/{token}/decline')
             ->uses('\App\Http\Controllers\Mship\Training\TrainingPlaceOfferController@decline')
             ->name('training-place-offer.decline');
+
+        Route::get('seminar-invitation/{token}/accept')
+            ->uses('\App\Http\Controllers\Mship\Training\SeminarInvitationController@accept')
+            ->name('seminar-invitation.accept');
+
+        Route::get('seminar-invitation/{token}/not-interested')
+            ->uses('\App\Http\Controllers\Mship\Training\SeminarInvitationController@notInterested')
+            ->name('seminar-invitation.not-interested');
+
+        Route::get('seminar-invitation/{token}/cannot-attend')
+            ->uses('\App\Http\Controllers\Mship\Training\SeminarInvitationController@cannotAttend')
+            ->name('seminar-invitation.cannot-attend');
     });
 
     // Other
