@@ -14,10 +14,18 @@ enum EmailType: string
     case ExamAccepted = 'exam_accepted';
     case ExamCancelled = 'exam_cancelled';
 
+    // Student - Mentoring
+    case SessionReallocated = 'session_reallocated';
+    case MentoringReportFiled = 'mentoring_report_filed';
+
     // Mentor
     case MentorSessionConfirmation = 'mentor_session_confirmation';
+    case MentorSessionReallocated = 'mentor_session_reallocated';
     case MentorSessionCancelled = 'mentor_session_cancelled';
     case MentorSessionRescheduled = 'mentor_session_rescheduled';
+
+    // Endorsement
+    case EndorsementRequestCreated = 'endorsement_request_created';
 
     // Examiner
     case ExaminerExamAccepted = 'examiner_exam_accepted';
@@ -36,10 +44,18 @@ enum EmailType: string
             self::ExamAccepted => 'Exam accepted',
             self::ExamCancelled => 'Exam cancelled',
 
+            // Student - Mentoring
+            self::SessionReallocated => 'Session reallocated',
+            self::MentoringReportFiled => 'Mentoring report filed',
+
             // Mentor
             self::MentorSessionConfirmation => 'Session confirmation',
+            self::MentorSessionReallocated => 'Session reallocated',
             self::MentorSessionCancelled => 'Student cancels session',
             self::MentorSessionRescheduled => 'Session rescheduled',
+
+            // Endorsement
+            self::EndorsementRequestCreated => 'Endorsement request created',
 
             // Examiner
             self::ExaminerExamAccepted => 'Exam accepted confirmation',
@@ -55,6 +71,8 @@ enum EmailType: string
             self::SessionCancelledByMentor => 'Sent when a mentor cancels your session',
             self::SessionRescheduledByMentor => 'Sent when a mentor reschedules your session',
             self::SessionCancelledByStudent => 'Sent when you cancel your own session',
+            self::SessionReallocated => 'Sent when a mentoring session is reallocated to a new mentor',
+            self::MentoringReportFiled => 'Sent when a mentoring report has been filed for your session',
 
             // Student - Exams
             self::ExamAccepted => 'Sent when an examiner accepts your exam request',
@@ -62,8 +80,12 @@ enum EmailType: string
 
             // Mentor
             self::MentorSessionConfirmation => 'Sent when you accept a mentoring session',
+            self::MentorSessionReallocated => 'Sent when a session you were mentoring has been reallocated',
             self::MentorSessionCancelled => 'Sent when a student cancels their session',
             self::MentorSessionRescheduled => 'Sent when a session you are mentoring is rescheduled',
+
+            // Endorsement
+            self::EndorsementRequestCreated => 'Sent when a new endorsement request is created for approval',
 
             // Examiner
             self::ExaminerExamAccepted => 'Sent when you accept an exam request',
@@ -79,14 +101,19 @@ enum EmailType: string
             self::SessionRescheduledByMentor,
             self::SessionCancelledByStudent,
             self::ExamAccepted,
-            self::ExamCancelled => 'Student',
+            self::ExamCancelled,
+            self::SessionReallocated,
+            self::MentoringReportFiled => 'Student',
 
             self::MentorSessionConfirmation,
             self::MentorSessionCancelled,
-            self::MentorSessionRescheduled => 'Mentor',
+            self::MentorSessionRescheduled,
+            self::MentorSessionReallocated => 'Mentor',
 
             self::ExaminerExamAccepted,
             self::ExaminerExamCancelled => 'Examiner',
+
+            self::EndorsementRequestCreated => 'Staff',
         };
     }
 
