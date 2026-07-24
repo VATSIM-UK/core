@@ -24,6 +24,9 @@ enum EmailType: string
     case MentorSessionCancelled = 'mentor_session_cancelled';
     case MentorSessionRescheduled = 'mentor_session_rescheduled';
 
+    // Endorsement
+    case EndorsementRequestCreated = 'endorsement_request_created';
+
     // Examiner
     case ExaminerExamAccepted = 'examiner_exam_accepted';
     case ExaminerExamCancelled = 'examiner_exam_cancelled';
@@ -50,6 +53,9 @@ enum EmailType: string
             self::MentorSessionReallocated => 'Session reallocated',
             self::MentorSessionCancelled => 'Student cancels session',
             self::MentorSessionRescheduled => 'Session rescheduled',
+
+            // Endorsement
+            self::EndorsementRequestCreated => 'Endorsement request created',
 
             // Examiner
             self::ExaminerExamAccepted => 'Exam accepted confirmation',
@@ -78,6 +84,9 @@ enum EmailType: string
             self::MentorSessionCancelled => 'Sent when a student cancels their session',
             self::MentorSessionRescheduled => 'Sent when a session you are mentoring is rescheduled',
 
+            // Endorsement
+            self::EndorsementRequestCreated => 'Sent when a new endorsement request is created for approval',
+
             // Examiner
             self::ExaminerExamAccepted => 'Sent when you accept an exam request',
             self::ExaminerExamCancelled => 'Sent when a candidate cancels their exam',
@@ -103,6 +112,8 @@ enum EmailType: string
 
             self::ExaminerExamAccepted,
             self::ExaminerExamCancelled => 'Examiner',
+
+            self::EndorsementRequestCreated => 'Staff',
         };
     }
 
