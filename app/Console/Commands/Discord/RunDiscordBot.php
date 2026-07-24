@@ -6,10 +6,12 @@ namespace App\Console\Commands\Discord;
 
 use App\Jobs\Discord\HandleHoneypotTrigger;
 use App\Models\Discord\DiscordTag;
+use App\Models\NetworkData\Atc;
 use Discord\Builders\MessageBuilder;
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
 use Discord\Parts\Interactions\ApplicationCommand;
+use Discord\Parts\User\Activity;
 use Discord\WebSockets\Event;
 use Discord\WebSockets\Intents;
 use Illuminate\Console\Command;
@@ -71,6 +73,53 @@ class RunDiscordBot extends Command
                     );
                 }
             });
+
+            $lastEasterEgg = null;
+
+            $updatePresence = function () use ($discord, &$lastEasterEgg) {
+                try {
+                    $count = Atc::online()->isUK()->count();
+
+                    if ($count > 0) {
+                        $label = $count === 1 ? '1 online controller' : "{$count} online controllers";
+                        $type = Activity::TYPE_WATCHING;
+                    } else {
+                        $easterEggs = [
+                            ['name' => 'over missed retention checks', 'type' => Activity::TYPE_WATCHING],
+                            ['name' => 'Roblox flight sim', 'type' => Activity::TYPE_PLAYING],
+                            ['name' => 'the honeypot for spam victims', 'type' => Activity::TYPE_WATCHING],
+                            ['name' => 'EGLL_ATIS', 'type' => Activity::TYPE_LISTENING],
+                            ['name' => 'TeamSpeak: Poking idle controllers', 'type' => Activity::TYPE_PLAYING],
+                            ['name' => 'the 3-hour roster slackers being removed', 'type' => Activity::TYPE_WATCHING],
+                            ['name' => 'the fourth availability failure. Goodbye.', 'type' => Activity::TYPE_WATCHING],
+                            ['name' => 'CTS bingo: find the unrostered S1', 'type' => Activity::TYPE_PLAYING],
+                            ['name' => 'moss grow on expired waiting list places', 'type' => Activity::TYPE_WATCHING],
+                            ['name' => 'the dead being pruned at 3:30 AM', 'type' => Activity::TYPE_WATCHING],
+                        ];
+
+                        do {
+                            $egg = $easterEggs[array_rand($easterEggs)];
+                        } while ($egg === $lastEasterEgg && count($easterEggs) > 1);
+
+                        $lastEasterEgg = $egg;
+                        $label = $egg['name'];
+                        $type = $egg['type'];
+                    }
+
+                    $activity = new Activity($discord, [
+                        'name' => $label,
+                        'type' => $type,
+                    ]);
+
+                    $discord->updatePresence($activity);
+                } catch (\Throwable $e) {
+                    report($e);
+                }
+            };
+
+            $updatePresence();
+
+            $discord->getLoop()->addPeriodicTimer(120, $updatePresence);
         });
 
         $discord->run();

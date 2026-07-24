@@ -2,12 +2,11 @@
 
 namespace App\Filament\Training\Pages\TrainingPlace;
 
-use App\Filament\Training\Pages\Mentor\ViewMentoringReport;
+use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
 use App\Filament\Training\Pages\TrainingPlace\Widgets\TrainingPlaceStatsWidget;
 use App\Filament\Training\Resources\TrainingPlaces\Pages\ListTrainingPlaces;
 use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
-use App\Models\Cts\Member;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
@@ -23,21 +22,16 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Notifications\Notification;
-use Filament\Pages\Page;
 use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
-class ViewTrainingPlace extends Page implements HasInfolists, HasTable
+class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
 {
     use InteractsWithInfolists;
-    use InteractsWithTable;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
@@ -253,7 +247,6 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
 
     public function infolist(Schema $schema): Schema
     {
-
         return $schema->record($this->trainingPlace)->components([
             Callout::make('This training place is inactive')
                 ->icon('heroicon-o-exclamation-triangle')
@@ -278,44 +271,21 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
         ]);
     }
 
-    public function table(Table $table): Table
+    protected function tableHeading(): ?string
     {
-        return $table
-            ->heading('Mentoring session history')
-            ->queryStringIdentifier('mentoring')
-            ->query((new SessionRepository)->getAllAcceptedSessionsForPositionsQuery(
-                $this->trainingPlace->trainingPosition->cts_positions,
-                $this->trainingPlace->account->member?->id ?? 0
-            ))
-            ->defaultSort('taken_date', 'desc')
-            ->paginated([10])
-            ->defaultPaginationPageOption(10)
-            ->columns([
-                TextColumn::make('position')->label('Position'),
-                TextColumn::make('taken_date')->label('Date')->date('d/m/Y'),
-                TextColumn::make('mentor.cid')->label('Mentor CID'),
-                TextColumn::make('mentor.name')->label('Mentor'),
-                TextColumn::make('status')->label('Status')->badge()->getStateUsing(
-                    fn ($record) => match (true) {
-                        $record->noShow == 1 => 'No Show',
-                        $record->cancelled_datetime != null => 'Cancelled',
-                        $record->session_done == 1 => 'Completed',
-                        default => 'Pending',
-                    })
-                    ->color(fn ($state) => match ($state) {
-                        'Pending' => 'primary',
-                        'No Show' => 'danger',
-                        'Cancelled' => 'warning',
-                        'Completed' => 'success',
-                    }),
-            ])
-            ->recordActions([
-                Action::make('view')
-                    ->label('View Report')
-                    ->url(fn ($record) => ViewMentoringReport::getUrl(['sessionId' => $record->id]))
-                    ->visible(fn ($record) => $record->filed !== null)
-                    ->openUrlInNewTab(),
-            ])
-            ->emptyStateHeading('No mentoring sessions found');
+        return 'Mentoring session history';
+    }
+
+    protected function getSessionQuery(): Builder
+    {
+        return (new SessionRepository)->getAllAcceptedSessionsForPositionsQuery(
+            $this->trainingPlace->trainingPosition->cts_positions,
+            $this->trainingPlace->account->member?->id ?? 0
+        );
+    }
+
+    protected function showStudentFilter(): bool
+    {
+        return false;
     }
 }

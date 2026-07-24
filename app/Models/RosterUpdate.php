@@ -11,6 +11,8 @@ class RosterUpdate extends Model
     protected $fillable = ['period_start', 'period_end', 'data'];
 
     protected $casts = [
+        'period_start' => 'datetime',
+        'period_end' => 'datetime',
         'data' => 'json',
     ];
 }

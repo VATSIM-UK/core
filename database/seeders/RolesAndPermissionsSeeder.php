@@ -68,6 +68,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.exams.conduct.p3',
             'training.exams.override-result',
             'training.exams.request.remove',
+            'training.exams.view-upcoming.*',
+            'training.exams.view-upcoming.atc',
+            'training.exams.view-upcoming.pilot',
             'training.theory.access',
             'training.theory.view.*',
             'training.theory.view.obs',
@@ -144,7 +147,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'vt.application.cancel.*',
             'vt.status.revoke',
             'vt.status.grant.manual',
-            // 'vt.application.check.modify.*',
+            'vt.application.modify.*',
 
             // Waiting List System Permissions,
             'waiting-lists.access',

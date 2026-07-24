@@ -21,8 +21,21 @@ class ReasonFactory extends Factory
             'reason_text' => fake()->paragraph,
             'period_amount' => fake()->randomDigitNot(0),
             'period_unit' => fake()->randomElement(['M', 'H', 'D']),
+            'is_permanent' => false,
             'created_at' => fake()->dateTime(),
             'updated_at' => fake()->dateTime(),
         ];
+    }
+
+    /**
+     * Indicate that the ban reason is permanent.
+     */
+    public function permanent()
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_permanent' => true,
+            'period_amount' => 0,
+            'period_unit' => 'D',
+        ]);
     }
 }
