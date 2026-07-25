@@ -7,6 +7,7 @@ namespace Tests\Unit\CTS;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
+use App\Models\Cts\Member as CtsMember;
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Artisan;
@@ -17,15 +18,24 @@ class ImportCtsBookingsTest extends TestCase
 {
     use DatabaseTransactions;
 
+    private function createCtsMemberForAccount(Account $account): CtsMember
+    {
+        return CtsMember::factory()->create([
+            'id' => $account->generateCTSInternalID($account->id),
+            'cid' => $account->id,
+        ]);
+    }
+
     #[Test]
     public function it_imports_cts_bookings_into_core(): void
     {
         $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
         $member = Account::factory()->create();
+        $ctsMember = $this->createCtsMemberForAccount($member);
 
         $ctsBooking = CtsBooking::factory()->create([
             'position' => 'EGKK_APP',
-            'member_id' => $member->id,
+            'member_id' => $ctsMember->id,
             'type' => 'BK',
             'date' => '2026-08-01',
             'from' => '10:00:00',
@@ -49,14 +59,15 @@ class ImportCtsBookingsTest extends TestCase
     }
 
     #[Test]
-    public function it_skips_already_imported_bookings(): void
+    public function it_upserts_existing_bookings(): void
     {
         $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
         $member = Account::factory()->create();
+        $ctsMember = $this->createCtsMemberForAccount($member);
 
         $ctsBooking = CtsBooking::factory()->create([
             'position' => 'EGKK_APP',
-            'member_id' => $member->id,
+            'member_id' => $ctsMember->id,
             'type' => 'BK',
             'date' => '2026-08-01',
             'from' => '10:00:00',
@@ -67,11 +78,18 @@ class ImportCtsBookingsTest extends TestCase
 
         $countBefore = Booking::count();
 
+        $ctsBooking->update(['type' => 'EX']);
+
         Artisan::call('cts:import-bookings', ['--since' => '2026-01-01']);
         $output = Artisan::output();
 
-        $this->assertStringContainsString('Skipped (already exist): 1', $output);
+        $this->assertStringContainsString('Imported: 0, Updated: 1', $output);
         $this->assertEquals($countBefore, Booking::count());
+
+        $this->assertDatabaseHas('bookings', [
+            'cts_booking_id' => $ctsBooking->id,
+            'type' => Booking::TYPE_EXAM,
+        ]);
     }
 
     #[Test]
@@ -79,10 +97,11 @@ class ImportCtsBookingsTest extends TestCase
     {
         $position = Position::factory()->create(['callsign' => 'EGCC_APP']);
         $member = Account::factory()->create();
+        $ctsMember = $this->createCtsMemberForAccount($member);
 
         $oldBooking = CtsBooking::factory()->create([
             'position' => 'EGCC_APP',
-            'member_id' => $member->id,
+            'member_id' => $ctsMember->id,
             'type' => 'BK',
             'date' => '2025-12-15',
             'from' => '10:00:00',
@@ -91,7 +110,7 @@ class ImportCtsBookingsTest extends TestCase
 
         CtsBooking::factory()->create([
             'position' => 'EGCC_APP',
-            'member_id' => $member->id,
+            'member_id' => $ctsMember->id,
             'type' => 'BK',
             'date' => '2026-08-01',
             'from' => '14:00:00',
@@ -108,10 +127,11 @@ class ImportCtsBookingsTest extends TestCase
     {
         $position = Position::factory()->create(['callsign' => 'EGGP_GND']);
         $member = Account::factory()->create();
+        $ctsMember = $this->createCtsMemberForAccount($member);
 
         CtsBooking::factory()->create([
             'position' => 'EGGP_GND',
-            'member_id' => $member->id,
+            'member_id' => $ctsMember->id,
             'type' => 'BK',
             'date' => '2026-08-01',
             'from' => '10:00:00',
@@ -128,10 +148,11 @@ class ImportCtsBookingsTest extends TestCase
     public function it_handles_unknown_position_gracefully(): void
     {
         $member = Account::factory()->create();
+        $ctsMember = $this->createCtsMemberForAccount($member);
 
         $ctsBooking = CtsBooking::factory()->create([
             'position' => 'EG99_XXX',
-            'member_id' => $member->id,
+            'member_id' => $ctsMember->id,
             'type' => 'BK',
             'date' => '2026-08-01',
             'from' => '10:00:00',
@@ -151,9 +172,10 @@ class ImportCtsBookingsTest extends TestCase
     public function it_maps_exam_types_correctly(): void
     {
         $member = Account::factory()->create();
+        $ctsMember = $this->createCtsMemberForAccount($member);
 
         $ctsBooking = CtsBooking::factory()->create([
-            'member_id' => $member->id,
+            'member_id' => $ctsMember->id,
             'type' => 'EX',
             'date' => '2026-08-01',
             'from' => '10:00:00',
