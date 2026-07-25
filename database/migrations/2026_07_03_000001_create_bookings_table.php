@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreign('position_id')->references('id')->on('positions')->nullOnDelete();
             $table->unsignedInteger('member_id')->nullable();
             $table->foreign('member_id')->references('id')->on('mship_account');
-            $table->string('type', 20);
+            $table->string('type');
             $table->dateTime('starts_at');
             $table->dateTime('ends_at');
             $table->nullableMorphs('bookable');
