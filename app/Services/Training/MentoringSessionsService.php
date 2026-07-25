@@ -2,6 +2,8 @@
 
 namespace App\Services\Training;
 
+use App\Models\Atc\Position;
+use App\Models\Booking;
 use App\Models\Cts\Availability;
 use App\Models\Cts\CancelReason;
 use App\Models\Cts\ExamBooking;
@@ -67,6 +69,8 @@ class MentoringSessionsService
                 $this->notifyParticipants($session, 'accepted');
             });
 
+            $this->createCoreBooking($session);
+
             return true;
         });
     }
@@ -104,6 +108,8 @@ class MentoringSessionsService
                     'previousDateTime' => $previousDateTime,
                 ]);
             });
+
+            $this->updateCoreBooking($session);
 
             return true;
         });
@@ -150,6 +156,8 @@ class MentoringSessionsService
                     'cancellerAccount' => $cancellerAccount,
                 ]);
             });
+
+            $this->deleteCoreBooking($session);
 
             return true;
         });
@@ -291,5 +299,37 @@ class MentoringSessionsService
         if ($requestedStart < $availabilityStart || $requestedEnd > $availabilityEnd) {
             throw new InvalidArgumentException("The requested times fall outside the student's availability window.");
         }
+    }
+
+    private function createCoreBooking(Session $session): void
+    {
+        $studentMember = Member::find($session->student_id);
+
+        Booking::create([
+            'position_id' => Position::where('callsign', $session->position)->value('id'),
+            'member_id' => $studentMember?->cid,
+            'type' => Booking::TYPE_MENTORING,
+            'starts_at' => Carbon::parse($session->taken_date)->format('Y-m-d').' '.$session->taken_from,
+            'ends_at' => Carbon::parse($session->taken_date)->format('Y-m-d').' '.$session->taken_to,
+            'bookable_type' => Session::class,
+            'bookable_id' => $session->id,
+        ]);
+    }
+
+    private function updateCoreBooking(Session $session): void
+    {
+        Booking::where('bookable_type', Session::class)
+            ->where('bookable_id', $session->id)
+            ->update([
+                'starts_at' => Carbon::parse($session->taken_date)->format('Y-m-d').' '.$session->taken_from,
+                'ends_at' => Carbon::parse($session->taken_date)->format('Y-m-d').' '.$session->taken_to,
+            ]);
+    }
+
+    private function deleteCoreBooking(Session $session): void
+    {
+        Booking::where('bookable_type', Session::class)
+            ->where('bookable_id', $session->id)
+            ->delete();
     }
 }
