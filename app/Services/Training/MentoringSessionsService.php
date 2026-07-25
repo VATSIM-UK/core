@@ -309,8 +309,8 @@ class MentoringSessionsService
             'position_id' => Position::where('callsign', $session->position)->value('id'),
             'member_id' => $studentMember?->cid,
             'type' => Booking::TYPE_MENTORING,
-            'starts_at' => Carbon::parse($session->taken_date.' '.$session->taken_from),
-            'ends_at' => Carbon::parse($session->taken_date.' '.$session->taken_to),
+            'starts_at' => Carbon::parse($session->taken_date)->format('Y-m-d').' '.$session->taken_from,
+            'ends_at' => Carbon::parse($session->taken_date)->format('Y-m-d').' '.$session->taken_to,
             'bookable_type' => Session::class,
             'bookable_id' => $session->id,
         ]);
@@ -321,8 +321,8 @@ class MentoringSessionsService
         Booking::where('bookable_type', Session::class)
             ->where('bookable_id', $session->id)
             ->update([
-                'starts_at' => Carbon::parse($session->taken_date.' '.$session->taken_from),
-                'ends_at' => Carbon::parse($session->taken_date.' '.$session->taken_to),
+                'starts_at' => Carbon::parse($session->taken_date)->format('Y-m-d').' '.$session->taken_from,
+                'ends_at' => Carbon::parse($session->taken_date)->format('Y-m-d').' '.$session->taken_to,
             ]);
     }
 
