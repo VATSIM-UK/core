@@ -21,7 +21,7 @@ class CheckForPendingMentoringReports extends Command
             ->whereNotNull('mentor_id')
             ->whereNull('cancelled_datetime')
             ->where('noShow', 0)
-            ->where('taken_date', '<', now()->subHours(72))
+            ->whereRaw('TIMESTAMP(taken_date, taken_from) < ?', [now()->subHours(72)])
             ->get();
 
         foreach ($pendingReports as $pendingReport) {

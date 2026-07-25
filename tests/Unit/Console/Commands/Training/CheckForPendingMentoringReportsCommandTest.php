@@ -8,6 +8,7 @@ use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Notifications\Training\Mentoring\MentoringReportOutstandingNotification;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\Test;
@@ -40,6 +41,18 @@ class CheckForPendingMentoringReportsCommandTest extends TestCase
             'cancelled_datetime' => null,
             'noShow' => 0,
             'taken_date' => now()->subDays(4),
+            'taken_from' => now()->format('H:i:s'),
+        ], $overrides));
+    }
+
+    /**
+     * Create a session whose combined taken_date + taken_from equals the given instant.
+     */
+    private function createSessionTakenAt(Carbon $takenAt, array $overrides = []): Session
+    {
+        return $this->createSession(array_merge([
+            'taken_date' => $takenAt->toDateString(),
+            'taken_from' => $takenAt->format('H:i:s'),
         ], $overrides));
     }
 
@@ -86,5 +99,23 @@ class CheckForPendingMentoringReportsCommandTest extends TestCase
 
         $this->artisan('training:check-for-pending-mentoring-reports')->assertExitCode(0);
         Notification::assertNothingSent();
+    }
+
+    #[Test]
+    public function it_does_not_send_notification_when_taken_date_alone_is_over_72_hours_but_taken_from_is_not(): void
+    {
+        $this->createSessionTakenAt(now()->subHours(71));
+
+        $this->artisan('training:check-for-pending-mentoring-reports')->assertExitCode(0);
+        Notification::assertNothingSent();
+    }
+
+    #[Test]
+    public function it_sends_notification_when_combined_taken_date_and_taken_from_is_over_72_hours(): void
+    {
+        $this->createSessionTakenAt(now()->subHours(73));
+
+        $this->artisan('training:check-for-pending-mentoring-reports')->assertExitCode(0);
+        Notification::assertSentTo($this->mentorAccount, MentoringReportOutstandingNotification::class);
     }
 }
