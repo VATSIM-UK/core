@@ -91,7 +91,14 @@ class WaitingListResource extends Resource
 
                         Toggle::make('feature_toggles.is_vt')
                             ->label('Visiting / Transfer List')
-                            ->default(false),
+                            ->default(false)
+                            ->live()
+                            ->afterStateUpdated(fn ($state, callable $set) => $set('home_members_only', ! $state)),
+
+                        Toggle::make('home_members_only')
+                            ->label('Home Members Only')
+                            ->helperText('If enabled, only members in the division can be on this waiting list.')
+                            ->default(true),
 
                         Toggle::make('retention_checks_enabled')
                             ->label('Enable Retention Checks')

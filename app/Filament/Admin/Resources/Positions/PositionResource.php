@@ -38,16 +38,25 @@ class PositionResource extends Resource
             TextInput::make('callsign')
                 ->required()
                 ->maxLength(191)
-                ->unique(ignorable: fn (?Position $record): ?Position => $record),
+                ->unique(ignorable: fn (?Position $record): ?Position => $record)
+                ->disabled(fn (?Position $record): bool => $record?->ukcp_position_id !== null)
+                ->helperText(fn (?Position $record): ?string => $record?->ukcp_position_id !== null
+                    ? 'Synced from UKCP'
+                    : null
+                ),
             TextInput::make('name')
                 ->required()
                 ->maxLength(191),
             Grid::make(3)->schema([
                 TextInput::make('frequency')
-                    ->helperText('MHz (e.g. 123.450)')
+                    ->helperText(fn (?Position $record): ?string => $record?->ukcp_position_id !== null
+                        ? 'Synced from UKCP'
+                        : 'MHz (e.g. 123.450)'
+                    )
                     ->required()
                     ->numeric()
-                    ->step(0.001),
+                    ->step(0.001)
+                    ->disabled(fn (?Position $record): bool => $record?->ukcp_position_id !== null),
                 Select::make('type')
                     ->required()
                     ->options(Position::typeOptions())
@@ -57,13 +66,12 @@ class PositionResource extends Resource
                         }
                     }),
                 Select::make('positionGroups')
-                    ->label('Position Group')
+                    ->label('Position Groups')
                     ->relationship('positionGroups', 'name')
+                    ->multiple()
                     ->preload()
                     ->searchable(),
             ])->columnSpanFull(),
-            Toggle::make('sub_station')
-                ->label('Sub Station'),
             Toggle::make('temporarily_endorsable')
                 ->label('Temporarily Endorsable'),
             Toggle::make('virtual')
@@ -94,15 +102,19 @@ class PositionResource extends Resource
                 TextColumn::make('type')
                     ->label('Type')
                     ->sortable(),
+                TextColumn::make('ukcp_position_id')
+                    ->label('UKCP')
+                    ->formatStateUsing(fn ($state): ?string => $state ? "[{$state}]" : null)
+                    ->url(fn (Position $record): ?string => $record->ukcp_position_id
+                        ? "https://ukcp.vatsim.uk/controller-positions/{$record->ukcp_position_id}"
+                        : null
+                    )
+                    ->openUrlInNewTab()
+                    ->color('gray'),
                 IconColumn::make('virtual')
                     ->label('Virtual')
                     ->boolean()
                     ->trueColor('warning')
-                    ->falseColor('gray'),
-                IconColumn::make('sub_station')
-                    ->label('Sub Station')
-                    ->boolean()
-                    ->trueColor('info')
                     ->falseColor('gray'),
                 IconColumn::make('temporarily_endorsable')
                     ->label('Temp. Endorsable')
@@ -110,14 +122,13 @@ class PositionResource extends Resource
                     ->trueColor('success')
                     ->falseColor('gray'),
                 TextColumn::make('positionGroups.name')
-                    ->label('Position Group')
+                    ->label('Position Groups')
                     ->badge(),
             ])
             ->filters([
                 SelectFilter::make('type')
                     ->options(Position::typeOptions()),
                 TernaryFilter::make('virtual'),
-                TernaryFilter::make('sub_station'),
                 TernaryFilter::make('temporarily_endorsable'),
             ])
             ->recordActions([

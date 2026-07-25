@@ -18,10 +18,11 @@ class ExamResultRepository
             ->get();
     }
 
-    public function getPassedExamsOfType(string $type): Collection
+    public function getPassedExamsOfType(string $type, ?Carbon\Carbon $since = null): Collection
     {
         return PracticalResult::where('result', PracticalResult::PASSED)
             ->where('exam', $type)
+            ->when($since, fn ($query) => $query->where('date', '>=', $since))
             ->get();
     }
 
@@ -31,6 +32,14 @@ class ExamResultRepository
             ->where('taken', 1)
             ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
             ->get();
+    }
+
+    public function studentHasPendingExam(string $type, int $studentId): bool
+    {
+        return ExamBooking::where('exam', $type)
+            ->where('student_id', $studentId)
+            ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
+            ->exists();
     }
 
     public function createPracticalResult(ExamBooking $examBooking, string $result, ?string $additionalComments)

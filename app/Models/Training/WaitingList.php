@@ -95,7 +95,7 @@ class WaitingList extends Model
 
     public $table = 'training_waiting_list';
 
-    protected $fillable = ['name', 'slug', 'department', 'feature_toggles', 'requires_roster_membership', 'self_enrolment_enabled', 'self_enrolment_minimum_qualification_id', 'self_enrolment_maximum_qualification_id', 'self_enrolment_hours_at_qualification_id', 'self_enrolment_hours_at_qualification_minimum_hours', 'max_capacity', 'retention_checks_enabled', 'retention_checks_months', 'required_endorsement_id'];
+    protected $fillable = ['name', 'slug', 'department', 'home_members_only', 'feature_toggles', 'requires_roster_membership', 'self_enrolment_enabled', 'self_enrolment_minimum_qualification_id', 'self_enrolment_maximum_qualification_id', 'self_enrolment_hours_at_qualification_id', 'self_enrolment_hours_at_qualification_minimum_hours', 'max_capacity', 'retention_checks_enabled', 'retention_checks_months', 'required_endorsement_id'];
 
     const ATC_DEPARTMENT = 'atc';
 

@@ -305,4 +305,127 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
             ->assertSeeText('Exam Setup - TWR to CTR')
             ->assertSeeText('Exam Setup - OBS PT3');
     }
+
+    #[Test]
+    public function it_prevents_setup_exam_when_student_has_pending_twr_to_ctr_exam()
+    {
+        $this->panelUser->givePermissionTo('training.exams.setup');
+
+        $position = Position::factory()->create([
+            'callsign' => 'EGKK_TWR',
+            'type' => Position::TYPE_TOWER,
+        ]);
+        TrainingPosition::factory()->create(['position_id' => $position->id]);
+
+        $studentAccount = Account::factory()->withQualification()->create();
+        $student = Member::factory()->create([
+            'id' => $studentAccount->id,
+            'cid' => $studentAccount->id,
+        ]);
+
+        ExamBooking::factory()->create([
+            'student_id' => $student->id,
+            'exam' => $position->examLevel,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+        ]);
+
+        Session::factory()->create([
+            'position' => $position->callsign,
+            'student_id' => $student->id,
+            'taken_date' => now()->subDays(30),
+            'cancelled_datetime' => null,
+            'noShow' => 0,
+            'session_done' => 1,
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ExamSetup::class)
+            ->set('data.position', $position->id)
+            ->set('data.student', $student->id)
+            ->call('setupExam')
+            ->assertHasNoErrors()
+            ->assertNotified('Error');
+
+        $this->assertDatabaseMissing('exam_setup', [
+            'student_id' => $student->id,
+        ], 'cts');
+    }
+
+    #[Test]
+    public function it_prevents_setup_exam_for_obs_when_student_has_pending_obs_exam()
+    {
+        $this->panelUser->givePermissionTo('training.exams.setup');
+
+        $pt3Position = CtsPosition::factory()->create(['callsign' => 'OBS_SC_PT3']);
+        $pt2Position = CtsPosition::factory()->create(['callsign' => 'OBS_SC_PT2']);
+
+        $atcPosition = Position::factory()->create(['callsign' => 'SC_GND']);
+        TrainingPosition::factory()->withCtsPositions([$pt3Position->callsign])->create([
+            'position_id' => $atcPosition->id,
+            'exam_callsign' => 'OBS_SC_PT2',
+        ]);
+
+        $studentAccount = Account::factory()->withQualification()->create();
+        $student = Member::factory()->create([
+            'id' => $studentAccount->id,
+            'cid' => $studentAccount->id,
+        ]);
+
+        ExamBooking::factory()->create([
+            'student_id' => $student->id,
+            'exam' => 'OBS',
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+        ]);
+
+        Session::factory()->create([
+            'position' => $pt2Position->callsign,
+            'student_id' => $student->id,
+            'taken_date' => now()->subDays(30),
+            'cancelled_datetime' => null,
+            'noShow' => 0,
+            'session_done' => 1,
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ExamSetup::class)
+            ->set('dataOBS.position_obs', $pt3Position->id)
+            ->set('dataOBS.student_obs', $student->id)
+            ->call('setupExamOBS')
+            ->assertHasNoErrors()
+            ->assertNotified('Error');
+
+        $this->assertDatabaseMissing('exam_setup', [
+            'student_id' => $student->id,
+        ], 'cts');
+    }
+
+    #[Test]
+    public function it_prevents_setup_exam_for_pilot_when_student_has_pending_pilot_exam()
+    {
+        $this->panelUser->givePermissionTo('training.exams.setup');
+
+        $studentAccount = Account::factory()->withQualification()->create();
+        $student = Member::factory()->create([
+            'id' => $studentAccount->id,
+            'cid' => $studentAccount->id,
+        ]);
+
+        ExamBooking::factory()->create([
+            'student_id' => $student->id,
+            'exam' => 'P1',
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ExamSetup::class)
+            ->set('dataPilot.exam_type', 'P1')
+            ->set('dataPilot.student_pilot', $student->id)
+            ->call('setupExamPilot')
+            ->assertHasNoErrors()
+            ->assertNotified('Error');
+
+        $this->assertDatabaseMissing('exam_setup', [
+            'student_id' => $student->id,
+        ], 'cts');
+    }
 }

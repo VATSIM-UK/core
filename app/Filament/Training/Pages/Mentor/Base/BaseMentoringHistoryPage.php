@@ -23,6 +23,11 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
 
     abstract protected function getSessionQuery(): Builder;
 
+    protected function tableHeading(): ?string
+    {
+        return null;
+    }
+
     protected function getPositionFilterOptions(): array
     {
         return [];
@@ -79,7 +84,7 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
 
     public function table(Table $table): Table
     {
-        return $table
+        $table = $table
             ->query($this->getSessionQuery())
             ->defaultSort('taken_date', $this->defaultTableSortDirection())
             ->striped()
@@ -89,6 +94,12 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
             ->filters($this->getTableFilters())
             ->recordActions($this->tableRecordActions())
             ->emptyStateHeading($this->tableEmptyStateHeading());
+
+        if ($heading = $this->tableHeading()) {
+            $table = $table->heading($heading);
+        }
+
+        return $table;
     }
 
     protected function getTableColumns(): array
@@ -98,24 +109,24 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
         if ($this->showStudentFilter()) {
             $columns[] = TextColumn::make('student_name')
                 ->label('Student')
-                ->getStateUsing(fn ($record) => $record->student->name)
-                ->description(fn ($record) => $record->student->cid)
+                ->getStateUsing(fn ($record) => $record->student?->name)
+                ->description(fn ($record) => $record->student?->cid)
                 ->action(function ($record, $livewire) {
-                    $livewire->tableFilters['student']['value'] = $record->student->cid;
+                    $livewire->tableFilters['student']['value'] = $record->student?->cid;
                     $livewire->updatedTableFilters();
                 });
         }
 
         $columns[] = TextColumn::make('mentor_name')
             ->label('Mentor')
-            ->getStateUsing(fn ($record) => $record->mentor->name)
-            ->description(fn ($record) => $record->mentor->cid)
+            ->getStateUsing(fn ($record) => $record->mentor?->name)
+            ->description(fn ($record) => $record->mentor?->cid)
             ->action(function ($record, $livewire) {
                 if (! $this->showMentorFilter()) {
                     return;
                 }
 
-                $livewire->tableFilters['mentor']['value'] = $record->mentor->cid;
+                $livewire->tableFilters['mentor']['value'] = $record->mentor?->cid;
                 $livewire->updatedTableFilters();
             });
 
@@ -146,6 +157,29 @@ abstract class BaseMentoringHistoryPage extends Page implements HasTable
                     $record->cancelled_datetime !== null => 'Cancelled',
                     $record->filed !== null => 'Completed',
                     default => 'Pending',
+                })
+                ->description(function ($record) {
+                    if ($record->cancelled_datetime !== null && $record->noShow != 1) {
+                        $cancelledById = $record->cancelReason?->reason_by;
+
+                        if (! $cancelledById) {
+                            return 'By Unknown';
+                        }
+
+                        if ($cancelledById === $record->student_id) {
+                            return 'By Student';
+                        }
+
+                        if ($cancelledById === $record->mentor_id) {
+                            return 'By Mentor';
+                        }
+
+                        $canceller = $cancelledById ? Member::find($cancelledById) : null;
+
+                        return $canceller ? "By {$canceller->cid}" : 'By Unknown';
+                    }
+
+                    return null;
                 })
                 ->color(fn ($state) => match ($state) {
                     'Pending' => 'primary',

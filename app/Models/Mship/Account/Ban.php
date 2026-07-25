@@ -181,7 +181,7 @@ class Ban extends Model
     public function getPeriodAmountStringAttribute()
     {
         if (! $this->period_finish) {
-            return;
+            return 'Permanent';
         }
 
         return human_diff_string($this->period_start, $this->period_finish);

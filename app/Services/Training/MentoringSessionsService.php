@@ -60,6 +60,7 @@ class MentoringSessionsService
                 'taken_date' => $availability->date,
                 'taken_from' => $takenFrom,
                 'taken_to' => $takenTo,
+                'taken_time' => now(),
             ]);
 
             DB::afterCommit(function () use ($session) {
@@ -95,6 +96,7 @@ class MentoringSessionsService
                 'taken_date' => $availability->date,
                 'taken_from' => $takenFrom,
                 'taken_to' => $takenTo,
+                'taken_time' => now(),
             ]);
 
             DB::afterCommit(function () use ($session, $previousDateTime) {
@@ -175,6 +177,7 @@ class MentoringSessionsService
 
         $session->update([
             'mentor_id' => $newMentorMember->id,
+            'taken_time' => now(),
         ]);
 
         $this->notifyParticipants($session, 'reallocated', [

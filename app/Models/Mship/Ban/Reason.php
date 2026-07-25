@@ -49,6 +49,7 @@ class Reason extends Model
 
     protected $casts = [
         'deleted_at' => 'datetime',
+        'is_permanent' => 'boolean',
     ];
 
     public function bans()
@@ -58,6 +59,10 @@ class Reason extends Model
 
     public function getPeriodHoursAttribute()
     {
+        if ($this->is_permanent) {
+            return;
+        }
+
         if ($this->attributes['period_unit'] == 'H') {
             return $this->attributes['period_amount'];
         }
@@ -73,6 +78,10 @@ class Reason extends Model
 
     public function __toString()
     {
+        if ($this->is_permanent) {
+            return $this->name.' (Permanent)';
+        }
+
         return $this->name.' (Duration '.$this->period_amount.$this->period_unit.')';
     }
 }

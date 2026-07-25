@@ -6,6 +6,7 @@ use App\Events\NetworkData\AtcSessionDeleted;
 use App\Events\NetworkData\AtcSessionEnded;
 use App\Events\NetworkData\AtcSessionStarted;
 use App\Events\NetworkData\AtcSessionUpdated;
+use App\Models\Atc\PositionGroup;
 use App\Models\Cts\Session as CtsSession;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -62,6 +63,9 @@ use Watson\Rememberable\Rememberable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc withCallsignIn($callsigns)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\NetworkData\Atc withoutTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc withoutAfis()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc withoutMilitary()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\NetworkData\Atc atMinimumQualification($vatsimLevel)
  *
  * @mixin \Eloquent
  */
@@ -233,6 +237,40 @@ class Atc extends Model
     public static function scopePositionIsWithinUK($query)
     {
         return $query->isUk();
+    }
+
+    public static function scopeWithoutAfis($query)
+    {
+        $afisGroup = PositionGroup::where('name', 'AFISO / AGO (S1)')->first();
+        if (! $afisGroup) {
+            return $query;
+        }
+
+        return $query->whereNotIn('callsign', $afisGroup->positions()->pluck('callsign'));
+    }
+
+    public static function scopeWithoutMilitary($query)
+    {
+        $militaryGroupNames = ['Military (APP)', 'Military (CTR)', 'Military (TWR)'];
+        $militaryCallsigns = PositionGroup::whereIn('name', $militaryGroupNames)
+            ->get()
+            ->flatMap(fn ($g) => $g->positions()->pluck('callsign'))
+            ->unique()
+            ->values()
+            ->toArray();
+
+        if (empty($militaryCallsigns)) {
+            return $query;
+        }
+
+        return $query->whereNotIn('callsign', $militaryCallsigns);
+    }
+
+    public static function scopeAtMinimumQualification($query, $vatsimLevel)
+    {
+        return $query->whereHas('qualification', function ($q) use ($vatsimLevel) {
+            $q->where('vatsim', '>=', $vatsimLevel);
+        });
     }
 
     public function account()
