@@ -4,12 +4,13 @@ namespace App\Models\Training\TrainingPosition;
 
 use App\Models\Atc\Position;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Route;
 
 class TrainingPosition extends Model
@@ -37,9 +38,14 @@ class TrainingPosition extends Model
         return $this->belongsTo(Position::class, 'position_id');
     }
 
-    public function trainingPlaces(): HasMany
+    public function trainingPlaces(): MorphMany
     {
-        return $this->hasMany(TrainingPlace::class, 'training_position_id');
+        return $this->morphMany(TrainingPlace::class, 'trainable');
+    }
+
+    public function trainingPlaceOffers(): MorphMany
+    {
+        return $this->morphMany(TrainingPlaceOffer::class, 'trainable');
     }
 
     public function waitingLists(): BelongsToMany

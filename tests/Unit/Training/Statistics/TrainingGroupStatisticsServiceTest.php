@@ -202,7 +202,7 @@ class TrainingGroupStatisticsServiceTest extends TestCase
         $place->delete();
         $place->forceFill(['deleted_at' => $deletedAt])->save();
 
-        return $place->fresh(['account', 'trainingPosition']);
+        return $place->fresh(['account', 'trainable']);
     }
 
     private function createCompletedSession(int $studentId, string $callsign, Carbon $takenDate): Session

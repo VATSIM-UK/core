@@ -69,7 +69,8 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
 
         $this->assertDatabaseHas('training_places', [
             'account_id' => $student->id,
-            'training_position_id' => $trainingPosition->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
             'waiting_list_account_id' => null,
         ]);
 
@@ -121,7 +122,8 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
         $trainingPlace = TrainingPlace::create([
             'waiting_list_account_id' => $waitingListAccount->id,
             'account_id' => $student->id,
-            'training_position_id' => $trainingPosition->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
         ]);
 
         // Act & Assert
@@ -131,7 +133,7 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
             ->assertCanSeeTableRecords([$trainingPlace])
             ->assertTableColumnExists('account.name')
             ->assertTableColumnExists('account_id')
-            ->assertTableColumnExists('trainingPosition.position.callsign');
+            ->assertTableColumnExists('display_name');
     }
 
     #[Test]
@@ -159,19 +161,21 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
         $trainingPlaceApproach = TrainingPlace::create([
             'waiting_list_account_id' => $waitingListAccount1->id,
             'account_id' => $student1->id,
-            'training_position_id' => $trainingPositionApproach->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPositionApproach->id,
         ]);
 
         $trainingPlaceTower = TrainingPlace::create([
             'waiting_list_account_id' => $waitingListAccount2->id,
             'account_id' => $student2->id,
-            'training_position_id' => $trainingPositionTower->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPositionTower->id,
         ]);
 
         // Act & Assert - Filter by approach category
         Livewire::actingAs($this->privacc)
             ->test(ListTrainingPlaces::class)
-            ->filterTable('trainingPosition.category', 'approach')
+            ->filterTable('category', 'approach')
             ->assertCanSeeTableRecords([$trainingPlaceApproach])
             ->assertCanNotSeeTableRecords([$trainingPlaceTower]);
     }
@@ -195,7 +199,8 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
         $trainingPlace = TrainingPlace::create([
             'waiting_list_account_id' => $waitingListAccount->id,
             'account_id' => $student->id,
-            'training_position_id' => $trainingPosition->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
         ]);
 
         // Act & Assert
@@ -289,7 +294,8 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
         return TrainingPlace::create([
             'waiting_list_account_id' => $waitingListAccount->id,
             'account_id' => $student->id,
-            'training_position_id' => $trainingPosition->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
         ]);
     }
 }

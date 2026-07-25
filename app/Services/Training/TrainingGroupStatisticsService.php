@@ -8,6 +8,7 @@ use App\Models\Cts\Member;
 use App\Models\Cts\PracticalResult;
 use App\Models\Cts\Session;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use Illuminate\Support\Collection;
 
 class TrainingGroupStatisticsService
@@ -37,7 +38,7 @@ class TrainingGroupStatisticsService
     public function activeTrainingPlacesCount(string $category): int
     {
         return TrainingPlace::query()
-            ->whereHas('trainingPosition', fn ($query) => $query->where('category', $category))
+            ->whereHasMorph('trainable', [TrainingPosition::class], fn ($query) => $query->where('category', $category))
             ->count();
     }
 
@@ -151,8 +152,8 @@ class TrainingGroupStatisticsService
     private function completedTrainingPlaces(string $category): Collection
     {
         return TrainingPlace::onlyTrashed()
-            ->whereHas('trainingPosition', fn ($query) => $query->where('category', $category))
-            ->with(['account', 'trainingPosition'])
+            ->whereHasMorph('trainable', [TrainingPosition::class], fn ($query) => $query->where('category', $category))
+            ->with(['account', 'trainable'])
             ->get();
     }
 }

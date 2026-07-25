@@ -52,7 +52,7 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailure extends Notification im
             ->subject('Attention: Your Training Place Has Been Removed - Repeated Availability Check Failures')
             ->view('emails.training.training_place_removed_fourth_availability_failure', [
                 'recipient' => $notifiable,
-                'training_place_position_name' => $trainingPlace->trainingPosition?->position?->name ?? 'N/A',
+                'training_place_position_name' => $trainingPlace->trainingPosition?->position?->name ?? $trainingPlace->display_name,
                 'removal_date' => $removalDate,
             ]);
     }
@@ -60,7 +60,7 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailure extends Notification im
     public function toDiscord($notifiable)
     {
         $trainingPlace = $this->availabilityWarning->trainingPlace;
-        $position = $trainingPlace->trainingPosition->position;
+        $positionLabel = $this->positionLabel($trainingPlace);
 
         $warningDates = $trainingPlace->availabilityWarnings()
             ->orderBy('created_at')
@@ -74,7 +74,7 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailure extends Notification im
             'embeds' => [
                 [
                     'title' => 'Training Place Automatically Removed',
-                    'description' => "The training place for **{$notifiable->name} ({$notifiable->id})** on **{$position->name} ({$position->callsign})** has been removed for a fourth failed availability check.",
+                    'description' => "The training place for **{$notifiable->name} ({$notifiable->id})** on **{$positionLabel}** has been removed for a fourth failed availability check.",
                     'color' => 15158332,
                     'fields' => [
                         [
@@ -91,5 +91,16 @@ class TrainingPlaceRemovedDueToFourthAvailabilityFailure extends Notification im
     public function getChannel(): string
     {
         return $this->availabilityWarning->trainingPlace->trainingPosition?->training_team_discord_channel_id ?? '';
+    }
+
+    private function positionLabel($trainingPlace): string
+    {
+        $position = $trainingPlace->trainingPosition?->position;
+
+        if ($position) {
+            return "{$position->name} ({$position->callsign})";
+        }
+
+        return $trainingPlace->display_name;
     }
 }

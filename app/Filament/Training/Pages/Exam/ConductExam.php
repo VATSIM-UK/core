@@ -10,6 +10,7 @@ use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
 use App\Models\Cts\PracticalResult;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Repositories\Cts\ExamAssessmentRepository;
 use App\Repositories\Cts\ExamResultRepository;
 use App\Services\Training\ExamResubmissionService;
@@ -375,7 +376,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
         TrainingPlace::query()
             ->whereBelongsTo($studentAccount, 'account')
-            ->whereHas('trainingPosition', function ($query) use ($examCallsign) {
+            ->whereHasMorph('trainable', [TrainingPosition::class], function ($query) use ($examCallsign) {
                 $query->where('exam_callsign', $examCallsign)
                     ->orWhere(function ($query) use ($examCallsign) {
                         $query->whereNull('exam_callsign')

@@ -27,6 +27,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Auth;
 
 class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
@@ -59,7 +60,7 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
             ->with([
                 'account',
                 'waitingListAccount',
-                'trainingPosition.position',
+                'trainable' => fn (MorphTo $morphTo) => $morphTo->morphWith([TrainingPosition::class => ['position']]),
             ])
             ->firstOrFail();
     }
@@ -104,14 +105,14 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
             Action::make('forwardForExam')
                 ->label('Forward for Practical Exam')
                 ->icon('heroicon-o-arrow-right')
-                ->visible(fn () => ! $this->trainingPlace->trashed() && $user->can('training.exams.setup'))
+                ->visible(fn () => ! $this->trainingPlace->trashed() && $user->can('training.exams.setup') && $this->trainingPlace->trainingPosition !== null)
                 ->disabled(fn () => $this->hasPendingExam())
                 ->tooltip(fn () => $this->hasPendingExam() ? 'This member already has a pending exam booking.' : 'Forward the member for a practical exam on their primary training position')
                 ->schema([
                     Select::make('position_id')
                         ->label('Position')
                         ->options(fn () => Position::where('callsign', 'NOT LIKE', '%ATIS%')->orderBy('callsign')->pluck('callsign', 'id'))
-                        ->default(fn () => $this->trainingPlace->trainingPosition->position->id)
+                        ->default(fn () => $this->trainingPlace->trainingPosition?->position?->id)
                         ->required()
                         ->searchable()
                         ->preload(),
@@ -141,11 +142,11 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
                 ->modalSubmitActionLabel('Restore')
                 ->requiresConfirmation()
                 ->action(function () {
-                    $callsign = $this->trainingPlace->trainingPosition->position->callsign;
+                    $displayName = $this->trainingPlace->display_name;
 
                     $this->trainingPlace->restore();
 
-                    $this->trainingPlace->account->addNote('training', "Training place restored on {$callsign}.", Auth::user()->id);
+                    $this->trainingPlace->account->addNote('training', "Training place restored on {$displayName}.", Auth::user()->id);
 
                     Notification::make()
                         ->title('Training place restored successfully')
@@ -257,7 +258,9 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
             Section::make('Training Place Details')->columnSpanFull()->schema([
                 TextEntry::make('account.name')->label('Name'),
                 TextEntry::make('account.id')->label('CID'),
-                TextEntry::make('trainingPosition.position.name')->label('Position'),
+                TextEntry::make('display_name')
+                    ->label('Position')
+                    ->state(fn (): string => $this->trainingPlace->trainingPosition?->position?->name ?? $this->trainingPlace->display_name),
                 TextEntry::make('created_at')->label('Training Start')->date('d/m/Y'),
                 TextEntry::make('waitingListAccount.created_at')
                     ->label('Waiting List Join Date')
@@ -279,7 +282,7 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
     protected function getSessionQuery(): Builder
     {
         return (new SessionRepository)->getAllAcceptedSessionsForPositionsQuery(
-            $this->trainingPlace->trainingPosition->cts_positions,
+            $this->trainingPlace->trainableCtsPositions(),
             $this->trainingPlace->account->member?->id ?? 0
         );
     }
