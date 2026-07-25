@@ -22,8 +22,8 @@ class CreateCtsBookingEntry
             'position_id' => $position?->id,
             'member_id' => $examBooking->student_id,
             'type' => Booking::TYPE_EXAM,
-            'starts_at' => Carbon::parse($examBooking->taken_date.' '.$examBooking->taken_from),
-            'ends_at' => Carbon::parse($examBooking->taken_date.' '.$examBooking->taken_to),
+            'starts_at' => Carbon::parse($examBooking->taken_date)->format('Y-m-d').' '.$examBooking->taken_from,
+            'ends_at' => Carbon::parse($examBooking->taken_date)->format('Y-m-d').' '.$examBooking->taken_to,
             'bookable_type' => $examBooking::class,
             'bookable_id' => $examBooking->id,
         ]);
