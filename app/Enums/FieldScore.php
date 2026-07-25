@@ -42,6 +42,17 @@ enum FieldScore: int implements HasColor, HasLabel
         ];
     }
 
+    public function toPercentage(): int
+    {
+        return match ($this) {
+            self::NOT_SCORED, self::NOT_APPLICABLE => 0,
+            self::COVERED => 25,
+            self::DEVELOPING => 50,
+            self::GOOD => 75,
+            self::TEST_STANDARD => 100,
+        };
+    }
+
     public function getColor(): string|array|null
     {
         return match ($this) {

@@ -3,6 +3,7 @@
 namespace App\Filament\Training\Pages\TrainingPlace;
 
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
+use App\Filament\Training\Pages\StudentOverview\ViewStudentOverview;
 use App\Filament\Training\Pages\TrainingPlace\Widgets\TrainingPlaceStatsWidget;
 use App\Filament\Training\Resources\TrainingPlaces\Pages\ListTrainingPlaces;
 use App\Models\Atc\Position;
@@ -101,6 +102,12 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
         $user = Auth::user();
 
         return [
+            Action::make('studentOverview')
+                ->label('Student Overview')
+                ->icon('heroicon-o-user')
+                ->color('primary')
+                ->url(fn () => ViewStudentOverview::getUrl(['trainingPlaceId' => $this->trainingPlace->id])),
+
             Action::make('forwardForExam')
                 ->label('Forward for Practical Exam')
                 ->icon('heroicon-o-arrow-right')

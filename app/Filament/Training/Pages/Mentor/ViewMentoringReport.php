@@ -6,6 +6,7 @@ namespace App\Filament\Training\Pages\Mentor;
 
 use App\Filament\Training\Concerns\InteractsWithCtsRichEditorNotes;
 use App\Filament\Training\Pages\MyTraining\MyMentoringHistory;
+use App\Filament\Training\Pages\StudentOverview\ViewStudentOverview;
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Filament\Training\Support\MentoringReportLayout;
 use App\Filament\Training\Support\MentoringReportScores;
@@ -116,6 +117,24 @@ class ViewMentoringReport extends Page implements HasInfolists
                         ->url($syllabusUrl)
                         ->openUrlInNewTab()
                         ->visible(fn () => filled($syllabusUrl)),
+
+                    Action::make('studentOverview')
+                        ->label('View Student Overview')
+                        ->icon('heroicon-o-user')
+                        ->color('gray')
+                        ->visible(function (Session $record): bool {
+                            return TrainingPlace::where('account_id', $record->student->cid)->exists();
+                        })
+                        ->url(function (Session $record): ?string {
+                            $trainingPlace = TrainingPlace::where('account_id', $record->student->cid)->first();
+
+                            if (! $trainingPlace) {
+                                return null;
+                            }
+
+                            return ViewStudentOverview::getUrl(['trainingPlaceId' => $trainingPlace->id]);
+                        })
+                        ->openUrlInNewTab(),
                 ])
                 ->schema([
                     TextEntry::make('student.account.name')

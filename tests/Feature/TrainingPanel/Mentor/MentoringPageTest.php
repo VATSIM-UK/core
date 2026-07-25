@@ -9,6 +9,7 @@ use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Models\Training\Mentoring\MentorTrainingPosition;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -463,6 +464,51 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function student_overview_action_is_visible_when_training_place_exists(): void
+    {
+        $student = Member::factory()->create();
+        $studentAccount = Account::factory()->create(['id' => $student->cid]);
+        $session = Session::factory()->create([
+            'mentor_id' => $this->mentorMember->id,
+            'student_id' => $student->id,
+            'position' => 'EGLL_APP',
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'filed' => null,
+            'cancelled_datetime' => null,
+            'noShow' => 0,
+        ]);
+
+        $trainingPlace = TrainingPlace::factory()->create([
+            'account_id' => $studentAccount->id,
+            'training_position_id' => $this->trainingPosition->id,
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AcceptedMentoringSessionsTable::class)
+            ->assertSee('View Student Overview');
+    }
+
+    #[Test]
+    public function student_overview_action_is_hidden_when_no_training_place_exists(): void
+    {
+        $student = Member::factory()->create();
+        Session::factory()->create([
+            'mentor_id' => $this->mentorMember->id,
+            'student_id' => $student->id,
+            'position' => 'EGLL_APP',
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'filed' => null,
+            'cancelled_datetime' => null,
+            'noShow' => 0,
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AcceptedMentoringSessionsTable::class)
+            ->assertDontSee('View Student Overview');
+    }
+
     public function last_session_date_shows_next_session_for_future_session(): void
     {
         Carbon::setTestNow(Carbon::today()->setTime(10, 0));
