@@ -162,7 +162,11 @@ class BookingTest extends TestCase
     #[Test]
     public function it_resolves_bookable_morph_to_exam_booking(): void
     {
-        $member = Member::factory()->create();
+        $account = Account::factory()->create();
+        $member = Member::factory()->create([
+            'id' => $account->id,
+            'cid' => $account->id,
+        ]);
         $examBooking = ExamBooking::factory()->create([
             'student_id' => $member->id,
             'exam' => 'TWR',
@@ -175,7 +179,7 @@ class BookingTest extends TestCase
 
         $booking = Booking::create([
             'position_id' => null,
-            'member_id' => $member->cid,
+            'member_id' => $account->id,
             'type' => Booking::TYPE_EXAM,
             'starts_at' => '2026-08-01 10:00:00',
             'ends_at' => '2026-08-01 12:00:00',
@@ -276,7 +280,11 @@ class BookingTest extends TestCase
     #[Test]
     public function exam_booking_has_core_booking_via_morph_one(): void
     {
-        $member = Member::factory()->create();
+        $account = Account::factory()->create();
+        $member = Member::factory()->create([
+            'id' => $account->id,
+            'cid' => $account->id,
+        ]);
         $examBooking = ExamBooking::factory()->create([
             'student_id' => $member->id,
             'exam' => 'TWR',
@@ -288,7 +296,7 @@ class BookingTest extends TestCase
         ]);
 
         Booking::create([
-            'member_id' => $member->cid,
+            'member_id' => $account->id,
             'type' => Booking::TYPE_EXAM,
             'starts_at' => '2026-08-01 10:00:00',
             'ends_at' => '2026-08-01 12:00:00',
