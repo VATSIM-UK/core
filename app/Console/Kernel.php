@@ -97,6 +97,11 @@ class Kernel extends ConsoleKernel
             ->dailyAt('10:15')
             ->graceTimeInMinutes(15);
 
+        $schedule->command('ukcp:sync-positions')
+            ->dailyAt('04:00')
+            ->withoutOverlapping()
+            ->graceTimeInMinutes(15);
+
         $schedule->command('training-places:check-availability')
             ->dailyAt('10:00')
             ->graceTimeInMinutes(15);
