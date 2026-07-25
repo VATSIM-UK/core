@@ -18,7 +18,7 @@ class ExamResultRepository
             ->get();
     }
 
-    public function getPassedExamsOfType(string $type, ?\DateTimeInterface $since = null): Collection
+    public function getPassedExamsOfType(string $type, ?Carbon\Carbon $since = null): Collection
     {
         return PracticalResult::where('result', PracticalResult::PASSED)
             ->where('exam', $type)
