@@ -676,4 +676,118 @@ class SyncUkcpPositionsTest extends TestCase
         $position->refresh();
         $this->assertNull($position->top_down);
     }
+
+    #[Test]
+    public function it_restores_soft_deleted_position_when_ukcp_re_adds_same_callsign(): void
+    {
+        $position = Position::factory()->create([
+            'callsign' => 'EGKK_TWR',
+            'ukcp_position_id' => 1,
+        ]);
+        $position->delete();
+        $position->update(['ukcp_position_id' => null]);
+
+        $ukcpPositions = new Collection([
+            $this->buildUkcpPosition(2, 'EGKK_TWR', 118.975, 'Gatwick Tower'),
+        ]);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) use ($ukcpPositions) {
+            $mock->shouldReceive('getAllControllerPositions')
+                ->once()
+                ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
+        });
+
+        (new SyncUkcpPositions)->handle(app(UKCP::class));
+
+        $position->refresh();
+
+        $this->assertNull($position->deleted_at);
+        $this->assertEquals(2, $position->ukcp_position_id);
+
+        $this->assertEquals(1, Position::where('callsign', 'EGKK_TWR')->count());
+    }
+
+    #[Test]
+    public function it_restores_soft_deleted_position_when_ukcp_re_adds_with_same_id(): void
+    {
+        $position = Position::factory()->create([
+            'callsign' => 'EGPH_TWR',
+            'ukcp_position_id' => 1,
+        ]);
+        $position->delete();
+        $position->update(['ukcp_position_id' => null]);
+
+        $ukcpPositions = new Collection([
+            $this->buildUkcpPosition(1, 'EGPH_TWR', 118.700),
+        ]);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) use ($ukcpPositions) {
+            $mock->shouldReceive('getAllControllerPositions')
+                ->once()
+                ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
+        });
+
+        (new SyncUkcpPositions)->handle(app(UKCP::class));
+
+        $position->refresh();
+
+        $this->assertNull($position->deleted_at);
+        $this->assertEquals(1, $position->ukcp_position_id);
+    }
+
+    #[Test]
+    public function it_allows_callsign_rename_when_only_conflict_is_soft_deleted(): void
+    {
+        $softDeleted = Position::factory()->create([
+            'callsign' => 'EGGP_APP',
+            'ukcp_position_id' => 1,
+        ]);
+        $softDeleted->delete();
+        $softDeleted->update(['ukcp_position_id' => null]);
+
+        Position::factory()->create([
+            'callsign' => 'EGBB_APP',
+            'ukcp_position_id' => 2,
+            'name' => 'Birmingham Approach',
+            'type' => Position::TYPE_APPROACH,
+        ]);
+
+        $ukcpPositions = new Collection([
+            $this->buildUkcpPosition(2, 'EGGP_APP', 123.950),
+        ]);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) use ($ukcpPositions) {
+            $mock->shouldReceive('getAllControllerPositions')
+                ->once()
+                ->andReturn($ukcpPositions);
+
+            $mock->shouldReceive('getControllerPositionsV2Dependency')
+                ->once()
+                ->andReturn(new Collection);
+        });
+
+        (new SyncUkcpPositions)->handle(app(UKCP::class));
+
+        $this->assertDatabaseHas('positions', [
+            'callsign' => 'EGGP_APP',
+            'ukcp_position_id' => 2,
+            'deleted_at' => null,
+            'name' => 'Birmingham Approach',
+        ]);
+
+        $this->assertDatabaseMissing('positions', [
+            'callsign' => 'EGBB_APP',
+            'deleted_at' => null,
+        ]);
+
+        $this->assertSoftDeleted($softDeleted);
+    }
 }

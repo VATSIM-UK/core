@@ -10,11 +10,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
+use RuntimeException;
 
 class Position extends Model implements Endorseable
 {
     use HasFactory;
     use SoftDeletes;
+
+    public static bool $bypassUkcpProtection = false;
 
     protected $fillable = [
         'callsign',
@@ -48,6 +51,25 @@ class Position extends Model implements Endorseable
     const TYPE_TERMINAL = 7;
 
     const TYPE_FSS = 8;
+
+    protected static function booted(): void
+    {
+        static::saving(function (Position $position) {
+            if (static::$bypassUkcpProtection) {
+                return;
+            }
+
+            if ($position->ukcp_position_id !== null && $position->exists) {
+                if ($position->isDirty('callsign')) {
+                    throw new RuntimeException('Cannot modify callsign on a UKCP-synced position.');
+                }
+
+                if ($position->isDirty('frequency')) {
+                    throw new RuntimeException('Cannot modify frequency on a UKCP-synced position.');
+                }
+            }
+        });
+    }
 
     public static function typeOptions(): array
     {

@@ -6,19 +6,11 @@ namespace App\Jobs;
 
 use App\Libraries\UKCP;
 use App\Models\Atc\Position;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class SyncUkcpPositions extends Job implements ShouldQueue
+class SyncUkcpPositions extends Job
 {
-    public $tries = 3;
-
-    public $backoff = 60;
-
-    public $queue = 'default';
-
     private bool $dryRun;
 
     public function __construct(bool $dryRun = false)
@@ -28,7 +20,13 @@ class SyncUkcpPositions extends Job implements ShouldQueue
 
     public function handle(UKCP $ukcp): void
     {
-        DB::transaction(fn () => $this->doSync($ukcp));
+        Position::$bypassUkcpProtection = true;
+
+        try {
+            DB::transaction(fn () => $this->doSync($ukcp));
+        } finally {
+            Position::$bypassUkcpProtection = false;
+        }
     }
 
     private function doSync(UKCP $ukcp): void
@@ -41,19 +39,22 @@ class SyncUkcpPositions extends Job implements ShouldQueue
             return;
         }
 
-        $coreByCallsign = Position::all()->keyBy('callsign');
-        $coreByUkcpId = Position::whereNotNull('ukcp_position_id')->get()->keyBy('ukcp_position_id');
+        $coreByCallsign = Position::withTrashed()->orderByRaw('deleted_at IS NULL DESC')->get()->keyBy('callsign');
+        $coreByUkcpId = Position::withTrashed()->whereNotNull('ukcp_position_id')->get()->keyBy('ukcp_position_id');
         $ukcpIds = $ukcpPositions->pluck('id');
 
         $created = 0;
         $updated = 0;
+        $restored = 0;
         $deleted = 0;
 
         foreach ($ukcpPositions as $ukcpPosition) {
-            $core = $coreByUkcpId->get($ukcpPosition->id) // Match by UKCP ID first (survives callsign changes)
-                ?? $coreByCallsign->get($ukcpPosition->callsign); // Fall back to callsign (first-time linking)
+            $core = $coreByUkcpId->get($ukcpPosition->id)
+                ?? $coreByCallsign->get($ukcpPosition->callsign);
 
             if ($core) {
+                $wasTrashed = $core->trashed();
+
                 $changes = [];
 
                 if ($core->callsign !== $ukcpPosition->callsign) {
@@ -68,11 +69,16 @@ class SyncUkcpPositions extends Job implements ShouldQueue
                     $changes['ukcp_position_id'] = $ukcpPosition->id;
                 }
 
-                if (empty($changes)) {
+                if (empty($changes) && ! $wasTrashed) {
                     continue;
                 }
 
                 if (! $this->dryRun) {
+                    if ($wasTrashed) {
+                        $core->restore();
+                        $restored++;
+                    }
+
                     if (isset($changes['callsign']) && Position::where('callsign', $changes['callsign'])
                         ->where('id', '!=', $core->id)
                         ->exists()
@@ -83,6 +89,11 @@ class SyncUkcpPositions extends Job implements ShouldQueue
 
                     if (! empty($changes)) {
                         $core->update($changes);
+                        $updated++;
+                    }
+                } elseif ($wasTrashed) {
+                    $restored++;
+                    if (! empty($changes)) {
                         $updated++;
                     }
                 } elseif (! empty($changes)) {
@@ -108,7 +119,6 @@ class SyncUkcpPositions extends Job implements ShouldQueue
 
         $topDownUpdated = $this->syncTopDown($ukcp);
 
-        // REMOVALS: soft-delete UKCP-synced positions that no longer exist in UKCP
         $positionsToRemove = Position::whereNotNull('ukcp_position_id')
             ->whereNotIn('ukcp_position_id', $ukcpIds);
 
@@ -125,7 +135,7 @@ class SyncUkcpPositions extends Job implements ShouldQueue
 
         $dryRunLabel = $this->dryRun ? ' (DRY RUN)' : '';
 
-        Log::info("SyncUkcpPositions complete. Created: {$created}, Updated: {$updated}, Top-down updated: {$topDownUpdated}, Soft-deleted: {$deleted}{$dryRunLabel}");
+        Log::info("SyncUkcpPositions complete. Created: {$created}, Updated: {$updated}, Restored: {$restored}, Top-down updated: {$topDownUpdated}, Soft-deleted: {$deleted}{$dryRunLabel}");
     }
 
     private function syncTopDown(UKCP $ukcp): int
@@ -158,12 +168,5 @@ class SyncUkcpPositions extends Job implements ShouldQueue
         }
 
         return $updated;
-    }
-
-    public function middleware(): array
-    {
-        return [
-            new WithoutOverlapping('sync-ukcp-positions'),
-        ];
     }
 }
