@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Bookings\Calendar as BookingsCalendar;
 use App\Livewire\RetentionChecks\Fail;
 use App\Livewire\RetentionChecks\Success;
 use App\Livewire\Roster\Index;
@@ -20,3 +21,11 @@ Route::group([
 
 Route::get('mship/waiting-lists/retention/success', Success::class)->name('mship.waiting-lists.retention.success');
 Route::get('mship/waiting-lists/retention/fail', Fail::class)->name('mship.waiting-lists.retention.fail');
+
+Route::group([
+    'as' => 'site.bookings.',
+    'prefix' => 'atc/bookings',
+    'middleware' => 'auth_full_group',
+], function () {
+    Route::get('calendar/{year?}/{month?}', BookingsCalendar::class)->name('calendar');
+});

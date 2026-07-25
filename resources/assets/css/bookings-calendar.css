@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+    --color-brand: #25ade3;
+    --color-uknavy: #17375e;
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+.timeline-scroll {
+    overflow-x: auto;
+    overflow-y: visible;
+}
+.timeline-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+.timeline-scroll::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+}
+.timeline-scroll::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+.timeline-scroll::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.sticky.left-0 {
+    position: sticky;
+    left: 0;
+}
+.rotate-90 {
+    transform: rotate(90deg);
+}
+
+@keyframes pulse-dot {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.3);
+    }
+}
+.animate-pulse-dot {
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.group:hover .bg-uknavy {
+    filter: brightness(1.1);
+}
+.tabular-nums {
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 640px) {
+    .min-w-\[1680px\] {
+        min-width: 1680px !important;
+    }
+}

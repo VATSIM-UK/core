@@ -61,6 +61,7 @@ class BookingRepository
         return $bookings->map(function (Booking $booking) {
             return (object) [
                 'id' => (string) $booking->id,
+                'position_id' => $booking->position_id,
                 'date' => $booking->starts_at->format('Y-m-d'),
                 'from' => $booking->starts_at->format('H:i'),
                 'to' => $booking->ends_at->format('H:i'),
@@ -76,20 +77,29 @@ class BookingRepository
         if ($booking->type === Booking::TYPE_EXAM) {
             return [
                 'id' => '',
+                'cid' => '',
                 'name' => 'Hidden',
+                'display_name' => 'Hidden',
             ];
         }
 
         if (! $booking->member) {
             return [
                 'id' => '',
+                'cid' => '',
                 'name' => 'Unknown',
+                'display_name' => 'Unknown',
             ];
         }
 
+        $firstName = $booking->member->name_first;
+        $lastInitial = mb_substr($booking->member->name_last, 0, 1).'.';
+
         return [
             'id' => (string) $booking->member->id,
+            'cid' => (string) $booking->member->id,
             'name' => $booking->member->name,
+            'display_name' => $firstName.' '.$lastInitial,
         ];
     }
 }
