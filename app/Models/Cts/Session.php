@@ -2,12 +2,14 @@
 
 namespace App\Models\Cts;
 
+use App\Models\Booking as CoreBooking;
 use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Session extends Model
 {
@@ -73,5 +75,10 @@ class Session extends Model
     public function cancelReason(): HasOne
     {
         return $this->hasOne(CancelReason::class, 'sesh_id', 'id')->where('sesh_type', 'ME');
+    }
+
+    public function coreBooking(): MorphOne
+    {
+        return $this->morphOne(CoreBooking::class, 'bookable');
     }
 }

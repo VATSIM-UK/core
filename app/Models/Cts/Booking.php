@@ -2,8 +2,10 @@
 
 namespace App\Models\Cts;
 
+use App\Models\Booking as CoreBooking;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Booking extends Model
 {
@@ -22,6 +24,11 @@ class Booking extends Model
     protected $hidden = [
         'type_id', 'groupID', 'local_id', 'eurobook_id', 'eurobook_import', 'member_id', 'time_booked',
     ];
+
+    public function coreBooking(): MorphOne
+    {
+        return $this->morphOne(CoreBooking::class, 'bookable');
+    }
 
     public function member()
     {

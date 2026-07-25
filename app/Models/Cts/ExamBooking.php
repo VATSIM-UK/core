@@ -3,6 +3,7 @@
 namespace App\Models\Cts;
 
 use App\Enums\PilotExamType;
+use App\Models\Booking as CoreBooking;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use Carbon\Carbon;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class ExamBooking extends Model
 {
@@ -89,5 +91,10 @@ class ExamBooking extends Model
         return $this->hasMany(CancelReason::class, 'sesh_id', 'id')
             ->where('sesh_type', 'EX')
             ->orderBy('date', 'desc');
+    }
+
+    public function coreBooking(): MorphOne
+    {
+        return $this->morphOne(CoreBooking::class, 'bookable');
     }
 }

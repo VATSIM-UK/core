@@ -66,8 +66,8 @@ class ImportCtsBookings extends Command
                         'starts_at' => Carbon::parse($cts->date.' '.$cts->from)->format('Y-m-d H:i:s'),
                         'ends_at' => Carbon::parse($cts->date.' '.$cts->to)->format('Y-m-d H:i:s'),
                         'cts_booking_id' => $cts->id,
-                        'bookable_type' => null,
-                        'bookable_id' => null,
+                        'bookable_type' => CtsBooking::class,
+                        'bookable_id' => $cts->id,
                         'created_at' => $cts->time_booked ?? Carbon::now(),
                         'updated_at' => Carbon::now(),
                     ];
