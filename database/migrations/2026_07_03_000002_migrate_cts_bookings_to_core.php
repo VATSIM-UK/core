@@ -22,6 +22,7 @@ return new class extends Migration
     public function up(): void
     {
         CtsBooking::query()
+            ->where('date', '>=', '2026-01-01')
             ->orderBy('id')
             ->chunk(500, function ($ctsBookings) {
                 $inserts = [];
