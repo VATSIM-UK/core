@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Training\Mentoring;
 
+use App\Models\Atc\Position;
+use App\Models\Booking;
 use App\Models\Cts\Availability;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
@@ -144,6 +146,8 @@ class MentoringSessionsServiceTest extends TestCase
     {
         Notification::fake();
 
+        $position = Position::factory()->create(['callsign' => 'EGLL_APP']);
+
         $pendingSession = Session::factory()->create([
             'student_id' => $this->studentMember->id,
             'position' => 'EGLL_APP',
@@ -173,6 +177,14 @@ class MentoringSessionsServiceTest extends TestCase
         $this->assertSame('10:00:00', Carbon::parse($pendingSession->taken_from)->format('H:i:s'));
         $this->assertSame('12:00:00', Carbon::parse($pendingSession->taken_to)->format('H:i:s'));
         $this->assertNotNull($pendingSession->taken_time);
+
+        $this->assertDatabaseHas('bookings', [
+            'position_id' => $position->id,
+            'member_id' => $this->studentAccount->id,
+            'type' => Booking::TYPE_MENTORING,
+            'bookable_type' => Session::class,
+            'bookable_id' => $pendingSession->id,
+        ]);
     }
 
     #[Test]
@@ -290,6 +302,14 @@ class MentoringSessionsServiceTest extends TestCase
             'taken_to' => '12:00:00',
         ]);
 
+        Booking::create([
+            'type' => Booking::TYPE_MENTORING,
+            'starts_at' => '2026-05-20 10:00:00',
+            'ends_at' => '2026-05-20 12:00:00',
+            'bookable_type' => Session::class,
+            'bookable_id' => $session->id,
+        ]);
+
         $availability = Availability::factory()->create([
             'student_id' => $this->studentMember->id,
             'date' => Carbon::tomorrow(),
@@ -313,6 +333,20 @@ class MentoringSessionsServiceTest extends TestCase
         $this->assertSame($this->mentorMember->id, $session->mentor_id);
         $this->assertSame('EGLL_APP', $session->position);
         $this->assertNotNull($session->taken_time);
+
+        $this->assertDatabaseHas('bookings', [
+            'bookable_type' => Session::class,
+            'bookable_id' => $session->id,
+        ]);
+
+        $booking = Booking::where('bookable_type', Session::class)
+            ->where('bookable_id', $session->id)
+            ->first();
+
+        $this->assertNotNull($booking);
+        $this->assertEquals(Carbon::tomorrow()->format('Y-m-d'), $booking->starts_at->format('Y-m-d'));
+        $this->assertEquals('14:00', $booking->starts_at->format('H:i'));
+        $this->assertEquals('16:00', $booking->ends_at->format('H:i'));
     }
 
     #[Test]
@@ -377,6 +411,11 @@ class MentoringSessionsServiceTest extends TestCase
         $this->assertTrue($this->service->cancelSession($session->id, $reason, $this->mentorAccount));
 
         $this->assertNotNull($session->fresh()->cancelled_datetime);
+
+        $this->assertDatabaseMissing('bookings', [
+            'bookable_type' => Session::class,
+            'bookable_id' => $session->id,
+        ]);
     }
 
     #[Test]
