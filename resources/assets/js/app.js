@@ -16,5 +16,3 @@ Alpine.plugin(collapse);
 
 window.Alpine = Alpine;
 Alpine.start();
-
-Livewire.start();

@@ -8,7 +8,7 @@
 	@include('components.top-notification')
 
 	{{-- Top section: Logo and Account Dropdown --}}
-	<div class="border-b-4 border-nav-accent">
+	<div class="border-b-[5px] border-nav-accent">
 		<div class="mx-auto flex w-[90%] items-center justify-between py-2.5">
 			<div>
 				<a class="inline-block p-1.5" href="{{ route('site.home') }}">
@@ -67,7 +67,7 @@
 	</div>
 
 	{{-- Bottom section: Main navigation --}}
-	<div class="w-full border-b border-gray-600 bg-nav-secondary">
+	<div class="w-full border-b border-[#666] bg-nav-secondary">
 		<div class="mx-auto w-[90%]">
 			<div class="flex items-center justify-between">
 				<button type="button" class="nav-mobile-toggle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Toggle menu"
@@ -78,9 +78,9 @@
 				</button>
 			</div>
 
-			<div id="nav-inner" class="block overflow-x-hidden bg-nav-secondary lg:overflow-visible max-lg:hidden"
+			<div id="nav-inner" class="block overflow-x-hidden max-lg:bg-nav-bg lg:overflow-visible max-lg:hidden"
 				:class="mobileMenuOpen && 'max-lg:!block'">
-				<ul class="flex flex-col lg:flex-row lg:items-stretch">
+				<ul class="m-0 flex flex-col lg:flex-row lg:items-stretch">
 					{{-- Home --}}
 					<li class="group relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
 						<button type="button" class="nav-trigger" @click="open = !open">
@@ -290,7 +290,7 @@
 					@if (currentUserHasAuth())
 						<li class="ml-auto flex items-center gap-0 border-t border-gray-600 lg:border-t-0">
 							<a href="{{ route('mship.notification.list') }}" title="Notifications"
-								class="nav-icon-link lg:block {{ Auth::user()->has_unread_notifications ? 'text-red-400' : '' }}">
+								class="nav-icon-link lg:block {{ Auth::user()->has_unread_notifications ? 'text-[#f55]' : '' }}">
 								<i class="fa fa-bell"></i>
 							</a>
 							@if (Auth::user()->can('training.access'))
