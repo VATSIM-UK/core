@@ -157,12 +157,22 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                     ->whereNull('mentor_id')
                     ->whereNull('filed')
                     ->whereNull('cancelled_datetime')
+                    ->whereIn('position', $allowedCallsigns)
+                    ->orderByDesc('id')
                     ->limit(1),
 
                 'last_session_date' => Session::selectRaw("CONCAT(taken_date, ' ', COALESCE(taken_from, '00:00:00'))")
                     ->whereColumn('student_id', 'members.id')
                     ->whereNotNull('taken_date')
                     ->whereNull('cancelled_datetime')
+                    ->where('position', Session::select('position')
+                        ->whereColumn('student_id', 'members.id')
+                        ->whereNull('mentor_id')
+                        ->whereNull('filed')
+                        ->whereNull('cancelled_datetime')
+                        ->whereIn('position', $allowedCallsigns)
+                        ->orderByDesc('id')
+                        ->limit(1))
                     ->orderBy('taken_date', 'desc')
                     ->orderBy('taken_from', 'desc')
                     ->limit(1),

@@ -539,6 +539,50 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function last_session_date_only_uses_sessions_from_the_pending_request_category(): void
+    {
+        Carbon::setTestNow(Carbon::today()->setTime(10, 0));
+
+        $student = Member::factory()->create();
+
+        Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => null,
+            'position' => 'EGLL_APP',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        Availability::factory()->create([
+            'student_id' => $student->id,
+            'date' => Carbon::today()->format('Y-m-d'),
+            'from' => '08:00:00',
+            'to' => '18:00:00',
+        ]);
+
+        TrainingPosition::factory()->create([
+            'cts_positions' => ['P1_PPL(A)'],
+            'category' => 'P1 Training',
+        ]);
+
+        Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'P1_PPL(A)',
+            'taken_date' => Carbon::today()->format('Y-m-d'),
+            'taken_from' => '08:00:00',
+            'filed' => now(),
+            'cancelled_datetime' => null,
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->assertSee('Never');
+
+        Carbon::setTestNow();
+    }
+
+    #[Test]
     public function last_session_date_shows_never_when_no_session_exists(): void
     {
         $student = Member::factory()->create();
