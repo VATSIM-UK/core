@@ -114,7 +114,7 @@
                             errorMessage = 'Please enter an end time.';
                             submitting = false; return;
                         }
-                        if (new Date(startDatetime) < new Date()) {
+                        if (new Date(startDatetime + 'Z') < new Date()) {
                             errorMessage = 'Bookings cannot start in the past.';
                             submitting = false; return;
                         }
@@ -216,8 +216,9 @@
 						</div>
 
 						{{-- Error --}}
-						<div x-show="errorMessage" class="mb-5 bg-red-50 border border-red-200 rounded-lg p-3">
-							<p class="text-sm text-red-700" x-text="errorMessage"></p>
+						<div x-show="errorMessage"
+							class="mb-5 bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-center leading-tight">
+							<span class="text-sm text-red-700" x-text="errorMessage"></span>
 						</div>
 
 						{{-- Actions --}}

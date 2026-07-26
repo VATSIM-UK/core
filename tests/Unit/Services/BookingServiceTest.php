@@ -6,6 +6,8 @@ namespace Tests\Unit\Services;
 
 use App\Models\Atc\Position;
 use App\Models\Booking;
+use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use App\Services\BookingService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -149,5 +151,158 @@ class BookingServiceTest extends TestCase
         $this->service->delete($booking);
 
         $this->assertModelMissing($booking);
+    }
+
+    #[Test]
+    public function it_rejects_booking_when_member_not_qualified(): void
+    {
+        $member = Account::factory()->create();
+        $qual = Qualification::factory()->atc()->create(['vatsim' => 1]);
+        $member->qualifications()->sync([$qual->id]);
+        $member = $member->fresh();
+
+        $position = Position::factory()->create(['type' => Position::TYPE_TOWER]);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('not qualified');
+
+        $this->service->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::tomorrow()->setHour(10),
+            'ends_at' => Carbon::tomorrow()->setHour(12),
+        ]);
+    }
+
+    #[Test]
+    public function it_allows_booking_when_member_is_qualified(): void
+    {
+        $member = Account::factory()->create();
+        $qual = Qualification::factory()->atc()->create(['vatsim' => 3]);
+        $member->qualifications()->sync([$qual->id]);
+        $member = $member->fresh();
+
+        $position = Position::factory()->create(['type' => Position::TYPE_TOWER]);
+
+        $booking = $this->service->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::tomorrow()->setHour(10),
+            'ends_at' => Carbon::tomorrow()->setHour(12),
+        ]);
+
+        $this->assertInstanceOf(Booking::class, $booking);
+    }
+
+    #[Test]
+    public function it_rejects_booking_when_member_has_overlap(): void
+    {
+        $member = Account::factory()->create();
+        $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
+        $member->qualifications()->sync([$qual->id]);
+        $member = $member->fresh();
+
+        $position = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
+
+        $this->service->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::tomorrow()->setHour(10),
+            'ends_at' => Carbon::tomorrow()->setHour(12),
+        ]);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('already have a booking');
+
+        $this->service->create([
+            'position_id' => Position::factory()->create()->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::tomorrow()->setHour(11),
+            'ends_at' => Carbon::tomorrow()->setHour(13),
+        ]);
+    }
+
+    #[Test]
+    public function it_allows_member_to_have_non_overlapping_bookings(): void
+    {
+        $member = Account::factory()->create();
+        $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
+        $member->qualifications()->sync([$qual->id]);
+        $member = $member->fresh();
+
+        $position = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
+
+        $this->service->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::tomorrow()->setHour(10),
+            'ends_at' => Carbon::tomorrow()->setHour(12),
+        ]);
+
+        $booking = $this->service->create([
+            'position_id' => Position::factory()->create()->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::tomorrow()->setHour(13),
+            'ends_at' => Carbon::tomorrow()->setHour(15),
+        ]);
+
+        $this->assertInstanceOf(Booking::class, $booking);
+    }
+
+    #[Test]
+    public function it_skips_qualification_check_when_member_id_is_null(): void
+    {
+        $position = Position::factory()->create(['type' => Position::TYPE_TOWER]);
+
+        $booking = $this->service->create([
+            'position_id' => $position->id,
+            'member_id' => null,
+            'type' => Booking::TYPE_EVENT,
+            'starts_at' => Carbon::tomorrow()->setHour(10),
+            'ends_at' => Carbon::tomorrow()->setHour(12),
+        ]);
+
+        $this->assertInstanceOf(Booking::class, $booking);
+    }
+
+    #[Test]
+    public function it_rejects_update_when_member_now_overlaps(): void
+    {
+        $member = Account::factory()->create();
+        $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
+        $member->qualifications()->sync([$qual->id]);
+        $member = $member->fresh();
+
+        $positionA = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
+        $positionB = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
+
+        $bookingA = $this->service->create([
+            'position_id' => $positionA->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::tomorrow()->setHour(10),
+            'ends_at' => Carbon::tomorrow()->setHour(12),
+        ]);
+
+        $bookingB = $this->service->create([
+            'position_id' => $positionB->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::tomorrow()->setHour(13),
+            'ends_at' => Carbon::tomorrow()->setHour(15),
+        ]);
+
+        $this->expectException(\RuntimeException::class);
+
+        $this->service->update($bookingB, [
+            'starts_at' => Carbon::tomorrow()->setHour(11),
+            'ends_at' => Carbon::tomorrow()->setHour(12),
+        ]);
     }
 }
