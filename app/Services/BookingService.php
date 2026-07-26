@@ -29,7 +29,7 @@ class BookingService
                 $data['member_id']
             );
 
-            if ($data['position_id'] !== null) {
+            if ($data['position_id'] !== null && ($data['type'] ?? Booking::TYPE_STANDARD) === Booking::TYPE_STANDARD) {
                 $this->validateMemberQualification(
                     $data['member_id'],
                     $data['position_id']
@@ -46,6 +46,7 @@ class BookingService
         $endsAt = Carbon::parse($data['ends_at'] ?? $booking->ends_at);
         $positionId = $data['position_id'] ?? $booking->position_id;
         $memberId = array_key_exists('member_id', $data) ? $data['member_id'] : $booking->member_id;
+        $type = array_key_exists('type', $data) ? $data['type'] : $booking->type;
 
         if ($positionId !== null && ($startsAt->ne($booking->starts_at) || $endsAt->ne($booking->ends_at) || $positionId !== $booking->position_id)) {
             $this->validateOverlap($startsAt, $endsAt, $positionId, $booking->id);
@@ -55,7 +56,7 @@ class BookingService
             $this->validateMemberOverlap($startsAt, $endsAt, $memberId, $booking->id);
         }
 
-        if ($memberId !== null && $positionId !== null && ($positionId !== $booking->position_id || $memberId !== $booking->member_id)) {
+        if ($memberId !== null && $positionId !== null && $type === Booking::TYPE_STANDARD && ($positionId !== $booking->position_id || $memberId !== $booking->member_id)) {
             $this->validateMemberQualification($memberId, $positionId);
         }
 
