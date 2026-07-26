@@ -4,8 +4,10 @@ namespace App\Models\Mship;
 
 use App\Models\Atc\Endorseable;
 use App\Models\Model;
+use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
  * App\Models\Mship\Qualification.
@@ -81,6 +83,17 @@ class Qualification extends Model implements Endorseable
     public function trainingPlaceOffers()
     {
         return $this->morphMany(\App\Models\Training\TrainingPlace\TrainingPlaceOffer::class, 'trainable');
+    }
+
+    public function waitingLists(): MorphToMany
+    {
+        return $this->morphToMany(
+            WaitingList::class,
+            'trainable',
+            'trainable_waiting_list',
+            'trainable_id',
+            'waiting_list_id'
+        )->withTimestamps();
     }
 
     public static function parseVatsimATCQualification($network): ?self
