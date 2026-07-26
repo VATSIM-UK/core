@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Mship\Training;
 
 use App\Enums\TrainingPlaceOfferStatus;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\TrainingPlaceOfferService;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
 {
@@ -55,7 +57,7 @@ class TrainingPlaceOfferController extends \App\Http\Controllers\BaseController
         return TrainingPlaceOffer::with([
             'waitingListAccount' => fn ($q) => $q->withTrashed(),
             'waitingListAccount.account',
-            'trainingPosition.position',
+            'trainable' => fn (MorphTo $morphTo) => $morphTo->morphWith([TrainingPosition::class => ['position']]),
         ])->where('token', $token)->firstOrFail();
     }
 

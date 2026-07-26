@@ -269,7 +269,7 @@ class AccountsRelationManager extends RelationManager
 
                                     Placeholder::make('offer_position')
                                         ->label('Position')
-                                        ->content($offer->trainingPosition->position->name),
+                                        ->content($offer->display_name),
 
                                     Placeholder::make('offer_expires_at')
                                         ->label('Expires At')
