@@ -4,7 +4,7 @@ import "@fortawesome/fontawesome-free/js/brands";
 import "./mobile-fixed-nav-height";
 
 $("body").scrollspy({
-    target: ".navbar-fixed-top",
+    target: "#nav",
 });
 
 $(".tooltip_displays").tooltip();
@@ -16,3 +16,5 @@ Alpine.plugin(collapse);
 
 window.Alpine = Alpine;
 Alpine.start();
+
+Livewire.start();

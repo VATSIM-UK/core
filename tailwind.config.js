@@ -4,6 +4,10 @@ export default {
     darkMode: 'class',
     theme: {
         colors: {
+            // Nav (VATSIM UK branding)
+            'nav-bg': '#17375e',
+            'nav-accent': '#00b0f0',
+            'nav-secondary': '#0f131a',
             // Core
             brand: '#25ADE3',
             uknavy: '#17375e',
