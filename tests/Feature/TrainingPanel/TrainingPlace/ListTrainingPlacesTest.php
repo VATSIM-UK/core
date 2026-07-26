@@ -10,6 +10,7 @@ use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Carbon;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
@@ -181,6 +182,54 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function it_keeps_same_category_training_places_in_a_single_contiguous_group()
+    {
+        $obsCategory = 'Duplicate Group Fix OBS '.uniqid();
+        $heathrowCategory = 'Duplicate Group Fix Heathrow '.uniqid();
+
+        $obsPosition = TrainingPosition::factory()
+            ->withCtsPositions(['EGSS_GND'])
+            ->create(['category' => $obsCategory]);
+        $heathrowPosition = TrainingPosition::factory()
+            ->withCtsPositions(['EGLL_2_GND'])
+            ->create(['category' => $heathrowCategory]);
+
+        $waitingList = WaitingList::factory()->create();
+
+        $oldestObs = $this->createTrainingPlaceForPosition($waitingList, $obsPosition, now()->subDays(30));
+        $middleHeathrow = $this->createTrainingPlaceForPosition($waitingList, $heathrowPosition, now()->subDays(15));
+        $newestObs = $this->createTrainingPlaceForPosition($waitingList, $obsPosition, now()->subDays(5));
+
+        $component = Livewire::actingAs($this->privacc)
+            ->test(ListTrainingPlaces::class)
+            ->set('tableRecordsPerPage', 100)
+            ->assertSuccessful()
+            ->assertCanSeeTableRecords([$oldestObs, $middleHeathrow, $newestObs]);
+
+        $orderedIds = $component->instance()->getTableRecords()->pluck('id')->values()->all();
+
+        $oldestObsIndex = array_search($oldestObs->id, $orderedIds, true);
+        $newestObsIndex = array_search($newestObs->id, $orderedIds, true);
+        $heathrowIndex = array_search($middleHeathrow->id, $orderedIds, true);
+
+        $this->assertNotFalse($oldestObsIndex);
+        $this->assertNotFalse($newestObsIndex);
+        $this->assertNotFalse($heathrowIndex);
+
+        $this->assertSame(
+            min($oldestObsIndex, $newestObsIndex) + 1,
+            max($oldestObsIndex, $newestObsIndex),
+            'Same-category places must be contiguous so Filament does not render duplicate group headers.',
+        );
+
+        $this->assertLessThan(
+            $oldestObsIndex,
+            $newestObsIndex,
+            'Within a category group, newer places should appear first.',
+        );
+    }
+
+    #[Test]
     public function it_can_search_by_student_name()
     {
         // Arrange
@@ -297,5 +346,27 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
             'trainable_type' => TrainingPosition::class,
             'trainable_id' => $trainingPosition->id,
         ]);
+    }
+
+    private function createTrainingPlaceForPosition(
+        WaitingList $waitingList,
+        TrainingPosition $trainingPosition,
+        Carbon $createdAt,
+    ): TrainingPlace {
+        $student = Account::factory()->create();
+        Member::factory()->create(['cid' => $student->id]);
+
+        $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
+
+        $trainingPlace = TrainingPlace::create([
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'account_id' => $student->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
+        ]);
+
+        $trainingPlace->forceFill(['created_at' => $createdAt])->saveQuietly();
+
+        return $trainingPlace->fresh(['trainable']);
     }
 }
