@@ -93,6 +93,10 @@ class Kernel extends ConsoleKernel
             ->dailyAt('07:30')
             ->graceTimeInMinutes(15);
 
+        $schedule->command('training:check-for-pending-mentoring-reports')
+            ->dailyAt('9:00')
+            ->graceTimeInMinutes(15);
+
         $schedule->command('training-places:check-for-expired-availability-warnings')
             ->dailyAt('10:15')
             ->graceTimeInMinutes(15);

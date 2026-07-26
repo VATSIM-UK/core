@@ -73,6 +73,16 @@ class Qualification extends Model implements Endorseable
             ->withTimestamps();
     }
 
+    public function trainingPlaces()
+    {
+        return $this->morphMany(\App\Models\Training\TrainingPlace\TrainingPlace::class, 'trainable');
+    }
+
+    public function trainingPlaceOffers()
+    {
+        return $this->morphMany(\App\Models\Training\TrainingPlace\TrainingPlaceOffer::class, 'trainable');
+    }
+
     public static function parseVatsimATCQualification($network): ?self
     {
         $network = (int) $network;

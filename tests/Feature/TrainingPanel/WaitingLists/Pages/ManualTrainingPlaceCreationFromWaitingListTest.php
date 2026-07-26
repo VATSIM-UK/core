@@ -58,7 +58,8 @@ class ManualTrainingPlaceCreationFromWaitingListTest extends BaseTrainingPanelTe
         // Assert: Training place should be created
         $this->assertDatabaseHas('training_places', [
             'waiting_list_account_id' => $waitingListAccount->id,
-            'training_position_id' => $trainingPosition->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
         ]);
 
         // Assert: User should be removed from waiting list (soft deleted)
@@ -110,12 +111,14 @@ class ManualTrainingPlaceCreationFromWaitingListTest extends BaseTrainingPanelTe
         // Assert: Both training places should be created with correct positions
         $this->assertDatabaseHas('training_places', [
             'waiting_list_account_id' => $waitingListAccount1->id,
-            'training_position_id' => $position1->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $position1->id,
         ]);
 
         $this->assertDatabaseHas('training_places', [
             'waiting_list_account_id' => $waitingListAccount2->id,
-            'training_position_id' => $position2->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $position2->id,
         ]);
     }
 

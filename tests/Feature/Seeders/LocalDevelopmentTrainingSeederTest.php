@@ -68,7 +68,7 @@ class LocalDevelopmentTrainingSeederTest extends TestCase
 
         $availabilityPlace = TrainingPlace::query()
             ->where('account_id', DevTrainingPersonas::STUDENT_CID)
-            ->whereHas('trainingPosition', fn ($q) => $q->where('cts_primary_position', 'EGKK_TWR'))
+            ->whereHasMorph('trainable', [TrainingPosition::class], fn ($q) => $q->where('cts_primary_position', 'EGKK_TWR'))
             ->first();
         $this->assertNotNull($availabilityPlace);
         $this->assertDatabaseHas('availability_checks', [

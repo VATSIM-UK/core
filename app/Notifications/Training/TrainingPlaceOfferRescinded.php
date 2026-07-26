@@ -27,7 +27,7 @@ class TrainingPlaceOfferRescinded extends Notification
     public function toMail($notifiable): MailMessage
     {
         $account = $this->trainingPlaceOffer->waitingListAccount->account;
-        $position = $this->trainingPlaceOffer->trainingPosition->position;
+        $position = $this->trainingPlaceOffer->trainingPosition?->position;
 
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')

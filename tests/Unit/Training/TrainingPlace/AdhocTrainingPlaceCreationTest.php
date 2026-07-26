@@ -38,7 +38,8 @@ class AdhocTrainingPlaceCreationTest extends TestCase
         $this->assertInstanceOf(TrainingPlace::class, $trainingPlace);
         $this->assertNull($trainingPlace->waiting_list_account_id);
         $this->assertEquals($student->id, $trainingPlace->account_id);
-        $this->assertEquals($trainingPosition->id, $trainingPlace->training_position_id);
+        $this->assertEquals($trainingPosition->id, $trainingPlace->trainable_id);
+        $this->assertTrue($trainingPlace->trainingPosition->is($trainingPosition));
         $this->assertTrue($trainingPlace->account->is($student));
 
         $this->assertDatabaseHas('mship_account_note', [
