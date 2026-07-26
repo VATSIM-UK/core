@@ -45,6 +45,8 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
     public int $studentsPage = 1;
 
+    public ?int $pendingSessionId = null;
+
     public function mount()
     {
         $this->date = max(request()->query('date', Carbon::today()->format('Y-m-d')), Carbon::today()->format('Y-m-d'));
@@ -157,6 +159,8 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                     ->whereNull('mentor_id')
                     ->whereNull('filed')
                     ->whereNull('cancelled_datetime')
+                    ->whereIn('position', $allowedCallsigns)
+                    ->orderBy('id')
                     ->limit(1),
 
                 'last_session_date' => Session::selectRaw("CONCAT(taken_date, ' ', COALESCE(taken_from, '00:00:00'))")
@@ -239,13 +243,18 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             ->form(function (array $arguments) {
                 $availability = Availability::findOrFail($arguments['availability_id']);
                 $student = Member::findOrFail($availability->student_id);
+                $allowedCallsigns = $this->getAllowedCallsigns();
 
                 $pendingSession = Session::query()
                     ->where('student_id', $student->id)
                     ->whereNull('mentor_id')
                     ->whereNull('filed')
                     ->whereNull('cancelled_datetime')
+                    ->whereIn('position', $allowedCallsigns)
+                    ->orderBy('id')
                     ->first();
+
+                $this->pendingSessionId = $pendingSession?->id;
 
                 $minTime = Carbon::parse($availability->from)->format('H:i');
                 $maxTime = Carbon::parse($availability->to)->format('H:i');
@@ -374,6 +383,16 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                 $student = Member::findOrFail($availability->student_id);
                 $formattedDate = Carbon::parse($availability->date)->format('d/m/Y');
 
+                if (! $this->pendingSessionId) {
+                    Notification::make()
+                        ->title('Booking Failed')
+                        ->body('We could not find an active pending session request for this slot. It may have been cancelled or already claimed.')
+                        ->danger()
+                        ->send();
+
+                    return;
+                }
+
                 $from = Carbon::parse($data['taken_from']);
                 $to = Carbon::parse($data['taken_to']);
 
@@ -387,7 +406,8 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                     return;
                 }
 
-                $success = $mentoringService->acceptSession($availability->id, auth()->user(), $data['taken_from'], $data['taken_to']);
+                $success = $mentoringService->acceptSession($this->pendingSessionId, $availability->id, auth()->user(), $data['taken_from'], $data['taken_to']);
+                $this->pendingSessionId = null;
 
                 if ($success) {
                     Notification::make()
