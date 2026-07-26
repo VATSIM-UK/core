@@ -51,7 +51,16 @@ class TrainingPlaceResource extends Resource
                     ? $record->trainingPosition->category
                     : '__uncategorised__'
             )
-            ->orderQueryUsing(fn (Builder $query): Builder => $query)
+            ->orderQueryUsing(fn (Builder $query, string $direction): Builder => $query
+                ->orderBy(
+                    TrainingPosition::query()
+                        ->select('category')
+                        ->whereColumn('training_positions.id', 'training_places.trainable_id')
+                        ->where('training_places.trainable_type', TrainingPosition::class),
+                    $direction,
+                )
+                ->orderByDesc('training_places.created_at')
+            )
             ->scopeQueryByKeyUsing(function (Builder $query, string $key): Builder {
                 if ($key === '__uncategorised__') {
                     return $query->where(function (Builder $query) {
