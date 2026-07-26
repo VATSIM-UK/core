@@ -2,14 +2,10 @@
 	{{-- Position label --}}
 	<div class="w-32 shrink-0 px-3 py-2.5 border-r border-gray-200 flex items-center gap-2 bg-white sticky left-0 z-[6]">
 		<span class="text-[13px] font-semibold text-gray-700 truncate" x-text="pos.callsign"></span>
-		<span x-show="pos.bookings.length === 0"
-			class="ml-auto text-[10px] text-gray-300 group-hover:text-brand/60 transition-colors">
-			<i class="fa fa-plus" aria-hidden="true"></i>
-		</span>
 	</div>
 
 	{{-- Timeline bar --}}
-	<div class="flex-1 relative h-10 cursor-crosshair" @click="handleTimelineClick($event, pos)">
+	<div class="flex-1 relative h-10 cursor-crosshair" @mousedown.prevent="handleTimelineMouseDown($event, pos)">
 		{{-- Empty state hint --}}
 		<template x-if="pos.bookings.length === 0">
 			<div
@@ -19,7 +15,15 @@
 
 		{{-- Hour grid lines --}}
 		<template x-for="h in 23" :key="h">
-			<div class="absolute top-0 bottom-0 border-l border-gray-100" :style="'left: ' + (h / 24 * 100) + '%'"></div>
+			<div class="absolute top-0 bottom-0 border-l border-gray-100" :style="'left: ' + minToPct(h * 60) + '%'"></div>
+		</template>
+
+		{{-- Drag preview --}}
+		<template x-if="dragging && dragging.pos.callsign === pos.callsign">
+			<div class="absolute top-1 bottom-1 rounded bg-brand/30 border border-brand/50 z-[8] pointer-events-none"
+				:style="'left: ' + minToPct(dragging.startMinutes) + '%; width: ' + minWidth(dragging.startMinutes, dragging
+				    .currentMinutes) + '%'">
+			</div>
 		</template>
 
 		{{-- Booking blocks --}}
@@ -28,6 +32,7 @@
 				class="absolute top-1 bottom-1 rounded px-2 flex items-center gap-1.5 cursor-pointer
                 text-white text-xs font-medium shadow-sm
                 hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap"
+				data-booking-block
 				:class="{
 				    'bg-uknavy': booking.type === 'BK',
 				    'bg-purple-700': booking.type === 'ME',

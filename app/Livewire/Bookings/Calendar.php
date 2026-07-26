@@ -30,9 +30,19 @@ class Calendar extends Component
 
     public array $timelinePositions = [];
 
-    public function mount(): void
+    public array $timelineScale = [];
+
+    public int $filterVersion = 0;
+
+    public function mount(?int $year = null, ?int $month = null): void
     {
         $this->selectedDate = Carbon::today();
+
+        if ($year) {
+            $day = request()->input('day', 1);
+            $this->selectedDate = Carbon::create($year, $month ?? $this->selectedDate->month, (int) $day);
+        }
+
         $this->bookings = collect();
         $this->qualifiedPositions = collect();
         $this->timelinePositions = [];
@@ -47,42 +57,21 @@ class Calendar extends Component
             'timelinePositions' => $this->timelinePositions,
             'timelineHours' => $this->getTimelineHours(),
             'selectedDate' => $this->selectedDate,
+            'timelineScale' => array_values($this->timelineScale),
         ]);
     }
 
     private function refreshData(): void
     {
         $this->getBookingsForDate($this->selectedDate);
+        $this->computeScale();
         $this->getQualifiedPositions();
         $this->buildTimeline();
     }
 
-    public function goToToday(): void
-    {
-        $this->selectedDate = Carbon::today();
-        $this->refreshData();
-    }
-
-    public function goToDate(string $date): void
-    {
-        $this->selectedDate = Carbon::parse($date);
-        $this->refreshData();
-    }
-
-    public function goToNextDay(): void
-    {
-        $this->selectedDate = $this->selectedDate->copy()->addDay();
-        $this->refreshData();
-    }
-
-    public function goToPreviousDay(): void
-    {
-        $this->selectedDate = $this->selectedDate->copy()->subDay();
-        $this->refreshData();
-    }
-
     public function updatedPositionFilter(): void
     {
+        $this->filterVersion++;
         $this->buildTimeline();
     }
 
@@ -128,7 +117,6 @@ class Calendar extends Component
     {
         $groups = [];
         $singles = [];
-        $scale = $this->computeScale();
 
         foreach ($this->bookings as $booking) {
             $callsign = $booking->position ?? 'Unknown';
@@ -140,15 +128,14 @@ class Calendar extends Component
             $start = $this->timeToMinutes($booking->from);
             $end = $this->timeToMinutes($booking->to);
 
-            $left = $this->minuteToPct($scale, $start);
-            $right = $this->minuteToPct($scale, $end);
-
             $bookingData = [
                 'id' => (string) $booking->id,
                 'from' => $booking->from,
                 'to' => $booking->to,
-                'left_pct' => $left,
-                'width_pct' => max($right - $left, 0.1),
+                'startMin' => $start,
+                'endMin' => $end,
+                'left_pct' => $this->scalePos($start),
+                'width_pct' => $this->scaleWidth($start, $end),
                 'member' => $booking->member,
                 'type' => $booking->type,
             ];
@@ -181,48 +168,18 @@ class Calendar extends Component
             }
         }
 
-        // Merge in qualified positions that have no bookings yet
-        foreach ($this->qualifiedPositions as $positionId => $callsign) {
-            if ($this->positionFilter !== '' && ! str_starts_with(strtoupper($callsign), strtoupper($this->positionFilter))) {
-                continue;
-            }
-
-            $parts = explode('_', $callsign);
-            $prefix = $parts[0] ?? '';
-            $isIcao = strlen($prefix) === 4 && ctype_alpha($prefix);
-
-            if ($isIcao) {
-                if (! isset($groups[$prefix][$callsign])) {
-                    if (! isset($groups[$prefix])) {
-                        $groups[$prefix] = [];
-                    }
-                    $groups[$prefix][$callsign] = [
-                        'callsign' => $callsign,
-                        'position_id' => (int) $positionId,
-                        'bookings' => [],
-                    ];
-                }
-            } else {
-                if (! isset($singles[$callsign])) {
-                    $singles[$callsign] = [
-                        'callsign' => $callsign,
-                        'position_id' => (int) $positionId,
-                        'bookings' => [],
-                    ];
-                }
-            }
-        }
-
         $result = [];
 
         ksort($groups);
         foreach ($groups as $icao => $positions) {
             ksort($positions);
+            $posArray = array_values($positions);
+            $clusters = $this->buildTimeClusters($posArray);
             $result[] = [
                 'type' => 'group',
                 'icao' => $icao,
-                'positions' => array_values($positions),
-                'clusters' => $this->buildTimeClusters($positions),
+                'positions' => $posArray,
+                'clusters' => $clusters,
             ];
         }
 
@@ -237,7 +194,7 @@ class Calendar extends Component
         $this->timelinePositions = $result;
     }
 
-    private function computeScale(): array
+    private function computeScale(): void
     {
         $slots = array_fill(0, 96, false);
 
@@ -264,10 +221,13 @@ class Calendar extends Component
             $hours[$h] = $active;
         }
 
+        $activeWeight = 1.0;
+        $inactiveWeight = 1.0 / 6.0;
+
         $totalWeight = 0;
         $weights = [];
         for ($h = 0; $h < 24; $h++) {
-            $w = $hours[$h] ? 1.0 : 0.25;
+            $w = $hours[$h] ? $activeWeight : $inactiveWeight;
             $weights[$h] = $w;
             $totalWeight += $w;
         }
@@ -283,17 +243,30 @@ class Calendar extends Component
             $cumulative += $weights[$h];
         }
 
-        return $scale;
+        $scale[1440] = 100.0;
+
+        $this->timelineScale = $scale;
     }
 
-    private function minuteToPct(array $scale, int $minute): float
+    private function scalePos(int $minute): float
     {
-        return $scale[$minute] ?? 0;
+        if ($minute <= 0) {
+            return 0.0;
+        }
+        if ($minute >= 1440) {
+            return 100.0;
+        }
+
+        return $this->timelineScale[$minute] ?? 0;
+    }
+
+    private function scaleWidth(int $fromMin, int $toMin): float
+    {
+        return max(round($this->scalePos($toMin) - $this->scalePos($fromMin), 2), 0.3);
     }
 
     public function getTimelineHours(): array
     {
-        $scale = $this->computeScale();
         $slots = array_fill(0, 96, false);
 
         foreach ($this->bookings as $booking) {
@@ -323,20 +296,34 @@ class Calendar extends Component
                 if ($gapStart !== null) {
                     $gapHours = $h - $gapStart;
                     if ($gapHours >= 3) {
+                        $gapMin = $gapStart * 60;
+                        $gapEnd = $h * 60;
                         $hours[] = [
                             'type' => 'gap',
                             'label' => sprintf('%02d:00 – %02d:00', $gapStart, $h),
-                            'left_pct' => $this->minuteToPct($scale, $gapStart * 60),
-                            'width_pct' => round($this->minuteToPct($scale, $h * 60) - $this->minuteToPct($scale, $gapStart * 60), 4),
+                            'hour' => $gapStart,
+                            'hours' => $gapHours,
+                            'scale_left' => $this->scalePos($gapMin),
+                            'scale_width' => $this->scaleWidth($gapMin, $gapEnd),
                         ];
                     } else {
                         for ($gh = $gapStart; $gh < $h; $gh++) {
-                            $hours[] = $this->hourEntry($scale, $gh);
+                            $hMin = $gh * 60;
+                            $hours[] = [
+                                'type' => 'hour',
+                                'hour' => $gh,
+                                'scale_left' => $this->scalePos($hMin),
+                            ];
                         }
                     }
                     $gapStart = null;
                 }
-                $hours[] = $this->hourEntry($scale, $h);
+                $hMin = $h * 60;
+                $hours[] = [
+                    'type' => 'hour',
+                    'hour' => $h,
+                    'scale_left' => $this->scalePos($hMin),
+                ];
             } else {
                 if ($gapStart === null) {
                     $gapStart = $h;
@@ -347,29 +334,28 @@ class Calendar extends Component
         if ($gapStart !== null) {
             $gapHours = 24 - $gapStart;
             if ($gapHours >= 3) {
+                $gapMin = $gapStart * 60;
                 $hours[] = [
                     'type' => 'gap',
                     'label' => sprintf('%02d:00 – 00:00', $gapStart),
-                    'left_pct' => $this->minuteToPct($scale, $gapStart * 60),
-                    'width_pct' => round(100 - $this->minuteToPct($scale, $gapStart * 60), 4),
+                    'hour' => $gapStart,
+                    'hours' => $gapHours,
+                    'scale_left' => $this->scalePos($gapMin),
+                    'scale_width' => $this->scaleWidth($gapMin, 1440),
                 ];
             } else {
                 for ($gh = $gapStart; $gh < 24; $gh++) {
-                    $hours[] = $this->hourEntry($scale, $gh);
+                    $hMin = $gh * 60;
+                    $hours[] = [
+                        'type' => 'hour',
+                        'hour' => $gh,
+                        'scale_left' => $this->scalePos($hMin),
+                    ];
                 }
             }
         }
 
         return $hours;
-    }
-
-    private function hourEntry(array $scale, int $h): array
-    {
-        return [
-            'type' => 'hour',
-            'hour' => $h,
-            'left_pct' => $this->minuteToPct($scale, $h * 60),
-        ];
     }
 
     private function buildTimeClusters(array $positions): array
@@ -385,7 +371,7 @@ class Calendar extends Component
             return [];
         }
 
-        usort($all, fn ($a, $b) => $a['from'] <=> $b['from']);
+        usort($all, fn ($a, $b) => $this->timeToMinutes($a['from']) <=> $this->timeToMinutes($b['from']));
 
         $clusters = [];
         $current = [
@@ -394,26 +380,50 @@ class Calendar extends Component
             'count' => 1,
             'left_pct' => $all[0]['left_pct'],
             'right_pct' => $all[0]['left_pct'] + $all[0]['width_pct'],
+            'members' => [$all[0]['member']?->cid ?? $all[0]['member']['cid'] ?? null],
         ];
 
         for ($i = 1; $i < count($all); $i++) {
             $b = $all[$i];
-            if ($this->timeToMinutes($b['from']) - $this->timeToMinutes($current['to']) <= 30) {
-                $current['to'] = max($current['to'], $b['to']);
+            $memberKey = $b['member']?->cid ?? $b['member']['cid'] ?? null;
+            if ($this->timeToMinutes($b['from']) <= $this->timeToMinutes($current['to'])) {
+                $current['to'] = $current['to'] > $b['to'] ? $current['to'] : $b['to'];
                 $current['right_pct'] = max($current['right_pct'], $b['left_pct'] + $b['width_pct']);
                 $current['count']++;
+                if ($memberKey !== null && ! in_array($memberKey, $current['members'], true)) {
+                    $current['members'][] = $memberKey;
+                }
             } else {
-                $clusters[] = $current;
+                $cls = [
+                    'from' => $current['from'],
+                    'to' => $current['to'],
+                    'count' => $current['count'],
+                    'left_pct' => $current['left_pct'],
+                    'right_pct' => $current['right_pct'],
+                    'memberCount' => count($current['members']),
+                ];
+                $cls['width_pct'] = max(round($cls['right_pct'] - $cls['left_pct'], 2), 0.5);
+                $clusters[] = $cls;
                 $current = [
                     'from' => $b['from'],
                     'to' => $b['to'],
                     'count' => 1,
                     'left_pct' => $b['left_pct'],
                     'right_pct' => $b['left_pct'] + $b['width_pct'],
+                    'members' => [$memberKey],
                 ];
             }
         }
-        $clusters[] = $current;
+        $cls = [
+            'from' => $current['from'],
+            'to' => $current['to'],
+            'count' => $current['count'],
+            'left_pct' => $current['left_pct'],
+            'right_pct' => $current['right_pct'],
+            'memberCount' => count($current['members']),
+        ];
+        $cls['width_pct'] = max(round($cls['right_pct'] - $cls['left_pct'], 2), 0.5);
+        $clusters[] = $cls;
 
         return $clusters;
     }
