@@ -83,6 +83,7 @@
             open = true;
         "
 		x-on:close-modal.window="open = false" x-on:booking-created.window="open = false"
+		x-on:keydown.escape.window="open = false"
 		x-on:booking-warning.window="errorMessage = $event.detail?.message || 'There is a scheduling conflict.'; submitting = false;"
 		x-on:booking-error.window="errorMessage = $event.detail?.message || 'An error occurred'; submitting = false;"
 		class="fixed inset-0 z-50 flex items-center justify-center" style="display: none;">
@@ -137,7 +138,7 @@
 						<div class="mb-5">
 							<label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Date</label>
 							<input type="date" x-model="date" required
-								class="block w-full rounded-lg border-gray-200 bg-gray-50 shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5">
+								class="block w-full rounded-lg border-gray-300 bg-white shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5">
 						</div>
 
 						{{-- Time pickers --}}
@@ -148,7 +149,7 @@
 									<div class="text-[10px] text-gray-400 font-medium uppercase tracking-wide mb-1.5">Start</div>
 									<div class="relative">
 										<select x-model="startTime"
-											class="block w-full rounded-lg border-gray-200 bg-gray-50 shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5 appearance-none pr-8">
+											class="block w-full rounded-lg border-gray-300 bg-white shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5 appearance-none pr-8">
 											@foreach ($timeSlots as $slot)
 												<option value="{{ $slot }}">{{ $slot }}</option>
 											@endforeach
@@ -162,7 +163,7 @@
 									<div class="text-[10px] text-gray-400 font-medium uppercase tracking-wide mb-1.5">End</div>
 									<div class="relative">
 										<select x-model="endTime"
-											class="block w-full rounded-lg border-gray-200 bg-gray-50 shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5 appearance-none pr-8">
+											class="block w-full rounded-lg border-gray-300 bg-white shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5 appearance-none pr-8">
 											@foreach ($timeSlots as $slot)
 												<option value="{{ $slot }}">{{ $slot }}</option>
 											@endforeach
@@ -188,7 +189,7 @@
 							<label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Position</label>
 							<div x-show="!selectedPosition">
 								<input type="text" x-model="positionSearch" placeholder="Type callsign to search…"
-									class="block w-full rounded-lg border-gray-200 bg-gray-50 shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5">
+									class="block w-full rounded-lg border-gray-300 bg-white shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5">
 								<div x-show="positionSearch.length >= 2"
 									class="mt-1.5 border border-gray-200 rounded-lg divide-y divide-gray-100 max-h-44 overflow-y-auto shadow-sm">
 									<template x-for="[id, callsign] in filteredPositions" :key="id">

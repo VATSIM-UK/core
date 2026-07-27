@@ -3,10 +3,22 @@
     open: false,
     booking: null,
     confirmDelete: false,
+    ended: false,
+    computeEnded(b) {
+        if (!b || !b.date || !b.to) return false;
+        let endDate = b.date;
+        if (b.from && b.to <= b.from) {
+            const d = new Date(b.date + 'T00:00:00Z');
+            d.setUTCDate(d.getUTCDate() + 1);
+            endDate = d.toISOString().split('T')[0];
+        }
+        return new Date(endDate + 'T' + b.to + ':00Z') < new Date();
+    },
 }" x-show="open" x-cloak
-		x-on:open-detail-modal.window="open = true; booking = $event.detail?.booking || null; confirmDelete = false;"
+		x-on:open-detail-modal.window="open = true; booking = $event.detail?.booking || null; confirmDelete = false; ended = computeEnded(booking);"
 		x-on:close-modal.window="open = false" x-on:booking-deleted.window="open = false"
-		class="fixed inset-0 z-50 flex items-center justify-center" style="display: none;">
+		x-on:keydown.escape.window="open = false" class="fixed inset-0 z-50 flex items-center justify-center"
+		style="display: none;">
 		<div class="absolute inset-0 bg-black/50" x-on:click="open = false"></div>
 		<div
 			class="relative bg-white rounded-xl shadow-sm ring-1 ring-gray-200/80 overflow-hidden w-full max-w-sm mx-2 sm:mx-4"
@@ -41,7 +53,7 @@
 						</p>
 					</div>
 
-					<template x-if="booking.member?.id == '{{ auth()->id() }}'">
+					<template x-if="booking.member?.id == '{{ auth()->id() }}' && !ended">
 						<div class="pt-4 border-t border-gray-200">
 							<template x-if="!confirmDelete">
 								<button type="button" x-on:click="confirmDelete = true"

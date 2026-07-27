@@ -236,4 +236,78 @@ class CalendarTest extends TestCase
 
         $this->assertDatabaseHas('bookings', ['id' => $booking->id]);
     }
+
+    #[Test]
+    public function it_prevents_deleting_a_booking_that_has_already_ended(): void
+    {
+        $member = Account::factory()->withQualification()->create();
+        $position = Position::factory()->create();
+
+        $booking = Booking::create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::now()->subHours(3),
+            'ends_at' => Carbon::now()->subHour(),
+        ]);
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->call('deleteBooking', $booking->id)
+            ->assertDispatched('booking-error');
+
+        $this->assertDatabaseHas('bookings', ['id' => $booking->id]);
+    }
+
+    #[Test]
+    public function it_increments_data_version_when_booking_created(): void
+    {
+        $member = Account::factory()->withQualification()->create();
+        $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
+        $member->qualifications()->sync([$qual->id]);
+        $member = $member->fresh();
+
+        $position = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->assertSet('dataVersion', 1)
+            ->call('createBooking', [
+                'starts_at' => Carbon::tomorrow()->setHour(10)->format('Y-m-d H:i:s'),
+                'ends_at' => Carbon::tomorrow()->setHour(12)->format('Y-m-d H:i:s'),
+                'position_id' => (string) $position->id,
+            ])
+            ->assertDispatched('booking-created')
+            ->assertSet('dataVersion', 2);
+    }
+
+    #[Test]
+    public function it_increments_data_version_when_booking_deleted(): void
+    {
+        $member = Account::factory()->withQualification()->create();
+        $position = Position::factory()->create();
+
+        $booking = Booking::create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::tomorrow()->setHour(10),
+            'ends_at' => Carbon::tomorrow()->setHour(12),
+        ]);
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->assertSet('dataVersion', 1)
+            ->call('deleteBooking', $booking->id)
+            ->assertDispatched('booking-deleted')
+            ->assertSet('dataVersion', 2);
+    }
+
+    #[Test]
+    public function it_shows_the_drag_and_click_booking_hint(): void
+    {
+        Livewire::test(Calendar::class)
+            ->assertSee('Drag across an empty slot to book')
+            ->assertDontSee('Click an empty slot to book');
+    }
 }

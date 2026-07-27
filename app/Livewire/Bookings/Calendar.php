@@ -34,6 +34,8 @@ class Calendar extends Component
 
     public int $filterVersion = 0;
 
+    public int $dataVersion = 0;
+
     public function mount(?int $year = null, ?int $month = null): void
     {
         $this->selectedDate = Carbon::today();
@@ -67,6 +69,7 @@ class Calendar extends Component
         $this->computeScale();
         $this->getQualifiedPositions();
         $this->buildTimeline();
+        $this->dataVersion++;
     }
 
     public function updatedPositionFilter(): void
@@ -495,6 +498,12 @@ class Calendar extends Component
 
         if ($booking->member_id !== auth()->id()) {
             $this->dispatch('booking-error', message: 'You can only delete your own bookings.');
+
+            return;
+        }
+
+        if ($booking->ends_at->isPast()) {
+            $this->dispatch('booking-error', message: 'You cannot delete a booking that has already ended.');
 
             return;
         }

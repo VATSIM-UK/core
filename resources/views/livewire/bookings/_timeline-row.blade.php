@@ -23,6 +23,9 @@
 			<div class="absolute top-1 bottom-1 rounded bg-brand/30 border border-brand/50 z-[8] pointer-events-none"
 				:style="'left: ' + minToPct(dragging.startMinutes) + '%; width: ' + minWidth(dragging.startMinutes, dragging
 				    .currentMinutes) + '%'">
+				<span
+					class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded bg-uknavy px-1.5 py-0.5 text-[10px] font-mono tabular-nums text-white shadow"
+					x-text="minuteToTime(dragging.startMinutes) + ' → ' + minuteToTime(dragging.currentMinutes)"></span>
 			</div>
 		</template>
 

@@ -76,6 +76,7 @@ document.addEventListener('alpine:init', () => {
             this.dragging = {
                 pos,
                 bar,
+                anchorMinutes: startMinutes,
                 startMinutes,
                 currentMinutes: startMinutes + 15,
                 startPct: this.minToPct(startMinutes),
@@ -89,11 +90,20 @@ document.addEventListener('alpine:init', () => {
         _dragMove(e) {
             if (!this.dragging) return;
             const pct = this.getPosFromEvent(e, this.dragging.bar);
-            let currentMinutes = this.pctToMinutes(pct);
-            if (currentMinutes <= this.dragging.startMinutes) {
-                currentMinutes = this.dragging.startMinutes + 15;
+            const pointer = this.pctToMinutes(pct);
+            const anchor = this.dragging.anchorMinutes;
+            let start = Math.min(anchor, pointer);
+            let end = Math.max(anchor, pointer);
+            // Keep at least one 15-minute slot, growing away from the anchor.
+            if (end - start < 15) {
+                if (pointer < anchor) {
+                    start = end - 15;
+                } else {
+                    end = start + 15;
+                }
             }
-            this.dragging.currentMinutes = currentMinutes;
+            this.dragging.startMinutes = start;
+            this.dragging.currentMinutes = end;
         },
 
         _dragEnd() {

@@ -74,7 +74,7 @@
 		</div>
 
 		{{-- Timeline body --}}
-		<div wire:key="tl-{{ $selectedDate->format('Ymd') }}-{{ $filterVersion }}">
+		<div wire:key="tl-{{ $selectedDate->format('Ymd') }}-{{ $filterVersion }}-{{ $dataVersion }}">
 			@php
 				$timelineConfig = [
 				    'selectedDate' => $selectedDate->format('Y-m-d'),
@@ -182,7 +182,7 @@
 						<div class="flex-1 relative">
 							@foreach ($timelineHours as $th)
 								@if ($th['type'] === 'gap')
-									<div class="absolute h-[10px] top-[15px] bg-gray-300/70 rounded-sm"
+									<div class="absolute inset-y-0 bg-gray-400/25 border-x border-gray-300/70"
 										style="left: {{ $th['scale_left'] }}%; width: {{ $th['scale_width'] }}%"></div>
 								@endif
 							@endforeach
@@ -201,7 +201,8 @@
 		{{-- Footer --}}
 		<div class="border-t border-gray-200 px-4 py-2.5 bg-gray-50/80 flex items-center">
 			<span class="text-xs text-gray-400">
-				<i class="fa fa-mouse-pointer text-[10px] mr-1" aria-hidden="true"></i> Click an empty slot to book
+				<i class="fa fa-mouse-pointer text-[10px] mr-1" aria-hidden="true"></i> Drag across an empty slot to book - or click
+				for a 1-hour slot
 			</span>
 		</div>
 	</section>
