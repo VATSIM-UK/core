@@ -4,12 +4,13 @@ namespace App\Models\Training\TrainingPosition;
 
 use App\Models\Atc\Position;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\Route;
 
 class TrainingPosition extends Model
@@ -24,6 +25,15 @@ class TrainingPosition extends Model
 
     protected $guarded = [];
 
+    protected static function booted(): void
+    {
+        // The trainable_waiting_list pivot is polymorphic and cannot rely on a
+        // database foreign key cascade, so detach linked waiting lists on delete.
+        static::deleting(function (TrainingPosition $trainingPosition): void {
+            $trainingPosition->waitingLists()->detach();
+        });
+    }
+
     protected const SYLLABUS_ROUTES = [
         'OBS to S1 Training' => 'site.policy.training.s1-syllabus',
         'S1 Training' => 'site.policy.training.s1-syllabus',
@@ -37,17 +47,23 @@ class TrainingPosition extends Model
         return $this->belongsTo(Position::class, 'position_id');
     }
 
-    public function trainingPlaces(): HasMany
+    public function trainingPlaces(): MorphMany
     {
-        return $this->hasMany(TrainingPlace::class, 'training_position_id');
+        return $this->morphMany(TrainingPlace::class, 'trainable');
     }
 
-    public function waitingLists(): BelongsToMany
+    public function trainingPlaceOffers(): MorphMany
     {
-        return $this->belongsToMany(
+        return $this->morphMany(TrainingPlaceOffer::class, 'trainable');
+    }
+
+    public function waitingLists(): MorphToMany
+    {
+        return $this->morphToMany(
             WaitingList::class,
-            'training_position_waiting_list',
-            'training_position_id',
+            'trainable',
+            'trainable_waiting_list',
+            'trainable_id',
             'waiting_list_id'
         )->withTimestamps();
     }

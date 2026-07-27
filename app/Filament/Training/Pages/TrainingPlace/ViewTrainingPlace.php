@@ -2,12 +2,11 @@
 
 namespace App\Filament\Training\Pages\TrainingPlace;
 
-use App\Filament\Training\Pages\Mentor\ViewMentoringReport;
+use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
 use App\Filament\Training\Pages\TrainingPlace\Widgets\TrainingPlaceStatsWidget;
 use App\Filament\Training\Resources\TrainingPlaces\Pages\ListTrainingPlaces;
 use App\Models\Atc\Position;
 use App\Models\Cts\ExamBooking;
-use App\Models\Cts\Member;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
@@ -23,21 +22,17 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Notifications\Notification;
-use Filament\Pages\Page;
 use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Auth;
 
-class ViewTrainingPlace extends Page implements HasInfolists, HasTable
+class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
 {
     use InteractsWithInfolists;
-    use InteractsWithTable;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
@@ -65,7 +60,7 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
             ->with([
                 'account',
                 'waitingListAccount',
-                'trainingPosition.position',
+                'trainable' => fn (MorphTo $morphTo) => $morphTo->morphWith([TrainingPosition::class => ['position']]),
             ])
             ->firstOrFail();
     }
@@ -110,14 +105,14 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
             Action::make('forwardForExam')
                 ->label('Forward for Practical Exam')
                 ->icon('heroicon-o-arrow-right')
-                ->visible(fn () => ! $this->trainingPlace->trashed() && $user->can('training.exams.setup'))
+                ->visible(fn () => ! $this->trainingPlace->trashed() && $user->can('training.exams.setup') && $this->trainingPlace->trainingPosition !== null)
                 ->disabled(fn () => $this->hasPendingExam())
                 ->tooltip(fn () => $this->hasPendingExam() ? 'This member already has a pending exam booking.' : 'Forward the member for a practical exam on their primary training position')
                 ->schema([
                     Select::make('position_id')
                         ->label('Position')
                         ->options(fn () => Position::where('callsign', 'NOT LIKE', '%ATIS%')->orderBy('callsign')->pluck('callsign', 'id'))
-                        ->default(fn () => $this->trainingPlace->trainingPosition->position->id)
+                        ->default(fn () => $this->trainingPlace->trainingPosition?->position?->id)
                         ->required()
                         ->searchable()
                         ->preload(),
@@ -147,11 +142,11 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
                 ->modalSubmitActionLabel('Restore')
                 ->requiresConfirmation()
                 ->action(function () {
-                    $callsign = $this->trainingPlace->trainingPosition->position->callsign;
+                    $displayName = $this->trainingPlace->display_name;
 
                     $this->trainingPlace->restore();
 
-                    $this->trainingPlace->account->addNote('training', "Training place restored on {$callsign}.", Auth::user()->id);
+                    $this->trainingPlace->account->addNote('training', "Training place restored on {$displayName}.", Auth::user()->id);
 
                     Notification::make()
                         ->title('Training place restored successfully')
@@ -253,7 +248,6 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
 
     public function infolist(Schema $schema): Schema
     {
-
         return $schema->record($this->trainingPlace)->components([
             Callout::make('This training place is inactive')
                 ->icon('heroicon-o-exclamation-triangle')
@@ -264,7 +258,9 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
             Section::make('Training Place Details')->columnSpanFull()->schema([
                 TextEntry::make('account.name')->label('Name'),
                 TextEntry::make('account.id')->label('CID'),
-                TextEntry::make('trainingPosition.position.name')->label('Position'),
+                TextEntry::make('display_name')
+                    ->label('Position')
+                    ->state(fn (): string => $this->trainingPlace->trainingPosition?->position?->name ?? $this->trainingPlace->display_name),
                 TextEntry::make('created_at')->label('Training Start')->date('d/m/Y'),
                 TextEntry::make('waitingListAccount.created_at')
                     ->label('Waiting List Join Date')
@@ -278,44 +274,21 @@ class ViewTrainingPlace extends Page implements HasInfolists, HasTable
         ]);
     }
 
-    public function table(Table $table): Table
+    protected function tableHeading(): ?string
     {
-        return $table
-            ->heading('Mentoring session history')
-            ->queryStringIdentifier('mentoring')
-            ->query((new SessionRepository)->getAllAcceptedSessionsForPositionsQuery(
-                $this->trainingPlace->trainingPosition->cts_positions,
-                $this->trainingPlace->account->member?->id ?? 0
-            ))
-            ->defaultSort('taken_date', 'desc')
-            ->paginated([10])
-            ->defaultPaginationPageOption(10)
-            ->columns([
-                TextColumn::make('position')->label('Position'),
-                TextColumn::make('taken_date')->label('Date')->date('d/m/Y'),
-                TextColumn::make('mentor.cid')->label('Mentor CID'),
-                TextColumn::make('mentor.name')->label('Mentor'),
-                TextColumn::make('status')->label('Status')->badge()->getStateUsing(
-                    fn ($record) => match (true) {
-                        $record->noShow == 1 => 'No Show',
-                        $record->cancelled_datetime != null => 'Cancelled',
-                        $record->session_done == 1 => 'Completed',
-                        default => 'Pending',
-                    })
-                    ->color(fn ($state) => match ($state) {
-                        'Pending' => 'primary',
-                        'No Show' => 'danger',
-                        'Cancelled' => 'warning',
-                        'Completed' => 'success',
-                    }),
-            ])
-            ->recordActions([
-                Action::make('view')
-                    ->label('View Report')
-                    ->url(fn ($record) => ViewMentoringReport::getUrl(['sessionId' => $record->id]))
-                    ->visible(fn ($record) => $record->filed !== null)
-                    ->openUrlInNewTab(),
-            ])
-            ->emptyStateHeading('No mentoring sessions found');
+        return 'Mentoring session history';
+    }
+
+    protected function getSessionQuery(): Builder
+    {
+        return (new SessionRepository)->getAllAcceptedSessionsForPositionsQuery(
+            $this->trainingPlace->trainableCtsPositions(),
+            $this->trainingPlace->account->member?->id ?? 0
+        );
+    }
+
+    protected function showStudentFilter(): bool
+    {
+        return false;
     }
 }

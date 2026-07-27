@@ -5,6 +5,7 @@ namespace App\Filament\Training\Resources\TrainingPlaces\Widgets;
 use App\Enums\TrainingPlaceOfferStatus;
 use App\Filament\Support\NameColumn;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Services\Training\TrainingPlaceOfferService;
 use Filament\Actions\Action;
@@ -17,6 +18,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class TrainingPlaceOffersOverview extends BaseWidget
 {
@@ -33,7 +35,7 @@ class TrainingPlaceOffersOverview extends BaseWidget
                         'waitingListAccount' => fn ($query) => $query->withTrashed(),
                         'waitingListAccount.account',
                         'waitingListAccount.waitingList',
-                        'trainingPosition.position',
+                        'trainable' => fn (MorphTo $morphTo) => $morphTo->morphWith([TrainingPosition::class => ['position']]),
                     ])
                     ->whereHas('waitingListAccount', function (Builder $query): void {
                         $authorisedWaitingListIds = WaitingList::all()
@@ -52,8 +54,9 @@ class TrainingPlaceOffersOverview extends BaseWidget
                     ->label('CID')
                     ->searchable(),
 
-                TextColumn::make('trainingPosition.position.callsign')
-                    ->label('Position'),
+                TextColumn::make('display_name')
+                    ->label('Position')
+                    ->state(fn (TrainingPlaceOffer $record): string => $record->display_name),
 
                 TextColumn::make('status')
                     ->label('Status')

@@ -14,6 +14,7 @@ use App\Filament\Admin\Resources\Accounts\RelationManagers\NotesRelationManager;
 use App\Filament\Admin\Resources\Accounts\RelationManagers\QualificationsRelationManager;
 use App\Filament\Admin\Resources\Accounts\RelationManagers\RetentionChecksRelationManager;
 use App\Filament\Admin\Resources\Accounts\RelationManagers\RolesRelationManager;
+use App\Filament\Admin\Resources\Accounts\RelationManagers\RosterHistoryRelationManager;
 use App\Filament\Admin\Resources\Accounts\RelationManagers\StatesRelationManager;
 use App\Filament\Admin\Resources\Accounts\RelationManagers\VisitTransferRelationManager;
 use App\Filament\Support\NameColumn;
@@ -202,6 +203,7 @@ class AccountResource extends Resource implements DefinesGatedAttributes
             EndorsementsRelationManager::class,
             WaitingListsRelationManager::class,
             RetentionChecksRelationManager::class,
+            RosterHistoryRelationManager::class,
             VisitTransferRelationManager::class,
         ];
     }

@@ -60,6 +60,11 @@ class ApplicationPolicy
         && (! $this->checkIsSatisfied($application->check_outcome_90_day) || ! $this->checkIsSatisfied($application->check_outcome_50_hours));
     }
 
+    public function changeFacility(Account $user, Application $application)
+    {
+        return $user->can('vt.application.modify.*') && ($application->can_accept || $application->can_reject || $application->is_accepted);
+    }
+
     public function create(Account $user, Application $application)
     {
         if ($user->hasState('DIVISION')) {

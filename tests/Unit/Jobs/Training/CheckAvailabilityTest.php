@@ -623,7 +623,7 @@ class CheckAvailabilityTest extends TestCase
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGLL_APP',
         ]);
-        $this->trainingPlace->unsetRelation('trainingPosition');
+        $this->trainingPlace->unsetRelation('trainable');
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
@@ -658,7 +658,7 @@ class CheckAvailabilityTest extends TestCase
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGLL_APP',
         ]);
-        $this->trainingPlace->unsetRelation('trainingPosition');
+        $this->trainingPlace->unsetRelation('trainable');
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
@@ -690,7 +690,7 @@ class CheckAvailabilityTest extends TestCase
             'position_1' => 'EGLL_APP',
         ]);
         // Clear cached relation so job loads training position with updated exam_callsign (observer may have loaded it at create)
-        $this->trainingPlace->unsetRelation('trainingPosition');
+        $this->trainingPlace->unsetRelation('trainable');
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
@@ -710,7 +710,7 @@ class CheckAvailabilityTest extends TestCase
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGKK_TWR', // Different position; hasPendingExam checks position_1
         ]);
-        $this->trainingPlace->unsetRelation('trainingPosition');
+        $this->trainingPlace->unsetRelation('trainable');
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
@@ -740,7 +740,7 @@ class CheckAvailabilityTest extends TestCase
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGLL_TWR',
         ]);
-        $this->trainingPlace->unsetRelation('trainingPosition');
+        $this->trainingPlace->unsetRelation('trainable');
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
@@ -770,7 +770,7 @@ class CheckAvailabilityTest extends TestCase
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGKK_APP', // Does not match position->callsign (EGLL_TWR)
         ]);
-        $this->trainingPlace->unsetRelation('trainingPosition');
+        $this->trainingPlace->unsetRelation('trainable');
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
@@ -917,7 +917,7 @@ class CheckAvailabilityTest extends TestCase
     public function it_creates_failed_check_when_training_place_has_no_training_position(): void
     {
         // Arrange: Update training place to have no training position
-        $this->trainingPlace->update(['training_position_id' => null]);
+        $this->trainingPlace->update(['trainable_type' => null, 'trainable_id' => null]);
         Availability::factory()->forStudent($this->ctsMember->id)->create();
 
         // Act: Run the job

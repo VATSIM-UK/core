@@ -2,6 +2,7 @@
 
 namespace App\Services\Training;
 
+use App\Models\Booking;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\PracticalExaminers;
@@ -95,6 +96,10 @@ class CancelPendingExamService
         });
 
         DB::connection('cts')->afterCommit(fn () => $sendNotifications());
+
+        Booking::where('bookable_type', ExamBooking::class)
+            ->where('bookable_id', $examBooking->id)
+            ->delete();
     }
 
     private function snapshotBookingForNotifications(ExamBooking $examBooking): ExamBooking
