@@ -8,6 +8,10 @@
 	@vite('resources/assets/css/bookings-calendar.css')
 @endsection
 
+@section('scripts')
+	@vite('resources/assets/js/bookings-calendar.js')
+@endsection
+
 @section('content')
 	{{ $slot }}
 @endsection

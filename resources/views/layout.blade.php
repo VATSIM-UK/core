@@ -85,7 +85,6 @@
 	@yield('scripts')
 	@include('partials/_snow')
 	@cookieconsentview
-	<script src="{{ asset('js/bookings-calendar.js') }}"></script>
 	@livewireScripts
 </body>
 

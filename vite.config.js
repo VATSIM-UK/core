@@ -12,6 +12,7 @@ export default defineConfig({
                 'resources/assets/css/tailwind.css',
                 'resources/assets/css/mship-dashboard.css',
                 'resources/assets/css/bookings-calendar.css',
+                'resources/assets/js/bookings-calendar.js',
                 'resources/assets/js/app.js',
                 'resources/assets/js/home.js',
                 'resources/assets/js/snow.js',
