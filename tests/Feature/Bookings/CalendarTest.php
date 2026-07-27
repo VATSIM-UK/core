@@ -8,6 +8,7 @@ use App\Livewire\Bookings\Calendar;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Mship\Account;
+use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Qualification;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -309,5 +310,51 @@ class CalendarTest extends TestCase
         Livewire::test(Calendar::class)
             ->assertSee('Drag across an empty slot to book')
             ->assertDontSee('Click an empty slot to book');
+    }
+
+    #[Test]
+    public function it_is_viewable_without_authentication(): void
+    {
+        $this->get(route('site.bookings.calendar'))->assertOk();
+    }
+
+    #[Test]
+    public function it_prevents_a_banned_user_from_creating_a_booking(): void
+    {
+        $banned = Account::factory()->has(Ban::factory())->create();
+        $position = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
+
+        Livewire::actingAs($banned)
+            ->test(Calendar::class)
+            ->call('createBooking', [
+                'starts_at' => Carbon::tomorrow()->setHour(10)->format('Y-m-d H:i:s'),
+                'ends_at' => Carbon::tomorrow()->setHour(12)->format('Y-m-d H:i:s'),
+                'position_id' => (string) $position->id,
+            ])
+            ->assertDispatched('booking-error');
+
+        $this->assertDatabaseMissing('bookings', ['member_id' => $banned->id]);
+    }
+
+    #[Test]
+    public function it_prevents_a_banned_user_from_deleting_a_booking(): void
+    {
+        $banned = Account::factory()->has(Ban::factory())->create();
+        $position = Position::factory()->create();
+
+        $booking = Booking::create([
+            'position_id' => $position->id,
+            'member_id' => $banned->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::tomorrow()->setHour(10),
+            'ends_at' => Carbon::tomorrow()->setHour(12),
+        ]);
+
+        Livewire::actingAs($banned)
+            ->test(Calendar::class)
+            ->call('deleteBooking', $booking->id)
+            ->assertDispatched('booking-error');
+
+        $this->assertDatabaseHas('bookings', ['id' => $booking->id]);
     }
 }

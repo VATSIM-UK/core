@@ -25,7 +25,7 @@ Route::get('mship/waiting-lists/retention/fail', Fail::class)->name('mship.waiti
 Route::group([
     'as' => 'site.bookings.',
     'prefix' => 'atc/bookings',
-    'middleware' => 'auth_full_group',
 ], function () {
+    // Publicly readable; write/edit actions are gated inside the component (see Calendar::createBooking/deleteBooking).
     Route::get('calendar/{year?}/{month?}', BookingsCalendar::class)->name('calendar');
 });

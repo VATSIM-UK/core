@@ -446,6 +446,12 @@ class Calendar extends Component
             return;
         }
 
+        if (auth()->user()->is_banned) {
+            $this->dispatch('booking-error', message: 'Your account is not permitted to create bookings.');
+
+            return;
+        }
+
         $positionId = ! empty($data['position_id']) ? (int) $data['position_id'] : null;
         $customCallsign = ! empty($data['custom_callsign']) ? $data['custom_callsign'] : null;
 
@@ -495,6 +501,12 @@ class Calendar extends Component
     public function deleteBooking(int $id): void
     {
         $booking = Booking::findOrFail($id);
+
+        if (auth()->user()?->is_banned) {
+            $this->dispatch('booking-error', message: 'Your account is not permitted to modify bookings.');
+
+            return;
+        }
 
         if ($booking->member_id !== auth()->id()) {
             $this->dispatch('booking-error', message: 'You can only delete your own bookings.');
