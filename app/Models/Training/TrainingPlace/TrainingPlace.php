@@ -5,16 +5,20 @@ namespace App\Models\Training\TrainingPlace;
 use App\Models\Cts\CancelReason;
 use App\Models\Cts\Session as CtsSession;
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Observers\Training\TrainingPlaceObserver;
+use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[ObservedBy([TrainingPlaceObserver::class])]
@@ -44,9 +48,52 @@ class TrainingPlace extends Model
         return $this->belongsTo(Account::class, 'account_id');
     }
 
-    public function trainingPosition(): BelongsTo
+    public function trainable(): MorphTo
     {
-        return $this->belongsTo(TrainingPosition::class, 'training_position_id');
+        return $this->morphTo();
+    }
+
+    protected function trainingPosition(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): ?TrainingPosition => $this->trainable instanceof TrainingPosition ? $this->trainable : null,
+        );
+    }
+
+    protected function qualification(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): ?Qualification => $this->trainable instanceof Qualification ? $this->trainable : null,
+        );
+    }
+
+    protected function displayName(): Attribute
+    {
+        return Attribute::make(get: function (): string {
+            $trainable = $this->trainable;
+
+            if ($trainable instanceof TrainingPosition) {
+                return $trainable->position?->callsign
+                    ?? collect($trainable->cts_positions)->filter()->first()
+                    ?? "Position {$trainable->id}";
+            }
+
+            if ($trainable instanceof Qualification) {
+                return $trainable->name_long ?? $trainable->name_small ?? $trainable->code ?? "Qualification {$trainable->id}";
+            }
+
+            return 'Unknown';
+        });
+    }
+
+    /**
+     * The CTS position callsigns associated with this training place's trainable.
+     *
+     * @return array<int, string>
+     */
+    public function trainableCtsPositions(): array
+    {
+        return app(MentorPermissionService::class)->getCtsCallsignsForMentorable($this->trainable);
     }
 
     public function availabilityChecks(): HasMany
@@ -86,7 +133,13 @@ class TrainingPlace extends Model
 
     public function hasExamCancellations(): bool
     {
-        $position = $this->trainingPosition?->exam_callsign ?? $this->trainingPosition?->position?->callsign;
+        $trainingPosition = $this->trainingPosition;
+
+        if (! $trainingPosition) {
+            return false;
+        }
+
+        $position = $trainingPosition->exam_callsign ?? $trainingPosition->position?->callsign;
 
         if (! $position) {
             return false;
@@ -110,7 +163,7 @@ class TrainingPlace extends Model
     public function deletePendingSessionRequests(): void
     {
         $this->loadMissing([
-            'trainingPosition',
+            'trainable',
             'account',
         ]);
 
@@ -138,7 +191,7 @@ class TrainingPlace extends Model
 
     public function revokeTrainingPlace(string $reason, Account $admin): void
     {
-        $this->account->addNote('training', "Training place revoked on {$this->trainingPosition->position->callsign}. Reason: {$reason}", $admin->id);
+        $this->account->addNote('training', "Training place revoked on {$this->display_name}. Reason: {$reason}", $admin->id);
 
         $this->delete();
     }

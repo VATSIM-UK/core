@@ -21,7 +21,7 @@ class ApplicationPolicyTest extends TestCase
 
         $this->user = Account::factory()->create();
 
-        $this->user->givePermissionTo(['vt.application.view.*', 'vt.application.accept.*', 'vt.application.reject.*', 'vt.application.complete.*']);
+        $this->user->givePermissionTo(['vt.application.view.*', 'vt.application.accept.*', 'vt.application.reject.*', 'vt.application.complete.*', 'vt.application.modify.*']);
     }
 
     public static function providerApplicationState(): array
@@ -52,5 +52,16 @@ class ApplicationPolicyTest extends TestCase
         $this->assertEquals($can_accept, $policy->accept($this->user, $application));
         $this->assertEquals($can_reject, $policy->reject($this->user, $application));
         $this->assertEquals($can_complete, $policy->complete($this->user, $application));
+    }
+
+    public function test_change_facility_is_allowed_for_accepted_application()
+    {
+        $application = Application::factory()->create([
+            'status' => Application::STATUS_ACCEPTED,
+        ]);
+
+        $policy = app(\App\Policies\VisitTransfer\ApplicationPolicy::class);
+
+        $this->assertTrue($policy->changeFacility($this->user, $application));
     }
 }

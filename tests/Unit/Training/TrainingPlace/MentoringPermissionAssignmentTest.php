@@ -12,7 +12,6 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Services\Training\TrainingPlaceService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -20,14 +19,6 @@ use Tests\TestCase;
 class MentoringPermissionAssignmentTest extends TestCase
 {
     use DatabaseTransactions;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // disable training place observer
-        Event::fake();
-    }
 
     #[Test]
     public function it_can_assign_mentoring_permissions_to_a_training_place()
@@ -44,7 +35,7 @@ class MentoringPermissionAssignmentTest extends TestCase
 
         $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
 
-        $trainingPlace = TrainingPlace::factory()->create([
+        $trainingPlace = TrainingPlace::factory()->createQuietly([
             'waiting_list_account_id' => $waitingListAccount->id,
             'training_position_id' => $trainingPosition->id,
         ]);
@@ -70,7 +61,7 @@ class MentoringPermissionAssignmentTest extends TestCase
         $student = Account::factory()->create();
         $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
 
-        $trainingPlace = TrainingPlace::factory()->create([
+        $trainingPlace = TrainingPlace::factory()->createQuietly([
             'waiting_list_account_id' => $waitingListAccount->id,
             'training_position_id' => $trainingPosition->id,
         ]);
@@ -96,7 +87,7 @@ class MentoringPermissionAssignmentTest extends TestCase
         Member::factory()->create(['cid' => $student->id]);
         $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
 
-        $trainingPlace = TrainingPlace::factory()->create([
+        $trainingPlace = TrainingPlace::factory()->createQuietly([
             'waiting_list_account_id' => $waitingListAccount->id,
             'training_position_id' => $trainingPosition->id,
         ]);
@@ -134,7 +125,7 @@ class MentoringPermissionAssignmentTest extends TestCase
 
         $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
 
-        $trainingPlace = TrainingPlace::factory()->create([
+        $trainingPlace = TrainingPlace::factory()->createQuietly([
             'waiting_list_account_id' => $waitingListAccount->id,
             'training_position_id' => $trainingPosition->id,
         ]);
@@ -187,7 +178,7 @@ class MentoringPermissionAssignmentTest extends TestCase
         $student = Account::factory()->create();
         $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
 
-        $trainingPlace = TrainingPlace::factory()->create([
+        $trainingPlace = TrainingPlace::factory()->createQuietly([
             'waiting_list_account_id' => $waitingListAccount->id,
             'training_position_id' => $trainingPosition->id,
         ]);
@@ -217,7 +208,7 @@ class MentoringPermissionAssignmentTest extends TestCase
 
         $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
 
-        $trainingPlace = TrainingPlace::factory()->create([
+        $trainingPlace = TrainingPlace::factory()->createQuietly([
             'waiting_list_account_id' => $waitingListAccount->id,
             'training_position_id' => $trainingPosition->id,
         ]);

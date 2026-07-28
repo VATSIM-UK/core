@@ -3,6 +3,7 @@
 namespace Tests\Unit\Training\WaitingList;
 
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListFlag;
@@ -292,20 +293,69 @@ class WaitingListTest extends TestCase
     }
 
     #[Test]
+    public function it_stores_training_positions_polymorphically()
+    {
+        $trainingPosition = TrainingPosition::factory()->create();
+
+        $this->waitingList->trainingPositions()->attach($trainingPosition->id);
+
+        $this->assertDatabaseHas('trainable_waiting_list', [
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
+            'waiting_list_id' => $this->waitingList->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_can_have_qualifications()
+    {
+        $qualification = Qualification::factory()->pilot()->create();
+
+        $this->waitingList->qualifications()->attach($qualification->id);
+
+        $this->assertTrue($this->waitingList->fresh()->qualifications->contains($qualification));
+        $this->assertCount(1, $this->waitingList->qualifications);
+
+        $this->assertDatabaseHas('trainable_waiting_list', [
+            'trainable_type' => Qualification::class,
+            'trainable_id' => $qualification->id,
+            'waiting_list_id' => $this->waitingList->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_merges_positions_and_qualifications_into_trainables()
+    {
+        $trainingPosition = TrainingPosition::factory()->create();
+        $qualification = Qualification::factory()->pilot()->create();
+
+        $this->waitingList->trainingPositions()->attach($trainingPosition->id);
+        $this->waitingList->qualifications()->attach($qualification->id);
+
+        $trainables = $this->waitingList->fresh()->trainables;
+
+        $this->assertCount(2, $trainables);
+        $this->assertTrue($trainables->contains(fn ($trainable) => $trainable instanceof TrainingPosition && $trainable->is($trainingPosition)));
+        $this->assertTrue($trainables->contains(fn ($trainable) => $trainable instanceof Qualification && $trainable->is($qualification)));
+    }
+
+    #[Test]
     public function it_cascades_delete_on_pivot_when_training_position_is_deleted()
     {
         $trainingPosition = TrainingPosition::factory()->create();
         $this->waitingList->trainingPositions()->attach($trainingPosition->id);
 
-        $this->assertDatabaseHas('training_position_waiting_list', [
-            'training_position_id' => $trainingPosition->id,
+        $this->assertDatabaseHas('trainable_waiting_list', [
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
             'waiting_list_id' => $this->waitingList->id,
         ]);
 
         $trainingPosition->delete();
 
-        $this->assertDatabaseMissing('training_position_waiting_list', [
-            'training_position_id' => $trainingPosition->id,
+        $this->assertDatabaseMissing('trainable_waiting_list', [
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
             'waiting_list_id' => $this->waitingList->id,
         ]);
     }
@@ -318,24 +368,27 @@ class WaitingListTest extends TestCase
 
         $waitingListId = $this->waitingList->id;
 
-        $this->assertDatabaseHas('training_position_waiting_list', [
-            'training_position_id' => $trainingPosition->id,
+        $this->assertDatabaseHas('trainable_waiting_list', [
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
             'waiting_list_id' => $waitingListId,
         ]);
 
         // Soft delete does not cascade to pivot table
         $this->waitingList->delete();
 
-        $this->assertDatabaseHas('training_position_waiting_list', [
-            'training_position_id' => $trainingPosition->id,
+        $this->assertDatabaseHas('trainable_waiting_list', [
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
             'waiting_list_id' => $waitingListId,
         ]);
 
         // Force delete should cascade
         $this->waitingList->forceDelete();
 
-        $this->assertDatabaseMissing('training_position_waiting_list', [
-            'training_position_id' => $trainingPosition->id,
+        $this->assertDatabaseMissing('trainable_waiting_list', [
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
             'waiting_list_id' => $waitingListId,
         ]);
     }
