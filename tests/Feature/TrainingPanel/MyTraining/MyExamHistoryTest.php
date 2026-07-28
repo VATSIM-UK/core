@@ -49,7 +49,7 @@ class MyExamHistoryTest extends BaseTrainingPanelTestCase
         ]);
         $this->examBooking->examiners()->create([
             'examid' => $this->examBooking->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         $this->practicalResult = PracticalResult::factory()->create([
@@ -121,7 +121,7 @@ class MyExamHistoryTest extends BaseTrainingPanelTestCase
         ]);
         $otherBooking->examiners()->create([
             'examid' => $otherBooking->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
         PracticalResult::factory()->create([
             'examid' => $otherBooking->id,
@@ -154,7 +154,7 @@ class MyExamHistoryTest extends BaseTrainingPanelTestCase
         ]);
         $secondBooking->examiners()->create([
             'examid' => $secondBooking->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
         PracticalResult::factory()->create([
             'examid' => $secondBooking->id,

@@ -182,7 +182,7 @@ class TrainingGroupStatisticsServiceTest extends TestCase
     private function createAccountWithMember(): Account
     {
         $account = Account::factory()->create();
-        Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+        Member::factory()->forAccount($account)->create();
 
         return $account->fresh();
     }

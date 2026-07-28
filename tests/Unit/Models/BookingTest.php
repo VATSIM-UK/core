@@ -163,10 +163,7 @@ class BookingTest extends TestCase
     public function it_resolves_bookable_morph_to_exam_booking(): void
     {
         $account = Account::factory()->create();
-        $member = Member::factory()->create([
-            'id' => $account->id,
-            'cid' => $account->id,
-        ]);
+        $member = Member::factory()->forAccount($account)->create();
         $examBooking = ExamBooking::factory()->create([
             'student_id' => $member->id,
             'exam' => 'TWR',
