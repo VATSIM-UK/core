@@ -216,6 +216,7 @@ class UpcomingExamsTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_shows_exams_today_that_are_still_in_the_future(): void
     {
+        $this->travelTo(Carbon::parse('2026-01-01 10:00:00'));
         $this->panelUser->givePermissionTo('training.exams.view-upcoming.*');
 
         $student = $this->createStudent();
