@@ -8,6 +8,7 @@ use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Training\Mentoring\MentoringScope;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\MentoringSessionsService;
 use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
@@ -137,7 +138,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         $targetDate = Carbon::parse($this->date);
         $allowedCallsigns = $this->getAllowedCallsigns();
 
-        return Member::query()
+        $students = Member::query()
             ->whereHas('sessions', function ($query) use ($allowedCallsigns) {
                 $query->whereNull('mentor_id')
                     ->whereNull('filed')
@@ -160,25 +161,63 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                     ->whereIn('position', $allowedCallsigns)
                     ->orderByDesc('id')
                     ->limit(1),
-
-                'last_session_date' => Session::selectRaw("CONCAT(taken_date, ' ', COALESCE(taken_from, '00:00:00'))")
-                    ->whereColumn('student_id', 'members.id')
-                    ->whereNotNull('taken_date')
-                    ->whereNull('cancelled_datetime')
-                    ->where('position', Session::select('position')
-                        ->whereColumn('student_id', 'members.id')
-                        ->whereNull('mentor_id')
-                        ->whereNull('filed')
-                        ->whereNull('cancelled_datetime')
-                        ->whereIn('position', $allowedCallsigns)
-                        ->orderByDesc('id')
-                        ->limit(1))
-                    ->orderBy('taken_date', 'desc')
-                    ->orderBy('taken_from', 'desc')
-                    ->limit(1),
             ])
-            ->orderByRaw("COALESCE(last_session_date, '1970-01-01 00:00:00') ASC")
             ->get();
+
+        $students->each(function (Member $student): void {
+            $pendingPosition = $student->pending_position;
+
+            if (! is_string($pendingPosition) || $pendingPosition === '') {
+                $student->setAttribute('last_session_date', null);
+
+                return;
+            }
+
+            $pendingCategory = TrainingPosition::query()
+                ->whereNotNull('category')
+                ->whereJsonContains('cts_positions', $pendingPosition)
+                ->orderByDesc('id')
+                ->value('category');
+
+            if (! is_string($pendingCategory) || $pendingCategory === '') {
+                $student->setAttribute('last_session_date', null);
+
+                return;
+            }
+
+            $groupCallsigns = TrainingPosition::query()
+                ->where('category', $pendingCategory)
+                ->get(['cts_positions'])
+                ->flatMap(fn (TrainingPosition $position) => is_array($position->cts_positions) ? $position->cts_positions : [])
+                ->filter(fn ($callsign) => is_string($callsign) && $callsign !== '')
+                ->unique()
+                ->values()
+                ->toArray();
+
+            if ($groupCallsigns === []) {
+                $student->setAttribute('last_session_date', null);
+
+                return;
+            }
+
+            $latestSession = Session::query()
+                ->where('student_id', $student->id)
+                ->whereNotNull('taken_date')
+                ->whereNull('cancelled_datetime')
+                ->whereIn('position', $groupCallsigns)
+                ->orderBy('taken_date', 'desc')
+                ->orderBy('taken_from', 'desc')
+                ->first(['taken_date', 'taken_from']);
+
+            $student->setAttribute(
+                'last_session_date',
+                $latestSession
+                    ? Carbon::parse($latestSession->taken_date)->format('Y-m-d').' '.($latestSession->taken_from ?? '00:00:00')
+                    : null
+            );
+        });
+
+        return $students;
     }
 
     public function render()
