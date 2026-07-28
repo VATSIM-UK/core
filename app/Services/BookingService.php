@@ -6,9 +6,11 @@ namespace App\Services;
 
 use App\Models\Atc\Position;
 use App\Models\Booking;
+use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class BookingService
 {
@@ -70,6 +72,17 @@ class BookingService
         $booking->delete();
     }
 
+    public function cancelCtsBooking(int $ctsBookingId, ?Booking $coreMirror = null): void
+    {
+        DB::connection('cts')->transaction(function () use ($ctsBookingId, $coreMirror): void {
+            DB::connection('cts')->table('bookings')->where('id', $ctsBookingId)->delete();
+
+            if ($coreMirror !== null) {
+                $coreMirror->delete();
+            }
+        });
+    }
+
     public function isPositionAvailable(Carbon $startsAt, Carbon $endsAt, int $positionId, ?int $excludeBookingId = null): bool
     {
         return $this->findOverlapping($startsAt, $endsAt, $positionId, $excludeBookingId)->isEmpty();
@@ -94,9 +107,41 @@ class BookingService
 
         $overlapping = $this->findOverlapping($startsAt, $endsAt, $positionId, $excludeBookingId);
 
-        if ($overlapping->isNotEmpty()) {
+        if ($overlapping->isNotEmpty() || $this->ctsPositionOverlaps($startsAt, $endsAt, $positionId)) {
             throw new \RuntimeException('This position already has a booking in the requested time period.');
         }
+    }
+
+    private function ctsPositionOverlaps(Carbon $startsAt, Carbon $endsAt, int $positionId): bool
+    {
+        $position = Position::find($positionId);
+
+        if (! $position) {
+            return false;
+        }
+
+        $candidates = CtsBooking::query()
+            ->where('position', $position->callsign)
+            ->whereDate('date', '>=', $startsAt->copy()->subDay()->toDateString())
+            ->whereDate('date', '<=', $endsAt->toDateString())
+            ->get();
+
+        foreach ($candidates as $cts) {
+            $from = substr((string) $cts->from, 0, 5);
+            $to = substr((string) $cts->to, 0, 5);
+            $cStart = Carbon::parse(Carbon::parse($cts->date)->format('Y-m-d').' '.$from);
+            $cEnd = Carbon::parse(Carbon::parse($cts->date)->format('Y-m-d').' '.$to);
+
+            if ($to <= $from) {
+                $cEnd->addDay();
+            }
+
+            if ($cStart->lt($endsAt) && $cEnd->gt($startsAt)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function validateMemberQualification(int $memberId, int $positionId): void

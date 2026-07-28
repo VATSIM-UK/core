@@ -6,6 +6,7 @@ namespace App\Livewire\Bookings;
 
 use App\Models\Atc\Position;
 use App\Models\Booking;
+use App\Models\Cts\Booking as CtsBooking;
 use App\Repositories\Cts\BookingRepository;
 use App\Services\BookingService;
 use Carbon\Carbon;
@@ -132,7 +133,9 @@ class Calendar extends Component
             $end = $this->timeToMinutes($booking->to);
 
             $bookingData = [
-                'id' => (string) $booking->id,
+                'id' => $booking->id,
+                'source' => $booking->source,
+                'cts_booking_id' => $booking->cts_booking_id,
                 'from' => $booking->from,
                 'to' => $booking->to,
                 'startMin' => $start,
@@ -498,30 +501,89 @@ class Calendar extends Component
         }
     }
 
-    public function deleteBooking(int $id): void
+    public function cancelBooking(array $data): void
     {
-        $booking = Booking::findOrFail($id);
+        if (! auth()->check()) {
+            $this->dispatch('booking-error', message: 'You must be logged in to cancel a booking.');
 
-        if (auth()->user()?->is_banned) {
+            return;
+        }
+
+        if (auth()->user()->is_banned) {
             $this->dispatch('booking-error', message: 'Your account is not permitted to modify bookings.');
 
             return;
         }
 
-        if ($booking->member_id !== auth()->id()) {
-            $this->dispatch('booking-error', message: 'You can only delete your own bookings.');
+        $coreId = ! empty($data['id']) ? (int) $data['id'] : null;
+        $ctsId = ! empty($data['cts_booking_id']) ? (int) $data['cts_booking_id'] : null;
+
+        $core = null;
+
+        if ($coreId !== null) {
+            $core = Booking::findOrFail($coreId);
+            $ctsId = $core->cts_booking_id !== null ? (int) $core->cts_booking_id : null;
+            $isStandard = $core->type === Booking::TYPE_STANDARD;
+            $memberId = $core->member_id;
+            $endsAt = $core->ends_at;
+        } elseif ($ctsId !== null) {
+            $cts = CtsBooking::find($ctsId);
+
+            if (! $cts) {
+                $this->dispatch('booking-error', message: 'Booking not found.');
+
+                return;
+            }
+
+            $core = Booking::where('cts_booking_id', $ctsId)->first();
+
+            $isStandard = $cts->type === 'BK';
+            $memberId = (int) $cts->member_id;
+            $endsAt = $this->ctsEndsAt($cts);
+        } else {
+            $this->dispatch('booking-error', message: 'Booking not found.');
 
             return;
         }
 
-        if ($booking->ends_at->isPast()) {
+        if (! $isStandard) {
+            $this->dispatch('booking-error', message: 'Only standard bookings can be cancelled here.');
+
+            return;
+        }
+
+        if ($memberId !== auth()->id()) {
+            $this->dispatch('booking-error', message: 'You can only cancel your own bookings.');
+
+            return;
+        }
+
+        if ($endsAt->isPast()) {
             $this->dispatch('booking-error', message: 'You cannot delete a booking that has already ended.');
 
             return;
         }
 
-        app(BookingService::class)->delete($booking);
+        if ($ctsId !== null) {
+            app(BookingService::class)->cancelCtsBooking($ctsId, $core);
+        } else {
+            app(BookingService::class)->delete($core);
+        }
+
         $this->refreshData();
-        $this->dispatch('booking-deleted', id: $id);
+        $this->dispatch('booking-deleted');
+    }
+
+    private function ctsEndsAt(CtsBooking $cts): Carbon
+    {
+        $from = substr((string) $cts->from, 0, 5);
+        $to = substr((string) $cts->to, 0, 5);
+        $end = Carbon::parse(Carbon::parse($cts->date)->format('Y-m-d').' '.$to);
+
+        if ($to <= $from) {
+            $end->addDay();
+        }
+
+        return $end;
     }
 }

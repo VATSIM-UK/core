@@ -30,7 +30,7 @@
 		</template>
 
 		{{-- Booking blocks --}}
-		<template x-for="booking in pos.bookings" :key="booking.id">
+		<template x-for="booking in pos.bookings" :key="booking.source + '-' + (booking.id || booking.cts_booking_id)">
 			<div
 				class="absolute top-1 bottom-1 rounded px-2 flex items-center gap-1.5 cursor-pointer
                 text-white text-xs font-medium shadow-sm

@@ -80,6 +80,8 @@ class BookingsRepositoryTest extends TestCase
 
         $this->assertEquals([
             'id' => (string) $bookingTodayOne->id,
+            'source' => 'core',
+            'cts_booking_id' => null,
             'position_id' => $bookingTodayOne->position_id,
             'date' => $this->today,
             'from' => '17:00',
@@ -95,6 +97,8 @@ class BookingsRepositoryTest extends TestCase
         ], (array) $bookings->get(0));
         $this->assertEquals([
             'id' => (string) $bookingTodayTwo->id,
+            'source' => 'core',
+            'cts_booking_id' => null,
             'position_id' => $bookingTodayTwo->position_id,
             'date' => $this->today,
             'from' => '18:00',

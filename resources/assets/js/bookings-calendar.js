@@ -152,6 +152,9 @@ document.addEventListener('alpine:init', () => {
                 detail: {
                     booking: {
                         id: booking.id,
+                        source: booking.source,
+                        ctsBookingId: booking.cts_booking_id,
+                        type: booking.type,
                         position: pos.callsign,
                         date: this.selectedDate,
                         from: booking.from,

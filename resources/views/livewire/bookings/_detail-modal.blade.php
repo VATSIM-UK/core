@@ -53,7 +53,7 @@
 						</p>
 					</div>
 
-					<template x-if="booking.member?.id == '{{ auth()->id() }}' && !ended">
+					<template x-if="booking.member?.id == '{{ auth()->id() }}' && !ended && booking.type === 'BK'">
 						<div class="pt-4 border-t border-gray-200">
 							<template x-if="!confirmDelete">
 								<button type="button" x-on:click="confirmDelete = true"
@@ -67,7 +67,8 @@
 									<div class="flex gap-3">
 										<button type="button" x-on:click="confirmDelete = false"
 											class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">Cancel</button>
-										<button type="button" x-on:click="$wire.deleteBooking(booking.id);"
+										<button type="button"
+											x-on:click="$wire.cancelBooking({ id: booking.id, cts_booking_id: booking.ctsBookingId })"
 											class="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">Delete</button>
 									</div>
 								</div>

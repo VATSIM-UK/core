@@ -209,7 +209,7 @@ class CalendarTest extends TestCase
 
         Livewire::actingAs($member)
             ->test(Calendar::class)
-            ->call('deleteBooking', $booking->id)
+            ->call('cancelBooking', ['id' => (string) $booking->id])
             ->assertDispatched('booking-deleted');
 
         $this->assertDatabaseMissing('bookings', ['id' => $booking->id]);
@@ -232,7 +232,7 @@ class CalendarTest extends TestCase
 
         Livewire::actingAs($other)
             ->test(Calendar::class)
-            ->call('deleteBooking', $booking->id)
+            ->call('cancelBooking', ['id' => (string) $booking->id])
             ->assertDispatched('booking-error');
 
         $this->assertDatabaseHas('bookings', ['id' => $booking->id]);
@@ -254,7 +254,7 @@ class CalendarTest extends TestCase
 
         Livewire::actingAs($member)
             ->test(Calendar::class)
-            ->call('deleteBooking', $booking->id)
+            ->call('cancelBooking', ['id' => (string) $booking->id])
             ->assertDispatched('booking-error');
 
         $this->assertDatabaseHas('bookings', ['id' => $booking->id]);
@@ -299,7 +299,7 @@ class CalendarTest extends TestCase
         Livewire::actingAs($member)
             ->test(Calendar::class)
             ->assertSet('dataVersion', 1)
-            ->call('deleteBooking', $booking->id)
+            ->call('cancelBooking', ['id' => (string) $booking->id])
             ->assertDispatched('booking-deleted')
             ->assertSet('dataVersion', 2);
     }
@@ -352,7 +352,7 @@ class CalendarTest extends TestCase
 
         Livewire::actingAs($banned)
             ->test(Calendar::class)
-            ->call('deleteBooking', $booking->id)
+            ->call('cancelBooking', ['id' => (string) $booking->id])
             ->assertDispatched('booking-error');
 
         $this->assertDatabaseHas('bookings', ['id' => $booking->id]);
