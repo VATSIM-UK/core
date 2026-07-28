@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Training\Exams;
 
+use App\Models\Booking;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamSetup;
 use App\Models\Cts\Member;
@@ -86,6 +87,23 @@ class CancelPendingExamTest extends TestCase
     #[Test]
     public function it_resets_booking_taken_fields_to_pre_acceptance_state(): void
     {
+        Booking::create([
+            'position_id' => null,
+            'member_id' => $this->studentAccount->id,
+            'type' => Booking::TYPE_EXAM,
+            'starts_at' => $this->examBooking->taken_date.' '.$this->examBooking->taken_from,
+            'ends_at' => $this->examBooking->taken_date.' '.$this->examBooking->taken_to,
+            'bookable_type' => ExamBooking::class,
+            'bookable_id' => $this->examBooking->id,
+        ]);
+
+        $this->assertDatabaseHas('bookings', [
+            'member_id' => $this->studentAccount->id,
+            'type' => Booking::TYPE_EXAM,
+            'bookable_type' => ExamBooking::class,
+            'bookable_id' => $this->examBooking->id,
+        ]);
+
         $this->service->cancelByStudent($this->examBooking, 'Cannot make it.', $this->studentAccount);
 
         $this->examBooking->refresh();
@@ -97,6 +115,11 @@ class CancelPendingExamTest extends TestCase
         $this->assertNull($this->examBooking->exmr_id);
         $this->assertNull($this->examBooking->exmr_rating);
         $this->assertNull($this->examBooking->time_book);
+
+        $this->assertDatabaseMissing('bookings', [
+            'bookable_type' => ExamBooking::class,
+            'bookable_id' => $this->examBooking->id,
+        ]);
     }
 
     #[Test]

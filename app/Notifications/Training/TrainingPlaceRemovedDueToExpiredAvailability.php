@@ -51,7 +51,7 @@ class TrainingPlaceRemovedDueToExpiredAvailability extends Notification implemen
             ->subject('Attention: Your Training Place Has Been Removed - Availability Check Expired')
             ->view('emails.training.training_place_removed_expired_availability', [
                 'recipient' => $notifiable,
-                'training_place_position_name' => $trainingPlace->trainingPosition?->position?->name ?? 'N/A',
+                'training_place_position_name' => $trainingPlace->trainingPosition?->position?->name ?? $trainingPlace->display_name,
                 'removal_date' => $removalDate,
             ]);
     }
@@ -59,14 +59,14 @@ class TrainingPlaceRemovedDueToExpiredAvailability extends Notification implemen
     public function toDiscord($notifiable)
     {
         $trainingPlace = $this->availabilityWarning->trainingPlace;
-        $position = $trainingPlace->trainingPosition->position;
+        $positionLabel = $this->positionLabel($trainingPlace);
 
         return [
             'content' => null,
             'embeds' => [
                 [
                     'title' => 'Training Place Automatically Removed',
-                    'description' => "The training place for **{$notifiable->name} ({$notifiable->id})** on **{$position->name} ({$position->callsign})** has been removed because they failed to resolve a pending availability check.",
+                    'description' => "The training place for **{$notifiable->name} ({$notifiable->id})** on **{$positionLabel}** has been removed because they failed to resolve a pending availability check.",
                     'color' => 15158332,
                     'fields' => [
                         [
@@ -84,5 +84,16 @@ class TrainingPlaceRemovedDueToExpiredAvailability extends Notification implemen
     public function getChannel(): string
     {
         return $this->availabilityWarning->trainingPlace->trainingPosition?->training_team_discord_channel_id ?? '';
+    }
+
+    private function positionLabel($trainingPlace): string
+    {
+        $position = $trainingPlace->trainingPosition?->position;
+
+        if ($position) {
+            return "{$position->name} ({$position->callsign})";
+        }
+
+        return $trainingPlace->display_name;
     }
 }

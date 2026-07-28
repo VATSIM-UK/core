@@ -228,20 +228,29 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            # Ensure we're only keeping the desired number of versions in history
+            set -euo pipefail
 
-            # Releases are extracted by an array ordered by directory
-            # creation date.
-            releases=($(ls -tU $APPLICATION_ROOT/releases))
+            # Keep the newest N release directories; never delete the live current release.
+            # Deploy SSH user must own $APPLICATION_ROOT/releases (chown if rm fails).
+            releases_dir="$APPLICATION_ROOT/releases"
+            current_release="$(readlink -f "$APPLICATION_ROOT/current")"
+            mapfile -t releases < <(ls -1dt "$releases_dir"/*/ 2>/dev/null || true)
             number_of_releases=${#releases[@]}
 
-            if [ "$number_of_releases" -gt "$VERSIONS_TO_KEEP " ]; then
-              for i in $(seq 0 `expr $number_of_releases - $VERSIONS_TO_KEEP - 1`);
-              do
-                echo "Removing: ${releases[$i]}"
-                # rm -rf $APPLICATION_ROOT/releases/${releases[$i]}
-              done
+            if [ "$number_of_releases" -le "$VERSIONS_TO_KEEP" ]; then
+              echo "Nothing to prune ($number_of_releases <= $VERSIONS_TO_KEEP)"
+              exit 0
             fi
+
+            for ((i=VERSIONS_TO_KEEP; i<number_of_releases; i++)); do
+              candidate="${releases[$i]%/}"
+              if [ "$(readlink -f "$candidate")" = "$current_release" ]; then
+                echo "Skipping live release: $candidate"
+                continue
+              fi
+              echo "Removing: $candidate"
+              rm -rf "$candidate"
+            done
           envs: APPLICATION_ROOT,VERSIONS_TO_KEEP
 
       - name: Update Deployment Status (Failed)

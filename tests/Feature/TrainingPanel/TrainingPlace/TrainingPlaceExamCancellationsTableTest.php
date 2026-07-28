@@ -31,7 +31,7 @@ class TrainingPlaceExamCancellationsTableTest extends BaseTrainingPanelTestCase
         parent::setUp();
 
         $this->trainingPlace = TrainingPlace::factory()
-            ->for(TrainingPosition::factory()->state(['exam_callsign' => $this->callsign]), 'trainingPosition')->create();
+            ->for(TrainingPosition::factory()->state(['exam_callsign' => $this->callsign]), 'trainable')->create();
 
         $account = Account::findOrFail($this->trainingPlace->account_id);
 

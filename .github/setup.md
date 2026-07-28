@@ -1,6 +1,6 @@
 # Configuring a Development Environment
 
-This repository uses [Node.js](https://github.com/VATSIM-UK/core/blob/main/package.json) and [PHP](https://github.com/VATSIM-UK/core/blob/main/composer.json)
+This repository uses [Node.js](../package.json) and [PHP](../composer.json)
 
 ## Video guide
 
