@@ -22,9 +22,12 @@ class FacilityBreakdownWidget extends TableWidget
 
     public function table(Table $table): Table
     {
+        $start = $this->start ?? Carbon::create($this->year ?? now()->year, 1, 1)->startOfDay();
+        $end = $this->end ?? Carbon::create($this->year ?? now()->year, 12, 31)->endOfDay();
+
         return $table
             ->records(fn () => collect(
-                VisitTransferStats::byFacility($this->type, $this->start, $this->end)
+                VisitTransferStats::byFacility($this->type, $start, $end)
             ))
             ->columns([
                 TextColumn::make('name')
