@@ -22,11 +22,11 @@ class ApplicationOverviewWidget extends StatsOverviewWidget
         $year = $this->year ?? now()->year;
         $type = $this->type;
 
-        $start = Carbon::create($year, 1, 1)->startOfDay();
-        $end = Carbon::create($year, 12, 31)->endOfDay();
+        $start = $this->start ?? Carbon::create($year, 1, 1)->startOfDay();
+        $end = $this->end ?? Carbon::create($year, 12, 31)->endOfDay();
 
-        $totals = VisitTransferStats::totals($this->type, $this->start, $this->end);
-        $avgDays = VisitTransferStats::averageDaysToDecision($this->type, $this->start, $this->end);
+        $totals = VisitTransferStats::totals($this->type, $start, $end);
+        $avgDays = VisitTransferStats::averageDaysToDecision($this->type, $start, $end);
 
         return [
             Stat::make('Total Applications', $totals['total'])->color('gray'),
