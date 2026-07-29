@@ -10,7 +10,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class VisitTransferStatistics extends BasePage implements HasForms
 {
@@ -135,13 +135,14 @@ class VisitTransferStatistics extends BasePage implements HasForms
         return Action::make('export')
             ->label('Export')
             ->icon('heroicon-o-arrow-down-tray')
-            ->action(function (): BinaryFileResponse {
+            ->action(function (): StreamedResponse {
                 [$start, $end] = $this->getQuarterRange($this->year, $this->quarter);
 
                 $path = VisitTransferStatsExport::build($this->type, $start, $end, $this->year, $this->quarter);
 
-                return response()->download($path, 'vt-statistics-'.$this->year.($this->quarter ? "-Q{$this->quarter}" : '').'.xlsx')
-                    ->deleteFileAfterSend(true);
+                return response()->streamDownload(fn () => print ($path), "visit-transfer-stats-{$this->year}-Q{$this->quarter}.csv", [
+                    'Content-Type' => 'text/csv',
+                ]);
             });
     }
 
