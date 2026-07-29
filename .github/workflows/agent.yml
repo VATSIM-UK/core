@@ -1,18 +1,16 @@
 name: Open Code Review
 
 on:
-  pull_request:
-    types: [opened, reopened, ready_for_review, synchronize]
   issue_comment:
     types: [created]
 
 jobs:
   ocr_job:
     if: >-
-      github.event.sender.type != 'Bot' && (
-        (github.event_name == 'pull_request' && contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association)) ||
-        (github.event_name == 'issue_comment' && contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association))
-      )
+      github.event.issue.pull_request != null &&
+      github.event.sender.type != 'Bot' &&
+      (startsWith(github.event.comment.body, '/ocr') || startsWith(github.event.comment.body, '/review')) &&
+      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
 
     runs-on: ubuntu-latest
     permissions:
@@ -21,9 +19,10 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout repository
+      - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
+          ref: refs/pull/${{ github.event.issue.number }}/head
           fetch-depth: 0
 
       - name: Open Code Review Action
