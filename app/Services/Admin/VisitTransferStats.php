@@ -9,6 +9,14 @@ use Illuminate\Database\Eloquent\Builder;
 
 class VisitTransferStats
 {
+    private const RATING_ORDER = [
+        'Student 1' => 1,
+        'Student 2' => 2,
+        'Student 3' => 3,
+        'Controller 1' => 4,
+        'Controller 3' => 5,
+    ];
+
     private static function baseQuery(?int $type, Carbon $start, Carbon $end): Builder
     {
         return Application::query()
@@ -77,32 +85,32 @@ class VisitTransferStats
     {
         return self::baseQuery($type, $start, $end)
             ->whereNotNull('facility_id')
-            ->with('facility:id,name')
-            ->get()
-            ->groupBy('facility_id')
-            ->map(fn ($apps) => [
-                'name' => $apps->first()->facility?->name ?? 'Unknown Facility',
-                'total' => $apps->count(),
-                'accepted' => $apps->whereIn('status', [Application::STATUS_ACCEPTED, Application::STATUS_COMPLETED])->count(),
-                'rejected' => $apps->where('status', Application::STATUS_REJECTED)->count(),
+            ->select('facility_id')
+            ->selectRaw('count(*) as total')
+            ->selectRaw('sum(case when status in (?, ?) then 1 else 0 end) as accepted', [
+                Application::STATUS_ACCEPTED,
+                Application::STATUS_COMPLETED,
             ])
-            ->sortByDesc('total')
-            ->values()
+            ->selectRaw('sum(case when status = ? then 1 else 0 end) as rejected', [
+                Application::STATUS_REJECTED,
+            ])
+            ->groupBy('facility_id')
+            ->with('facility:id,name')
+            ->orderByDesc('total')
+            ->get()
+            ->map(fn (Application $app) => [
+                'name' => $app->facility?->name ?? 'Unknown Facility',
+                'total' => $app->total,
+                'accepted' => $app->accepted,
+                'rejected' => $app->rejected,
+            ])
             ->toArray();
     }
 
     public static function byRating(?int $type, Carbon $start, Carbon $end): array
     {
-        $ratingOrder = [
-            'Student 1' => 1,
-            'Student 2' => 2,
-            'Student 3' => 3,
-            'Controller 1' => 4,
-            'Controller 3' => 5,
-        ];
-
         return self::baseQuery($type, $start, $end)
-            ->with('account')
+            ->with('account.qualifications')
             ->get()
             ->groupBy(fn ($app) => $app->account?->qualification_atc?->id ?? 'unknown')
             ->map(function ($apps) {
@@ -122,32 +130,24 @@ class VisitTransferStats
                     'acceptance_rate' => $decided > 0 ? round(($accepted / $decided) * 100, 1) : null,
                 ];
             })
-            ->sortBy(fn ($row) => $ratingOrder[$row['name']] ?? PHP_INT_MAX)
+            ->sortBy(fn ($row) => self::RATING_ORDER[$row['name']] ?? PHP_INT_MAX)
             ->values()
             ->toArray();
     }
 
     public static function currentlyWaitingByRating(?int $type): array
     {
-        $ratingOrder = [
-            'Student 1' => 1,
-            'Student 2' => 2,
-            'Student 3' => 3,
-            'Controller 1' => 4,
-            'Controller 3' => 5,
-        ];
-
         return \App\Models\Training\WaitingList\WaitingListAccount::query()
             ->whereNull('deleted_at')
             ->when($type, fn ($q) => $q->whereHas('waitingList.facility', fn ($f) => $f->where('type', $type)))
-            ->with('account')
+            ->with('account.qualifications')
             ->get()
             ->groupBy(fn ($wla) => $wla->account?->qualification_atc?->id ?? 'unknown')
             ->map(fn ($group) => [
                 'name' => $group->first()->account?->qualification_atc?->name_long ?? 'Unknown Rating',
                 'waiting' => $group->count(),
             ])
-            ->sortBy(fn ($row) => $ratingOrder[$row['name']] ?? PHP_INT_MAX)
+            ->sortBy(fn ($row) => self::RATING_ORDER[$row['name']] ?? PHP_INT_MAX)
             ->values()
             ->keyBy('name')
             ->toArray();
