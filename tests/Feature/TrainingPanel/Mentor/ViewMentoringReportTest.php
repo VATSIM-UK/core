@@ -47,16 +47,10 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
         parent::setUp();
 
         $this->student = Account::factory()->create();
-        $this->studentMember = Member::factory()->create([
-            'id' => $this->student->id,
-            'cid' => $this->student->id,
-        ]);
+        $this->studentMember = Member::factory()->forAccount($this->student)->create();
 
         $this->mentor = Account::factory()->create();
-        $this->mentorMember = Member::factory()->create([
-            'id' => $this->mentor->id,
-            'cid' => $this->mentor->id,
-        ]);
+        $this->mentorMember = Member::factory()->forAccount($this->mentor)->create();
 
         $this->mentoringSession = Session::factory()->create([
             'student_id' => $this->studentMember->id,
@@ -113,10 +107,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     public function it_loads_for_a_user_with_a_mentor_training_position_for_the_session_position(): void
     {
         $authorisedMentor = Account::factory()->create();
-        Member::factory()->create([
-            'id' => $authorisedMentor->id,
-            'cid' => $authorisedMentor->id,
-        ]);
+        Member::factory()->forAccount($authorisedMentor)->create();
 
         $trainingPosition = TrainingPosition::factory()->create([
             'cts_positions' => ['EGLL_APP'],
@@ -176,10 +167,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     public function it_denies_a_different_student_viewing_another_students_session(): void
     {
         $otherStudent = Account::factory()->create();
-        Member::factory()->create([
-            'id' => $otherStudent->id,
-            'cid' => $otherStudent->id,
-        ]);
+        Member::factory()->forAccount($otherStudent)->create();
 
         $this->mock(MentorPermissionService::class, fn ($mock) => $mock
             ->shouldReceive('getCtsCallsignsForMentorable')->andReturn([])
@@ -195,10 +183,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     public function it_denies_a_mentor_who_did_not_conduct_the_session_and_lacks_position_permission(): void
     {
         $otherMentor = Account::factory()->create();
-        Member::factory()->create([
-            'id' => $otherMentor->id,
-            'cid' => $otherMentor->id,
-        ]);
+        Member::factory()->forAccount($otherMentor)->create();
 
         $this->mock(MentorPermissionService::class, fn ($mock) => $mock
             ->shouldReceive('getCtsCallsignsForMentorable')->andReturn([])

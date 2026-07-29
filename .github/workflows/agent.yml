@@ -1,8 +1,12 @@
 name: Open Code Review
 
 on:
-  pull_request:
+  pull_request_target:
     types: [labeled]
+
+concurrency:
+  group: ocr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
   ocr_job:
@@ -14,25 +18,27 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout PR head
+        uses: actions/checkout@v7
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Open Code Review Action
-        uses: alibaba/open-code-review@main
+        uses: alibaba/open-code-review@20db3d7d120ebba3d546ddca3459693ce3e1ae86
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           llm_url: "https://opencode.ai/zen/go/v1"
           llm_auth_token: ${{ secrets.OPENCODE_API_KEY }}
-          llm_model: "deepseek-v4-flash"
+          llm_model: "deepseek-v4-pro"
           llm_use_anthropic: "false"
           llm_extra_body: '{"thinking": {"type": "enabled"}, "reasoning_effort": "high"}'
           background: "Ignore all code-style, formatting, or indentation issues (Laravel Pint will catch these)."
 
       - name: Remove review label
         if: always()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             github.rest.issues.removeLabel({

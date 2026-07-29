@@ -92,10 +92,7 @@ class TrainingPlaceExamCancellationsTableTest extends BaseTrainingPanelTestCase
     public function it_only_shows_cancellations_for_the_student(): void
     {
         $otherAccount = Account::factory()->create();
-        $otherMember = Member::factory()->create([
-            'id' => $otherAccount->id,
-            'cid' => $otherAccount->id,
-        ]);
+        $otherMember = Member::factory()->forAccount($otherAccount)->create();
 
         $studentBooking = ExamBooking::factory()->create([
             'position_1' => $this->callsign,

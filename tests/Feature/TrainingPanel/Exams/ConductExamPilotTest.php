@@ -25,7 +25,7 @@ class ConductExamPilotTest extends BaseTrainingPanelTestCase
     private function createPilotExamBooking(string $examType = 'P1'): array
     {
         $account = Account::factory()->withQualification()->create();
-        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+        $student = Member::factory()->forAccount($account)->create();
 
         $exam = ExamBooking::factory()->create([
             'taken' => 1,
@@ -37,7 +37,7 @@ class ConductExamPilotTest extends BaseTrainingPanelTestCase
 
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         return [$account, $student, $exam];
@@ -93,7 +93,7 @@ class ConductExamPilotTest extends BaseTrainingPanelTestCase
     public function it_does_not_show_partial_pass_for_atc_exams()
     {
         $account = Account::factory()->create();
-        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+        $student = Member::factory()->forAccount($account)->create();
         $exam = ExamBooking::factory()->create([
             'taken' => 1,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
@@ -101,7 +101,7 @@ class ConductExamPilotTest extends BaseTrainingPanelTestCase
             'student_id' => $student->id,
             'student_rating' => Qualification::code('S1')->first()->vatsim,
         ]);
-        $exam->examiners()->create(['examid' => $exam->id, 'senior' => $this->panelUser->id]);
+        $exam->examiners()->create(['examid' => $exam->id, 'senior' => $this->panelUser->member->id]);
         $this->panelUser->givePermissionTo('training.exams.conduct.twr');
 
         $component = Livewire::actingAs($this->panelUser)
