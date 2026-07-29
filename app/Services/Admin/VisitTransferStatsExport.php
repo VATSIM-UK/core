@@ -3,9 +3,6 @@
 namespace App\Services\Admin;
 
 use Carbon\Carbon;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class VisitTransferStatsExport
 {
@@ -14,66 +11,50 @@ class VisitTransferStatsExport
         $breakdown = VisitTransferStats::byRating($type, $start, $end);
         $waiting = VisitTransferStats::currentlyWaitingByRating($type);
 
-        $spreadsheet = new Spreadsheet;
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('VT Statistics');
-
         $headers = ['Rating', 'Under Review', 'In Progress (manual)', 'Accepted', 'Rejected', 'Cancelled', 'Currently Waiting', 'Total'];
-        $sheet->fromArray($headers, null, 'A1');
-        // Style header row
-        $sheet->getStyle('A1:H1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:H1')->getFill()
-            ->setFillType(Fill::FILL_SOLID)
-            ->getStartColor()->setRGB('DDDDDD');
+        $csvData = implode(',', $headers)."\n";
 
-        $row = 2;
+        $columnTotals = array_fill_keys(['under_review', 'accepted', 'rejected', 'cancelled', 'waiting'], 0);
+        $grandTotal = 0;
 
         foreach ($breakdown as $r) {
             $waitingCount = $waiting[$r['name']]['waiting'] ?? 0;
 
-            $sheet->fromArray([
+            $rowTotal = $r['under_review'] + $r['accepted'] + $r['rejected'] + $r['cancelled'] + $waitingCount;
+
+            $csvData .= implode(',', [
                 $r['name'],
                 $r['under_review'],
-                $r['in_progress'],
+                '[Insert manually]',
                 $r['accepted'],
                 $r['rejected'],
                 $r['cancelled'],
                 $waitingCount,
-                null, // filled by formula below
-            ], null, "A{$row}");
+                $rowTotal,
+            ])."\n";
 
-            // Total per row
-            $sheet->setCellValue("H{$row}", "=SUM(B{$row}:G{$row})");
-
-            // Manual until we move VT into training place system
-            $sheet->setCellValue("C{$row}", '[Insert manually]');
-
-            $row++;
+            $columnTotals['under_review'] += $r['under_review'];
+            $columnTotals['accepted'] += $r['accepted'];
+            $columnTotals['rejected'] += $r['rejected'];
+            $columnTotals['cancelled'] += $r['cancelled'];
+            $columnTotals['waiting'] += $waitingCount;
+            $grandTotal += $rowTotal;
         }
 
-        $lastDataRow = $row - 1;
+        $csvData .= implode(',', [
+            'Total',
+            $columnTotals['under_review'],
+            '',
+            $columnTotals['accepted'],
+            $columnTotals['rejected'],
+            $columnTotals['cancelled'],
+            $columnTotals['waiting'],
+            $grandTotal,
+        ])."\n";
 
-        // Total per column
-        $sheet->setCellValue("A{$row}", 'Total');
-        $sheet->getStyle("A{$row}")->getFont()->setBold(true);
-        foreach (['B', 'C', 'D', 'E', 'F', 'G', 'H'] as $col) {
-            $sheet->setCellValue("{$col}{$row}", "=SUM({$col}2:{$col}{$lastDataRow})");
-            $sheet->getStyle("{$col}{$row}")->getFont()->setBold(true);
-        }
+        $csvData .= "\n";
+        $csvData .= 'Year: '.$year.($quarter ? ", Quarter: {$quarter}" : ' (All Quarters)')."\n";
 
-        foreach (range('A', 'H') as $col) {
-            $sheet->getColumnDimension($col)->setAutoSize(true);
-        }
-
-        $sheet->setCellValue('A'.($row + 2), "Year: {$year}".($quarter ? ", Quarter: {$quarter}" : ' (All Quarters)'));
-
-        $writer = new Xlsx($spreadsheet);
-        $path = storage_path('app/tmp/vt-stats-'.\Illuminate\Support\Str::uuid().'.xlsx');
-        if (! is_dir(dirname($path))) {
-            mkdir(dirname($path), 0755, true);
-        }
-        $writer->save($path);
-
-        return $path;
+        return $csvData;
     }
 }
