@@ -145,6 +145,11 @@ class VisitTransferStatistics extends BasePage implements HasForms
             });
     }
 
+    public function getVtListsProperty(): \Illuminate\Support\Collection
+    {
+        return \App\Models\Training\WaitingList::where('feature_toggles->is_vt', true)->get();
+    }
+
     public static function canAccess(): bool
     {
         return auth()->user()->can('vt.access');
