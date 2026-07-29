@@ -31,10 +31,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
         parent::setUp();
 
         $this->mentor = Account::factory()->create();
-        $this->mentorMember = Member::factory()->create([
-            'id' => $this->mentor->id,
-            'cid' => $this->mentor->id,
-        ]);
+        $this->mentorMember = Member::factory()->forAccount($this->mentor)->create();
 
         $this->trainingPosition = TrainingPosition::factory()->create([
             'cts_positions' => ['EGLL_APP'],
@@ -271,10 +268,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     public function students_property_returns_empty_collection_when_mentor_has_no_callsigns(): void
     {
         $noCallsignMentor = Account::factory()->create();
-        Member::factory()->create([
-            'id' => $noCallsignMentor->id,
-            'cid' => $noCallsignMentor->id,
-        ]);
+        Member::factory()->forAccount($noCallsignMentor)->create();
 
         $emptyPosition = TrainingPosition::factory()->create([
             'cts_positions' => [],

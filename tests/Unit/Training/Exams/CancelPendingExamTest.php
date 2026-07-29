@@ -42,17 +42,10 @@ class CancelPendingExamTest extends TestCase
         $this->service = new CancelPendingExamService;
 
         $this->studentAccount = Account::factory()->create();
-        $this->studentMember = Member::factory()->create([
-            'id' => $this->studentAccount->id,
-            'cid' => $this->studentAccount->id,
-        ]);
+        $this->studentMember = Member::factory()->forAccount($this->studentAccount)->create();
 
         $this->examinerAccount = Account::factory()->create();
-        $this->examinerMember = Member::factory()->create([
-            'id' => $this->examinerAccount->id,
-            'cid' => $this->examinerAccount->id,
-            'examiner' => true,
-        ]);
+        $this->examinerMember = Member::factory()->forAccount($this->examinerAccount)->create(['examiner' => true]);
 
         $this->examBooking = ExamBooking::factory()->create([
             'student_id' => $this->studentMember->id,
@@ -151,7 +144,7 @@ class CancelPendingExamTest extends TestCase
             'sesh_type' => 'EX',
             'reason' => $reason,
             'used' => 0,
-            'reason_by' => $this->studentAccount->id], 'cts');
+            'reason_by' => $this->studentMember->id], 'cts');
     }
 
     #[Test]
@@ -238,11 +231,8 @@ class CancelPendingExamTest extends TestCase
     public function it_sends_examiner_initiated_notifications_to_student_and_co_examiner(): void
     {
         $coExaminerAccount = Account::factory()->create();
-        Member::factory()->create([
-            'id' => $coExaminerAccount->id,
-            'cid' => $coExaminerAccount->id,
-        ]);
-        $this->examBooking->examiners->update(['other' => $coExaminerAccount->id]);
+        $coExaminerMember = Member::factory()->forAccount($coExaminerAccount)->create();
+        $this->examBooking->examiners->update(['other' => $coExaminerMember->id]);
 
         Notification::fake();
         $this->examinerAccount->givePermissionTo('training.exams.conduct.twr');
