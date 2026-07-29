@@ -10,6 +10,8 @@ use Filament\Widgets\TableWidget;
 
 class FacilityBreakdownWidget extends TableWidget
 {
+    public ?int $year = null;
+
     public ?Carbon $start = null;
 
     public ?Carbon $end = null;
