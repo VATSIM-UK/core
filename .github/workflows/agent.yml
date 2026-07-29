@@ -1,17 +1,12 @@
 name: Open Code Review
 
 on:
-  issue_comment:
-    types: [created]
+  pull_request:
+    types: [labeled]
 
 jobs:
   ocr_job:
-    if: >-
-      github.event.issue.pull_request != null &&
-      github.event.sender.type != 'Bot' &&
-      (startsWith(github.event.comment.body, '/ocr') || startsWith(github.event.comment.body, '/review')) &&
-      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
-
+    if: github.event.label.name == 'review'
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -19,20 +14,30 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout PR branch
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: refs/pull/${{ github.event.issue.number }}/head
           fetch-depth: 0
 
       - name: Open Code Review Action
         uses: alibaba/open-code-review@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
           llm_url: "https://opencode.ai/zen/go/v1"
           llm_auth_token: ${{ secrets.OPENCODE_API_KEY }}
           llm_model: "openai/deepseek-v4-flash"
           llm_use_anthropic: "false"
-
           background: "Ignore all code-style, formatting, or indentation issues (Laravel Pint will catch these)."
+
+      # Optional: Automatically remove the label when done so it's ready to be re-added on the next commit
+      - name: Remove review label
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              name: 'review'
+            });
