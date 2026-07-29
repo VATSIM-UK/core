@@ -235,6 +235,14 @@ Copilot skills live in `.github/skills/`: `configuring-horizon`, `laravel-best-p
 - **Frontend**: Tailwind CSS v4 for new components (Filament/Livewire), Bootstrap 5 for legacy pages. Alpine.js for interactivity without Livewire.
 - **Indent**: 4 spaces (PHP, Blade, JS), 2 spaces (YAML, XML). LF line endings.
 
+## Logging
+
+- Use the `Log` facade (never bare `\Log::` or the `logger()` helper).
+- Static message + structured context array, never interpolation. Include entity IDs, e.g. `Log::warning('CTS position not found', ['training_place_id' => $place->id]);`. Log caught exceptions before swallowing/rethrowing, with `['exception' => $e]`.
+- Bugsnag alerts on `notice` and above; `debug`/`info` are breadcrumbs only. So use `info`/`debug` for expected/routine conditions (legitimate not-found, user validation failures, no-op skips, noisy feed diagnostics) and reserve `notice`/`warning`/`error` for things a human should investigate.
+- Actor-attributed staff/member state changes (bans, role grants, endorsements) go to the `audit` channel via the global `audit()` helper (`app/helpers.php`).
+- `app/Libraries/Discord.php` is the reference implementation to emulate.
+
 ## Authorization
 
 - Uses **Spatie Laravel Permission** for roles and permissions. Custom table prefix: `mship_role`, `mship_permission`, `mship_account_role`, etc. Wildcard permissions are enabled (`privacc` role with `*` permission is super-admin).

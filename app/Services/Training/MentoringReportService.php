@@ -219,7 +219,8 @@ class MentoringReportService
         try {
             $recipients = Account::role($tgiRoleName)->get();
         } catch (RoleDoesNotExist $e) {
-            Log::warning("TGI notification skipped: role '{$tgiRoleName}' does not exist.", [
+            Log::warning('TGI notification skipped: role does not exist', [
+                'role' => $tgiRoleName,
                 'session_id' => $session->id,
                 'category' => $category,
             ]);

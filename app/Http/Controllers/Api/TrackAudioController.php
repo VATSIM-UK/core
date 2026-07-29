@@ -6,6 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class TrackAudioController
 {
@@ -41,7 +42,7 @@ class TrackAudioController
             return trim($response->body());
 
         } catch (\Exception $e) {
-            \Log::error('Failed to fetch latest TrackAudio version: '.$e->getMessage());
+            Log::error('Failed to fetch latest TrackAudio version', ['exception' => $e]);
 
             return null;
         }

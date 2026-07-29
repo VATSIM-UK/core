@@ -31,7 +31,7 @@ class ActionFourthAvailabilityFailureRemoval implements ShouldQueue
         $this->availabilityWarning->refresh();
 
         if ($this->availabilityWarning->status !== 'pending') {
-            Log::info("Availability warning {$this->availabilityWarning->id} is no longer pending, skipping fourth-failure removal.");
+            Log::info('Availability warning is no longer pending, skipping fourth-failure removal', ['availability_warning_id' => $this->availabilityWarning->id]);
 
             return;
         }
@@ -39,7 +39,7 @@ class ActionFourthAvailabilityFailureRemoval implements ShouldQueue
         $trainingPlace = $this->availabilityWarning->trainingPlace;
 
         if (! $trainingPlace) {
-            Log::warning("Training place not found for availability warning {$this->availabilityWarning->id}. Cannot process fourth-failure removal.");
+            Log::warning('Training place not found for availability warning. Cannot process fourth-failure removal', ['availability_warning_id' => $this->availabilityWarning->id]);
 
             return;
         }
@@ -53,12 +53,19 @@ class ActionFourthAvailabilityFailureRemoval implements ShouldQueue
                 $account->notify(new TrainingPlaceRemovedDueToFourthAvailabilityFailure($this->availabilityWarning));
             });
         } catch (Exception $e) {
-            Log::error("Failed to process fourth availability failure {$this->availabilityWarning->id}: {$e->getMessage()}. Will be retried on the next run.");
+            Log::error('Failed to process fourth availability failure. Will be retried on the next run', [
+                'availability_warning_id' => $this->availabilityWarning->id,
+                'exception' => $e,
+            ]);
             $this->fail($e);
 
             return;
         }
 
-        Log::info("Training place {$trainingPlace->id} removed due to fourth availability failure {$this->availabilityWarning->id}. Account {$account->id} notified.");
+        Log::info('Training place removed due to fourth availability failure, account notified', [
+            'training_place_id' => $trainingPlace->id,
+            'availability_warning_id' => $this->availabilityWarning->id,
+            'account_id' => $account->id,
+        ]);
     }
 }

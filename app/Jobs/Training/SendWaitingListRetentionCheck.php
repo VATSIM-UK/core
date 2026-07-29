@@ -39,7 +39,11 @@ class SendWaitingListRetentionCheck implements ShouldQueue
         try {
             $this->waitingListAccount->account->notify(new WaitingListRetentionCheckAccountNotification($retentionCheck));
         } catch (Exception $e) {
-            Log::error("Failed to notify account {$this->waitingListAccount->account->id} of retention check {$retentionCheck->id}: {$e->getMessage()}");
+            Log::error('Failed to notify account of retention check', [
+                'account_id' => $this->waitingListAccount->account->id,
+                'retention_check_id' => $retentionCheck->id,
+                'exception' => $e,
+            ]);
             DB::rollBack();
             $this->fail($e);
 

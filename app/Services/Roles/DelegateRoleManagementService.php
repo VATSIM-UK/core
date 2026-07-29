@@ -25,17 +25,33 @@ class DelegateRoleManagementService
             'name' => $this->delegatePermissionName($role),
             'guard_name' => 'web',
         ]);
+
+        audit('Delegate permission changed', [
+            'role_id' => $role->id,
+            'action' => 'granted',
+        ]);
     }
 
     public function deleteDelegatePermission(Role $role): void
     {
         Permission::where('name', $this->delegatePermissionName($role))->delete();
+
+        audit('Delegate permission changed', [
+            'role_id' => $role->id,
+            'action' => 'revoked',
+        ]);
     }
 
     public function revokeDelegate(Account $account, Role $role): void
     {
         $permissionName = $this->delegatePermissionName($role);
         $account->revokePermissionTo($permissionName);
+
+        audit('Delegate permission changed', [
+            'account_id' => $account->id,
+            'role_id' => $role->id,
+            'action' => 'revoked',
+        ]);
     }
 
     public function getPotentialDelegates(string $search): array

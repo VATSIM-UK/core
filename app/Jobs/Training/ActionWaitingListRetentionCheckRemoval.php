@@ -35,7 +35,7 @@ class ActionWaitingListRetentionCheckRemoval implements ShouldQueue
     public function handle()
     {
         if (! $this->retentionCheck->waitingListAccount) {
-            Log::warning("WaitingListAccount not found for retention check {$this->retentionCheck->id}. Cannot remove from waiting list.");
+            Log::warning('WaitingListAccount not found for retention check. Cannot remove from waiting list', ['retention_check_id' => $this->retentionCheck->id]);
 
             return;
         }
@@ -45,7 +45,11 @@ class ActionWaitingListRetentionCheckRemoval implements ShouldQueue
         try {
             $account->notify(new RemovedFromWaitingListFailedRetention($this->retentionCheck));
         } catch (Exception $e) {
-            Log::error("Failed to notify account {$account->id} of failed retention check {$this->retentionCheck->id}: {$e->getMessage()}");
+            Log::error('Failed to notify account of failed retention check', [
+                'account_id' => $account->id,
+                'retention_check_id' => $this->retentionCheck->id,
+                'exception' => $e,
+            ]);
             // deliberately return here to avoid removing the account from the waiting list
             $this->fail($e);
 
@@ -64,7 +68,11 @@ class ActionWaitingListRetentionCheckRemoval implements ShouldQueue
                 });
         }
 
-        Log::info("Member {$account->id} was removed from waiting list  {$waitingList->id} due to failed retention check {$this->retentionCheck->id}");
+        Log::info('Member was removed from waiting list due to failed retention check', [
+            'account_id' => $account->id,
+            'waiting_list_id' => $waitingList->id,
+            'retention_check_id' => $this->retentionCheck->id,
+        ]);
 
         WaitingListRetentionChecks::markRetentionCheckAsExpired($this->retentionCheck);
     }

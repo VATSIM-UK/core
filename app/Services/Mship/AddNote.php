@@ -27,6 +27,11 @@ class AddNote implements BaseService
 
     public function handle()
     {
-        $this->account->addNote($this->noteType, $this->noteContent, $this->noteTaker);
+        $note = $this->account->addNote($this->noteType, $this->noteContent, $this->noteTaker);
+
+        audit('Note added to account', [
+            'account_id' => $this->account->id,
+            'note_id' => $note->id,
+        ]);
     }
 }

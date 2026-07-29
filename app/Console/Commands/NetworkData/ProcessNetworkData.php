@@ -50,7 +50,7 @@ class ProcessNetworkData extends Command
         $this->info('Getting network data from VATSIM.');
 
         if ($this->networkData->failed() || ! $this->networkData->json()) {
-            Log::error("Unable to process VATSIM network data. Status {$this->networkData->status()}");
+            Log::error('Unable to process VATSIM network data', ['status' => $this->networkData->status()]);
 
             return;
         }
@@ -62,6 +62,10 @@ class ProcessNetworkData extends Command
         event(new NetworkDataParsed);
 
         $this->info('Network data updated.');
+
+        Log::info('networkdata:download completed', [
+            'controllers' => count($this->networkData->json('controllers') ?? []),
+        ]);
     }
 
     /**
@@ -110,6 +114,7 @@ class ProcessNetworkData extends Command
                 $account = Account::findOrRetrieve($controller['cid']);
             } catch (InvalidCIDException $e) {
                 $this->info('Invalid CID: '.$controller['cid'], 'vvv');
+                Log::debug('Invalid CID in network data', ['cid' => $controller['cid']]);
                 DB::commit();
 
                 continue;
@@ -201,6 +206,7 @@ class ProcessNetworkData extends Command
                 $account = Account::findOrRetrieve($pilot['cid']);
             } catch (InvalidCIDException $e) {
                 $this->info('Invalid CID: '.$pilot['cid'], 'vvv');
+                Log::debug('Invalid CID in network data', ['cid' => $pilot['cid']]);
                 DB::commit();
 
                 continue;
