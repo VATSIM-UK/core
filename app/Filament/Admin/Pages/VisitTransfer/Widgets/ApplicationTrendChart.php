@@ -30,12 +30,11 @@ class ApplicationTrendChart extends ChartWidget
     protected function getData(): array
     {
         $year = $this->year ?? now()->year;
-        $type = $this->type;
 
-        $start = Carbon::create($year, 1, 1)->startOfDay();
-        $end = Carbon::create($year, 12, 31)->endOfDay();
+        $start = $this->start ?? Carbon::create($year, 1, 1)->startOfDay();
+        $end = $this->end ?? Carbon::create($year, 12, 31)->endOfDay();
 
-        $trend = VisitTransferStats::dailyTrend($this->type, $this->start, $this->end);
+        $trend = VisitTransferStats::dailyTrend($this->type, $start, $end);
 
         return [
             'datasets' => [[
