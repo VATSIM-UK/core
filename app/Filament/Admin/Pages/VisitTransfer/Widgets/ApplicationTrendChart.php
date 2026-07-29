@@ -38,7 +38,6 @@ class ApplicationTrendChart extends ChartWidget
 
         return [
             'datasets' => [[
-                'label' => "Applications in {$year}",
                 'data' => array_column($trend, 'total'),
                 'fill' => true,
             ]],
