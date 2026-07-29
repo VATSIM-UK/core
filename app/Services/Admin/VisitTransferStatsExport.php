@@ -68,7 +68,7 @@ class VisitTransferStatsExport
         $sheet->setCellValue('A'.($row + 2), "Year: {$year}".($quarter ? ", Quarter: {$quarter}" : ' (All Quarters)'));
 
         $writer = new Xlsx($spreadsheet);
-        $path = storage_path('app/tmp/vt-stats-'.now()->timestamp.'.xlsx');
+        $path = storage_path('app/tmp/vt-stats-'.\Illuminate\Support\Str::uuid().'.xlsx');
         if (! is_dir(dirname($path))) {
             mkdir(dirname($path), 0755, true);
         }
