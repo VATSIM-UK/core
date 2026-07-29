@@ -122,17 +122,17 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
     {
         $user = auth()->user();
 
-        if ($user?->can('viewAll', Session::class) ?? false) {
-            $service = app(MentorPermissionService::class);
-
-            if ($this->category) {
-                return $service->getAllCtsCallsignsForCategory($this->category);
-            }
-
-            return $service->getAllCtsCallsignsForCategories($user->getAvailableMentoringCategories());
+        if (! $user) {
+            return [];
         }
 
-        return $this->category ? $user->getAssignedCallsignsForCategory($this->category) : $user->getAllAssignedCallsigns();
+        $service = app(MentorPermissionService::class);
+
+        if ($this->category) {
+            return $service->getAllCtsCallsignsForCategory($this->category);
+        }
+
+        return $service->getAllCtsCallsignsForCategories($user->getAvailableMentoringCategories());
     }
 
     public function getStudentsProperty()
@@ -162,14 +162,6 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                     ->whereNull('cancelled_datetime')
                     ->whereIn('position', $allowedCallsigns)
                     ->orderBy('id')
-                    ->limit(1),
-
-                'last_session_date' => Session::selectRaw("CONCAT(taken_date, ' ', COALESCE(taken_from, '00:00:00'))")
-                    ->whereColumn('student_id', 'members.id')
-                    ->whereNotNull('taken_date')
-                    ->whereNull('cancelled_datetime')
-                    ->orderBy('taken_date', 'desc')
-                    ->orderBy('taken_from', 'desc')
                     ->limit(1),
             ])
             ->get();
