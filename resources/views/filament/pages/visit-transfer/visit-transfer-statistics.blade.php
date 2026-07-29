@@ -1,7 +1,6 @@
 <x-filament-panels::page>
 	@php
 		[$start, $end] = $this->getQuarterRange($this->year, $this->quarter);
-		$vtLists = \App\Models\Training\WaitingList::where('feature_toggles->is_vt', true)->get();
 	@endphp
 
 	<div class="mb-4">
@@ -18,7 +17,7 @@
 	</div>
 
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-		@foreach ($vtLists as $list)
+		@foreach ($this->vtLists as $list)
 			@livewire(\App\Filament\Admin\Pages\VisitTransfer\Widgets\VTWaitingListWidget::class, ['list' => $list], key('vt-list-' . $list->id))
 		@endforeach
 	</div>
@@ -67,7 +66,6 @@
 	    [
 	        'year' => $this->year,
 	        'type' => $this->type,
-	        'quarter' => $this->quarter,
 	        'start' => $start,
 	        'end' => $end,
 	    ],
