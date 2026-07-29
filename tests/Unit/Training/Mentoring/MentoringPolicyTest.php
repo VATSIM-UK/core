@@ -83,7 +83,7 @@ class MentoringPolicyTest extends TestCase
     public function view_allows_the_mentor_who_conducted_the_session(): void
     {
         $mentor = Account::factory()->create();
-        $mentorMember = Member::factory()->create(['id' => $mentor->id, 'cid' => $mentor->id]);
+        $mentorMember = Member::factory()->forAccount($mentor)->create();
         $session = Session::factory()->create([
             'mentor_id' => $mentorMember->id,
             'filed' => now(),
@@ -129,7 +129,7 @@ class MentoringPolicyTest extends TestCase
     public function view_denies_unfiled_reports_even_for_the_mentor(): void
     {
         $mentor = Account::factory()->create();
-        $mentorMember = Member::factory()->create(['id' => $mentor->id, 'cid' => $mentor->id]);
+        $mentorMember = Member::factory()->forAccount($mentor)->create();
         $session = Session::factory()->create(['mentor_id' => $mentorMember->id]);
 
         $this->assertFalse($this->policy->view($mentor, $session));
@@ -242,10 +242,7 @@ class MentoringPolicyTest extends TestCase
 
     private function createSessionForStudent(Account $student, ?\DateTimeInterface $filed = null): Session
     {
-        $studentMember = Member::factory()->create([
-            'id' => $student->id,
-            'cid' => $student->id,
-        ]);
+        $studentMember = Member::factory()->forAccount($student)->create();
 
         return Session::factory()->create([
             'student_id' => $studentMember->id,

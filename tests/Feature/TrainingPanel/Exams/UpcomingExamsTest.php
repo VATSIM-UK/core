@@ -326,10 +326,7 @@ class UpcomingExamsTest extends BaseTrainingPanelTestCase
     {
         $account = Account::factory()->create();
 
-        return Member::factory()->create([
-            'id' => $account->id,
-            'cid' => $account->id,
-        ]);
+        return Member::factory()->forAccount($account)->create();
     }
 
     private function createExam(
@@ -347,7 +344,7 @@ class UpcomingExamsTest extends BaseTrainingPanelTestCase
         if ($withExaminers) {
             $exam->examiners()->create(array_merge([
                 'examid' => $exam->id,
-                'senior' => $this->panelUser->id,
+                'senior' => $this->panelUser->member->id,
             ], $examinerOverrides ?? []));
         }
 
@@ -378,7 +375,7 @@ class UpcomingExamsTest extends BaseTrainingPanelTestCase
 
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         return $exam->fresh(['student', 'examiners.primaryExaminer']);

@@ -48,16 +48,10 @@ class ConductMentoringSessionTest extends BaseTrainingPanelTestCase
         parent::setUp();
 
         $this->mentor = Account::factory()->create();
-        $this->mentorMember = Member::factory()->create([
-            'id' => $this->mentor->id,
-            'cid' => $this->mentor->id,
-        ]);
+        $this->mentorMember = Member::factory()->forAccount($this->mentor)->create();
 
         $this->student = Account::factory()->create();
-        $this->studentMember = Member::factory()->create([
-            'id' => $this->student->id,
-            'cid' => $this->student->id,
-        ]);
+        $this->studentMember = Member::factory()->forAccount($this->student)->create();
 
         $trainingPosition = TrainingPosition::factory()->create([
             'cts_positions' => ['EGLL_APP'],
@@ -108,7 +102,7 @@ class ConductMentoringSessionTest extends BaseTrainingPanelTestCase
     public function non_assigned_mentor_cannot_access_conduct_page(): void
     {
         $otherMentor = Account::factory()->create();
-        Member::factory()->create(['id' => $otherMentor->id, 'cid' => $otherMentor->id]);
+        Member::factory()->forAccount($otherMentor)->create();
 
         Livewire::actingAs($otherMentor)
             ->test(ConductMentoringSession::class, ['sessionId' => $this->session->id])

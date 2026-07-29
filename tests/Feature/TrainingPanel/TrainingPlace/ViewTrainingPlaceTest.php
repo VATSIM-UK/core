@@ -61,7 +61,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         // Create a user without the training-places.view.* permission
         $userWithoutPermission = Account::factory()->create();
-        Member::factory()->create(['id' => $userWithoutPermission->id, 'cid' => $userWithoutPermission->id]);
+        Member::factory()->forAccount($userWithoutPermission)->create();
         $userWithoutPermission->givePermissionTo('training.access'); // Has training panel access but not training places
 
         Livewire::actingAs($userWithoutPermission)
@@ -75,7 +75,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         // Create a user with the training-places.view.* permission
         $userWithPermission = Account::factory()->create();
-        Member::factory()->create(['id' => $userWithPermission->id, 'cid' => $userWithPermission->id]);
+        Member::factory()->forAccount($userWithPermission)->create();
         $userWithPermission->givePermissionTo('training.access');
         $userWithPermission->givePermissionTo('training-places.view.*');
 
@@ -437,7 +437,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         $student = Account::factory()->create();
         $student->addState(State::findByCode('DIVISION'));
 
-        Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
+        Member::factory()->forAccount($student)->create();
 
         // Create a waiting list
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
@@ -575,7 +575,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
     {
         $student = Account::factory()->create();
         $student->addState(State::findByCode('DIVISION'));
-        Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
+        Member::factory()->forAccount($student)->create();
 
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 

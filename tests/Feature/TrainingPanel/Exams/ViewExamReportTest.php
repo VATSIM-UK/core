@@ -37,10 +37,7 @@ class ViewExamReportTest extends BaseTrainingPanelTestCase
 
         // Create a student account and member
         $this->student = Account::factory()->withQualification()->create();
-        $this->studentMember = Member::factory()->create([
-            'id' => $this->student->id,
-            'cid' => $this->student->id,
-        ]);
+        $this->studentMember = Member::factory()->forAccount($this->student)->create();
 
         // Create an exam booking
         $this->examBooking = ExamBooking::factory()->create([
@@ -55,7 +52,7 @@ class ViewExamReportTest extends BaseTrainingPanelTestCase
         // Create examiners
         $this->examBooking->examiners()->create([
             'examid' => $this->examBooking->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         // Create a practical result
@@ -295,12 +292,12 @@ class ViewExamReportTest extends BaseTrainingPanelTestCase
         $secondaryExaminer = Account::factory()->create();
         $traineeExaminer = Account::factory()->create();
 
-        Member::factory()->create(['id' => $secondaryExaminer->id, 'cid' => $secondaryExaminer->id]);
-        Member::factory()->create(['id' => $traineeExaminer->id, 'cid' => $traineeExaminer->id]);
+        $secondaryExaminerMember = Member::factory()->forAccount($secondaryExaminer)->create();
+        $traineeExaminerMember = Member::factory()->forAccount($traineeExaminer)->create();
 
         $this->examBooking->examiners()->update([
-            'other' => $secondaryExaminer->id,
-            'trainee' => $traineeExaminer->id,
+            'other' => $secondaryExaminerMember->id,
+            'trainee' => $traineeExaminerMember->id,
         ]);
 
         $this->panelUser->givePermissionTo(['training.exams.access', 'training.exams.conduct.twr']);
@@ -507,10 +504,7 @@ class ViewExamReportTest extends BaseTrainingPanelTestCase
     public function it_resubmits_student_for_exam_when_result_is_overridden_to_incomplete()
     {
         $account = Account::factory()->withQualification()->create();
-        $student = Member::factory()->create([
-            'id' => $account->id,
-            'cid' => $account->id,
-        ]);
+        $student = Member::factory()->forAccount($account)->create();
 
         $position = Position::factory()->create([
             'callsign' => 'EGKK_TWR',
@@ -528,7 +522,7 @@ class ViewExamReportTest extends BaseTrainingPanelTestCase
 
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         $practicalResult = PracticalResult::factory()->create([

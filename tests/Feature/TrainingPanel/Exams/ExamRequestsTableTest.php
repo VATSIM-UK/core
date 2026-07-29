@@ -38,10 +38,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
 
         // Create a student account and member
         $this->studentAccount = Account::factory()->create();
-        $this->studentMember = Member::factory()->create([
-            'id' => $this->studentAccount->id,
-            'cid' => $this->studentAccount->id,
-        ]);
+        $this->studentMember = Member::factory()->forAccount($this->studentAccount)->create();
 
         // Attach an ATC qualification to the panel user (as examiner)
         $atcQualification = Qualification::factory()->atc()->create(['vatsim' => 3]);
@@ -71,11 +68,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     protected function createExaminerMemberForScope(string $scopeColumn): Member
     {
         $examinerAccount = Account::factory()->create();
-        $examinerMember = Member::factory()->create([
-            'id' => $examinerAccount->id,
-            'cid' => $examinerAccount->id,
-            'examiner' => true,
-        ]);
+        $examinerMember = Member::factory()->forAccount($examinerAccount)->create(['examiner' => true]);
 
         ExaminerSettings::create([
             'memberID' => $examinerMember->id,
@@ -109,7 +102,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
         // The ExamRequestsTable component itself doesn't enforce authorization
         // Authorization is handled at the page level where it's embedded
         $userWithoutExamPermissions = Account::factory()->create();
-        Member::factory()->create(['id' => $userWithoutExamPermissions->id, 'cid' => $userWithoutExamPermissions->id]);
+        Member::factory()->forAccount($userWithoutExamPermissions)->create();
         $userWithoutExamPermissions->givePermissionTo('training.access');
 
         Livewire::actingAs($userWithoutExamPermissions)
@@ -141,7 +134,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
         // Create examiner record for the accepted exam
         PracticalExaminers::create([
             'examid' => $acceptedExam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         Livewire::actingAs($this->panelUser)
@@ -306,10 +299,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     {
         // Create availability for a different student
         $otherStudentAccount = Account::factory()->create();
-        $otherStudentMember = Member::factory()->create([
-            'id' => $otherStudentAccount->id,
-            'cid' => $otherStudentAccount->id,
-        ]);
+        $otherStudentMember = Member::factory()->forAccount($otherStudentAccount)->create();
 
         $otherAvailability = Availability::factory()
             ->forStudent($otherStudentMember->id)
@@ -406,7 +396,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     {
         // Create a user with only TWR exam permissions
         $twrOnlyUser = Account::factory()->create();
-        $twrMember = Member::factory()->create(['id' => $twrOnlyUser->id, 'cid' => $twrOnlyUser->id]);
+        $twrMember = Member::factory()->forAccount($twrOnlyUser)->create();
         $twrOnlyUser->givePermissionTo('training.access');
         $twrOnlyUser->givePermissionTo('training.exams.conduct.twr');
 
@@ -444,7 +434,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     {
         // Create a user with no exam conduct permissions
         $noPermissionsUser = Account::factory()->create();
-        $noPermissionsMember = Member::factory()->create(['id' => $noPermissionsUser->id, 'cid' => $noPermissionsUser->id]);
+        $noPermissionsMember = Member::factory()->forAccount($noPermissionsUser)->create();
         $noPermissionsUser->givePermissionTo('training.access');
 
         Livewire::actingAs($noPermissionsUser)
@@ -459,7 +449,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     {
         // Create a user with only APP permissions
         $appOnlyUser = Account::factory()->create();
-        $appMember = Member::factory()->create(['id' => $appOnlyUser->id, 'cid' => $appOnlyUser->id]);
+        $appMember = Member::factory()->forAccount($appOnlyUser)->create();
         $appOnlyUser->givePermissionTo('training.access');
         $appOnlyUser->givePermissionTo('training.exams.conduct.app');
 
@@ -540,7 +530,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     {
         // Create a user with only TWR permissions
         $twrOnlyUser = Account::factory()->create();
-        $twrMember = Member::factory()->create(['id' => $twrOnlyUser->id, 'cid' => $twrOnlyUser->id]);
+        $twrMember = Member::factory()->forAccount($twrOnlyUser)->create();
         $twrOnlyUser->givePermissionTo('training.access');
         $twrOnlyUser->givePermissionTo('training.exams.conduct.twr');
 

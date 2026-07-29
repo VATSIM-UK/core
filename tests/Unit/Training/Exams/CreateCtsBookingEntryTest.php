@@ -28,14 +28,8 @@ class CreateCtsBookingEntryTest extends TestCase
         $examinerAccount = Account::factory()->create();
         $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
 
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
-        $examiner = Member::factory()->create([
-            'id' => $examinerAccount->id,
-            'cid' => $examinerAccount->id,
-        ]);
+        $student = Member::factory()->forAccount($studentAccount)->create();
+        $examiner = Member::factory()->forAccount($examinerAccount)->create();
 
         $examDate = Carbon::tomorrow();
         $examBooking = ExamBooking::factory()->create([
@@ -81,10 +75,7 @@ class CreateCtsBookingEntryTest extends TestCase
     public function it_handles_unknown_position_gracefully(): void
     {
         $studentAccount = Account::factory()->create();
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
+        $student = Member::factory()->forAccount($studentAccount)->create();
 
         $examBooking = ExamBooking::factory()->create([
             'student_id' => $student->id,
@@ -111,10 +102,7 @@ class CreateCtsBookingEntryTest extends TestCase
     public function it_creates_booking_entry_with_correct_timestamps(): void
     {
         $studentAccount = Account::factory()->create();
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
+        $student = Member::factory()->forAccount($studentAccount)->create();
 
         $examDate = Carbon::parse('2024-12-25');
         $examBooking = ExamBooking::factory()->create([
@@ -161,10 +149,7 @@ class CreateCtsBookingEntryTest extends TestCase
             $position = Position::factory()->create(['callsign' => $examData['position']]);
 
             $studentAccount = Account::factory()->create();
-            $student = Member::factory()->create([
-                'id' => $studentAccount->id,
-                'cid' => $studentAccount->id,
-            ]);
+            $student = Member::factory()->forAccount($studentAccount)->create();
 
             $examDate = Carbon::tomorrow()->addDays($index);
             $examBooking = ExamBooking::factory()->create([
@@ -195,10 +180,7 @@ class CreateCtsBookingEntryTest extends TestCase
     public function it_links_booking_to_exam_booking_via_bookable(): void
     {
         $studentAccount = Account::factory()->create();
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
+        $student = Member::factory()->forAccount($studentAccount)->create();
 
         $examBooking = ExamBooking::factory()->create([
             'student_id' => $student->id,
@@ -228,10 +210,7 @@ class CreateCtsBookingEntryTest extends TestCase
     public function it_handles_multiple_exam_bookings_for_same_student(): void
     {
         $studentAccount = Account::factory()->create();
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
+        $student = Member::factory()->forAccount($studentAccount)->create();
 
         $position1 = Position::factory()->create(['callsign' => 'EGKK_TWR']);
         $position2 = Position::factory()->create(['callsign' => 'EGLL_APP']);

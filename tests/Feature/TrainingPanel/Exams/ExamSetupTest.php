@@ -55,10 +55,7 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
 
         // Create a student account and member
         $studentAccount = Account::factory()->withQualification()->create();
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
+        $student = Member::factory()->forAccount($studentAccount)->create();
 
         // Create a recent completed session for the student
         Session::factory()->create([
@@ -101,10 +98,7 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
         ]);
 
         $studentAccount = Account::factory()->withQualification()->create();
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
+        $student = Member::factory()->forAccount($studentAccount)->create();
 
         // Create a recent completed session for the student on PT2 position
         Session::factory()->create([
@@ -196,10 +190,7 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
         $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
         TrainingPosition::factory()->create(['position_id' => $position->id]);
 
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
+        $student = Member::factory()->forAccount($studentAccount)->create();
 
         ExamBooking::factory()->create([
             'student_id' => $student->id,
@@ -228,10 +219,7 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('training.exams.setup');
 
         $studentAccount = Account::factory()->withQualification()->create();
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
+        $student = Member::factory()->forAccount($studentAccount)->create();
 
         PracticalResult::factory()->create([
             'student_id' => $student->id,
@@ -264,10 +252,7 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('training.exams.setup');
 
         $studentAccount = Account::factory()->withQualification()->create();
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
+        $student = Member::factory()->forAccount($studentAccount)->create();
 
         PracticalResult::factory()->create([
             'student_id' => $student->id,
@@ -318,10 +303,7 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
         TrainingPosition::factory()->create(['position_id' => $position->id]);
 
         $studentAccount = Account::factory()->withQualification()->create();
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
+        $student = Member::factory()->forAccount($studentAccount)->create();
 
         ExamBooking::factory()->create([
             'student_id' => $student->id,
@@ -366,10 +348,7 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
         ]);
 
         $studentAccount = Account::factory()->withQualification()->create();
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
+        $student = Member::factory()->forAccount($studentAccount)->create();
 
         ExamBooking::factory()->create([
             'student_id' => $student->id,
@@ -405,10 +384,7 @@ class ExamSetupTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('training.exams.setup');
 
         $studentAccount = Account::factory()->withQualification()->create();
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
+        $student = Member::factory()->forAccount($studentAccount)->create();
 
         ExamBooking::factory()->create([
             'student_id' => $student->id,
