@@ -24,6 +24,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
           persist-credentials: false
+          allow-unsafe-pr-checkout: true
 
       - name: Open Code Review Action
         uses: alibaba/open-code-review@20db3d7d120ebba3d546ddca3459693ce3e1ae86
