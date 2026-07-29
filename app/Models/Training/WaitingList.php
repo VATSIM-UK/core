@@ -9,15 +9,19 @@ use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\Mship\Note\Type;
+use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\Removal;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListFlag;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Number;
 
@@ -32,18 +36,18 @@ use Illuminate\Support\Number;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property string|null $cts_theory_exam_level
  * @property array|null $feature_toggles
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Account> $accounts
+ * @property-read Collection<int, Account> $accounts
  * @property-read int|null $accounts_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, WaitingListFlag> $flags
+ * @property-read Collection<int, WaitingListFlag> $flags
  * @property-read int|null $flags_count
  * @property-read object $feature_toggles_formatted
  * @property-read bool $is_vt
  * @property-read mixed $formatted_department
  * @property-read bool $should_check_atc_hours
  * @property-read bool $should_check_cts_theory_exam
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Account> $staff
+ * @property-read Collection<int, Account> $staff
  * @property-read int|null $staff_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, WaitingListAccount> $waitingListAccounts
+ * @property-read Collection<int, WaitingListAccount> $waitingListAccounts
  * @property-read int|null $waiting_list_accounts_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder|WaitingList newModelQuery()
@@ -162,14 +166,41 @@ class WaitingList extends Model
     /**
      * A WaitingList can be related to many TrainingPositions.
      */
-    public function trainingPositions(): BelongsToMany
+    public function trainingPositions(): MorphToMany
     {
-        return $this->belongsToMany(
+        return $this->morphedByMany(
             TrainingPosition::class,
-            'training_position_waiting_list',
+            'trainable',
+            'trainable_waiting_list',
             'waiting_list_id',
-            'training_position_id'
+            'trainable_id'
         )->withTimestamps();
+    }
+
+    /**
+     * A WaitingList can be related to many Qualifications (pilot training).
+     */
+    public function qualifications(): MorphToMany
+    {
+        return $this->morphedByMany(
+            Qualification::class,
+            'trainable',
+            'trainable_waiting_list',
+            'waiting_list_id',
+            'trainable_id'
+        )->withTimestamps();
+    }
+
+    /**
+     * All trainables (training positions and qualifications) linked to this list.
+     *
+     * @return Attribute<Collection, never>
+     */
+    protected function trainables(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): Collection => $this->trainingPositions->concat($this->qualifications)
+        );
     }
 
     /**
@@ -333,17 +364,17 @@ class WaitingList extends Model
 
     public function minimumQualification()
     {
-        return $this->belongsTo(\App\Models\Mship\Qualification::class, 'self_enrolment_minimum_qualification_id');
+        return $this->belongsTo(Qualification::class, 'self_enrolment_minimum_qualification_id');
     }
 
     public function maximumQualification()
     {
-        return $this->belongsTo(\App\Models\Mship\Qualification::class, 'self_enrolment_maximum_qualification_id');
+        return $this->belongsTo(Qualification::class, 'self_enrolment_maximum_qualification_id');
     }
 
     public function hoursAtQualification()
     {
-        return $this->belongsTo(\App\Models\Mship\Qualification::class, 'self_enrolment_hours_at_qualification_id');
+        return $this->belongsTo(Qualification::class, 'self_enrolment_hours_at_qualification_id');
     }
 
     public function hasCapacityLimit(): bool

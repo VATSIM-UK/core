@@ -32,13 +32,14 @@ class MentoringSessionsService
     /**
      * Accepts a pending session by claiming a student's availability slot.
      */
-    public function acceptSession(int $availabilityId, Account $mentorAccount, string $takenFrom, string $takenTo): bool
+    public function acceptSession(int $sessionId, int $availabilityId, Account $mentorAccount, string $takenFrom, string $takenTo): bool
     {
-        return DB::transaction(function () use ($availabilityId, $mentorAccount, $takenFrom, $takenTo) {
+        return DB::transaction(function () use ($sessionId, $availabilityId, $mentorAccount, $takenFrom, $takenTo) {
             $availability = Availability::findOrFail($availabilityId);
             $mentorMember = Member::where('cid', $mentorAccount->id)->firstOrFail();
 
             $session = Session::query()
+                ->where('id', $sessionId)
                 ->where('student_id', $availability->student_id)
                 ->whereNull('mentor_id')
                 ->whereNull('filed')
