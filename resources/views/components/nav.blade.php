@@ -16,8 +16,8 @@
 				</a>
 			</div>
 			@if (currentUserHasAuth())
-				<div class="relative flex items-center" x-data="{ open: false }" @mouseenter="open = true"
-					@mouseleave="open = false">
+				<div class="relative flex items-center" x-data="{ open: false, hoverable: window.matchMedia('(hover: hover)').matches }" @mouseenter="hoverable && (open = true)"
+					@mouseleave="hoverable && (open = false)">
 					<button type="button" class="nav-trigger-top" @click="open = !open" aria-haspopup="true" :aria-expanded="open">
 						<span>{{ Auth::user()->name }} ({{ Auth::user()->id }})</span>
 						<i class="hidden fa fa-sliders md:inline-block"></i>
@@ -82,8 +82,9 @@
 				:class="mobileMenuOpen && 'max-lg:!block'">
 				<ul class="m-0 flex flex-col lg:flex-row lg:items-stretch">
 					{{-- Home --}}
-					<li class="group relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-						<button type="button" class="nav-trigger" @click="open = !open">
+					<li class="group relative" x-data="{ open: false, hoverable: window.matchMedia('(hover: hover)').matches }" @mouseenter="hoverable && (open = true)"
+						@mouseleave="hoverable && (open = false)">
+						<button type="button" class="nav-trigger" @click="open = !open" aria-haspopup="true" :aria-expanded="open">
 							Home <svg class="nav-chevron" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd"
 									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -101,9 +102,10 @@
 					</li>
 
 					{{-- Feedback --}}
-					<li class="group relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-						<button type="button" class="nav-trigger" @click="open = !open">Feedback <svg class="nav-chevron"
-								fill="currentColor" viewBox="0 0 20 20">
+					<li class="group relative" x-data="{ open: false, hoverable: window.matchMedia('(hover: hover)').matches }" @mouseenter="hoverable && (open = true)"
+						@mouseleave="hoverable && (open = false)">
+						<button type="button" class="nav-trigger" @click="open = !open" aria-haspopup="true"
+							:aria-expanded="open">Feedback <svg class="nav-chevron" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd"
 									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
 									clip-rule="evenodd" />
@@ -119,9 +121,10 @@
 					</li>
 
 					{{-- Pilots --}}
-					<li class="group relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-						<button type="button" class="nav-trigger" @click="open = !open">Pilots <svg class="nav-chevron"
-								fill="currentColor" viewBox="0 0 20 20">
+					<li class="group relative" x-data="{ open: false, hoverable: window.matchMedia('(hover: hover)').matches }" @mouseenter="hoverable && (open = true)"
+						@mouseleave="hoverable && (open = false)">
+						<button type="button" class="nav-trigger" @click="open = !open" aria-haspopup="true"
+							:aria-expanded="open">Pilots <svg class="nav-chevron" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd"
 									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
 									clip-rule="evenodd" />
@@ -148,9 +151,10 @@
 					</li>
 
 					{{-- Controllers --}}
-					<li class="group relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-						<button type="button" class="nav-trigger" @click="open = !open">Controllers <svg class="nav-chevron"
-								fill="currentColor" viewBox="0 0 20 20">
+					<li class="group relative" x-data="{ open: false, hoverable: window.matchMedia('(hover: hover)').matches }" @mouseenter="hoverable && (open = true)"
+						@mouseleave="hoverable && (open = false)">
+						<button type="button" class="nav-trigger" @click="open = !open" aria-haspopup="true"
+							:aria-expanded="open">Controllers <svg class="nav-chevron" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd"
 									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
 									clip-rule="evenodd" />
@@ -185,9 +189,10 @@
 					</li>
 
 					{{-- Membership --}}
-					<li class="group relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-						<button type="button" class="nav-trigger" @click="open = !open">Membership <svg class="nav-chevron"
-								fill="currentColor" viewBox="0 0 20 20">
+					<li class="group relative" x-data="{ open: false, hoverable: window.matchMedia('(hover: hover)').matches }" @mouseenter="hoverable && (open = true)"
+						@mouseleave="hoverable && (open = false)">
+						<button type="button" class="nav-trigger" @click="open = !open" aria-haspopup="true"
+							:aria-expanded="open">Membership <svg class="nav-chevron" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd"
 									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
 									clip-rule="evenodd" />
@@ -209,9 +214,10 @@
 					</li>
 
 					{{-- ATC Training Process --}}
-					<li class="group relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-						<button type="button" class="nav-trigger" @click="open = !open">ATC Training Process <svg class="nav-chevron"
-								fill="currentColor" viewBox="0 0 20 20">
+					<li class="group relative" x-data="{ open: false, hoverable: window.matchMedia('(hover: hover)').matches }" @mouseenter="hoverable && (open = true)"
+						@mouseleave="hoverable && (open = false)">
+						<button type="button" class="nav-trigger" @click="open = !open" aria-haspopup="true"
+							:aria-expanded="open">ATC Training Process <svg class="nav-chevron" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd"
 									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
 									clip-rule="evenodd" />
@@ -229,9 +235,10 @@
 					</li>
 
 					{{-- Policy --}}
-					<li class="group relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-						<button type="button" class="nav-trigger" @click="open = !open">Policy <svg class="nav-chevron"
-								fill="currentColor" viewBox="0 0 20 20">
+					<li class="group relative" x-data="{ open: false, hoverable: window.matchMedia('(hover: hover)').matches }" @mouseenter="hoverable && (open = true)"
+						@mouseleave="hoverable && (open = false)">
+						<button type="button" class="nav-trigger" @click="open = !open" aria-haspopup="true"
+							:aria-expanded="open">Policy <svg class="nav-chevron" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd"
 									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
 									clip-rule="evenodd" />
@@ -260,9 +267,10 @@
 					</li>
 
 					{{-- Our Services --}}
-					<li class="group relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-						<button type="button" class="nav-trigger" @click="open = !open">Our Services <svg class="nav-chevron"
-								fill="currentColor" viewBox="0 0 20 20">
+					<li class="group relative" x-data="{ open: false, hoverable: window.matchMedia('(hover: hover)').matches }" @mouseenter="hoverable && (open = true)"
+						@mouseleave="hoverable && (open = false)">
+						<button type="button" class="nav-trigger" @click="open = !open" aria-haspopup="true"
+							:aria-expanded="open">Our Services <svg class="nav-chevron" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd"
 									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
 									clip-rule="evenodd" />

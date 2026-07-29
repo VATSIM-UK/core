@@ -30,7 +30,7 @@
 
 <body>
 	@include('components.nav')
-	<div class="container-fluid pt-[7.5rem]">
+	<div class="container-fluid lg:pt-[7.5rem]">
 		<div class="header_container">
 			<div id="banner" class="banner hidden-xs hidden-sm"></div>
 
