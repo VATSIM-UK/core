@@ -219,7 +219,9 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             );
         });
 
-        return $students;
+        return $students
+            ->sortBy(fn (Member $student) => $student->last_session_date ?? '9999-12-31 23:59:59')
+            ->values();
     }
 
     public function render()
