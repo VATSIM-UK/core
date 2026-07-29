@@ -27,6 +27,7 @@ jobs:
           llm_auth_token: ${{ secrets.OPENCODE_API_KEY }}
           llm_model: "deepseek-v4-flash"
           llm_use_anthropic: "false"
+          llm_extra_body: '{"thinking": {"type": "enabled"}, "reasoning_effort": "high"}'
           background: "Ignore all code-style, formatting, or indentation issues (Laravel Pint will catch these)."
 
       - name: Remove review label
