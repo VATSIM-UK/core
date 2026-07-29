@@ -71,7 +71,7 @@
 }
 
 .nav-trigger-top {
-  @apply flex items-center gap-1 border-0 px-4 py-[14px] font-semibold text-white transition-colors hover:bg-nav-accent hover:no-underline focus:no-underline aria-expanded:bg-nav-accent;
+  @apply flex items-center gap-1 border-0 px-4 py-[14px] font-semibold text-white transition-colors hover:bg-nav-accent hover:no-underline focus:no-underline active:bg-nav-accent aria-expanded:bg-nav-accent;
 }
 
 .nav-mobile-toggle {
@@ -87,7 +87,7 @@
 }
 
 .nav-dropdown-link {
-  @apply block px-5 py-1.5 text-white hover:bg-nav-hover-bg hover:text-nav-hover-text hover:no-underline focus:no-underline;
+  @apply block px-5 py-1.5 text-white hover:bg-nav-hover-bg hover:text-nav-hover-text hover:no-underline focus:bg-nav-hover-bg focus:text-nav-hover-text focus:no-underline active:bg-nav-hover-bg active:text-nav-hover-text;
 }
 
 .nav-dropdown-link-static {
@@ -107,7 +107,7 @@
 }
 
 .nav-icon-link {
-  @apply border-0 px-4 py-[14px] text-white transition-colors hover:bg-nav-accent hover:no-underline focus:no-underline;
+  @apply border-0 px-4 py-[14px] text-white transition-colors hover:bg-nav-accent hover:no-underline focus:bg-nav-accent focus:no-underline active:bg-nav-accent;
 }
 
 .nav-chevron {
