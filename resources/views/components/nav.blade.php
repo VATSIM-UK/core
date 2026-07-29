@@ -296,7 +296,7 @@
 					</li>
 
 					@if (currentUserHasAuth())
-						<li class="ml-auto flex items-center gap-0 border-t border-gray-600 lg:border-t-0">
+						<li class="ml-auto flex items-center gap-0">
 							<a href="{{ route('mship.notification.list') }}" title="Notifications"
 								class="nav-icon-link lg:block {{ Auth::user()->has_unread_notifications ? 'text-[#f55]' : '' }}">
 								<i class="fa fa-bell"></i>
