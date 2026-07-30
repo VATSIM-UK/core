@@ -1,4 +1,10 @@
 {
+
+    // PHP File Settings
+    "[php]": {
+        "editor.defaultFormatter": "open-southeners.laravel-pint"
+    },
+
     // JSON File Settings
     "[json]": {
 
