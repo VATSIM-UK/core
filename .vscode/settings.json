@@ -1,5 +1,16 @@
 {
-  "[php]": {
-    "editor.defaultFormatter": "open-southeners.laravel-pint"
-  }
+    // JSON File Settings
+    "[json]": {
+
+        // Disable format on save for JSON files
+        "editor.formatOnSave": false
+    },
+
+    // JSON with Comments File Settings
+    "[jsonc]": {
+
+        // Disable format on save for JSON with Comments files
+        "editor.formatOnSave": false
+    }
+
 }

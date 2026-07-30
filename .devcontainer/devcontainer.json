@@ -1,23 +1,55 @@
+// Devcontainer configuration file for VS Code
+// Purpose: This file defines the configuration for the development container used in VS Code.
 {
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "xdebug.php-debug",
-        "bmewburn.vscode-intelephense-client",
-        "mrmlnc.vscode-apache",
-        "open-southeners.laravel-pint",
-        "bradlc.vscode-tailwindcss"
-      ]
-    }
-  },
-  "dockerComposeFile": "docker-compose.yml",
-  "forwardPorts": [
-    8080,
-    3306
-  ],
-  "name": "VATSIM UK Core",
-  "postAttachCommand": "composer install && php artisan migrate && php artisan db:seed",
-  "postCreateCommand": "sh .devcontainer/initialSetup.sh",
-  "service": "vatsimuk-core",
-  "workspaceFolder": "/workspace"
+    // Name of the development container
+    "name": "VATSIM UK Core",
+
+    // Name of the Service
+    "service": "vatsimuk-core",
+
+    // Path to the Docker Compose file that defines the services and containers
+    "dockerComposeFile": "docker-compose.dev.yml",
+
+    // The location of the workspace folder inside the container
+    "workspaceFolder": "/workspace",
+
+    // Forward the following ports from the container to the host machine
+    "forwardPorts": [
+        8080,
+        3306
+    ],
+
+    // Customizations for VS Code, such as installing extensions
+    "customizations": {
+
+        "vscode": {
+
+            // A list of VS Code extensions to install in the development container
+            "extensions": [
+                "xdebug.php-debug", // PHP Debugging
+                "bmewburn.vscode-intelephense-client", // PHP Language Support
+                "mrmlnc.vscode-apache", // Apache Configuration Support
+                "open-southeners.laravel-pint", // Laravel Pint Support
+                "bradlc.vscode-tailwindcss" // Tailwind CSS Support
+            ]
+
+        }
+
+    },
+
+    // Mounts can be defined here to map directories from the host machine to the container.
+    "mounts": [
+        "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/root/.ssh,type=bind,consistency=cached"
+    ],
+
+    "initializeCommand": "powershell -ExecutionPolicy Bypass -File ${localWorkspaceFolder}\\.devcontainer\\bin\\copy-env.ps1",
+
+    // A set of commands to run after the container is created.
+    // This can be used to install dependencies, set ,up the environment,
+    // or perform any other necessary setup tasks.
+    "postCreateCommand": "bash /workspace/.devcontainer/bin/command-post-create.sh",
+
+    // A set of commands to run after the container is started.
+    "postStartCommand": "bash /workspace/.devcontainer/bin/command-post-start.sh"
+
 }
