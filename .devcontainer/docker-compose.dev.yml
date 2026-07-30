@@ -1,311 +1,70 @@
-# ------------------------------------------------------------------------------
-# Docker Compose configuration
-# ------------------------------------------------------------------------------
-#
-# Docker lets applications run inside isolated environments called containers.
-# Each container normally has one main responsibility, such as:
-#
-#   - running the PHP application;
-#   - running a MySQL database;
-#   - running Redis;
-#   - running phpMyAdmin.
-#
-# Docker Compose allows all these containers to be described in one YAML file
-# and started together with:
-#
-#   docker compose up
-#
-# Docker Compose also creates a private network for this project automatically.
-# Containers on that network can communicate using their service names.
-#
-# For example:
-#
-#   - the application can reach MySQL using the hostname "mysql";
-#   - the application can reach Redis using the hostname "redis".
-#
-# "services" contains the containers that make up this development environment.
+# Docker Compose configuration for the local development environment.
+# Runs the PHP application, Redis, MySQL, and phpMyAdmin on a shared network.
 
 services:
 
-    # ----------------------------------------------------------------------------
-    # Main PHP and Nginx application
-    # ----------------------------------------------------------------------------
-    #
-    # "vatsimuk-core" is the name of this service.
-    #
-    # Docker Compose uses this name when displaying logs and when running commands
-    # such as:
-    #
-    #   docker compose logs vatsimuk-core
-    #   docker compose exec vatsimuk-core bash
-    #
+    # Main PHP and Nginx application.
     vatsimuk-core:
-
-        # "build" tells Docker to create an image using a Dockerfile.
-        #
-        # An image is a reusable template containing the operating system,
-        # application runtime and installed software.
-        #
-        # A container is a running instance of that image.
         build:
-
-            # "context" defines which directory Docker can access while building.
-            #
-            # "." means the directory containing this Compose file.
-            #
-            # Files outside the build context cannot normally be copied into the image
-            # by the Dockerfile.
             context: .
-
-            # This tells Docker which Dockerfile to use.
-            #
-            # Because the file is named "Dockerfile", this setting is technically
-            # optional, but keeping it makes the intended file explicit.
             dockerfile: Dockerfile
 
-        # List of .env files to load that contain environment variables for this service.
+        # Load development and application environment variables.
         env_file:
-
-            # .devcontainer environment file
             - .env
-
-            # Application environment file
             - ../.env
 
-        # "ports" makes a port inside the container available on the host computer.
-        #
-        # The format is:
-        #
-        #   HOST_PORT:CONTAINER_PORT
-        #
-        # Here:
-        #
-        #   - port 80 on the computer maps to port 80 in the container;
-        #   - Nginx listens on port 80 inside the container;
-        #   - the application can normally be opened at http://localhost.
-        #
-        # Only one program on the host can use port 80 at a time. If another web
-        # server is already using it, this container will fail to start.
+        # Expose the application at http://localhost.
         ports:
             - "80:80"
 
-        # "depends_on" controls container startup order.
-        #
-        # Docker Compose will start the "mysql" container before it starts the
-        # "vatsimuk-core" container.
-        #
-        # Important:
-        #
-        # This only means that the MySQL container has started. It does not guarantee
-        # that MySQL has finished initialising or is ready to accept connections.
-        #
-        # A healthcheck can be added if the application must wait until MySQL is
-        # fully ready.
+        # Start MySQL before the application container.
+        # This does not guarantee that MySQL is ready to accept connections.
         depends_on:
             - mysql
 
-        # "volumes" connects files or directories on the host computer to paths
-        # inside the container.
-        #
-        # This is called a bind mount.
+        # Mount the project source into the container for local development.
         volumes:
-
-            # The format is:
-            #
-            #   HOST_PATH:CONTAINER_PATH:OPTION
-            #
-            # Here:
-            #
-            #   - ".." means the parent directory of this Compose file;
-            #   - "/workspace" is the location inside the container;
-            #   - "cached" is a file-sharing consistency hint, primarily useful with
-            #     Docker Desktop.
-            #
-            # This lets developers edit files on their computer while the container
-            # immediately sees those files under /workspace.
-            #
-            # The source code is not copied permanently into the container by this
-            # line. The host directory is made visible inside the running container.
             - "..:/workspace:cached"
 
-    # ----------------------------------------------------------------------------
-    # Redis
-    # ----------------------------------------------------------------------------
-    #
-    # Redis is an in-memory data store.
-    #
-    # Applications commonly use it for:
-    #
-    #   - caching;
-    #   - sessions;
-    #   - queues;
-    #   - temporary data;
-    #   - rate limiting.
-    #
-    # Other containers can connect to this service using:
-    #
-    #   Hostname: redis
-    #   Port:     6379
-    #
+    # Redis service for caching, sessions, queues, and other temporary data.
+    # Available to other containers at redis:6379.
     redis:
-
-        # "image" tells Docker to download and run an existing image rather than
-        # building one from a local Dockerfile.
-        #
-        # "redis" is the image name.
-        # "7-alpine" is the image tag.
-        #
-        # The tag requests Redis 7 using Alpine Linux, which is a small Linux
-        # distribution commonly used for lightweight containers.
         image: redis:7-alpine
 
-        # Redis does not have a "ports" section here.
-        #
-        # This means Redis is available to the other containers on Docker's private
-        # network, but it is not directly exposed on the host computer.
-        #
-        # The PHP application should connect using:
-        #
-        #   REDIS_HOST=redis
-        #   REDIS_PORT=6379
-
-    # ----------------------------------------------------------------------------
-    # MySQL database
-    # ----------------------------------------------------------------------------
+    # MySQL 8 database for local development.
     mysql:
-
-        # Use the official MySQL image with the MySQL 8.0 tag.
-        #
-        # Pinning the version to 8.0 avoids unexpectedly moving to a future major
-        # MySQL version when images are downloaded again.
         image: mysql:8.0
 
         volumes:
-
-            # Store MySQL's database files in the named Docker volume "db-data".
-            #
-            # "/var/lib/mysql" is where MySQL stores its databases inside the
-            # container.
-            #
-            # Without persistent storage, deleting the container would normally delete
-            # the database data stored inside it.
-            #
-            # A named volume exists separately from the container, so the data can
-            # survive container recreation.
+            # Persist database data between container recreations.
             - db-data:/var/lib/mysql
 
-            # Mount the local "mysql_init" directory into MySQL's special
-            # initialisation directory.
-            #
-            # Files such as .sql and supported shell scripts in this directory are
-            # processed by the MySQL image when it creates a new database for the
-            # first time.
-            #
-            # Important:
-            #
-            # These scripts normally run only when /var/lib/mysql is empty. They will
-            # not automatically run again when an existing "db-data" volume is reused.
+            # Run initialisation scripts when the database is first created.
             - ./mysql_init:/docker-entrypoint-initdb.d
 
-        # "environment" provides environment variables inside the container.
-        #
-        # The MySQL image reads these variables during its initial setup.
         environment:
-
-            # Set the password for MySQL's built-in "root" administrator account.
-            #
-            # This is convenient for local development but should not be committed as
-            # a real production password.
+            # Local development credentials only.
             MYSQL_ROOT_PASSWORD: root
-
-            # Ask the MySQL image to create a database named "core" when the database
-            # storage is initialised for the first time.
             MYSQL_DATABASE: core
 
+        # Expose MySQL to the host on MYSQL_BIND_PORT, defaulting to 13306.
+        # Other containers should connect using mysql:3306.
         ports:
-
-            # Make MySQL available from the host computer.
-            #
-            # The container always listens on port 3306.
-            #
-            # The host port is selected using this expression:
-            #
-            #   ${MYSQL_BIND_PORT:-13306}
-            #
-            # This means:
-            #
-            #   - use MYSQL_BIND_PORT when that environment variable is set;
-            #   - otherwise use port 13306.
-            #
-            # With the default setting, a database program running on the host can use:
-            #
-            #   Host: localhost
-            #   Port: 13306
-            #
-            # Containers should not use localhost:13306 to reach MySQL. Containers
-            # should use the Docker service name and internal port:
-            #
-            #   Host: mysql
-            #   Port: 3306
             - "${MYSQL_BIND_PORT:-13306}:3306"
 
-    # ----------------------------------------------------------------------------
-    # phpMyAdmin
-    # ----------------------------------------------------------------------------
-    #
-    # phpMyAdmin is a browser-based interface for viewing and managing MySQL or
-    # MariaDB databases.
-    #
-    # "pma" is only the Docker Compose service name. It could be renamed to
-    # "phpmyadmin" for clarity, but changing it is not required.
+    # Browser-based MySQL administration at http://localhost:8090.
     pma:
-
-        # Download and run the phpMyAdmin image.
-        #
-        # Because no version tag is specified, Docker uses the "latest" tag.
-        #
-        # For more predictable builds, consider selecting a specific version.
         image: phpmyadmin
 
         ports:
-
-            # Map port 8090 on the host computer to port 80 inside the phpMyAdmin
-            # container.
-            #
-            # phpMyAdmin can therefore be opened at:
-            #
-            #   http://localhost:8090
             - "8090:80"
 
+        # Allow the database server to be entered on the login page.
+        # Use mysql as the server name when connecting to this Compose stack.
         environment:
-
-            # PMA_ARBITRARY=1 allows the phpMyAdmin login page to accept a database
-            # server address entered by the user.
-            #
-            # To connect to the MySQL container, enter:
-            #
-            #   Server:   mysql
-            #   Username: root
-            #   Password: root
-            #
-            # "mysql" works as the server name because Docker Compose places these
-            # services on the same private network.
             - PMA_ARBITRARY=1
 
-# ------------------------------------------------------------------------------
-# Named volumes
-# ------------------------------------------------------------------------------
-#
-# Named volumes are storage areas managed by Docker.
-#
-# They are separate from individual containers and can keep data after a
-# container is stopped, removed or recreated.
+# Persistent storage used by MySQL.
 volumes:
-
-    # Declare the named volume used by the MySQL service.
-    #
-    # An empty value means Docker should use its default volume settings.
-    #
-    # "db-data:" would also be valid and is more commonly written than
-    # "db-data: null".
-    db-data: null
+    db-data:

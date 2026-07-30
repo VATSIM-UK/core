@@ -42,6 +42,8 @@
         "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/root/.ssh,type=bind,consistency=cached"
     ],
 
+    // A command to run when the container is first created.
+    // This can be used to set up the environment, install dependencies, or perform any other necessary setup tasks.
     "initializeCommand": "powershell -ExecutionPolicy Bypass -File ${localWorkspaceFolder}\\.devcontainer\\bin\\copy-env.ps1",
 
     // A set of commands to run after the container is created.

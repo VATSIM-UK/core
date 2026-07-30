@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Run the shared setup info script to display info
 SETUP_INFO="/workspace/.devcontainer/bin/setup-info.sh"
