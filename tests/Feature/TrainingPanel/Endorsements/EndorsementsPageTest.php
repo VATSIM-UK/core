@@ -6,6 +6,7 @@ use App\Filament\Training\Pages\Endorsements;
 use App\Filament\Training\Pages\Endorsements\Tables\ResourceTable;
 use App\Filament\Training\Resources\EndorsementRequests\EndorsementRequestResource;
 use App\Filament\Training\Resources\EndorsementRequests\Pages\CreateEndorsementRequest;
+use App\Filament\Training\Resources\EndorsementRequests\Pages\ListEndorsementRequests;
 use App\Filament\Training\Resources\PositionGroups\Pages\ViewPositionGroup;
 use App\Filament\Training\Resources\PositionGroups\PositionGroupResource;
 use App\Filament\Training\Resources\SoloEndorsements\SoloEndorsementResource;
@@ -46,6 +47,15 @@ class EndorsementsPageTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($user);
         Livewire::test(Endorsements::class)
+            ->assertForbidden();
+    }
+
+    public function test_old_endorsement_requests_list_url_is_inaccessible(): void
+    {
+        $user = $this->createUser(['endorsement-request.access', 'endorsement-request.create.*']);
+
+        Livewire::actingAs($user);
+        Livewire::test(ListEndorsementRequests::class)
             ->assertForbidden();
     }
 

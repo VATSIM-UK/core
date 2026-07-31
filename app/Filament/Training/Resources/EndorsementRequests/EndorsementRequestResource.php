@@ -83,7 +83,7 @@ class EndorsementRequestResource extends Resource
     {
         return $table
             ->headerActions([
-                CreateAction::make()->url(fn () => static::getUrl('create'))->visible(auth()->user()->can('endorsement.create.permanent') || auth()->user()->can('endorsement.create.temporary')),
+                CreateAction::make()->url(fn () => static::getUrl('create'))->visible(fn () => auth()->user()->can('create', EndorsementRequest::class)),
             ])
             ->columns([
                 TextColumn::make('account_id')->label('CID'),
