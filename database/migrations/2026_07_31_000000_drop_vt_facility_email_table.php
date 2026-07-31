@@ -19,7 +19,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::create('vt_facility_email', function ($table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->unsignedInteger('facility_id');
             $table->string('email');
             $table->timestamps();
