@@ -74,7 +74,7 @@ class CancelPendingExamService
                 'sesh_type' => 'EX',
                 'reason' => $reason,
                 'used' => 0,
-                'reason_by' => $cancelledBy->id,
+                'reason_by' => $cancelledBy->member?->id,
                 'date' => now(),
             ]);
 

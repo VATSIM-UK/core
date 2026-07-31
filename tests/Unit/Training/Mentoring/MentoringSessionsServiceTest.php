@@ -26,9 +26,11 @@ use App\Notifications\Training\Mentoring\MentoringSessionRescheduledMentorNotifi
 use App\Notifications\Training\Mentoring\MentoringSessionRescheduledStudentNotification;
 use App\Services\Training\MentoringSessionsService;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -71,14 +73,14 @@ class MentoringSessionsServiceTest extends TestCase
     #[Test]
     public function accept_session_throws_exception_when_availability_does_not_exist(): void
     {
-        Session::factory()->create([
+        $session = Session::factory()->create([
             'student_id' => $this->studentMember->id,
             'mentor_id' => null,
         ]);
 
         $this->expectException(ModelNotFoundException::class);
 
-        $this->service->acceptSession(999999, $this->mentorAccount, '10:00', '12:00');
+        $this->service->acceptSession($session->id, 999999, $this->mentorAccount, '10:00', '12:00');
     }
 
     #[Test]
@@ -90,6 +92,7 @@ class MentoringSessionsServiceTest extends TestCase
         ]);
 
         $this->assertFalse($this->service->acceptSession(
+            999999,
             $availability->id,
             $this->mentorAccount,
             '10:00',
@@ -100,7 +103,7 @@ class MentoringSessionsServiceTest extends TestCase
     #[Test]
     public function accept_session_returns_false_when_pending_session_is_filed(): void
     {
-        Session::factory()->create([
+        $session = Session::factory()->create([
             'student_id' => $this->studentMember->id,
             'mentor_id' => null,
             'filed' => now(),
@@ -112,6 +115,7 @@ class MentoringSessionsServiceTest extends TestCase
         ]);
 
         $this->assertFalse($this->service->acceptSession(
+            $session->id,
             $availability->id,
             $this->mentorAccount,
             '10:00',
@@ -122,7 +126,7 @@ class MentoringSessionsServiceTest extends TestCase
     #[Test]
     public function accept_session_returns_false_when_pending_session_is_cancelled(): void
     {
-        Session::factory()->create([
+        $session = Session::factory()->create([
             'student_id' => $this->studentMember->id,
             'mentor_id' => null,
             'cancelled_datetime' => now(),
@@ -134,11 +138,42 @@ class MentoringSessionsServiceTest extends TestCase
         ]);
 
         $this->assertFalse($this->service->acceptSession(
+            $session->id,
             $availability->id,
             $this->mentorAccount,
             '10:00',
             '12:00',
         ));
+    }
+
+    #[Test]
+    public function accept_session_returns_false_when_session_id_does_not_belong_to_the_availabilitys_student(): void
+    {
+        $otherStudentAccount = Account::factory()->create();
+        $otherStudentMember = Member::factory()->create([
+            'id' => $otherStudentAccount->generateCTSInternalID($otherStudentAccount->id),
+            'cid' => $otherStudentAccount->id,
+        ]);
+
+        $mismatchedSession = Session::factory()->create([
+            'student_id' => $otherStudentMember->id,
+            'mentor_id' => null,
+        ]);
+
+        $availability = Availability::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'date' => Carbon::tomorrow(),
+        ]);
+
+        $this->assertFalse($this->service->acceptSession(
+            $mismatchedSession->id,
+            $availability->id,
+            $this->mentorAccount,
+            '10:00',
+            '12:00',
+        ));
+
+        $this->assertNull($mismatchedSession->fresh()->mentor_id);
     }
 
     #[Test]
@@ -163,6 +198,7 @@ class MentoringSessionsServiceTest extends TestCase
         ]);
 
         $this->assertTrue($this->service->acceptSession(
+            $pendingSession->id,
             $availability->id,
             $this->mentorAccount,
             '10:00',
@@ -188,7 +224,7 @@ class MentoringSessionsServiceTest extends TestCase
     }
 
     #[Test]
-    public function accept_session_assigns_first_pending_session_when_multiple_exist(): void
+    public function accept_session_only_assigns_the_specified_session_when_multiple_pending_sessions_exist(): void
     {
         Notification::fake();
 
@@ -212,6 +248,7 @@ class MentoringSessionsServiceTest extends TestCase
         ]);
 
         $this->assertTrue($this->service->acceptSession(
+            $secondPending->id,
             $availability->id,
             $this->mentorAccount,
             '10:00',
@@ -221,11 +258,139 @@ class MentoringSessionsServiceTest extends TestCase
         $firstPending->refresh();
         $secondPending->refresh();
 
-        $assignedCount = collect([$firstPending, $secondPending])
-            ->filter(fn (Session $session) => $session->mentor_id !== null)
-            ->count();
+        $this->assertNull($firstPending->mentor_id);
+        $this->assertSame($this->mentorMember->id, $secondPending->mentor_id);
+    }
 
-        $this->assertSame(1, $assignedCount);
+    #[Test]
+    public function accept_session_leaves_unspecified_pending_session_bookable_by_a_second_call(): void
+    {
+        Notification::fake();
+
+        $firstPending = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => null,
+        ]);
+
+        $secondPending = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGKK_APP',
+            'mentor_id' => null,
+        ]);
+
+        $availability = Availability::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'date' => Carbon::tomorrow(),
+            'from' => '09:00:00',
+            'to' => '13:00:00',
+        ]);
+
+        $this->assertTrue($this->service->acceptSession(
+            $secondPending->id,
+            $availability->id,
+            $this->mentorAccount,
+            '10:00',
+            '11:00',
+        ));
+
+        $this->assertTrue($this->service->acceptSession(
+            $firstPending->id,
+            $availability->id,
+            $this->mentorAccount,
+            '11:00',
+            '12:00',
+        ));
+
+        $this->assertSame($this->mentorMember->id, $firstPending->fresh()->mentor_id);
+        $this->assertSame($this->mentorMember->id, $secondPending->fresh()->mentor_id);
+    }
+
+    #[Test]
+    public function accept_session_throws_exception_when_mentor_is_not_authorized_for_the_position(): void
+    {
+        $unauthorizedMentorAccount = Account::factory()->create();
+        Member::factory()->create([
+            'id' => $unauthorizedMentorAccount->generateCTSInternalID($unauthorizedMentorAccount->id),
+            'cid' => $unauthorizedMentorAccount->id,
+        ]);
+
+        $pendingSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => null,
+        ]);
+
+        $availability = Availability::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'date' => Carbon::tomorrow(),
+            'from' => '09:00:00',
+            'to' => '13:00:00',
+        ]);
+
+        $this->expectException(AuthorizationException::class);
+
+        $this->service->acceptSession(
+            $pendingSession->id,
+            $availability->id,
+            $unauthorizedMentorAccount,
+            '10:00',
+            '12:00',
+        );
+    }
+
+    #[Test]
+    public function accept_session_throws_exception_when_requested_times_fall_outside_availability_window(): void
+    {
+        $pendingSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => null,
+        ]);
+
+        $availability = Availability::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'date' => Carbon::tomorrow(),
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->service->acceptSession(
+            $pendingSession->id,
+            $availability->id,
+            $this->mentorAccount,
+            '09:00',
+            '13:00',
+        );
+    }
+
+    #[Test]
+    public function accept_session_throws_exception_when_end_time_is_not_after_start_time(): void
+    {
+        $pendingSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => null,
+        ]);
+
+        $availability = Availability::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'date' => Carbon::tomorrow(),
+            'from' => '09:00:00',
+            'to' => '13:00:00',
+        ]);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->service->acceptSession(
+            $pendingSession->id,
+            $availability->id,
+            $this->mentorAccount,
+            '12:00',
+            '10:00',
+        );
     }
 
     #[Test]
@@ -233,7 +398,7 @@ class MentoringSessionsServiceTest extends TestCase
     {
         Notification::fake();
 
-        Session::factory()->create([
+        $pendingSession = Session::factory()->create([
             'student_id' => $this->studentMember->id,
             'position' => 'EGLL_APP',
             'mentor_id' => null,
@@ -247,6 +412,7 @@ class MentoringSessionsServiceTest extends TestCase
         ]);
 
         $this->assertTrue($this->service->acceptSession(
+            $pendingSession->id,
             $availability->id,
             $this->mentorAccount,
             '10:00',

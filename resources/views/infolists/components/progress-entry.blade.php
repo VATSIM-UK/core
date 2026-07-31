@@ -16,10 +16,8 @@
             'containerClasses' => 'flex flex-col w-full max-w-xs gap-2 font-sans select-none',
             'trackClasses' => 'relative flex w-full h-6 bg-zinc-100 dark:bg-[#141416] rounded-lg overflow-hidden',
 
-            // Header row: "Progress" label + delta indicator
+            // Header row: badge + delta indicator
             'headerWrapperClasses' => 'flex items-end justify-between px-1',
-            'headerLabel' => 'Progress',
-            'headerLabelClasses' => 'text-base font-normal text-gray-400 dark:text-gray-200',
             'deltaClasses' => 'text-base font-medium tracking-wide',
             'deltaColorPositive' => 'text-emerald-600 dark:text-emerald-500',
             'deltaColorNegative' => 'text-red-500 dark:text-red-400',
@@ -160,7 +158,10 @@
 
     <div class="{{ $config['containerClasses'] }}">
         <div class="{{ $config['headerWrapperClasses'] }}">
-            <span class="{{ $config['headerLabelClasses'] }}">{{ $config['headerLabel'] }}</span>
+            <x-filament::badge :color="$current->getColor()">
+                {{ $current->getLabel() }}
+            </x-filament::badge>
+
             @if ($hasPrevious && $deltaText !== '0')
                 <span class="{{ $config['deltaClasses'] }} {{ $deltaColor }}">{{ $deltaText }}</span>
             @endif

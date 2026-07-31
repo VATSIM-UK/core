@@ -8,6 +8,7 @@ use App\Models\Cts\Membership;
 use App\Models\Cts\Position;
 use App\Models\Cts\PositionValidation;
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\Removal;
@@ -28,7 +29,7 @@ class TrainingPlaceService
             return;
         }
 
-        $ctsPositions = $trainingPlace->trainingPosition->cts_positions;
+        $ctsPositions = $trainingPlace->trainableCtsPositions();
 
         foreach ($ctsPositions as $ctsPosition) {
             $ctsPositionModel = Position::where('callsign', $ctsPosition)->first();
@@ -70,7 +71,7 @@ class TrainingPlaceService
             return;
         }
 
-        $ctsPositions = $trainingPlace->trainingPosition->cts_positions;
+        $ctsPositions = $trainingPlace->trainableCtsPositions();
 
         foreach ($ctsPositions as $ctsPosition) {
             $ctsPositionModel = Position::where('callsign', $ctsPosition)->first();
@@ -90,7 +91,7 @@ class TrainingPlaceService
 
     public function removeCtsMembershipsForTrainingPlace(TrainingPlace $trainingPlace): void
     {
-        $trainingPlace->loadMissing(['trainingPosition', 'account']);
+        $trainingPlace->loadMissing(['trainable', 'account']);
 
         $student = $trainingPlace->account;
 
@@ -100,13 +101,12 @@ class TrainingPlaceService
             return;
         }
 
-        $trainingPosition = $trainingPlace->trainingPosition;
+        $ctsPositions = $trainingPlace->trainableCtsPositions();
 
-        if (! $trainingPosition) {
+        if ($ctsPositions === []) {
             return;
         }
 
-        $ctsPositions = $trainingPosition->cts_positions ?? [];
         $rtsIds = [];
 
         foreach ($ctsPositions as $ctsPositionCallsign) {
@@ -136,12 +136,13 @@ class TrainingPlaceService
             ->delete();
     }
 
-    public function createManualTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition): TrainingPlace
+    public function createManualTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition|Qualification $trainable): TrainingPlace
     {
         $trainingPlace = TrainingPlace::create([
             'waiting_list_account_id' => $waitingListAccount->id,
             'account_id' => $waitingListAccount->account_id,
-            'training_position_id' => $trainingPosition->id,
+            'trainable_type' => $trainable->getMorphClass(),
+            'trainable_id' => $trainable->getKey(),
         ]);
 
         $this->removeFromWaitingList($trainingPlace);
@@ -151,24 +152,24 @@ class TrainingPlaceService
 
     public function createAdhocTrainingPlace(
         Account $account,
-        TrainingPosition $trainingPosition,
+        TrainingPosition|Qualification $trainable,
         string $reason,
         Account $actor,
     ): TrainingPlace {
-        $trainingPosition->loadMissing('position');
+        if ($trainable instanceof TrainingPosition) {
+            $trainable->loadMissing('position');
+        }
 
         $trainingPlace = TrainingPlace::create([
             'account_id' => $account->id,
-            'training_position_id' => $trainingPosition->id,
+            'trainable_type' => $trainable->getMorphClass(),
+            'trainable_id' => $trainable->getKey(),
             'waiting_list_account_id' => null,
         ]);
 
-        $callsign = $trainingPosition->position?->callsign
-            ?? collect($trainingPosition->cts_positions)->filter()->first();
-
         $account->addNote(
             'training',
-            "Ad-hoc training place created on {$callsign} outside the usual waiting list flow. Reason: {$reason}",
+            "Ad-hoc training place created on {$trainingPlace->display_name} outside the usual waiting list flow. Reason: {$reason}",
             $actor->id,
         );
 
@@ -196,6 +197,7 @@ class TrainingPlaceService
             return false;
         }
 
+        $trainingPlace->unsetRelation('trainable');
         $trainingPosition = $trainingPlace->trainingPosition;
 
         if (! $trainingPosition) {
@@ -203,6 +205,8 @@ class TrainingPlaceService
 
             return false;
         }
+
+        $trainingPosition->loadMissing('position');
 
         $examPosition = $trainingPosition->exam_callsign
             ?? $trainingPosition->position?->callsign

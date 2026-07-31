@@ -36,7 +36,7 @@ class TrainingPlaceOffered extends Notification
     {
         $offer = $this->trainingPlaceOffer;
         $account = $offer->waitingListAccount->account;
-        $position = $offer->trainingPosition->position;
+        $position = $offer->trainingPosition?->position;
 
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')

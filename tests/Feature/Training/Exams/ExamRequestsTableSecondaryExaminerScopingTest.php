@@ -90,11 +90,7 @@ class ExamRequestsTableSecondaryExaminerScopingTest extends TestCase
     private function createExaminerWithSettings(array $settings): Member
     {
         $examinerAccount = Account::factory()->create();
-        $examinerMember = Member::factory()->create([
-            'id' => $examinerAccount->id,
-            'cid' => $examinerAccount->id,
-            'examiner' => true,
-        ]);
+        $examinerMember = Member::factory()->forAccount($examinerAccount)->create(['examiner' => true]);
 
         ExaminerSettings::create(array_merge([
             'memberID' => $examinerMember->id,

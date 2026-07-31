@@ -33,14 +33,8 @@ class ExamAcceptedEventIntegrationTest extends TestCase
         $examinerAccount = Account::factory()->create(['email' => 'examiner@test.com']);
         $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
 
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
-        $examiner = Member::factory()->create([
-            'id' => $examinerAccount->id,
-            'cid' => $examinerAccount->id,
-        ]);
+        $student = Member::factory()->forAccount($studentAccount)->create();
+        $examiner = Member::factory()->forAccount($examinerAccount)->create();
 
         $examDate = Carbon::tomorrow();
         $examBooking = ExamBooking::factory()->create([
@@ -106,18 +100,9 @@ class ExamAcceptedEventIntegrationTest extends TestCase
         $secondaryExaminerAccount = Account::factory()->create(['email' => 'secondary@test.com']);
         $position = Position::factory()->create(['callsign' => 'EGLL_APP']);
 
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
-        $primaryExaminer = Member::factory()->create([
-            'id' => $primaryExaminerAccount->id,
-            'cid' => $primaryExaminerAccount->id,
-        ]);
-        $secondaryExaminer = Member::factory()->create([
-            'id' => $secondaryExaminerAccount->id,
-            'cid' => $secondaryExaminerAccount->id,
-        ]);
+        $student = Member::factory()->forAccount($studentAccount)->create();
+        $primaryExaminer = Member::factory()->forAccount($primaryExaminerAccount)->create();
+        $secondaryExaminer = Member::factory()->forAccount($secondaryExaminerAccount)->create();
 
         $examDate = Carbon::tomorrow();
         $examBooking = ExamBooking::factory()->create([
@@ -160,10 +145,7 @@ class ExamAcceptedEventIntegrationTest extends TestCase
         Event::fake([ExamAccepted::class]);
 
         $studentAccount = Account::factory()->create();
-        $student = Member::factory()->create([
-            'id' => $studentAccount->id,
-            'cid' => $studentAccount->id,
-        ]);
+        $student = Member::factory()->forAccount($studentAccount)->create();
 
         $examBooking = ExamBooking::factory()->create([
             'student_id' => $student->id,
