@@ -24,7 +24,10 @@ class TrainingPlaceService
         $student = $trainingPlace->account;
 
         if (! $student->member) {
-            Log::error('Student does not have a CTS member model attached');
+            Log::error('Student does not have a CTS member model attached', [
+                'account_id' => $student->id,
+                'training_place_id' => $trainingPlace->id,
+            ]);
 
             return;
         }
@@ -35,7 +38,11 @@ class TrainingPlaceService
             $ctsPositionModel = Position::where('callsign', $ctsPosition)->first();
 
             if (! $ctsPositionModel) {
-                Log::error("CTS position with callsign {$ctsPosition} not found");
+                Log::error('CTS position not found', [
+                    'callsign' => $ctsPosition,
+                    'account_id' => $student->id,
+                    'training_place_id' => $trainingPlace->id,
+                ]);
 
                 continue;
             }
@@ -58,6 +65,14 @@ class TrainingPlaceService
                 'changed_by' => $student->id,
                 'date_changed' => now(),
             ]);
+
+            Log::channel('audit')->info('CTS position validation granted', [
+                'account_id' => $student->id,
+                'member_id' => $student->member->id,
+                'position_id' => $ctsPositionModel->id,
+                'callsign' => $ctsPosition,
+                'training_place_id' => $trainingPlace->id,
+            ]);
         }
     }
 
@@ -66,7 +81,10 @@ class TrainingPlaceService
         $student = $trainingPlace->account;
 
         if (! $student->member) {
-            Log::error('Student does not have a CTS member model attached');
+            Log::error('Student does not have a CTS member model attached', [
+                'account_id' => $student->id,
+                'training_place_id' => $trainingPlace->id,
+            ]);
 
             return;
         }
@@ -77,7 +95,11 @@ class TrainingPlaceService
             $ctsPositionModel = Position::where('callsign', $ctsPosition)->first();
 
             if (! $ctsPositionModel) {
-                Log::error("CTS position with callsign {$ctsPosition} not found");
+                Log::error('CTS position not found', [
+                    'callsign' => $ctsPosition,
+                    'account_id' => $student->id,
+                    'training_place_id' => $trainingPlace->id,
+                ]);
 
                 continue;
             }
@@ -86,6 +108,14 @@ class TrainingPlaceService
                 ->where('position_id', $ctsPositionModel->id)
                 ->where('status', PositionValidationStatusEnum::Student->value)
                 ->delete();
+
+            Log::channel('audit')->info('CTS position validation revoked', [
+                'account_id' => $student->id,
+                'member_id' => $student->member->id,
+                'position_id' => $ctsPositionModel->id,
+                'callsign' => $ctsPosition,
+                'training_place_id' => $trainingPlace->id,
+            ]);
         }
     }
 
@@ -96,7 +126,10 @@ class TrainingPlaceService
         $student = $trainingPlace->account;
 
         if (! $student->member) {
-            Log::error('Student does not have a CTS member model attached');
+            Log::error('Student does not have a CTS member model attached', [
+                'account_id' => $student->id,
+                'training_place_id' => $trainingPlace->id,
+            ]);
 
             return;
         }
@@ -113,7 +146,11 @@ class TrainingPlaceService
             $ctsPositionModel = Position::where('callsign', $ctsPositionCallsign)->first();
 
             if (! $ctsPositionModel) {
-                Log::error("CTS position with callsign {$ctsPositionCallsign} not found");
+                Log::error('CTS position not found', [
+                    'callsign' => $ctsPositionCallsign,
+                    'account_id' => $student->id,
+                    'training_place_id' => $trainingPlace->id,
+                ]);
 
                 continue;
             }
@@ -129,11 +166,20 @@ class TrainingPlaceService
             return;
         }
 
-        Membership::query()
+        $deleted = Membership::query()
             ->where('member_id', $student->member->id)
             ->whereIn('rts_id', array_keys($rtsIds))
             ->whereIn('type', ['H', 'V'])
             ->delete();
+
+        if ($deleted > 0) {
+            Log::channel('audit')->info('CTS membership revoked', [
+                'account_id' => $student->id,
+                'member_id' => $student->member->id,
+                'rts_ids' => array_keys($rtsIds),
+                'training_place_id' => $trainingPlace->id,
+            ]);
+        }
     }
 
     public function createManualTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition|Qualification $trainable): TrainingPlace
@@ -141,6 +187,14 @@ class TrainingPlaceService
         $trainingPlace = TrainingPlace::create([
             'waiting_list_account_id' => $waitingListAccount->id,
             'account_id' => $waitingListAccount->account_id,
+            'trainable_type' => $trainable->getMorphClass(),
+            'trainable_id' => $trainable->getKey(),
+        ]);
+
+        Log::channel('audit')->info('Manual training place created', [
+            'account_id' => $waitingListAccount->account_id,
+            'training_place_id' => $trainingPlace->id,
+            'waiting_list_account_id' => $waitingListAccount->id,
             'trainable_type' => $trainable->getMorphClass(),
             'trainable_id' => $trainable->getKey(),
         ]);
@@ -165,6 +219,15 @@ class TrainingPlaceService
             'trainable_type' => $trainable->getMorphClass(),
             'trainable_id' => $trainable->getKey(),
             'waiting_list_account_id' => null,
+        ]);
+
+        Log::channel('audit')->info('Adhoc training place created', [
+            'account_id' => $account->id,
+            'training_place_id' => $trainingPlace->id,
+            'trainable_type' => $trainable->getMorphClass(),
+            'trainable_id' => $trainable->getKey(),
+            'actor_id' => $actor->id,
+            'reason' => preg_replace('/[\x00-\x1F\x7F]/', '', $reason),
         ]);
 
         $account->addNote(
@@ -192,7 +255,10 @@ class TrainingPlaceService
         $student = $trainingPlace->account;
 
         if (! $student->member) {
-            Log::error('Student does not have a CTS member model attached');
+            Log::error('Student does not have a CTS member model attached', [
+                'account_id' => $student->id,
+                'training_place_id' => $trainingPlace->id,
+            ]);
 
             return false;
         }
@@ -201,7 +267,10 @@ class TrainingPlaceService
         $trainingPosition = $trainingPlace->trainingPosition;
 
         if (! $trainingPosition) {
-            Log::error('Training position not found');
+            Log::error('Training position not found', [
+                'account_id' => $student->id,
+                'training_place_id' => $trainingPlace->id,
+            ]);
 
             return false;
         }
@@ -213,7 +282,11 @@ class TrainingPlaceService
             ?? null;
 
         if (! $examPosition) {
-            Log::error('Exam position not found');
+            Log::error('Exam position not found', [
+                'account_id' => $student->id,
+                'training_place_id' => $trainingPlace->id,
+                'training_position_id' => $trainingPosition->id,
+            ]);
 
             return false;
         }

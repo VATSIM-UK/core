@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Accounts\RelationManagers;
 
+use App\Filament\Admin\Helpers\Pages\LogRelationAccess;
 use App\Models\Training\WaitingList\WaitingListRetentionCheck;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
@@ -11,11 +12,18 @@ use Filament\Tables\Table;
 
 class RetentionChecksRelationManager extends RelationManager
 {
+    use LogRelationAccess;
+
     protected static string $relationship = 'retentionChecks';
 
     protected static ?string $recordTitleAttribute = 'id';
 
     protected static ?string $title = 'Retention Checks';
+
+    protected function getLogActionName(): string
+    {
+        return 'ViewRetentionChecks';
+    }
 
     public function isReadOnly(): bool
     {

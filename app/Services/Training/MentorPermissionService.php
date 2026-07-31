@@ -219,10 +219,22 @@ class MentorPermissionService
         if ($hasMentorPermissionsForRole) {
             if (! $account->hasRole($roleName)) {
                 $account->assignRole($roleName);
+
+                Log::info('Mentor role assigned', [
+                    'account_id' => $account->id,
+                    'role' => $roleName,
+                    'category' => $category,
+                ]);
             }
         } else {
             if ($account->hasRole($roleName)) {
                 $account->removeRole($roleName);
+
+                Log::info('Mentor role removed', [
+                    'account_id' => $account->id,
+                    'role' => $roleName,
+                    'category' => $category,
+                ]);
             }
         }
     }
@@ -230,7 +242,9 @@ class MentorPermissionService
     private function resolveMember(Account $account): ?Member
     {
         if (! $account->member) {
-            Log::error("MentorPermissionService: account {$account->id} has no CTS member model");
+            Log::error('MentorPermissionService: account has no CTS member model', [
+                'account_id' => $account->id,
+            ]);
 
             return null;
         }
@@ -256,6 +270,10 @@ class MentorPermissionService
     private function syncCtsAssign(Account $account, $mentorable, Account $actor): void
     {
         if (($member = $this->resolveMember($account)) === null) {
+            Log::info('Mentor permission sync skipped: member not resolved', [
+                'account_id' => $account->id,
+            ]);
+
             return;
         }
 
@@ -268,7 +286,10 @@ class MentorPermissionService
             $ctsPosition = Position::where('callsign', $callsign)->first();
 
             if (! $ctsPosition) {
-                Log::error("MentorPermissionService: CTS position {$callsign} not found");
+                Log::error('MentorPermissionService: CTS position not found', [
+                    'callsign' => $callsign,
+                    'account_id' => $account->id,
+                ]);
 
                 continue;
             }
@@ -289,12 +310,24 @@ class MentorPermissionService
                 'changed_by' => $changedBy,
                 'date_changed' => now(),
             ]);
+
+            Log::info('Mentor CTS position validation granted', [
+                'account_id' => $account->id,
+                'member_id' => $member->id,
+                'position_id' => $ctsPosition->id,
+                'callsign' => $callsign,
+                'changed_by' => $changedBy,
+            ]);
         }
     }
 
     private function syncCtsRevoke(Account $account, $mentorable): void
     {
         if (($member = $this->resolveMember($account)) === null) {
+            Log::info('Mentor permission sync skipped: member not resolved', [
+                'account_id' => $account->id,
+            ]);
+
             return;
         }
 
@@ -304,15 +337,27 @@ class MentorPermissionService
             $ctsPosition = Position::where('callsign', $callsign)->first();
 
             if (! $ctsPosition) {
-                Log::error("MentorPermissionService: CTS position {$callsign} not found");
+                Log::error('MentorPermissionService: CTS position not found', [
+                    'callsign' => $callsign,
+                    'account_id' => $account->id,
+                ]);
 
                 continue;
             }
 
-            PositionValidation::where('member_id', $member->id)
+            $deleted = PositionValidation::where('member_id', $member->id)
                 ->where('position_id', $ctsPosition->id)
                 ->where('status', PositionValidationStatusEnum::Mentor->value)
                 ->delete();
+
+            if ($deleted > 0) {
+                Log::info('Mentor CTS position validation revoked', [
+                    'account_id' => $account->id,
+                    'member_id' => $member->id,
+                    'position_id' => $ctsPosition->id,
+                    'callsign' => $callsign,
+                ]);
+            }
         }
     }
 

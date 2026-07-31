@@ -15,11 +15,11 @@ class ProcessVatsimNetWebhook extends BaseController
         $this->validateAuth($request);
         $webhook = $request->all();
 
-        \Log::info('Raw webhook data', [
+        Log::info('Raw webhook data', [
             'webhook' => $webhook,
         ]);
 
-        \Log::debug('VATSIM.net webhook received', [
+        Log::debug('VATSIM.net webhook received', [
             'resource' => $webhook['resource'],
             'actions.length' => count($webhook['actions']),
         ]);
@@ -41,7 +41,7 @@ class ProcessVatsimNetWebhook extends BaseController
                     $jobs[] = new MemberChangedAction($webhook['resource'], $action);
                     break;
                 default:
-                    Log::error("Unknown action from VATSIM.net webook: {$action['action']}");
+                    Log::error('Unknown action from VATSIM.net webhook', ['action' => $action['action']]);
                     abort(400);
             }
         }

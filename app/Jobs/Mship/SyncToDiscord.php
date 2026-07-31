@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Mship;
 
+use App\Jobs\Concerns\LogsJobFailure;
 use App\Jobs\Job;
 use App\Models\Mship\Account;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -10,10 +11,11 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\RateLimitedWithRedis;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class SyncToDiscord extends Job implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, SerializesModels;
+    use Dispatchable, InteractsWithQueue, LogsJobFailure, SerializesModels;
 
     private Account $account;
 
@@ -31,6 +33,13 @@ class SyncToDiscord extends Job implements ShouldQueue
     public function handle()
     {
         $this->account->syncToDiscord();
+
+        Log::info('Member sync completed', ['service' => 'discord', 'account_id' => $this->account->id]);
+    }
+
+    protected function logJobContext(): array
+    {
+        return ['account_id' => $this->getAccountId()];
     }
 
     public function getAccountId(): int

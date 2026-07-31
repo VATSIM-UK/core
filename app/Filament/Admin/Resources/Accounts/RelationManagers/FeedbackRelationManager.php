@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Accounts\RelationManagers;
 
+use App\Filament\Admin\Helpers\Pages\LogRelationAccess;
 use App\Filament\Admin\Resources\Feedback\FeedbackResource;
 use Filament\Actions\ViewAction;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -11,7 +12,14 @@ use Filament\Tables\Table;
 
 class FeedbackRelationManager extends RelationManager
 {
+    use LogRelationAccess;
+
     protected static string $relationship = 'feedback';
+
+    protected function getLogActionName(): string
+    {
+        return 'ViewFeedback';
+    }
 
     public function table(Table $table): Table
     {

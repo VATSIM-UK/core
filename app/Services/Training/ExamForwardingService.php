@@ -57,6 +57,12 @@ class ExamForwardingService
             'bookid' => $examBooking->id,
         ]);
 
+        audit('Exam forwarded to CTS', [
+            'account_id' => $ctsMember->account->id,
+            'exam_setup_id' => $setup->id,
+            'exam_booking_id' => $examBooking->id,
+        ]);
+
         return [
             'setup' => $setup,
             'examBooking' => $examBooking,
@@ -100,6 +106,12 @@ class ExamForwardingService
             'bookid' => $examBooking->id,
         ]);
 
+        audit('Exam forwarded to CTS', [
+            'account_id' => $ctsMember->account->id,
+            'exam_setup_id' => $setup->id,
+            'exam_booking_id' => $examBooking->id,
+        ]);
+
         return [
             'setup' => $setup,
             'examBooking' => $examBooking,
@@ -141,6 +153,12 @@ class ExamForwardingService
         ]);
 
         $setup->update(['bookid' => $examBooking->id]);
+
+        audit('Exam forwarded to CTS', [
+            'account_id' => $ctsMember->account->id,
+            'exam_setup_id' => $setup->id,
+            'exam_booking_id' => $examBooking->id,
+        ]);
 
         return [
             'setup' => $setup,
