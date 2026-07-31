@@ -3,11 +3,12 @@
 namespace Tests\Unit\Support;
 
 use Illuminate\Support\Facades\Log;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class AuditHelperTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_writes_to_the_audit_channel_with_actor_context()
     {
         $actor = $this->user; // member-role account helper from TestCase

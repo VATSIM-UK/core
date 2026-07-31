@@ -4,12 +4,13 @@ namespace Tests\Unit\Jobs;
 
 use App\Jobs\Concerns\LogsJobFailure;
 use Illuminate\Support\Facades\Log;
+use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
 use Tests\TestCase;
 
 class LogsJobLifecycleTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function failed_logs_an_error_with_job_context()
     {
         $job = new class

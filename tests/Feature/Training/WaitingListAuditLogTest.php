@@ -6,6 +6,7 @@ use App\Events\Training\AccountAddedToWaitingList;
 use App\Listeners\Training\WaitingList\LogAccountAdded;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingList\WaitingListAccount;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Log;
 use PHPUnit\Framework\Attributes\Test;
@@ -25,6 +26,10 @@ class WaitingListAuditLogTest extends TestCase
         $account = Account::factory()->create();
         $staffAccount = Account::factory()->create();
 
+        $waitingListAccount = new WaitingListAccount(['added_by' => $staffAccount->id]);
+        $waitingListAccount->account_id = $account->id;
+        $waitingList->waitingListAccounts()->save($waitingListAccount);
+
         Log::shouldReceive('channel')->with('audit')->andReturnSelf();
         Log::shouldReceive('info')->once()->withArgs(fn ($msg, $ctx) => $msg === 'Account added to waiting list'
             && isset($ctx['account_id'], $ctx['waiting_list_id'])
@@ -33,7 +38,7 @@ class WaitingListAuditLogTest extends TestCase
             && $ctx['actor_id'] === $authUser->id
         );
 
-        $event = new AccountAddedToWaitingList($account, $waitingList, $staffAccount, null);
+        $event = new AccountAddedToWaitingList($account, $waitingList, $staffAccount, $waitingListAccount);
 
         (new LogAccountAdded)->handle($event);
     }
