@@ -107,6 +107,8 @@ class ImportDivisionMembers extends Command
 
         if ($response->failed()) {
             Log::error('VATSIM division members fetch failed', ['status' => $response->status()]);
+
+            return false;
         }
 
         return $response;

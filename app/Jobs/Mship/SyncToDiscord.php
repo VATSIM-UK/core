@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Mship;
 
-use App\Jobs\Concerns\LogsJobLifecycle;
+use App\Jobs\Concerns\LogsJobFailure;
 use App\Jobs\Job;
 use App\Models\Mship\Account;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 
 class SyncToDiscord extends Job implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, LogsJobLifecycle, SerializesModels;
+    use Dispatchable, InteractsWithQueue, LogsJobFailure, SerializesModels;
 
     private Account $account;
 

@@ -29,7 +29,7 @@ class AdminPanelFilamentAccessMiddleware
         }
 
         if (! $account->can('admin.access')) {
-            Log::warning('Access denied: admin panel access', ['account_id' => optional(auth()->user())->id, 'path' => $request->path(), 'ip' => $request->ip()]);
+            Log::warning('Access denied: admin panel access', ['account_id' => $account->id, 'path' => $request->path(), 'ip' => $request->ip()]);
 
             return abort(404);
         }

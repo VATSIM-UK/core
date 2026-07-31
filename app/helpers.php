@@ -226,10 +226,8 @@ if (! function_exists('audit')) {
     function audit(string $message, array $context = []): void
     {
         if ($user = auth()->user()) {
-            $context += [
-                'actor_id' => $user->getAuthIdentifier(),
-                'actor_name' => (string) $user->name,
-            ];
+            $context['actor_id'] = $user->getAuthIdentifier();
+            $context['actor_name'] = (string) $user->name;
         }
 
         Illuminate\Support\Facades\Log::channel('audit')->info($message, $context);

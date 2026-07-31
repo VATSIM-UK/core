@@ -6,7 +6,6 @@ use App\Events\Training\AccountAddedToWaitingList;
 use App\Listeners\Training\WaitingList\LogAccountAdded;
 use App\Models\Mship\Account;
 use App\Models\Training\WaitingList;
-use App\Models\Training\WaitingList\WaitingListAccount;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Log;
 use PHPUnit\Framework\Attributes\Test;
@@ -19,27 +18,22 @@ class WaitingListAuditLogTest extends TestCase
     #[Test]
     public function adding_an_account_writes_a_single_audit_record()
     {
-        $this->actingAs($this->privacc);
+        $authUser = Account::factory()->create();
+        $this->actingAs($authUser);
 
         $waitingList = WaitingList::factory()->create();
         $account = Account::factory()->create();
-
-        // Build the WaitingListAccount directly (bypassing capacity/endorsement
-        // checks in WaitingList::addToWaitingList()) since this test only needs
-        // to exercise the listener, not the full enrolment flow.
-        $waitingListAccount = new WaitingListAccount(['added_by' => $this->privacc->id]);
-        $waitingListAccount->account_id = $account->id;
-        $waitingList->waitingListAccounts()->save($waitingListAccount);
+        $staffAccount = Account::factory()->create();
 
         Log::shouldReceive('channel')->with('audit')->andReturnSelf();
         Log::shouldReceive('info')->once()->withArgs(fn ($msg, $ctx) => $msg === 'Account added to waiting list'
             && isset($ctx['account_id'], $ctx['waiting_list_id'])
             && $ctx['account_id'] === $account->id
             && $ctx['waiting_list_id'] === $waitingList->id
-            && $ctx['actor_id'] === $this->privacc->id
+            && $ctx['actor_id'] === $authUser->id
         );
 
-        $event = new AccountAddedToWaitingList($account, $waitingList, $this->privacc, $waitingListAccount);
+        $event = new AccountAddedToWaitingList($account, $waitingList, $staffAccount, null);
 
         (new LogAccountAdded)->handle($event);
     }
@@ -55,6 +49,6 @@ class WaitingListAuditLogTest extends TestCase
     #[Test]
     public function status_change_events_are_not_audited_due_to_unregistered_subscriber()
     {
-        $this->assertTrue(true, 'Documented gap: see FIXME in WaitingListEventSubscriber.php');
+        $this->markTestSkipped('Documented gap: see FIXME in WaitingListEventSubscriber.php');
     }
 }

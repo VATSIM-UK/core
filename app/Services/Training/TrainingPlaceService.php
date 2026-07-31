@@ -66,7 +66,7 @@ class TrainingPlaceService
                 'date_changed' => now(),
             ]);
 
-            Log::info('CTS position validation granted', [
+            Log::channel('audit')->info('CTS position validation granted', [
                 'account_id' => $student->id,
                 'member_id' => $student->member->id,
                 'position_id' => $ctsPositionModel->id,
@@ -109,7 +109,7 @@ class TrainingPlaceService
                 ->where('status', PositionValidationStatusEnum::Student->value)
                 ->delete();
 
-            Log::info('CTS position validation revoked', [
+            Log::channel('audit')->info('CTS position validation revoked', [
                 'account_id' => $student->id,
                 'member_id' => $student->member->id,
                 'position_id' => $ctsPositionModel->id,
@@ -166,18 +166,20 @@ class TrainingPlaceService
             return;
         }
 
-        Membership::query()
+        $deleted = Membership::query()
             ->where('member_id', $student->member->id)
             ->whereIn('rts_id', array_keys($rtsIds))
             ->whereIn('type', ['H', 'V'])
             ->delete();
 
-        Log::info('CTS membership revoked', [
-            'account_id' => $student->id,
-            'member_id' => $student->member->id,
-            'rts_ids' => array_keys($rtsIds),
-            'training_place_id' => $trainingPlace->id,
-        ]);
+        if ($deleted > 0) {
+            Log::channel('audit')->info('CTS membership revoked', [
+                'account_id' => $student->id,
+                'member_id' => $student->member->id,
+                'rts_ids' => array_keys($rtsIds),
+                'training_place_id' => $trainingPlace->id,
+            ]);
+        }
     }
 
     public function createManualTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition|Qualification $trainable): TrainingPlace
@@ -189,7 +191,7 @@ class TrainingPlaceService
             'trainable_id' => $trainable->getKey(),
         ]);
 
-        Log::info('Manual training place created', [
+        Log::channel('audit')->info('Manual training place created', [
             'account_id' => $waitingListAccount->account_id,
             'training_place_id' => $trainingPlace->id,
             'waiting_list_account_id' => $waitingListAccount->id,
@@ -219,13 +221,13 @@ class TrainingPlaceService
             'waiting_list_account_id' => null,
         ]);
 
-        Log::info('Adhoc training place created', [
+        Log::channel('audit')->info('Adhoc training place created', [
             'account_id' => $account->id,
             'training_place_id' => $trainingPlace->id,
             'trainable_type' => $trainable->getMorphClass(),
             'trainable_id' => $trainable->getKey(),
             'actor_id' => $actor->id,
-            'reason' => $reason,
+            'reason' => preg_replace('/[\x00-\x1F\x7F]/', '', $reason),
         ]);
 
         $account->addNote(

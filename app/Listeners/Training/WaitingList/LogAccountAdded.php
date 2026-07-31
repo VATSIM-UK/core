@@ -26,6 +26,7 @@ class LogAccountAdded
         audit('Account added to waiting list', [
             'account_id' => $event->account->id,
             'waiting_list_id' => $event->waitingList->id,
+            'staff_id' => $event->staffAccount->id,
         ]);
     }
 }

@@ -169,7 +169,6 @@ class UKCP
 
             return true;
         } catch (ClientException $e) {
-            dd($e);
             Log::error('Failed to mark UKCP notification as read.', [
                 'exception' => $e,
                 'account_id' => $account->id,

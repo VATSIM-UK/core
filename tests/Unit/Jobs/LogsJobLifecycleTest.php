@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Jobs;
 
-use App\Jobs\Concerns\LogsJobLifecycle;
+use App\Jobs\Concerns\LogsJobFailure;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
 use Tests\TestCase;
@@ -14,7 +14,7 @@ class LogsJobLifecycleTest extends TestCase
     {
         $job = new class
         {
-            use LogsJobLifecycle;
+            use LogsJobFailure;
 
             protected function logJobContext(): array
             {

@@ -5,7 +5,7 @@ namespace App\Jobs\Concerns;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-trait LogsJobLifecycle
+trait LogsJobFailure
 {
     /**
      * Extra context merged into lifecycle log entries. Override per job.

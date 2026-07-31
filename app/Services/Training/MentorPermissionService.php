@@ -345,17 +345,19 @@ class MentorPermissionService
                 continue;
             }
 
-            PositionValidation::where('member_id', $member->id)
+            $deleted = PositionValidation::where('member_id', $member->id)
                 ->where('position_id', $ctsPosition->id)
                 ->where('status', PositionValidationStatusEnum::Mentor->value)
                 ->delete();
 
-            Log::info('Mentor CTS position validation revoked', [
-                'account_id' => $account->id,
-                'member_id' => $member->id,
-                'position_id' => $ctsPosition->id,
-                'callsign' => $callsign,
-            ]);
+            if ($deleted > 0) {
+                Log::info('Mentor CTS position validation revoked', [
+                    'account_id' => $account->id,
+                    'member_id' => $member->id,
+                    'position_id' => $ctsPosition->id,
+                    'callsign' => $callsign,
+                ]);
+            }
         }
     }
 

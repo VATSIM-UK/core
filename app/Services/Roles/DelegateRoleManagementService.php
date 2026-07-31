@@ -34,24 +34,29 @@ class DelegateRoleManagementService
 
     public function deleteDelegatePermission(Role $role): void
     {
-        Permission::where('name', $this->delegatePermissionName($role))->delete();
+        $deleted = Permission::where('name', $this->delegatePermissionName($role))->delete();
 
-        audit('Delegate permission changed', [
-            'role_id' => $role->id,
-            'action' => 'revoked',
-        ]);
+        if ($deleted > 0) {
+            audit('Delegate permission changed', [
+                'role_id' => $role->id,
+                'action' => 'revoked',
+            ]);
+        }
     }
 
     public function revokeDelegate(Account $account, Role $role): void
     {
         $permissionName = $this->delegatePermissionName($role);
-        $account->revokePermissionTo($permissionName);
 
-        audit('Delegate permission changed', [
-            'account_id' => $account->id,
-            'role_id' => $role->id,
-            'action' => 'revoked',
-        ]);
+        if ($account->hasPermissionTo($permissionName)) {
+            $account->revokePermissionTo($permissionName);
+
+            audit('Delegate permission changed', [
+                'account_id' => $account->id,
+                'role_id' => $role->id,
+                'action' => 'revoked',
+            ]);
+        }
     }
 
     public function getPotentialDelegates(string $search): array
