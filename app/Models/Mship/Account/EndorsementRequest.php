@@ -13,7 +13,15 @@ class EndorsementRequest extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'account_id',
+        'endorsable_type',
+        'endorsable_id',
+        'requested_by',
+        'actioned_at',
+        'actioned_type',
+        'actioned_by',
+    ];
 
     const STATUS_APPROVED = 'approved';
 

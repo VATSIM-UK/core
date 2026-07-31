@@ -19,8 +19,6 @@ class TrainingPlaceOffer extends Model
     /** @use HasFactory<\Database\Factories\Training\TrainingPlace\TrainingPlaceOfferFactory> */
     use HasFactory;
 
-    protected $guarded = [];
-
     protected $fillable = [
         'waiting_list_account_id',
         'trainable_type',

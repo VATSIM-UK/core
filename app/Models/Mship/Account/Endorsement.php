@@ -21,7 +21,16 @@ class Endorsement extends Model
 
     protected $table = 'mship_account_endorsement';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'account_id',
+        'endorsable_type',
+        'endorsable_id',
+        'position_group_id',
+        'created_by',
+        'created_at',
+        'expires_at',
+        'endorsement_request_id',
+    ];
 
     protected $with = ['endorsable'];
 
