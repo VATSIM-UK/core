@@ -10,8 +10,18 @@ if ! grep -q '^APP_KEY=' .env; then
     php artisan key:generate
 fi
 
+# Clear the application cache, route cache, and compiled views to ensure a clean state.
+php artisan optimize:clear
+
+# Define a query to check if the 'airports' table exists in the 'core' database schema.
+QUERY="DB::table('information_schema.tables')
+        ->where('table_schema', 'core')
+        ->where('table_name',   'airports')
+        ->where('table_type',   'BASE TABLE')
+        ->count();"
+
 # Initialise the database if it has not already been populated.
-if php artisan tinker --execute="exit(DB::table('core.airports')->exists() ? 0 : 1)"; then
+if ! php artisan tinker --execute="\$exists=$QUERY; exit(\$exists ? 1 : 0);"; then
 
     echo "No database tables found. Recreating the database and seeding default data."
 
@@ -25,6 +35,3 @@ if php artisan tinker --execute="exit(DB::table('core.airports')->exists() ? 0 :
 else
     echo "Database tables already exist. Skipping database setup."
 fi
-
-# Build the frontend assets.
-npm run build

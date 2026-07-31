@@ -12,7 +12,7 @@ Before continuing, ensure you have:
 
 - A GitHub account.
 - Git installed.
-- Docker Desktop installed and running.
+- Docker Desktop installed and **running**.
 - Visual Studio Code.
 - The **Dev Containers** extension for Visual Studio Code.
 
@@ -160,6 +160,7 @@ to:
 Open up the file and update these lines to contain the following information
 
 ```
+DB_MYSQL_HOST=mysql
 VATSIM_OAUTH_CLIENT=958
 VATSIM_OAUTH_SECRET=l2JVotx1SsHY0ufTXDW1TVskUKm4UiZCpxFHiFwD
 ```

@@ -12,9 +12,7 @@ This allows you to authenticate with the application without using a live VATSIM
 
 ## Sandbox Accounts
 
-A list of available sandbox accounts can be found at:
-
-- https://vatsim.dev/services/connect/sandbox
+A list of available sandbox accounts can be found at : https://vatsim.dev/services/connect/sandbox
 
 Each account lists its:
 
@@ -28,9 +26,7 @@ Each account lists its:
 
 ## Sign In
 
-Open:
-
-- https://vatsim.dev/services/connect/sandbox
+Open : https://auth-dev.vatsim.net/
 
 Sign in using one of the published sandbox accounts.
 
@@ -38,7 +34,17 @@ Make a note of the **CID** for the account you use, as it will be required in th
 
 ---
 
-# 2. Grant Yourself Administrator Access
+# 2. Sign in to the VATSIM Core Locally
+
+Once you have log-in with that SAME account within your local development container.
+
+Open: http://core.test/dashboard
+
+
+
+---
+
+# 3. Grant Yourself Administrator Access
 
 After signing into the sandbox, create a local administrator account within your development environment.
 
@@ -60,7 +66,7 @@ If successful, Artisan will confirm that **Superman** access has been granted.
 
 ---
 
-# 3. Verify the Account
+# 4. Verify the Account
 
 You can verify that the administrator account has been created by inspecting the development database.
 

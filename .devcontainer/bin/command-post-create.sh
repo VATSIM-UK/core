@@ -12,6 +12,7 @@ set -euo pipefail
 
 # Move our bashrc file to the home directory of the user that is running the container.
 cp /workspace/.devcontainer/bin/bashrc.sh "$HOME/.bashrc"
+sed -i 's/\r$//' /root/.bashrc
 
 # Run the shared GIT setup script to configure the Git identity.
 bash "/workspace/.devcontainer/bin/setup-git.sh"
@@ -22,8 +23,11 @@ bash "/workspace/.devcontainer/bin/setup-ssh.sh"
 # Install the Composer dependencies for the project.
 bash "/workspace/.devcontainer/bin/setup-composer.sh"
 
-# Build and see the database - if not already there.
+# Build and seed the database - if not already there.
 bash "/workspace/.devcontainer/bin/setup-artisan.sh"
+
+# Build Node.js assets.
+bash "/workspace/.devcontainer/bin/setup-nodejs.sh"
 
 # Install the Prek Git hooks for the project.
 bash "/workspace/.devcontainer/bin/setup-prek.sh"
