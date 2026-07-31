@@ -1642,22 +1642,6 @@ CREATE TABLE `vt_facility` (
 
 /*!40000 ALTER TABLE `vt_facility` DISABLE KEYS */;
 /*!40000 ALTER TABLE `vt_facility` ENABLE KEYS */;
-DROP TABLE IF EXISTS `vt_facility_email`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `vt_facility_email` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `facility_id` int unsigned NOT NULL,
-  `email` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `vt_facility_email_facility_id_foreign` (`facility_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-/*!40000 ALTER TABLE `vt_facility_email` DISABLE KEYS */;
-/*!40000 ALTER TABLE `vt_facility_email` ENABLE KEYS */;
 DROP TABLE IF EXISTS `vt_reference`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -1752,7 +1736,6 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (60,'2016_12_21_161
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (61,'2016_12_21_163528_create_api_requests_table',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (62,'2017_01_17_212055_increase_length_of_mship_role_name',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (63,'2017_02_10_232137_add_request_ip_and_used_at_to_sso_tokens',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (64,'2017_02_26_110639_create_vt_facility_email',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (65,'2017_03_11_124105_add_ipv6_support',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (66,'2017_03_31_211222_create_feedback_tables',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (67,'2017_04_06_224417_make_permission_names_larger',1);

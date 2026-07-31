@@ -10,7 +10,6 @@ use App\Models\Mship\Qualification;
 use App\Models\VisitTransfer\Facility;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -247,24 +246,6 @@ class FacilityResource extends Resource
                                 ->label('Enable 50-Hours Check')
                                 ->default(true),
                         ]),
-                    ]),
-
-                Section::make('Notification Emails')
-                    ->description(fn ($record) => "These email addresses will be sent an email once an application to this facility is succesful. If no email addresses are entered, this will default to {$record?->training_team}-team@vatsim.uk")
-                    ->columnSpanFull()
-                    ->schema([
-                        Repeater::make('acceptance_emails')
-                            ->label('Notification Emails')
-                            ->relationship('emails')
-                            ->schema([
-                                TextInput::make('email')
-                                    ->label('Email Address')
-                                    ->email()
-                                    ->required()
-                                    ->maxLength(255),
-                            ])
-                            ->minItems(0)
-                            ->disableLabel(),
                     ]),
             ]);
     }
