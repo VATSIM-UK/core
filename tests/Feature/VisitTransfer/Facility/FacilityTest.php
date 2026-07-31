@@ -88,7 +88,6 @@ class FacilityTest extends BaseAdminTestCase
                 'stage_checks' => true,
                 'auto_acceptance' => false,
                 'description' => 'This is a new facility for testing purposes.',
-                'acceptance_emails' => [],
             ])
             ->call('create')
             ->assertHasNoFormErrors();
@@ -132,7 +131,6 @@ class FacilityTest extends BaseAdminTestCase
                 'stage_checks' => true,
                 'auto_acceptance' => false,
                 'description' => 'This is a new facility for testing purposes.',
-                'acceptance_emails' => [],
             ])
             ->call('save')
             ->assertHasNoFormErrors();
