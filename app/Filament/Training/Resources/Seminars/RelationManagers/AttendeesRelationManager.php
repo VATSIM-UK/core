@@ -100,7 +100,8 @@ class AttendeesRelationManager extends RelationManager
 
         return TrainingPlace::query()
             ->where('account_id', $record->account_id)
-            ->whereIn('training_position_id', $availablePositionIds)
+            ->where('trainable_type', TrainingPosition::class)
+            ->whereIn('trainable_id', $availablePositionIds)
             ->exists();
     }
 }
