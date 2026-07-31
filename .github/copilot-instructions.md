@@ -103,7 +103,7 @@ tests/
 - **`App\Models\Training\TrainingPlace`** — Training place/slot, with `TrainingPlaceOffer`, `TrainingPlaceLeaveOfAbsence`, `AvailabilityCheck`, `AvailabilityWarning`.
 - **`App\Models\Training\TrainingPosition\TrainingPosition`** — Training position definitions.
 - **`App\Models\Training\Mentoring\`** — Mentor training positions, scopes.
-- **`App\Models\VisitTransfer\Application`** — Visit/transfer application, plus `Facility` and `Facility\Email`.
+- **`App\Models\VisitTransfer\Application`** — Visit/transfer application, plus `Facility`.
 - **`App\Models\Roster`**, **`RosterHistory`**, **`RosterUpdate`** — Controller roster membership.
 - **`App\Models\Atc\Position`**, **`PositionGroup`**, **`PositionGroupCondition`**, **`PositionGroupPosition`**, **`Endorseable`** — ATC position definitions and groups.
 - **`App\Models\NetworkData\Atc`**, **`NetworkData\Pilot`** — Live VATSIM network data mirrors.
