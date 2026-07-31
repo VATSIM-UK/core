@@ -31,12 +31,14 @@ class ResourceTable extends Component implements HasActions, HasForms, HasTable
     public function table(Table $table): Table
     {
         abort_unless(in_array($this->resource, self::ALLOWED_RESOURCES, true), 403);
+
         return ($this->resource)::table($table);
     }
 
     protected function getTableQuery(): ?Builder
     {
         abort_unless(in_array($this->resource, self::ALLOWED_RESOURCES, true), 403);
+
         return ($this->resource)::getEloquentQuery();
     }
 
