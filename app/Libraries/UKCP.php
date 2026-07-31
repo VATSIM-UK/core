@@ -74,7 +74,7 @@ class UKCP
                 'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {
-            Log::debug('UKCP account not found for user.', [
+            Log::warning('Failed to fetch UKCP account for user.', [
                 'exception' => $e,
                 'account_id' => $account->id,
             ]);
@@ -148,7 +148,7 @@ class UKCP
 
             return json_decode($result->getBody()->getContents(), true);
         } catch (ClientException $e) {
-            Log::debug('UKCP notifications not found for user.', [
+            Log::warning('Failed to fetch UKCP notifications for user.', [
                 'exception' => $e,
                 'account_id' => $account->id,
             ]);

@@ -32,9 +32,10 @@ class WaitingListAuditLogTest extends TestCase
 
         Log::shouldReceive('channel')->with('audit')->andReturnSelf();
         Log::shouldReceive('info')->once()->withArgs(fn ($msg, $ctx) => $msg === 'Account added to waiting list'
-            && isset($ctx['account_id'], $ctx['waiting_list_id'])
+            && isset($ctx['account_id'], $ctx['waiting_list_id'], $ctx['staff_id'])
             && $ctx['account_id'] === $account->id
             && $ctx['waiting_list_id'] === $waitingList->id
+            && $ctx['staff_id'] === $staffAccount->id
             && $ctx['actor_id'] === $authUser->id
         );
 

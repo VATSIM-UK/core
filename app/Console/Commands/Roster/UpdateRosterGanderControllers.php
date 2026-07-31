@@ -26,7 +26,7 @@ class UpdateRosterGanderControllers extends Command
         if ($ganderResponse->failed()) {
             Log::error('Gander roster fetch failed', ['status' => $ganderResponse->status()]);
 
-            return;
+            return Command::FAILURE;
         }
 
         $ganderValidatedAccountIds = $ganderResponse

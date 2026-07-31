@@ -52,7 +52,7 @@ return [
             'path' => storage_path('logs/audit.log'),
             'level' => env('AUDIT_LOG_LEVEL', 'info'),
             'days' => (int) env('AUDIT_LOG_DAYS', 365),
-            'replace_placeholders' => true,
+            'processors' => [PsrLogMessageProcessor::class],
         ],
 
         'single' => [

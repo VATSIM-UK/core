@@ -61,18 +61,24 @@ class UpdateRoster extends Command
         );
 
         // Automatically mark those on the Gander Oceanic roster as eligible
-        $ganderResponse = Http::get(config('services.gander-oceanic.api.base').'/roster');
+        try {
+            $ganderResponse = Http::get(config('services.gander-oceanic.api.base').'/roster');
+        } catch (\Exception $e) {
+            Log::error('Gander roster fetch failed', ['exception' => $e]);
+            $ganderResponse = null;
+        }
 
-        if ($ganderResponse->failed()) {
+        if ($ganderResponse && $ganderResponse->failed()) {
             Log::error('Gander roster fetch failed', ['status' => $ganderResponse->status()]);
+            $ganderResponse = null;
         }
 
         $eligible->push(
             $ganderControllers = $ganderResponse
-                ->collect()
+                ?->collect()
                 ->where('active', true)
                 ->pluck('cid')
-                ->flatten()
+                ->flatten() ?? collect()
         );
 
         $eligible = $eligible->flatten()->unique();
