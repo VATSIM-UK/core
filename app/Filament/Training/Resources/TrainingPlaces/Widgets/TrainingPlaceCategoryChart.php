@@ -43,7 +43,7 @@ class TrainingPlaceCategoryChart extends ChartWidget
      */
     protected function getData(): array
     {
-        $counts = TrainingPlace::with('trainingPosition')
+        $counts = TrainingPlace::with('trainable')
             ->get()
             ->groupBy(fn (TrainingPlace $place): string => filled($place->trainingPosition?->category)
                 ? $place->trainingPosition->category

@@ -1,6 +1,6 @@
 # Configuring a Development Environment
 
-This repository uses [Node.js](https://github.com/VATSIM-UK/core/blob/main/package.json) and [PHP](https://github.com/VATSIM-UK/core/blob/main/composer.json)
+This repository uses [Node.js](../package.json) and [PHP](../composer.json)
 
 ## Video guide
 
@@ -142,6 +142,33 @@ prek install
 ```
 
 Now the pre commit hooks will run automatically on every commit.
+
+### Using the Makefile (Simplified Alternative for Unix-based Systems)
+
+For Linux and Mac users, a `Makefile` is available to simplify running common development tasks after the initial setup is complete.
+
+**Note:** All the setup steps above must be completed before using the makefile.
+
+The two main commands you'll need are:
+
+```shell
+# Start the web server
+make serve
+
+# Or customise the port
+make serve PORT=8000
+
+# Start Vite for real-time asset compilation (in a separate terminal)
+make frontend-dev
+```
+
+Other available commands for maintenance:
+
+- `make dev` - Complete setup in one command (Docker, dependencies, build, and server)
+- `make docker` - Start Docker services in the background
+- `make docker-down` - Stop Docker services
+- `make npm` - Install npm dependencies
+- `make build` - Install Composer dependencies and compile frontend assets
 
 ### Start the web server
 

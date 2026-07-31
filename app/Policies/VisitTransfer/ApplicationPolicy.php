@@ -62,7 +62,7 @@ class ApplicationPolicy
 
     public function changeFacility(Account $user, Application $application)
     {
-        return $user->can('vt.application.modify.*') && ($application->can_accept || $application->can_reject || $application->can_complete || $application->can_cancel);
+        return $user->can('vt.application.modify.*') && ($application->can_accept || $application->can_reject || $application->is_accepted);
     }
 
     public function create(Account $user, Application $application)

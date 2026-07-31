@@ -217,3 +217,19 @@ if (! function_exists('str_contains')) {
         return Illuminate\Support\Str::contains($haystack, $needle);
     }
 }
+
+if (! function_exists('audit')) {
+    /**
+     * Write an actor-attributed record to the audit channel.
+     * For "who did what to whom" staff/member state changes only - never errors.
+     */
+    function audit(string $message, array $context = []): void
+    {
+        if ($user = auth()->user()) {
+            $context['actor_id'] = $user->getAuthIdentifier();
+            $context['actor_name'] = (string) $user->name;
+        }
+
+        Illuminate\Support\Facades\Log::channel('audit')->info($message, $context);
+    }
+}

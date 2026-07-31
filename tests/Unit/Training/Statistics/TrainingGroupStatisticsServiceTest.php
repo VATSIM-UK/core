@@ -182,7 +182,7 @@ class TrainingGroupStatisticsServiceTest extends TestCase
     private function createAccountWithMember(): Account
     {
         $account = Account::factory()->create();
-        Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+        Member::factory()->forAccount($account)->create();
 
         return $account->fresh();
     }
@@ -202,7 +202,7 @@ class TrainingGroupStatisticsServiceTest extends TestCase
         $place->delete();
         $place->forceFill(['deleted_at' => $deletedAt])->save();
 
-        return $place->fresh(['account', 'trainingPosition']);
+        return $place->fresh(['account', 'trainable']);
     }
 
     private function createCompletedSession(int $studentId, string $callsign, Carbon $takenDate): Session

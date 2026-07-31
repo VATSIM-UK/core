@@ -11,6 +11,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
 
 class MembershipEndorsementRelationManager extends RelationManager
 {
@@ -38,7 +39,9 @@ class MembershipEndorsementRelationManager extends RelationManager
                 ])->action(function (array $data) {
                     try {
                         $account = Account::findOrFail($data['account_id']);
-                    } catch (ModelNotFoundException) {
+                    } catch (ModelNotFoundException $e) {
+                        Log::debug('Membership endorsement account lookup failed', ['exception' => $e, 'account_id' => $data['account_id']]);
+
                         Notification::make()->title('Account not found')->danger()->send();
 
                         return;

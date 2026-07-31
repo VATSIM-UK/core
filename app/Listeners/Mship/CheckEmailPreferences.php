@@ -25,7 +25,11 @@ class CheckEmailPreferences
 
         if (! $notifiable->isEmailEnabled($emailType)) {
             $notifiableId = method_exists($notifiable, 'getKey') ? $notifiable->getKey() : '?';
-            Log::info("Email suppressed for account {$notifiableId}: {$emailType->value} ({$emailType->label()})");
+            Log::info('Email suppressed for account', [
+                'account_id' => $notifiableId,
+                'email_type' => $emailType->value,
+                'email_type_label' => $emailType->label(),
+            ]);
 
             return false;
         }

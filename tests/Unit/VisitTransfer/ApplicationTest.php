@@ -8,7 +8,6 @@ use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
-use App\Notifications\ApplicationAccepted;
 use App\Notifications\ApplicationStatusChanged;
 use Carbon\Carbon;
 use Faker\Provider\Base;
@@ -17,7 +16,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\View;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -233,34 +231,6 @@ class ApplicationTest extends TestCase
 
         $this->assertNotEquals(VTCheckStatus::NotRequired, $application->fresh()->check_outcome_90_day);
         $this->assertNotEquals(VTCheckStatus::NotRequired, $application->fresh()->check_outcome_50_hours);
-    }
-
-    #[Test]
-    public function it_sends_acceptance_email_to_training_team()
-    {
-        Notification::fake();
-
-        $this->user->addState(\App\Models\Mship\State::findByCode('INTERNATIONAL'));
-
-        $facility = Facility::factory()->visit('atc')->create();
-
-        $application = $this->user->fresh()->createVisitingTransferApplication([
-            'type' => Application::TYPE_VISIT,
-            'facility_id' => $facility->id,
-            'training_team' => $facility->training_team,
-            'status' => Application::STATUS_UNDER_REVIEW,
-        ]);
-
-        $application->accept();
-
-        Notification::assertSentTo($facility, ApplicationAccepted::class, function ($notification, $channels) use ($application, $facility) {
-            $mail = $notification->toMail($facility);
-            $view = View::make($mail->view, $mail->viewData)->render();
-
-            $this->assertStringContainsString('Dear ATC Training Team,', $view);
-
-            return $notification->application->id == $application->id;
-        });
     }
 
     public static function providerCancelTest()

@@ -26,14 +26,14 @@ class TrainingPlaceOfferDeclined extends Notification implements DiscordNotifica
 
     public function toDiscord($notifiable)
     {
-        $position = $this->trainingPlaceOffer->trainingPosition->position;
+        $displayName = $this->trainingPlaceOffer->display_name;
 
         return [
             'content' => null,
             'embeds' => [
                 [
                     'title' => 'Training Place Offer Declined',
-                    'description' => "**{$notifiable->name} ({$notifiable->id})** has declined the training place offer for **{$position->name} ({$position->callsign})**.",
+                    'description' => "**{$notifiable->name} ({$notifiable->id})** has declined the training place offer for **{$displayName}**.",
                     'color' => 15158332,
                     'timestamp' => now()->toIso8601String(),
                 ],

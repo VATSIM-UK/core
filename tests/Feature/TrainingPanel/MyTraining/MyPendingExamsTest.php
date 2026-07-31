@@ -166,25 +166,21 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
         Notification::fake();
 
         $examinerAccount = Account::factory()->create();
-        Member::factory()->create([
-            'id' => $examinerAccount->id,
-            'cid' => $examinerAccount->id,
-            'examiner' => true,
-        ]);
+        $examinerMember = Member::factory()->forAccount($examinerAccount)->create(['examiner' => true]);
 
         $this->examBooking->update([
             'taken' => 1,
             'taken_date' => now()->addDays(3)->format('Y-m-d'),
             'taken_from' => '14:00:00',
             'taken_to' => '16:00:00',
-            'exmr_id' => $examinerAccount->id,
+            'exmr_id' => $examinerMember->id,
         ]);
 
         $this->examSetup->update(['booked' => 1]);
 
         PracticalExaminers::create([
             'examid' => $this->examBooking->id,
-            'senior' => $examinerAccount->id,
+            'senior' => $examinerMember->id,
         ]);
 
         $reason = 'I can no longer make the scheduled time.';
@@ -208,7 +204,7 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
             'sesh_id' => $this->examBooking->id,
             'sesh_type' => 'EX',
             'reason' => $reason,
-            'reason_by' => $this->studentAccount->id,
+            'reason_by' => $this->studentMember->id,
         ], 'cts');
 
         Notification::assertSentTo(

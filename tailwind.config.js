@@ -1,12 +1,21 @@
 import colors from 'tailwindcss/colors';
 
+// Shared brand colours referenced by multiple tokens below.
+const uknavy = '#17375e';
+
 export default {
     darkMode: 'class',
     theme: {
         colors: {
+            // Nav (VATSIM UK branding)
+            'nav-bg': uknavy,
+            'nav-accent': '#00b0f0',
+            'nav-secondary': '#0f131a',
+            'nav-hover-bg': '#f5f5f5',
+            'nav-hover-text': '#262626',
             // Core
             brand: '#25ADE3',
-            uknavy: '#17375e',
+            uknavy: uknavy,
             transparent: 'transparent',
             black: colors.black,
             white: colors.white,

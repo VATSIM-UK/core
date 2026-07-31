@@ -20,7 +20,7 @@ class AtcServerGroupService
             ->first();
 
         if (! $registration) {
-            Log::warning("No TS registration for account {$account->id}, skipping ATC group assign.");
+            Log::warning('No TS registration for account, skipping ATC group assign', ['account_id' => $account->id]);
 
             return;
         }
@@ -35,7 +35,11 @@ class AtcServerGroupService
             ['atc_server_group_id' => $group->id]
         );
 
-        Log::info("Assigned account {$account->id} to ATC group '{$callsign}' (sgid={$group->ts_sgid})");
+        Log::info('Assigned account to ATC group', [
+            'account_id' => $account->id,
+            'callsign' => $callsign,
+            'sgid' => $group->ts_sgid,
+        ]);
     }
 
     public function releaseExisting(Account $account, Server $server): void
@@ -58,9 +62,16 @@ class AtcServerGroupService
         if ($registration) {
             try {
                 $server->request("servergroupdelclient sgid={$group->ts_sgid} cldbid={$registration->dbid}");
-                Log::info("Removed account {$account->id} from ATC group '{$group->callsign}' (sgid={$group->ts_sgid})");
+                Log::info('Removed account from ATC group', [
+                    'account_id' => $account->id,
+                    'callsign' => $group->callsign,
+                    'sgid' => $group->ts_sgid,
+                ]);
             } catch (ServerQueryException $e) {
-                Log::warning("servergroupdelclient failed for account {$account->id}: {$e->getMessage()}");
+                Log::warning('servergroupdelclient failed for account', [
+                    'account_id' => $account->id,
+                    'exception' => $e,
+                ]);
             }
         }
 
@@ -127,13 +138,13 @@ class AtcServerGroupService
             // Set the server group to display in front of the username
             $server->request("servergroupaddperm sgid={$sgid} permsid=i_group_show_name_in_tree permvalue=1 permnegated=0 permskip=1");
 
-            Log::info("Created ATC server group '{$callsign}' with sgid={$sgid}");
+            Log::info('Created ATC server group', ['callsign' => $callsign, 'sgid' => $sgid]);
         }
 
         try {
             return AtcServerGroup::create(['callsign' => $callsign, 'ts_sgid' => $sgid]);
         } catch (\Illuminate\Database\QueryException $e) {
-            Log::info("AtcServerGroup create conflict for '{$callsign}' (sgid={$sgid}).");
+            Log::info('AtcServerGroup create conflict', ['callsign' => $callsign, 'sgid' => $sgid]);
 
             return AtcServerGroup::where('callsign', $callsign)
                 ->orWhere('ts_sgid', $sgid)
@@ -148,9 +159,9 @@ class AtcServerGroupService
 
             $group->assignments()->delete();
             $group->delete();
-            Log::info("Deleted empty ATC server group '{$group->callsign}' (sgid={$group->ts_sgid})");
+            Log::info('Deleted empty ATC server group', ['callsign' => $group->callsign, 'sgid' => $group->ts_sgid]);
         } catch (ServerQueryException $e) {
-            Log::warning("serverGroupDelete failed for '{$group->callsign}': {$e->getMessage()}");
+            Log::warning('serverGroupDelete failed', ['callsign' => $group->callsign, 'exception' => $e]);
         }
     }
 }

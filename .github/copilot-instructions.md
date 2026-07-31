@@ -103,7 +103,7 @@ tests/
 - **`App\Models\Training\TrainingPlace`** — Training place/slot, with `TrainingPlaceOffer`, `TrainingPlaceLeaveOfAbsence`, `AvailabilityCheck`, `AvailabilityWarning`.
 - **`App\Models\Training\TrainingPosition\TrainingPosition`** — Training position definitions.
 - **`App\Models\Training\Mentoring\`** — Mentor training positions, scopes.
-- **`App\Models\VisitTransfer\Application`** — Visit/transfer application, plus `Facility` and `Facility\Email`.
+- **`App\Models\VisitTransfer\Application`** — Visit/transfer application, plus `Facility`.
 - **`App\Models\Roster`**, **`RosterHistory`**, **`RosterUpdate`** — Controller roster membership.
 - **`App\Models\Atc\Position`**, **`PositionGroup`**, **`PositionGroupCondition`**, **`PositionGroupPosition`**, **`Endorseable`** — ATC position definitions and groups.
 - **`App\Models\NetworkData\Atc`**, **`NetworkData\Pilot`** — Live VATSIM network data mirrors.
@@ -234,6 +234,14 @@ Copilot skills live in `.github/skills/`: `configuring-horizon`, `laravel-best-p
 - **Blade/views**: Blade templates live in `resources/views/`. The main layout is `resources/views/layout.blade.php`.
 - **Frontend**: Tailwind CSS v4 for new components (Filament/Livewire), Bootstrap 5 for legacy pages. Alpine.js for interactivity without Livewire.
 - **Indent**: 4 spaces (PHP, Blade, JS), 2 spaces (YAML, XML). LF line endings.
+
+## Logging
+
+- Use the `Log` facade (never bare `\Log::` or the `logger()` helper).
+- Static message + structured context array, never interpolation. Include entity IDs, e.g. `Log::warning('CTS position not found', ['training_place_id' => $place->id]);`. Log caught exceptions before swallowing/rethrowing, with `['exception' => $e]`.
+- Bugsnag alerts on `notice` and above; `debug`/`info` are breadcrumbs only. So use `info`/`debug` for expected/routine conditions (legitimate not-found, user validation failures, no-op skips, noisy feed diagnostics) and reserve `notice`/`warning`/`error` for things a human should investigate.
+- Actor-attributed staff/member state changes (bans, role grants, endorsements) go to the `audit` channel via the global `audit()` helper (`app/helpers.php`).
+- `app/Libraries/Discord.php` is the reference implementation to emulate.
 
 ## Authorization
 

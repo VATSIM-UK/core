@@ -12,6 +12,7 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Repositories\Cts\ExamResultRepository;
 use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\ExamForwardingService;
+use Carbon\Carbon;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -277,7 +278,8 @@ class ExamSetup extends Page implements HasForms
                                 $prerequisiteRating = PilotExamType::from($examType)->prerequisiteQualification();
 
                                 $passedStudentIds = (new ExamResultRepository)
-                                    ->getPassedExamsOfType($examType)
+                                    // Pilot exams pre 2020 should be ignored
+                                    ->getPassedExamsOfType($examType, since: Carbon::parse('2020-01-01'))
                                     ->pluck('student_id');
 
                                 $pendingStudentIds = (new ExamResultRepository)

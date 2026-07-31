@@ -57,7 +57,7 @@ class ViewTrainingPlaceRestoreIntegrationTest extends BaseTrainingPanelTestCase
         $ctsPosition = CtsPosition::factory()->create();
         $student = Account::factory()->create();
         $student->addState(State::findByCode('DIVISION'));
-        Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
+        Member::factory()->forAccount($student)->create();
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $waitingListAccount = $waitingList->addToWaitingList($student, $this->panelUser);
         $position = Position::factory()->create();

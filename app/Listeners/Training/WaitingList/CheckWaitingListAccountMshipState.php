@@ -17,7 +17,7 @@ class CheckWaitingListAccountMshipState
      */
     public function handle(AccountAltered $event)
     {
-        Log::debug("CheckWaitingListAccountMshipState listener triggered for account {$event->account->id}");
+        Log::debug('CheckWaitingListAccountMshipState listener triggered for account', ['account_id' => $event->account->id]);
         // ensure we have the latest data
         $account = $event->account->refresh();
 
@@ -26,24 +26,30 @@ class CheckWaitingListAccountMshipState
         });
 
         if ($account->hasState(State::findByCode('DIVISION'))) {
-            Log::debug("Account {$account->id} has DIVISION state, skipping removal from waiting list");
+            Log::debug('Account has DIVISION state, skipping removal from waiting list', ['account_id' => $account->id]);
 
             return;
         }
 
         if ($accountsWaitingList->count() == 0) {
-            Log::debug("Account {$account->id} is not in a 'home members only' waiting list, skipping.");
+            Log::debug("Account is not in a 'home members only' waiting list, skipping", ['account_id' => $account->id]);
 
             return;
         }
 
         foreach ($accountsWaitingList as $waitingList) {
-            Log::info("Account {$account->id} is in waiting list {$waitingList->id}, with non-home member state - removing from waiting list");
+            Log::info('Account is in waiting list with non-home member state - removing from waiting list', [
+                'account_id' => $account->id,
+                'waiting_list_id' => $waitingList->id,
+            ]);
 
             $waitingList->removeFromWaitingList($account, new WaitingList\Removal(WaitingList\RemovalReason::NonHome, null));
         }
 
-        Log::info("Account {$account->id} is in waiting lists {$accountsWaitingList->pluck('id')->join(', ')}, with non-home member state - notifying account");
+        Log::info('Account is in waiting lists with non-home member state - notifying account', [
+            'account_id' => $account->id,
+            'waiting_list_ids' => $accountsWaitingList->pluck('id')->join(', '),
+        ]);
 
         $account->notify(new RemovedFromWaitingListNonHomeMember($accountsWaitingList));
     }

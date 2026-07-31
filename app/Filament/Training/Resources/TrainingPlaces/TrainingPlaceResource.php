@@ -18,6 +18,7 @@ use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Str;
@@ -36,7 +37,7 @@ class TrainingPlaceResource extends Resource
 
     public static function table(Table $table): Table
     {
-        $categoryGroup = Group::make('trainingPosition.category')
+        $categoryGroup = Group::make('category')
             ->label('Category')
             ->titlePrefixedWithLabel(false)
             ->collapsible()
@@ -50,12 +51,28 @@ class TrainingPlaceResource extends Resource
                     ? $record->trainingPosition->category
                     : '__uncategorised__'
             )
+            ->orderQueryUsing(fn (Builder $query, string $direction): Builder => $query
+                ->orderBy(
+                    TrainingPosition::query()
+                        ->select('category')
+                        ->whereColumn('training_positions.id', 'training_places.trainable_id')
+                        ->where('training_places.trainable_type', TrainingPosition::class),
+                    $direction,
+                )
+                ->orderByDesc('training_places.created_at')
+            )
             ->scopeQueryByKeyUsing(function (Builder $query, string $key): Builder {
                 if ($key === '__uncategorised__') {
-                    return $query->whereHas('trainingPosition', fn (Builder $query) => $query->whereNull('category')->orWhere('category', ''));
+                    return $query->where(function (Builder $query) {
+                        $query->whereHasMorph('trainable', [TrainingPosition::class], function (Builder $query) {
+                            $query->whereNull('category')->orWhere('category', '');
+                        })
+                            ->orWhere('trainable_type', '!=', TrainingPosition::class)
+                            ->orWhereNull('trainable_type');
+                    });
                 }
 
-                return $query->whereHas('trainingPosition', fn (Builder $query) => $query->where('category', $key));
+                return $query->whereHasMorph('trainable', [TrainingPosition::class], fn (Builder $query) => $query->where('category', $key));
             });
 
         return $table
@@ -64,7 +81,7 @@ class TrainingPlaceResource extends Resource
                     'account',
                     'waitingListAccount.account',
                     'waitingListAccount.waitingList',
-                    'trainingPosition.position',
+                    'trainable' => fn (MorphTo $morphTo) => $morphTo->morphWith([TrainingPosition::class => ['position']]),
                 ])
             )
             ->groups([$categoryGroup])
@@ -110,10 +127,14 @@ class TrainingPlaceResource extends Resource
                             })
                     ),
 
-                TextColumn::make('trainingPosition.position.callsign')
+                TextColumn::make('display_name')
                     ->label('Position')
-                    ->searchable()
-                    ->sortable(),
+                    ->state(fn (TrainingPlace $record): string => $record->display_name)
+                    ->searchable(query: fn (Builder $query, string $search): Builder => $query->whereHasMorph(
+                        'trainable',
+                        [TrainingPosition::class],
+                        fn (Builder $query) => $query->whereHas('position', fn (Builder $query) => $query->where('callsign', 'like', "%{$search}%"))
+                    )),
 
                 TextColumn::make('status')
                     ->label('Status')
@@ -124,13 +145,13 @@ class TrainingPlaceResource extends Resource
                     ->formatStateUsing(fn (string $state): string => Str::title($state)),
             ])
             ->filters([
-                SelectFilter::make('trainingPosition.category')
+                SelectFilter::make('category')
                     ->label('Category')
                     ->options(TrainingPosition::all()->pluck('category', 'category')->map(fn ($category) => Str::title($category ?? 'Uncategorised')))
                     ->preload()
                     ->searchable()
                     ->query(fn (Builder $query, array $data): Builder => filled($data['value'] ?? null)
-                        ? $query->whereHas('trainingPosition', fn (Builder $q): Builder => $q->where('category', $data['value']))
+                        ? $query->whereHasMorph('trainable', [TrainingPosition::class], fn (Builder $q): Builder => $q->where('category', $data['value']))
                         : $query),
 
                 TrashedFilter::make()

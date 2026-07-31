@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Accounts\RelationManagers;
 
 use App\Enums\QualificationTypeEnum;
+use App\Filament\Admin\Helpers\Pages\LogRelationAccess;
 use App\Models\Mship\Qualification;
 use App\Services\Training\ManualAtcUpgradeService;
 use Carbon\CarbonImmutable;
@@ -19,9 +20,16 @@ use Illuminate\Support\Facades\Auth;
 
 class QualificationsRelationManager extends RelationManager
 {
+    use LogRelationAccess;
+
     protected static string $relationship = 'qualifications';
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    protected function getLogActionName(): string
+    {
+        return 'ViewQualifications';
+    }
 
     public function table(Table $table): Table
     {
