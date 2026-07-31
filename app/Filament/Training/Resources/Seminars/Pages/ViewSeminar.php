@@ -30,8 +30,10 @@ class ViewSeminar extends ViewRecord
                 )
                 ->modalSubmitActionLabel('Enable')
                 ->action(function (): void {
-                    $this->record->update(['automatic_invitations_enabled' => true]);
-                    app(SeminarInvitationService::class)->topUpAutomaticInvitations($this->record);
+                    DB::transaction(function () {
+                        $this->record->update(['automatic_invitations_enabled' => true]);
+                        app(SeminarInvitationService::class)->topUpAutomaticInvitations($this->record);
+                    });
                 })
                 ->visible(fn () => ! $this->record->isSendingCutoffReached() && ! $this->record->automatic_invitations_enabled && auth()->user()->can('training.seminars.manage.*')),
 
