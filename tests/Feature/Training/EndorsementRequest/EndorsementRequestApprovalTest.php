@@ -60,7 +60,8 @@ class EndorsementRequestApprovalTest extends BaseTrainingPanelTestCase
             'endorsable_id' => PositionGroup::factory()->create()->id,
         ]);
 
-        $userWithoutPermission = Account::factory()->createQuietly();
+        $userWithoutPermission = Account::factory()->create();
+        Member::factory()->forAccount($userWithoutPermission)->create();
         $userWithoutPermission->givePermissionTo('endorsement-request.access');
 
         Livewire::actingAs($userWithoutPermission);
