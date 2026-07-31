@@ -21,6 +21,7 @@ class EndorsementRequest extends Model
         'actioned_at',
         'actioned_type',
         'actioned_by',
+        'notes',
     ];
 
     const STATUS_APPROVED = 'approved';

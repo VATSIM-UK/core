@@ -27,7 +27,6 @@ class Endorsement extends Model
         'endorsable_id',
         'position_group_id',
         'created_by',
-        'created_at',
         'expires_at',
         'endorsement_request_id',
     ];
