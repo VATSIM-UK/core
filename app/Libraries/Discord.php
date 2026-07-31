@@ -499,7 +499,10 @@ class Discord
         }
 
         $choicesCount = count($commandPayload['options'][0]['choices'] ?? []);
-        Log::info("Synced /{$commandPayload['name']} command with {$choicesCount} choices");
+        Log::info('Synced slash command with choices', [
+            'command' => $commandPayload['name'],
+            'choices_count' => $choicesCount,
+        ]);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Filament\Training\Resources\EndorsementRequests\Pages;
 
 use App\Events\Training\EndorsementRequestApproved;
+use App\Filament\Training\Pages\Endorsements;
 use App\Filament\Training\Resources\EndorsementRequests\EndorsementRequestResource;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
@@ -53,5 +54,16 @@ class CreateEndorsementRequest extends CreateRecord
             ->send();
 
         $this->approvalData = null;
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return Endorsements::urlFor(EndorsementRequestResource::class);
+    }
+
+    public function getCancelFormAction(): Action
+    {
+        return parent::getCancelFormAction()
+            ->url(Endorsements::urlFor(EndorsementRequestResource::class));
     }
 }

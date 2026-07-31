@@ -2,10 +2,12 @@
 
 namespace Tests\Feature\Training\EndorsementRequest;
 
+use App\Filament\Training\Pages\Endorsements\Tables\ResourceTable;
+use App\Filament\Training\Resources\EndorsementRequests\EndorsementRequestResource;
 use App\Filament\Training\Resources\EndorsementRequests\Pages\CreateEndorsementRequest;
-use App\Filament\Training\Resources\EndorsementRequests\Pages\ListEndorsementRequests;
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
+use App\Models\Cts\Member;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\EndorsementRequest;
 use App\Notifications\Mship\Endorsement\EndorsementRequestCreated;
@@ -30,7 +32,7 @@ class EndorsementRequestCreateTest extends BaseTrainingPanelTestCase
         $this->actingAs($this->panelUser);
         $this->panelUser->givePermissionTo('endorsement-request.access');
 
-        Livewire::test(ListEndorsementRequests::class)
+        Livewire::test(ResourceTable::class, ['resource' => EndorsementRequestResource::class])
             ->assertSuccessful()
             ->filterTable('account', [$accountWithRequest->id])
             ->assertCanSeeTableRecords([$endorsementRequest]);
@@ -38,10 +40,11 @@ class EndorsementRequestCreateTest extends BaseTrainingPanelTestCase
 
     public function test_create_not_visible_when_no_create_permission()
     {
-        $this->actingAs($this->panelUser);
-        $this->panelUser->givePermissionTo('endorsement-request.access');
+        $userWithoutPermission = Account::factory()->createQuietly();
+        $userWithoutPermission->givePermissionTo('endorsement-request.access');
 
-        Livewire::test(ListEndorsementRequests::class)
+        Livewire::actingAs($userWithoutPermission);
+        Livewire::test(ResourceTable::class, ['resource' => EndorsementRequestResource::class])
             ->assertDontSee('New endorsement request');
     }
 
@@ -51,15 +54,18 @@ class EndorsementRequestCreateTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('endorsement-request.access');
         $this->panelUser->givePermissionTo('endorsement-request.create.*');
 
-        Livewire::test(ListEndorsementRequests::class)
+        Livewire::test(ResourceTable::class, ['resource' => EndorsementRequestResource::class])
             ->assertSee('New endorsement request');
     }
 
     public function test_cannot_create_endorsement_request_for_position_group_without_permission()
     {
-        $this->actingAs($this->panelUser);
-        $this->panelUser->givePermissionTo('endorsement-request.access');
+        $userWithoutPermission = Account::factory()->createQuietly();
+        Member::factory()->forAccount($userWithoutPermission)->create();
+        $userWithoutPermission->givePermissionTo('training.access');
+        $userWithoutPermission->givePermissionTo('endorsement-request.access');
 
+        Livewire::actingAs($userWithoutPermission);
         Livewire::test(CreateEndorsementRequest::class)
             ->assertForbidden();
     }
@@ -76,11 +82,9 @@ class EndorsementRequestCreateTest extends BaseTrainingPanelTestCase
             // check if the position group is visible
             ->set('data.endorsable_type', 'App\Models\Atc\PositionGroup')
             ->assertSee($positionGroup->name)
-            ->fillForm([
-                'account_id' => $accountRequestingFor->id,
-                'endorsable_id' => $positionGroup->id,
-                'notes' => 'This is a test note',
-            ])
+            ->set('data.account_id', $accountRequestingFor->id)
+            ->set('data.endorsable_id', $positionGroup->id)
+            ->set('data.notes', 'This is a test note')
             ->call('create');
 
         $this->assertDatabaseHas('endorsement_requests', [
@@ -105,11 +109,9 @@ class EndorsementRequestCreateTest extends BaseTrainingPanelTestCase
             ->set('data.endorsable_type', 'App\Models\Atc\Position')
             ->assertSee($position->callsign)
             ->assertDontSee($nonTemporarilyEndorsablePosition->name)
-            ->fillForm([
-                'account_id' => $accountRequestingFor->id,
-                'endorsable_id' => $position->id,
-                'notes' => 'This is a test note',
-            ])
+            ->set('data.account_id', $accountRequestingFor->id)
+            ->set('data.endorsable_id', $position->id)
+            ->set('data.notes', 'This is a test note')
             ->call('create');
 
         $this->assertDatabaseHas('endorsement_requests', [
@@ -140,11 +142,9 @@ class EndorsementRequestCreateTest extends BaseTrainingPanelTestCase
 
         Livewire::test(CreateEndorsementRequest::class)
             ->set('data.endorsable_type', 'App\Models\Atc\PositionGroup')
-            ->fillForm([
-                'account_id' => $accountRequestingFor->id,
-                'endorsable_id' => $positionGroup->id,
-                'notes' => 'This is a test note',
-            ])
+            ->set('data.account_id', $accountRequestingFor->id)
+            ->set('data.endorsable_id', $positionGroup->id)
+            ->set('data.notes', 'This is a test note')
             ->call('create');
 
         Notification::assertSentTo($otherUserWithPermission, EndorsementRequestCreated::class);

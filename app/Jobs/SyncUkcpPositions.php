@@ -83,7 +83,10 @@ class SyncUkcpPositions extends Job
                         ->where('id', '!=', $core->id)
                         ->exists()
                     ) {
-                        Log::warning("SyncUkcpPositions: Skipping callsign update for {$core->callsign} -> {$changes['callsign']} because it would conflict with an existing position.");
+                        Log::warning('SyncUkcpPositions: Skipping callsign update because it would conflict with an existing position', [
+                            'callsign' => $core->callsign,
+                            'new_callsign' => $changes['callsign'],
+                        ]);
                         unset($changes['callsign']);
                     }
 
@@ -133,9 +136,14 @@ class SyncUkcpPositions extends Job
 
         $deleted += $removedCount;
 
-        $dryRunLabel = $this->dryRun ? ' (DRY RUN)' : '';
-
-        Log::info("SyncUkcpPositions complete. Created: {$created}, Updated: {$updated}, Restored: {$restored}, Top-down updated: {$topDownUpdated}, Soft-deleted: {$deleted}{$dryRunLabel}");
+        Log::info('SyncUkcpPositions complete', [
+            'created' => $created,
+            'updated' => $updated,
+            'restored' => $restored,
+            'top_down_updated' => $topDownUpdated,
+            'soft_deleted' => $deleted,
+            'dry_run' => $this->dryRun,
+        ]);
     }
 
     private function syncTopDown(UKCP $ukcp): int

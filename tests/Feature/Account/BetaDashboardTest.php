@@ -28,7 +28,7 @@ class BetaDashboardTest extends TestCase
             ->get(route('mship.manage.dashboard.beta'))
             ->assertOk()
             ->assertSee('beta dashboard', false)
-            ->assertSee($this->user->name, false)
+            ->assertSee($this->user->name)
             ->assertSee('Switch to classic dashboard', false)
             ->assertSee('ATC rating', false)
             ->assertSee('Pilot rating', false);
