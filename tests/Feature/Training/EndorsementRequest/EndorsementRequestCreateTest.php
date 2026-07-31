@@ -7,6 +7,7 @@ use App\Filament\Training\Resources\EndorsementRequests\EndorsementRequestResour
 use App\Filament\Training\Resources\EndorsementRequests\Pages\CreateEndorsementRequest;
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
+use App\Models\Cts\Member;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\EndorsementRequest;
 use App\Notifications\Mship\Endorsement\EndorsementRequestCreated;
