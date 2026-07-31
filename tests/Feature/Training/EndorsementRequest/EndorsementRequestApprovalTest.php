@@ -8,6 +8,7 @@ use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\EndorsementRequest;
+use App\Models\Mship\Member;
 use App\Models\Mship\State;
 use App\Notifications\Mship\Endorsement\SoloEndorsementNotification;
 use App\Notifications\Mship\Endorsement\TierEndorsementNotification;
