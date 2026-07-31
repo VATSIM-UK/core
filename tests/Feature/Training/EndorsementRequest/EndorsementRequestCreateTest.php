@@ -60,6 +60,8 @@ class EndorsementRequestCreateTest extends BaseTrainingPanelTestCase
     public function test_cannot_create_endorsement_request_for_position_group_without_permission()
     {
         $userWithoutPermission = Account::factory()->createQuietly();
+        Member::factory()->forAccount($userWithoutPermission)->create();
+        $userWithoutPermission->givePermissionTo('training.access');
         $userWithoutPermission->givePermissionTo('endorsement-request.access');
 
         Livewire::actingAs($userWithoutPermission);
