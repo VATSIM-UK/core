@@ -24,6 +24,7 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Table;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Url;
 use Spatie\CalendarLinks\Link;
 
@@ -199,6 +200,8 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
                                     ->send();
                             }
                         } catch (AuthorizationException $e) {
+                            Log::warning('Reallocate mentoring session failed', ['exception' => $e, 'session_id' => $record->id]);
+
                             Notification::make()
                                 ->title('Reallocation Failed')
                                 ->body($e->getMessage())

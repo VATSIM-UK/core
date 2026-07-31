@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplications\Pages;
 
 use App\Enums\VTCheckStatus;
+use App\Filament\Admin\Helpers\Pages\LogPageAccess;
 use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplications\VisitTransferApplicationResource;
 use App\Models\Mship\Note\Type;
 use Carbon\Carbon;
@@ -20,7 +21,14 @@ use Filament\Schemas\Schema;
 
 class ViewVisitTransferApplication extends ViewRecord
 {
+    use LogPageAccess;
+
     protected static string $resource = VisitTransferApplicationResource::class;
+
+    protected function getLogActionName(): string
+    {
+        return 'ViewVisitTransferApplication';
+    }
 
     public function getTitle(): string
     {

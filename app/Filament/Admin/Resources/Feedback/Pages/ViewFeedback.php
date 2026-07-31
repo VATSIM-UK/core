@@ -4,12 +4,20 @@ namespace App\Filament\Admin\Resources\Feedback\Pages;
 
 use App\Filament\Admin\Forms\Components\AccountSelect;
 use App\Filament\Admin\Helpers\Pages\BaseViewRecordPage;
+use App\Filament\Admin\Helpers\Pages\LogPageAccess;
 use App\Filament\Admin\Resources\Feedback\FeedbackResource;
 use Filament\Actions\Action;
 
 class ViewFeedback extends BaseViewRecordPage
 {
+    use LogPageAccess;
+
     protected static string $resource = FeedbackResource::class;
+
+    protected function getLogActionName(): string
+    {
+        return 'ViewFeedback';
+    }
 
     protected function getHeaderActions(): array
     {
