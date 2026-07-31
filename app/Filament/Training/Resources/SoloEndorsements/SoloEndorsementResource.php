@@ -7,10 +7,6 @@ use App\Models\Atc\Position;
 use App\Models\Mship\Account\Endorsement;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Enums\FiltersLayout;
-use Filament\Tables\Filters\QueryBuilder;
-use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
-use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint\Operators\EqualsOperator;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,11 +15,16 @@ class SoloEndorsementResource extends Resource
 {
     protected static ?string $model = Endorsement::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
 
     protected static ?string $modelLabel = 'Solo Endorsements';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Endorsements';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
 
     public static function getEloquentQuery(): Builder
     {
@@ -44,11 +45,11 @@ class SoloEndorsementResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('account.id')->label('CID'),
-                TextColumn::make('account.name')->label('Account'),
+                TextColumn::make('account.id')->label('CID')->searchable(),
+                TextColumn::make('account.name')->label('Account')->searchable(['name_first', 'name_last']),
                 TextColumn::make('endorsable.description')->label('Position'),
                 TextColumn::make('duration')->getStateUsing(fn ($record) => floor($record->created_at->diffInDays($record->expires_at)).' days')->label('Duration'),
-                TextColumn::make('created_at')->label('Started At')->isoDateTimeFormat('lll'),
+                TextColumn::make('created_at')->label('Started At')->isoDateTimeFormat('lll')->sortable(),
                 TextColumn::make('expires_at')->label('Expires At')->isoDateTimeFormat('lll')->sortable(),
                 TextColumn::make('status')->label('Status')->badge()
                     ->getStateUsing(fn ($record) => $record->expires_at->isPast() ? 'Expired' : 'Active')
@@ -74,16 +75,7 @@ class SoloEndorsementResource extends Resource
                         false: fn (Builder $query) => $query->where('expires_at', '<=', now()),
                         blank: fn (Builder $query) => $query
                     ),
-
-                QueryBuilder::make()
-                    ->constraints([
-                        TextConstraint::make('account.id')->operators(
-                            [
-                                EqualsOperator::class,
-                            ]
-                        ),
-                    ]),
-            ], layout: FiltersLayout::AboveContent);
+            ]);
     }
 
     public static function getPages(): array

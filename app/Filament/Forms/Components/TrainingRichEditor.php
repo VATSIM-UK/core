@@ -37,7 +37,7 @@ class TrainingRichEditor extends RichEditor
                     ->action(arguments: <<<'JS'
                         {
                             url: $getEditor().getAttributes('link')?.href,
-                            shouldOpenInNewTab: $getEditor().getAttributes('link')?.target === '_blank',
+                            shouldOpenInNewTab: $getEditor().getAttributes('link')?.href ? $getEditor().getAttributes('link').target === '_blank' : true,
                             text: $getEditor().state.doc.textBetween(
                                 $getEditor().state.selection.from,
                                 $getEditor().state.selection.to,

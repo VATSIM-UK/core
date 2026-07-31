@@ -11,6 +11,7 @@ use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account\EndorsementRequest;
 use App\Models\Mship\Qualification;
 use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -29,9 +30,14 @@ class EndorsementRequestResource extends Resource
 {
     protected static ?string $model = EndorsementRequest::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-inbox-arrow-down';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Endorsements';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -76,6 +82,9 @@ class EndorsementRequestResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                CreateAction::make()->url(fn () => static::getUrl('create'))->visible(fn () => auth()->user()->can('create', EndorsementRequest::class)),
+            ])
             ->columns([
                 TextColumn::make('account_id')->label('CID'),
                 TextColumn::make('account.name')->label('Name'),

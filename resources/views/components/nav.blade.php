@@ -27,10 +27,10 @@
 								clip-rule="evenodd" />
 						</svg>
 					</button>
-					<div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0"
-						x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-75"
-						x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="nav-dropdown-right"
-						@click.outside="open = false">
+					<div x-show="open" x-cloak x-transition:enter="transition ease-out duration-100"
+						x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+						x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100"
+						x-transition:leave-end="opacity-0" class="nav-dropdown-right" @click.outside="open = false">
 						<ul class="nav-dropdown-list">
 							<li><a href="{{ route('landing') }}" class="nav-dropdown-link">Dashboard</a></li>
 							<li class="nav-dropdown-divider"></li>
@@ -91,9 +91,10 @@
 									clip-rule="evenodd" />
 							</svg>
 						</button>
-						<div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0"
-							x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-75"
-							x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="nav-dropdown">
+						<div x-show="open" x-cloak x-transition:enter="transition ease-out duration-100"
+							x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+							x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100"
+							x-transition:leave-end="opacity-0" class="nav-dropdown">
 							<ul class="nav-dropdown-list">
 								<li><a href="{{ route('site.staff') }}" class="nav-dropdown-link">Staff</a></li>
 								<li><a href="https://helpdesk.vatsim.uk/" class="nav-dropdown-link">Contact Us</a></li>
@@ -110,9 +111,10 @@
 									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
 									clip-rule="evenodd" />
 							</svg></button>
-						<div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0"
-							x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-75"
-							x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="nav-dropdown">
+						<div x-show="open" x-cloak x-transition:enter="transition ease-out duration-100"
+							x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+							x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100"
+							x-transition:leave-end="opacity-0" class="nav-dropdown">
 							<ul class="nav-dropdown-list">
 								<li><a href="{{ route('mship.feedback.new') }}" class="nav-dropdown-link">Submit Feedback</a></li>
 								<li><a href="{{ route('mship.feedback.view') }}" class="nav-dropdown-link">View My Feedback</a></li>
@@ -129,9 +131,10 @@
 									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
 									clip-rule="evenodd" />
 							</svg></button>
-						<div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0"
-							x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-75"
-							x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="nav-dropdown">
+						<div x-show="open" x-cloak x-transition:enter="transition ease-out duration-100"
+							x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+							x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100"
+							x-transition:leave-end="opacity-0" class="nav-dropdown">
 							<ul class="nav-dropdown-list">
 								<li class="nav-dropdown-header">Resources</li>
 								<li><a href="https://ukcp.vatsim.uk/request-a-stand" class="nav-dropdown-link">Request a stand</a></li>
@@ -159,9 +162,10 @@
 									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
 									clip-rule="evenodd" />
 							</svg></button>
-						<div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0"
-							x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-75"
-							x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="nav-dropdown">
+						<div x-show="open" x-cloak x-transition:enter="transition ease-out duration-100"
+							x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+							x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100"
+							x-transition:leave-end="opacity-0" class="nav-dropdown">
 							<ul class="nav-dropdown-list">
 								<li><a href="{{ route('site.atc.newController') }}" class="nav-dropdown-link">Become a controller</a></li>
 								<li><a href="{{ route('site.roster.index') }}" class="nav-dropdown-link">Controller Roster</a></li>
@@ -197,9 +201,10 @@
 									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
 									clip-rule="evenodd" />
 							</svg></button>
-						<div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0"
-							x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-75"
-							x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="nav-dropdown">
+						<div x-show="open" x-cloak x-transition:enter="transition ease-out duration-100"
+							x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+							x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100"
+							x-transition:leave-end="opacity-0" class="nav-dropdown">
 							<ul class="nav-dropdown-list">
 								<li><a href="https://helpdesk.vatsim.uk/" class="nav-dropdown-link">Contact Us</a></li>
 								<li><a href="{{ route('networkdata.dashboard') }}" class="nav-dropdown-link">My Statistics</a></li>
@@ -222,9 +227,10 @@
 									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
 									clip-rule="evenodd" />
 							</svg></button>
-						<div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0"
-							x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-75"
-							x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="nav-dropdown">
+						<div x-show="open" x-cloak x-transition:enter="transition ease-out duration-100"
+							x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+							x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100"
+							x-transition:leave-end="opacity-0" class="nav-dropdown">
 							<ul class="nav-dropdown-list">
 								<li><a href="{{ route('site.policy.training.s1-syllabus') }}" class="nav-dropdown-link">S1 Syllabus</a></li>
 								<li><a href="{{ route('site.policy.training.s2-syllabus') }}" class="nav-dropdown-link">S2 Syllabus</a></li>
@@ -243,9 +249,10 @@
 									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
 									clip-rule="evenodd" />
 							</svg></button>
-						<div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0"
-							x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-75"
-							x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="nav-dropdown">
+						<div x-show="open" x-cloak x-transition:enter="transition ease-out duration-100"
+							x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+							x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100"
+							x-transition:leave-end="opacity-0" class="nav-dropdown">
 							<ul class="nav-dropdown-list">
 								<li class="nav-dropdown-header">Policies</li>
 								<li><a href="{{ route('site.policy.division') }}" class="nav-dropdown-link">Division Policy</a></li>
@@ -275,9 +282,10 @@
 									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
 									clip-rule="evenodd" />
 							</svg></button>
-						<div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0"
-							x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-75"
-							x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="nav-dropdown">
+						<div x-show="open" x-cloak x-transition:enter="transition ease-out duration-100"
+							x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+							x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100"
+							x-transition:leave-end="opacity-0" class="nav-dropdown">
 							<ul class="nav-dropdown-list">
 								<li class="nav-dropdown-header">Communications</li>
 								<li><a href="{{ route('site.community.teamspeak') }}" class="nav-dropdown-link">TeamSpeak</a></li>

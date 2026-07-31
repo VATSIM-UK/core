@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Filament\Admin\Livewire\GlobalSearch;
+use App\Filament\Training\Pages\Endorsements\Tables\ResourceTable;
 use App\Http\Controllers\BaseController;
 use App\Http\Responses\LogoutResponse;
 use App\Libraries\Discord;
@@ -65,6 +66,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Livewire::component('filament.livewire.global-search', GlobalSearch::class);
+        Livewire::component('endorsements-resource-table', ResourceTable::class);
 
         Cookies::essentials()
             ->session()
