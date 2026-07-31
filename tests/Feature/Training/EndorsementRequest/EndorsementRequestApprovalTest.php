@@ -2,7 +2,8 @@
 
 namespace Tests\Feature\Training\EndorsementRequest;
 
-use App\Filament\Training\Resources\EndorsementRequests\Pages\ListEndorsementRequests;
+use App\Filament\Training\Pages\Endorsements\Tables\ResourceTable;
+use App\Filament\Training\Resources\EndorsementRequests\EndorsementRequestResource;
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
@@ -38,11 +39,11 @@ class EndorsementRequestApprovalTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('endorsement-request.approve.*');
 
         Livewire::actingAs($this->panelUser);
-        Livewire::test(ListEndorsementRequests::class)
+        Livewire::test(ResourceTable::class, ['resource' => EndorsementRequestResource::class])
             ->assertCanSeeTableRecords([$endorsementRequest])
-            ->callTableAction('approve', record: $endorsementRequest->id, data: [
-                'type' => 'Permanent',
-            ])
+            ->mountTableAction('approve', record: $endorsementRequest->id)
+            ->set('mountedActions.0.data.type', 'Permanent')
+            ->callMountedTableAction()
             ->assertTableActionHidden('approve', $endorsementRequest->id);
 
         $this->assertDatabaseHas('endorsement_requests', [
@@ -59,8 +60,11 @@ class EndorsementRequestApprovalTest extends BaseTrainingPanelTestCase
             'endorsable_id' => PositionGroup::factory()->create()->id,
         ]);
 
-        Livewire::actingAs($this->panelUser);
-        Livewire::test(ListEndorsementRequests::class)
+        $userWithoutPermission = Account::factory()->createQuietly();
+        $userWithoutPermission->givePermissionTo('endorsement-request.access');
+
+        Livewire::actingAs($userWithoutPermission);
+        Livewire::test(ResourceTable::class, ['resource' => EndorsementRequestResource::class])
             ->assertCanSeeTableRecords([$endorsementRequest])
             ->assertTableActionHidden('approve', $endorsementRequest->id);
     }
@@ -75,11 +79,11 @@ class EndorsementRequestApprovalTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('endorsement-request.approve.*');
 
         Livewire::actingAs($this->panelUser);
-        Livewire::test(ListEndorsementRequests::class)
+        Livewire::test(ResourceTable::class, ['resource' => EndorsementRequestResource::class])
             ->assertCanSeeTableRecords([$endorsementRequest])
-            ->callTableAction('approve', record: $endorsementRequest->id, data: [
-                'type' => 'Permanent',
-            ]);
+            ->mountTableAction('approve', record: $endorsementRequest->id)
+            ->set('mountedActions.0.data.type', 'Permanent')
+            ->callMountedTableAction();
 
         $this->assertDatabaseHas('mship_account_endorsement', [
             'account_id' => $endorsementRequest->account_id,
@@ -108,13 +112,13 @@ class EndorsementRequestApprovalTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('endorsement-request.approve.*');
 
         Livewire::actingAs($this->panelUser);
-        Livewire::test(ListEndorsementRequests::class)
+        Livewire::test(ResourceTable::class, ['resource' => EndorsementRequestResource::class])
             ->assertCanSeeTableRecords([$endorsementRequest])
             ->assertTableActionVisible('approve', $endorsementRequest->id)
-            ->callTableAction('approve', $endorsementRequest->id, [
-                'type' => 'Temporary',
-                'days' => 7,
-            ])
+            ->mountTableAction('approve', $endorsementRequest->id)
+            ->set('mountedActions.0.data.type', 'Temporary')
+            ->set('mountedActions.0.data.days', 7)
+            ->callMountedTableAction()
             ->assertTableActionHidden('approve', $endorsementRequest->id);
 
         $this->assertDatabaseHas('endorsement_requests', [
@@ -140,13 +144,13 @@ class EndorsementRequestApprovalTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('endorsement-request.approve.*');
 
         Livewire::actingAs($this->panelUser);
-        Livewire::test(ListEndorsementRequests::class)
+        Livewire::test(ResourceTable::class, ['resource' => EndorsementRequestResource::class])
             ->assertCanSeeTableRecords([$endorsementRequest])
             ->assertTableActionVisible('approve', $endorsementRequest->id)
-            ->callTableAction('approve', $endorsementRequest->id, [
-                'type' => 'Temporary',
-                'days' => 7,
-            ])
+            ->mountTableAction('approve', $endorsementRequest->id)
+            ->set('mountedActions.0.data.type', 'Temporary')
+            ->set('mountedActions.0.data.days', 7)
+            ->callMountedTableAction()
             ->assertTableActionHidden('approve', $endorsementRequest->id);
 
         $this->assertDatabaseHas('endorsement_requests', [
@@ -168,7 +172,7 @@ class EndorsementRequestApprovalTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('endorsement-request.approve.*');
 
         Livewire::actingAs($this->panelUser);
-        Livewire::test(ListEndorsementRequests::class)
+        Livewire::test(ResourceTable::class, ['resource' => EndorsementRequestResource::class])
             ->assertCanSeeTableRecords([$endorsementRequest])
             ->assertTableActionVisible('approve', record: $endorsementRequest)
             ->mountTableAction('approve', record: $endorsementRequest)
@@ -189,8 +193,11 @@ class EndorsementRequestApprovalTest extends BaseTrainingPanelTestCase
             'endorsable_id' => Position::factory()->create()->id,
         ]);
 
-        Livewire::actingAs($this->panelUser);
-        Livewire::test(ListEndorsementRequests::class)
+        $userWithoutPermission = Account::factory()->createQuietly();
+        $userWithoutPermission->givePermissionTo('endorsement-request.access');
+
+        Livewire::actingAs($userWithoutPermission);
+        Livewire::test(ResourceTable::class, ['resource' => EndorsementRequestResource::class])
             ->assertCanSeeTableRecords([$endorsementRequest])
             ->assertTableActionHidden('approve', $endorsementRequest->id);
     }
