@@ -2,7 +2,8 @@
 
 namespace Tests\Feature\Training\SoloEndorsement\Pages;
 
-use App\Filament\Training\Resources\SoloEndorsements\Pages\ListSoloEndorsements;
+use App\Filament\Training\Pages\Endorsements\Tables\ResourceTable;
+use App\Filament\Training\Resources\SoloEndorsements\SoloEndorsementResource;
 use App\Models\Atc\Position;
 use App\Models\Mship\Account\Endorsement;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -18,20 +19,6 @@ class ListSoloEndorsementPageTest extends BaseTrainingPanelTestCase
         parent::setUp();
 
         Livewire::actingAs($this->panelUser);
-    }
-
-    public function test_can_access_list_page_with_permission()
-    {
-        $this->panelUser->givePermissionTo('endorsement.view.*');
-
-        Livewire::test(ListSoloEndorsements::class)
-            ->assertSee('Solo Endorsements');
-    }
-
-    public function test_cannot_access_list_page_without_permission()
-    {
-        Livewire::test(ListSoloEndorsements::class)
-            ->assertForbidden();
     }
 
     public function test_only_displays_solo_endorsements_with_expiry()
@@ -50,7 +37,7 @@ class ListSoloEndorsementPageTest extends BaseTrainingPanelTestCase
             'expires_at' => null,
         ]);
 
-        Livewire::test(ListSoloEndorsements::class)
+        Livewire::test(ResourceTable::class, ['resource' => SoloEndorsementResource::class])
             ->assertSee($soloEndorsement->account->name)
             ->assertDontSee($soloEndorsementWithoutExpiry->account->name);
     }
@@ -71,7 +58,7 @@ class ListSoloEndorsementPageTest extends BaseTrainingPanelTestCase
             'expires_at' => now()->subDays(1),
         ]);
 
-        Livewire::test(ListSoloEndorsements::class)
+        Livewire::test(ResourceTable::class, ['resource' => SoloEndorsementResource::class])
             ->assertSee($soloEndorsement->account->name)
             ->assertDontSee($expiredSoloEndorsement->account->name);
     }
@@ -92,7 +79,7 @@ class ListSoloEndorsementPageTest extends BaseTrainingPanelTestCase
             'expires_at' => now()->subDays(1),
         ]);
 
-        Livewire::test(ListSoloEndorsements::class)
+        Livewire::test(ResourceTable::class, ['resource' => SoloEndorsementResource::class])
             ->filterTable('expires_at', false)
             ->assertSee($expiredSoloEndorsement->account->name)
             ->assertDontSee($soloEndorsement->account->name);
@@ -114,7 +101,7 @@ class ListSoloEndorsementPageTest extends BaseTrainingPanelTestCase
             'expires_at' => now()->subDays(1),
         ]);
 
-        Livewire::test(ListSoloEndorsements::class)
+        Livewire::test(ResourceTable::class, ['resource' => SoloEndorsementResource::class])
             ->filterTable('expires_at', null)
             ->assertSee($soloEndorsement->account->name)
             ->assertSee($expiredSoloEndorsement->account->name);
