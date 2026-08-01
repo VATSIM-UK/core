@@ -6,7 +6,7 @@ use Filament\Pages\Page;
 
 class MyExams extends Page
 {
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clock';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-academic-cap';
 
     protected string $view = 'filament.training.pages.my-training.my-exams';
 
