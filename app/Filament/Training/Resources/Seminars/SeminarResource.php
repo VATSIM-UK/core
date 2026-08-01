@@ -50,6 +50,16 @@ class SeminarResource extends Resource
         return auth()->user()->can('training.seminars.manage.*');
     }
 
+    public static function canEdit($record): bool
+    {
+        return auth()->user()->can('training.seminars.manage.*');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()->can('training.seminars.manage.*');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
