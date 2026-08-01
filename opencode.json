@@ -1,0 +1,63 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "context7": {
+      "command": [
+        "npx",
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "enabled": true,
+      "type": "local"
+    },
+    "github": {
+      "enabled": true,
+      "oauth": {},
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp"
+    },
+    "laravel-boost": {
+      "command": [
+        "php",
+        "artisan",
+        "boost:mcp"
+      ],
+      "enabled": true,
+      "type": "local"
+    },
+    "linear": {
+      "enabled": true,
+      "oauth": {},
+      "type": "remote",
+      "url": "https://mcp.linear.app/mcp"
+    },
+    "mysql": {
+      "command": [
+        "npx",
+        "-y",
+        "@benborla29/mcp-server-mysql"
+      ],
+      "enabled": true,
+      "environment": {
+        "ALLOW_DELETE_OPERATION": "true",
+        "ALLOW_INSERT_OPERATION": "true",
+        "ALLOW_UPDATE_OPERATION": "true",
+        "MYSQL_DISABLE_READ_ONLY_TRANSACTIONS": "true",
+        "MYSQL_HOST": "127.0.0.1",
+        "MYSQL_PASS": "root",
+        "MYSQL_PORT": "3306",
+        "MYSQL_USER": "root"
+      },
+      "type": "local"
+    },
+    "playwright": {
+      "command": [
+        "npx",
+        "-y",
+        "@playwright/mcp@latest"
+      ],
+      "enabled": true,
+      "type": "local"
+    }
+  }
+}
