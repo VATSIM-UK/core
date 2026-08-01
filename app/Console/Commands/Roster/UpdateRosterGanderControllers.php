@@ -32,6 +32,7 @@ class UpdateRosterGanderControllers extends Command
         $ganderValidatedAccountIds = $ganderResponse
             ->collect()
             ->where('active', true)
+            ->where('certification', 'certified')
             ->pluck('cid');
 
         DB::transaction(function () use ($ganderValidatedAccountIds) {
