@@ -1,7 +1,6 @@
 Fixes #[issue_no]
 
-## Dependencies
-<!-- If this PR depends on another PR being merged first, note it here, e.g. "Depends on #123" -->
+Depends on #[issue_no]
 
 # Summary of changes
 
