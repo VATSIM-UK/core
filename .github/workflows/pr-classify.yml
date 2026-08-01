@@ -56,7 +56,7 @@ jobs:
 
       - name: Apply labels
         if: steps.size_check.outputs.skip != 'true'
-        run: node .github/scripts/apply-pr-labels.js
+        run: python3 .github/scripts/apply-pr-labels.py
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
