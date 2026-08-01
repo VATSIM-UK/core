@@ -5,6 +5,7 @@ import subprocess
 import sys
 
 VALID_TYPES = {"feature", "fix", "chore", "docs", "refactor", "test"}
+VALID_AREAS = {"membership", "admin", "training", "auth", "site", "atc", "roster", "api", "integrations", "infrastructure"}
 VALID_MISSING = {"tests", "copy", "docs", "migration"}
 
 output_file = os.environ.get("OPENCODE_OUTPUT")
@@ -52,6 +53,14 @@ def validate(classification: dict) -> dict:
     if t not in VALID_TYPES:
         raise ValueError(f'Invalid type: "{t}". Must be one of: {", ".join(sorted(VALID_TYPES))}')
 
+    areas = classification.get("area", [])
+    if not isinstance(areas, list):
+        raise ValueError("'area' must be an array")
+
+    for item in areas:
+        if item not in VALID_AREAS:
+            raise ValueError(f'Invalid area: "{item}". Must be one of: {", ".join(sorted(VALID_AREAS))}')
+
     missing = classification.get("missing", [])
     if not isinstance(missing, list):
         raise ValueError("'missing' must be an array")
@@ -62,6 +71,7 @@ def validate(classification: dict) -> dict:
 
     return {
         "type": t,
+        "area": list(set(areas)),
         "missing": list(set(missing)),
         "reasoning": classification.get("reasoning"),
     }
@@ -78,6 +88,7 @@ try:
     print("Classification:", json.dumps(classification))
 
     desired = {f"type:{classification['type']}"}
+    desired |= {f"area:{item}" for item in classification["area"]}
     desired |= {f"needs-{item}" for item in classification["missing"]}
     print("Desired labels:", desired)
 
@@ -85,7 +96,7 @@ try:
     current.discard("")
     print("Current labels:", current)
 
-    managed_prefixes = ("type:", "needs-")
+    managed_prefixes = ("type:", "area:", "needs-")
 
     for label in current:
         if label.startswith(managed_prefixes) and label not in desired:

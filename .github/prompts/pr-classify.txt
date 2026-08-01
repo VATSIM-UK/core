@@ -3,11 +3,23 @@ Respond with ONLY valid JSON, no markdown fences, no commentary. Schema:
 
 {
   "type": "feature" | "fix" | "chore" | "docs" | "refactor" | "test",
+  "area": ["membership" | "admin" | "training" | "auth" | "site" | "atc" | "roster" | "api" | "integrations" | "infrastructure", ...],
   "missing": ["tests" | "copy" | "docs" | "migration", ...],
   "reasoning": "one short sentence per item, for audit logs only"
 }
 
 Rules for "type": pick exactly one, the single best fit for the primary intent of the diff.
+Rules for "area": include one or more areas modified by the diff. Pick based on file paths:
+- "membership": Mship/ namespace (controllers, models, services, jobs), mship views
+- "admin": Filament/ namespace, admin resources/widgets, admin routes
+- "training": Training/ namespace (services, models, Livewire, jobs), training views
+- "auth": Auth/ controllers, auth/fortify config, authentication middleware
+- "site": Site/ controllers, public-facing views in resources/views/site/, public routes
+- "atc": Atc/ models and controllers, ATC bookings, position groups
+- "roster": Roster/ models and Livewire components, roster views
+- "api": Api/ and External/ controllers, api/web-external route files
+- "integrations": Discord/, TeamSpeak/, Cts/, UKCP/ namespaces, app/Libraries/
+- "infrastructure": config/, providers, middleware, events, listeners, enums, migrations, console commands, general jobs
 Rules for "missing": include an item only if you are reasonably confident the gap exists;
 when uncertain, omit it rather than guess — false positives create noise for reviewers.
 - "tests": substantive logic changes (controllers, services, jobs, listeners) with no
