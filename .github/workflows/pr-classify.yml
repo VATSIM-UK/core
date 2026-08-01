@@ -46,7 +46,6 @@ jobs:
         id: classify
         run: >
           opencode run
-          --format json
           --model opencode-go/deepseek-v4-flash
           "Classify this PR diff. Respond with only valid JSON matching the schema in the attached file. No markdown, no commentary."
           -f pr.diff

@@ -27,24 +27,24 @@ def gh(args: str, stdin: str | None = None) -> str:
     ).stdout.strip()
 
 
-def extract_response(filepath: str) -> str:
-    with open(filepath) as f:
-        content = f.read().strip()
+def extract_json(text: str) -> str:
+    text = re.sub(r"```(?:json)?\s*", "", text)
+    text = re.sub(r"```\s*", "", text).strip()
 
-    # Try last line as JSON event from opencode stream
-    try:
-        event = json.loads(content.split("\n")[-1])
-        if event.get("type") == "assistant" and isinstance(event.get("text"), str):
-            return event["text"].strip()
-    except (json.JSONDecodeError, IndexError):
-        pass
+    start = text.find("{")
+    if start == -1:
+        return text
 
-    # Fallback: find JSON object with "type" and "missing" keys
-    match = re.search(r'\{[^{}]*"type"\s*:\s*"[^"]+"[^{}]*"missing"\s*:[^{}]*\}', content)
-    if match:
-        return match.group(0).strip()
+    depth = 0
+    for i, ch in enumerate(text[start:], start):
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start : i + 1]
 
-    return content
+    return text
 
 
 def validate(classification: dict) -> dict:
@@ -68,13 +68,13 @@ def validate(classification: dict) -> dict:
 
 
 try:
-    raw = extract_response(output_file)
-    print("Extracted:", raw[:200])
+    with open(output_file) as f:
+        raw = f.read().strip()
 
-    cleaned = re.sub(r"```json\s*", "", raw)
-    cleaned = re.sub(r"```\s*", "", cleaned).strip()
+    json_str = extract_json(raw)
+    print("Extracted:", json_str[:200])
 
-    classification = validate(json.loads(cleaned))
+    classification = validate(json.loads(json_str))
     print("Classification:", json.dumps(classification))
 
     desired = {f"type:{classification['type']}"}
