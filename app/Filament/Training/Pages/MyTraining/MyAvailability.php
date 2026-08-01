@@ -41,7 +41,7 @@ class MyAvailability extends Page implements HasForms, HasTable
 
     protected static ?string $slug = 'my-training/availability';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 15;
 
     public ?array $data = [];
 

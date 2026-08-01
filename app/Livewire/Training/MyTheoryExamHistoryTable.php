@@ -1,23 +1,29 @@
 <?php
 
-namespace App\Filament\Training\Pages\MyTraining\Widgets;
+namespace App\Livewire\Training;
 
 use App\Filament\Training\Support\TheoryExamViewTrait;
 use App\Repositories\Cts\TheoryExamResultRepository;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Infolists\Concerns\InteractsWithInfolists;
+use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Filament\Widgets\TableWidget as BaseWidget;
+use Livewire\Component;
 
-class MyTheoryExamHistoryTable extends BaseWidget
+class MyTheoryExamHistoryTable extends Component implements HasActions, HasForms, HasInfolists, HasTable
 {
+    use InteractsWithActions;
+    use InteractsWithForms;
+    use InteractsWithInfolists;
+    use InteractsWithTable;
     use TheoryExamViewTrait;
-
-    protected static ?string $heading = 'Theory Exam History';
-
-    protected int|string|array $columnSpan = 'full';
-
-    protected static ?string $id = 'my-theory-exam-history-table';
 
     public function table(Table $table): Table
     {
@@ -25,6 +31,7 @@ class MyTheoryExamHistoryTable extends BaseWidget
         $user = auth()->user();
 
         return $table
+            ->heading('Theory Exam History')
             ->query(
                 $repo->getTheoryExamHistoryQueryForLevels(collect(['s1', 's2', 's3', 'c1']))->whereHas('student', fn ($q) => $q->where('cid', $user->id))
             )
@@ -47,5 +54,10 @@ class MyTheoryExamHistoryTable extends BaseWidget
                     ->modalHeading(fn ($record) => (($record->student?->account?->name) ?? 'Unknown')."'s {$record->exam} Theory Exam")
                     ->infolist($this->theoryExamInfoList()),
             ]);
+    }
+
+    public function render()
+    {
+        return view('livewire.training.my-theory-exam-history-table');
     }
 }
