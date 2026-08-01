@@ -12,6 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Check Dependencies
     steps:
-      - uses: gregsdennis/dependencies-action@main
+      - uses: gregsdennis/dependencies-action@a8cccab69814b9b985496cf97cbfe154c96c03c7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
