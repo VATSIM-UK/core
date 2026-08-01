@@ -43,9 +43,12 @@ class CheckForExpiredSeminarInvitationsCommandTest extends TestCase
             'expires_at' => now()->subDay(),
         ]);
 
-        $exitCode = $this->artisan('training:check-for-expired-seminar-invitations')->run();
+        $this->artisan('training:check-for-expired-seminar-invitations')->run();
 
-        $this->assertEquals(0, $exitCode);
+        $this->assertDatabaseHas('training_seminar_invitations', [
+            'seminar_id' => $seminar->id,
+            'status' => SeminarInvitationStatus::RemovedNoResponse->value,
+        ]);
     }
 
     #[Test]
