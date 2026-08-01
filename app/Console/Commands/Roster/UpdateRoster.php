@@ -62,7 +62,7 @@ class UpdateRoster extends Command
 
         // Automatically mark those on the Gander Oceanic roster as eligible
         try {
-            $ganderResponse = Http::get(config('services.gander-oceanic.api.base').'/roster');
+            $ganderResponse = Http::withUserAgent('VATSIM UK')->get(config('services.gander-oceanic.api.base').'/roster');
         } catch (\Exception $e) {
             Log::error('Gander roster fetch failed', ['exception' => $e]);
             $ganderResponse = null;

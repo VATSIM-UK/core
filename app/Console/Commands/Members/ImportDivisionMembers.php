@@ -99,7 +99,7 @@ class ImportDivisionMembers extends Command
 
         $response = Http::withHeaders([
             'Authorization' => "Token $token",
-        ])->withUserAgent('VATSIMUK')
+        ])->withUserAgent('VATSIM UK')
             ->get(config('services.vatsim-net.api.base').'orgs/division/GBR', [
                 'limit' => $this->limit,
                 'offset' => $this->offset,
