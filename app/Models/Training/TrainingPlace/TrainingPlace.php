@@ -35,7 +35,12 @@ class TrainingPlace extends Model
      */
     public const AVAILABILITY_CHECK_GRACE_PERIOD_HOURS = 48;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'account_id',
+        'waiting_list_account_id',
+        'trainable_type',
+        'trainable_id',
+    ];
 
     public function waitingListAccount(): BelongsTo
     {
