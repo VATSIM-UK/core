@@ -21,7 +21,7 @@ class UpdateRosterGanderControllers extends Command
 
     public function handle()
     {
-        $ganderResponse = Http::get(config('services.gander-oceanic.api.base').'/roster');
+        $ganderResponse = Http::withUserAgent('VATSIM-UK')->get(config('services.gander-oceanic.api.base').'/roster');
 
         if ($ganderResponse->failed()) {
             Log::error('Gander roster fetch failed', ['status' => $ganderResponse->status()]);
