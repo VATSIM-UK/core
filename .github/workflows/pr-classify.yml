@@ -1,0 +1,63 @@
+name: PR Type + Completeness Labeling
+
+on:
+  pull_request:
+    types: [opened]
+
+concurrency:
+  group: pr-classify-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  classify:
+    if: >
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install OpenCode
+        run: curl -fsSL https://opencode.ai/install | bash
+
+      - name: Get PR diff
+        run: gh pr diff ${{ github.event.pull_request.number }} > pr.diff
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Skip large diffs
+        id: size_check
+        run: |
+          size=$(stat -c%s pr.diff)
+          echo "diff_size=$size" >> $GITHUB_OUTPUT
+          if [ "$size" -gt 100000 ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "Diff too large ($size bytes), skipping classification"
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Classify PR
+        if: steps.size_check.outputs.skip != 'true'
+        id: classify
+        run: >
+          opencode run
+          --model opencode-go/deepseek-v4-flash
+          "Classify this PR diff. Respond with only valid JSON matching the schema in the attached file. No markdown, no commentary."
+          -f pr.diff
+          -f .github/prompts/pr-classify.txt
+          > opencode_output.json
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+
+      - name: Apply labels
+        if: steps.size_check.outputs.skip != 'true'
+        run: python3 .github/scripts/apply-pr-labels.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          OPENCODE_OUTPUT: opencode_output.json
