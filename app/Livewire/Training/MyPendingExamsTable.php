@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Training\Pages\MyTraining;
+namespace App\Livewire\Training;
 
 use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Models\Cts\ExamBooking;
@@ -9,42 +9,32 @@ use App\Services\Training\CancelPendingExamService;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
-use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Livewire\Component;
 use Spatie\CalendarLinks\Link;
 
-class MyPendingExams extends Page implements HasTable
+class MyPendingExamsTable extends Component implements HasActions, HasForms, HasTable
 {
     use AddToCalendar;
+    use InteractsWithActions;
+    use InteractsWithForms;
     use InteractsWithTable;
-
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clock';
-
-    protected string $view = 'filament.training.pages.my-training.my-pending-exams';
-
-    protected static string|\UnitEnum|null $navigationGroup = 'My Training';
-
-    protected static ?string $navigationLabel = 'My Pending Exams';
-
-    protected static ?string $slug = 'my-training/pending-exams';
-
-    protected static ?int $navigationSort = 10;
-
-    public static function canAccess(): bool
-    {
-        return auth()->user()?->can('training.access') ?? false;
-    }
 
     public function table(Table $table): Table
     {
         $user = auth()->user();
 
         return $table
+            ->heading('Pending Exams')
             ->query(
                 ExamBooking::query()
                     ->select('exam_book.*')
@@ -83,7 +73,7 @@ class MyPendingExams extends Page implements HasTable
                     })
                     ->placeholder('Not yet scheduled'),
             ])
-            ->actions([
+            ->recordActions([
                 $this->getCalendarActionGroup()
                     ->visible(fn (ExamBooking $record) => $record->taken),
                 ActionGroup::make([
@@ -137,5 +127,10 @@ class MyPendingExams extends Page implements HasTable
         \assert($record instanceof ExamBooking);
 
         return 'practical-exam-'.str($record->exam)->slug();
+    }
+
+    public function render()
+    {
+        return view('livewire.training.my-pending-exams-table');
     }
 }

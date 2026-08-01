@@ -4,7 +4,7 @@ namespace Tests\Feature\TrainingPanel\MyTraining;
 
 use App\Filament\Training\Pages\Exam\ExamHistory;
 use App\Filament\Training\Pages\Exam\ViewExamReport;
-use App\Filament\Training\Pages\MyTraining\MyExamHistory;
+use App\Filament\Training\Pages\MyTraining\MyExams;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\PracticalResult;
@@ -92,7 +92,7 @@ class MyTrainingPermissionsTest extends BaseTrainingPanelTestCase
         $this->studentAccount->givePermissionTo('training.access');
 
         Livewire::actingAs($this->studentAccount)
-            ->test(MyExamHistory::class)
+            ->test(MyExams::class)
             ->assertSuccessful();
     }
 
@@ -100,7 +100,7 @@ class MyTrainingPermissionsTest extends BaseTrainingPanelTestCase
     public function member_without_training_access_cannot_enter_the_training_panel(): void
     {
         Livewire::actingAs($this->studentAccount)
-            ->test(MyExamHistory::class)
+            ->test(MyExams::class)
             ->assertForbidden();
     }
 
@@ -110,7 +110,7 @@ class MyTrainingPermissionsTest extends BaseTrainingPanelTestCase
         $this->studentAccount->givePermissionTo('training.access');
 
         Livewire::actingAs($this->studentAccount)
-            ->test(MyExamHistory::class)
+            ->test(MyExams::class)
             ->assertSuccessful()
             ->assertDontSee($this->otherStudentAccount->name);
 
@@ -124,7 +124,7 @@ class MyTrainingPermissionsTest extends BaseTrainingPanelTestCase
         $emptyAccount->givePermissionTo('training.access');
 
         Livewire::actingAs($emptyAccount)
-            ->test(MyExamHistory::class)
+            ->test(MyExams::class)
             ->assertSuccessful()
             ->assertDontSee($this->studentAccount->name);
     }
@@ -138,13 +138,13 @@ class MyTrainingPermissionsTest extends BaseTrainingPanelTestCase
 
         // Student A sees their result, not student B's
         Livewire::actingAs($this->studentAccount)
-            ->test(MyExamHistory::class)
+            ->test(MyExams::class)
             ->assertSuccessful()
             ->assertDontSee($this->otherStudentAccount->name);
 
         // Student B sees their result, not student A's
         Livewire::actingAs($this->otherStudentAccount)
-            ->test(MyExamHistory::class)
+            ->test(MyExams::class)
             ->assertSuccessful()
             ->assertDontSee($this->studentAccount->name);
     }
