@@ -44,14 +44,14 @@ jobs:
       - name: Classify PR
         if: steps.size_check.outputs.skip != 'true'
         id: classify
-        run: |
-          opencode run \
-            --format json \
-            --model opencode-go/deepseek-v4-flash \
-            -f pr.diff \
-            -f .github/prompts/pr-classify.txt \
-            "Classify this PR diff and respond with only valid JSON matching the schema described in the attached file. No markdown fences, no commentary." \
-            > opencode_output.json
+        run: >
+          opencode run
+          --format json
+          --model opencode-go/deepseek-v4-flash
+          "Classify this PR diff. Respond with only valid JSON matching the schema in the attached file. No markdown, no commentary."
+          -f pr.diff
+          -f .github/prompts/pr-classify.txt
+          > opencode_output.json
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
 
