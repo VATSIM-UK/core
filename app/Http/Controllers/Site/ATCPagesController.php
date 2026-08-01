@@ -64,16 +64,31 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
 
             $gndPgId = $heathrowPositionGroups->get('Heathrow (GND)')?->id;
             $twrPgId = $heathrowPositionGroups->get('Heathrow (TWR)')?->id;
+            $appPgId = $heathrowPositionGroups->get('Heathrow (APP)')?->id;
 
-            $hasGndEndorsement = $gndPgId && in_array($gndPgId, $existingEndorsements);
-            $hasTwrEndorsement = $twrPgId && in_array($twrPgId, $existingEndorsements);
+            $holdsGnd = $gndPgId && in_array($gndPgId, $existingEndorsements);
+            $holdsTwr = $twrPgId && in_array($twrPgId, $existingEndorsements);
+            $holdsApp = $appPgId && in_array($appPgId, $existingEndorsements);
+
+            $hasGndEndorsement = $holdsGnd || $holdsTwr || $holdsApp;
+            $hasTwrEndorsement = $holdsTwr || $holdsApp;
 
             $endorsementProgress = [];
             $endorsementChain = ['Heathrow (GND)', 'Heathrow (TWR)', 'Heathrow (APP)'];
 
             foreach ($endorsementChain as $pgName) {
                 $pg = $heathrowPositionGroups->get($pgName);
-                if (! $pg || in_array($pg->id, $existingEndorsements)) {
+                if (! $pg) {
+                    continue;
+                }
+
+                $alreadyHeldOrSuperseded = match ($pgName) {
+                    'Heathrow (GND)' => $holdsGnd || $holdsTwr || $holdsApp,
+                    'Heathrow (TWR)' => $holdsTwr || $holdsApp,
+                    'Heathrow (APP)' => $holdsApp,
+                };
+
+                if ($alreadyHeldOrSuperseded) {
                     continue;
                 }
 

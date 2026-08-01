@@ -932,6 +932,39 @@ class HeathrowEndorsementProgressTest extends TestCase
             ->assertSee('0 / 10 Hrs');
     }
 
+    #[Test]
+    public function test_s3_user_holding_only_twr_endorsement_sees_app_bars_not_gnd()
+    {
+        $account = $this->createAccountWithQualification('S3');
+        $positionGroups = $this->createPositionGroups(['Heathrow (GND)', 'Heathrow (TWR)', 'Heathrow (APP)']);
+        $this->createEndorsement($account, $positionGroups['Heathrow (TWR)']);
+
+        $s3Qual = Qualification::code('S3')->firstOrFail();
+        $this->seedAppSessions($account, $s3Qual);
+
+        $this->actingAs($account)
+            ->get(route(self::ROUTE))
+            ->assertOk()
+            ->assertSee('Your Progress')
+            ->assertSee('Heathrow APP (S3+)')
+            ->assertSee('Total UK APP')
+            ->assertDontSee('Total UK DEL/GND/TWR')
+            ->assertDontSee('Total UK TWR');
+    }
+
+    #[Test]
+    public function test_s2_user_holding_only_twr_endorsement_sees_no_progress()
+    {
+        $account = $this->createAccountWithQualification('S2');
+        $positionGroups = $this->createPositionGroups(['Heathrow (GND)', 'Heathrow (TWR)']);
+        $this->createEndorsement($account, $positionGroups['Heathrow (TWR)']);
+
+        $this->actingAs($account)
+            ->get(route(self::ROUTE))
+            ->assertOk()
+            ->assertDontSee('Your Progress');
+    }
+
     private function createAccountWithQualification(string $code): Account
     {
         $account = Account::factory()->create();
