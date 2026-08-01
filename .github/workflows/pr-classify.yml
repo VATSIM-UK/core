@@ -49,7 +49,8 @@ jobs:
             --format json \
             --model opencode-go/deepseek-v4-flash \
             -f pr.diff \
-            "$(cat .github/prompts/pr-classify.txt)" \
+            -f .github/prompts/pr-classify.txt \
+            "Classify this PR diff and respond with only valid JSON matching the schema described in the attached file. No markdown fences, no commentary." \
             > opencode_output.json
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}

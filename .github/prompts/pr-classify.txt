@@ -19,5 +19,3 @@ when uncertain, omit it rather than guess — false positives create noise for r
   update to README.md, .github/CONTRIBUTING.md, or .github/setup.md in the diff.
 - "migration": model/schema changes with no accompanying migration file in the diff,
   or a migration with no corresponding model/factory change.
-
-Diff follows:
