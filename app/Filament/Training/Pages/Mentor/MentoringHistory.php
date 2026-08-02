@@ -123,12 +123,21 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
         $ctsPositions = $this->getVisibleCtsPositions();
 
+        $sessionsUserMentored = $sessionRepository
+            ->getSessionsForMentor($member->id);
+
+        if (empty($ctsPositions)) {
+            return $sessionsUserMentored
+                ->where('taken', 1)
+                ->where('taken_date', '<', now())
+                ->orderByDesc('taken_date')
+                ->orderByDesc('taken_from')
+                ->orderByDesc('id');
+        }
+
         $sessionsWithPermissions = $sessionRepository
             ->getAllAcceptedSessionsForPositionsQuery($ctsPositions)
             ->where('taken_date', '<', now());
-
-        $sessionsUserMentored = $sessionRepository
-            ->getSessionsForMentor($member->id);
 
         $sessionsUserMentoredFiltered = $sessionsUserMentored->whereIn('position', $ctsPositions);
 
