@@ -128,7 +128,6 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
         if (empty($ctsPositions)) {
             return $sessionsUserMentored
-                ->where('taken', 1)
                 ->where('taken_date', '<', now())
                 ->orderByDesc('taken_date')
                 ->orderByDesc('taken_from')
