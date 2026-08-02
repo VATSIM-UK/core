@@ -501,19 +501,14 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
     {
         \assert($record instanceof Session);
 
-        $sessionDate = Carbon::parse($record->taken_date)->format('Y-m-d');
-        $start = Carbon::parse("{$sessionDate} {$record->taken_from}");
-        $end = Carbon::parse("{$sessionDate} {$record->taken_to}");
-
-        if ($end->lte($start)) {
-            $end->addDay();
-        }
-
         $mentorName = $record->mentor?->name ?? 'Unknown';
 
-        return Link::create("Mentoring Session - {$record->position}", $start, $end)
-            ->description("Position: {$record->position}\nMentor: {$mentorName}")
-            ->address($record->position);
+        return $this->buildSessionLink(
+            $record,
+            "Mentoring Session - {$record->position}",
+            $record->position,
+            "Position: {$record->position}\nMentor: {$mentorName}"
+        );
     }
 
     protected function getCalendarIcsFilename(mixed $record): string
