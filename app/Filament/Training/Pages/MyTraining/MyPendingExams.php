@@ -123,13 +123,12 @@ class MyPendingExams extends Page implements HasTable
     {
         \assert($record instanceof ExamBooking);
 
-        $sessionDate = Carbon::parse($record->taken_date)->format('Y-m-d');
-        $start = Carbon::parse("{$sessionDate} {$record->taken_from}");
-        $end = Carbon::parse("{$sessionDate} {$record->taken_to}");
-
-        return Link::create("Practical Exam - {$record->exam}", $start, $end)
-            ->description("Exam Type: {$record->exam}\nPosition: {$record->position_1}")
-            ->address($record->position_1 ?? '');
+        return $this->buildExamBookingLink(
+            $record,
+            "Practical Exam - {$record->exam}",
+            $record->position_1,
+            "Exam Type: {$record->exam}\nPosition: {$record->position_1}"
+        );
     }
 
     protected function getCalendarIcsFilename(mixed $record): string
