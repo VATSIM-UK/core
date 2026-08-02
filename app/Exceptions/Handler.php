@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -77,6 +78,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $e)
     {
-        return parent::render($request, $e);
+        $response = parent::render($request, $e);
+
+        SecurityHeaders::addSecurityHeaders($response, $request instanceof HttpRequest ? $request : null);
+
+        return $response;
     }
 }

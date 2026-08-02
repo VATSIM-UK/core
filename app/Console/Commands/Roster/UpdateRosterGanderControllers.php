@@ -9,6 +9,7 @@ use App\Models\Roster;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class UpdateRosterGanderControllers extends Command
 {
@@ -20,9 +21,18 @@ class UpdateRosterGanderControllers extends Command
 
     public function handle()
     {
-        $ganderValidatedAccountIds = Http::get(config('services.gander-oceanic.api.base').'/roster')
+        $ganderResponse = Http::withUserAgent('VATSIM-UK')->get(config('services.gander-oceanic.api.base').'/roster');
+
+        if ($ganderResponse->failed()) {
+            Log::error('Gander roster fetch failed', ['status' => $ganderResponse->status()]);
+
+            return Command::FAILURE;
+        }
+
+        $ganderValidatedAccountIds = $ganderResponse
             ->collect()
             ->where('active', true)
+            ->where('certification', 'certified')
             ->pluck('cid');
 
         DB::transaction(function () use ($ganderValidatedAccountIds) {
@@ -71,5 +81,9 @@ class UpdateRosterGanderControllers extends Command
                 'created_by' => $this->ganderServiceAccount,
             ])->whereNotIn('account_id', $ganderValidatedAccountIds)->delete();
         });
+
+        Log::info('roster:gander completed', [
+            'ganderControllers' => $ganderValidatedAccountIds->count(),
+        ]);
     }
 }

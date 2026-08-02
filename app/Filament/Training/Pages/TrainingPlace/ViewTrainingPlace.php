@@ -29,6 +29,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
 {
@@ -238,6 +239,8 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
                 ->body('Exam setup for '.($trainingPosition->exam_callsign ?? $trainingPosition->position->callsign).' has been created.')
                 ->send();
         } catch (Exception $e) {
+            Log::error('Training place forward for exam failed', ['exception' => $e, 'training_place_id' => $this->trainingPlace->id]);
+
             Notification::make()
                 ->title('Error')
                 ->danger()

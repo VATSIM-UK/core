@@ -3,11 +3,9 @@
 namespace App\Models\VisitTransfer;
 
 use App\Exceptions\VisitTransfer\Facility\DuplicateFacilityNameException;
-use App\Models\Contact;
 use App\Models\Model;
 use App\Models\Mship\Qualification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Notifications\Notifiable;
 use Malahierba\PublicId\PublicId;
 
 /**
@@ -29,7 +27,6 @@ use Malahierba\PublicId\PublicId;
  * @property string|null $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|Application[] $applications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
- * @property-read \Illuminate\Database\Eloquent\Collection|Facility\Email[] $emails
  * @property-read string $public_id
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  *
@@ -63,7 +60,7 @@ use Malahierba\PublicId\PublicId;
  */
 class Facility extends Model
 {
-    use HasFactory, Notifiable, PublicId;
+    use HasFactory, PublicId;
 
     protected static $public_id_salt = 'vatsim-uk-visiting-transfer-facility';
 
@@ -112,17 +109,6 @@ class Facility extends Model
         'waiting_list_id',
     ];
 
-    public function routeNotificationForMail()
-    {
-        if ($this->emails->count() === 0) {
-            $contactKey = sprintf('%s_TRAINING', strtoupper($this->training_team));
-
-            return Contact::where('key', $contactKey)->first()->email;
-        } else {
-            return $this->emails->pluck('email');
-        }
-    }
-
     public static function isPossibleToVisitAtc()
     {
         return self::canVisit()->atc()->isOpen()->count() > 0;
@@ -152,34 +138,6 @@ class Facility extends Model
         if (strcasecmp(array_get($attributes, 'training_spaces', null), 'null') == 0) {
             $attributes['training_spaces'] = null;
         }
-
-        /*$input_emails = array_filter($attributes['acceptance_emails']);
-        shuffle($input_emails);
-        $current_emails = $this->emails()->get();
-
-        // We don't want these used down the line
-        unset($attributes['acceptance_emails']);
-
-        if (count($input_emails) == 0 && $current_emails->count() > 0) {
-            foreach ($current_emails as $email) {
-                $email->delete();
-            }
-
-            return parent::update($attributes, $options);
-        }
-
-        foreach ($input_emails as $key => $email) {
-            if (! $current_emails->contains('email', $email)) {
-                $new_email = new Facility\Email(['email' => $email]);
-                $this->emails()->save($new_email);
-            }
-        }
-
-        foreach ($current_emails as $email) {
-            if (array_search($email->email, $input_emails) === false) {
-                $email->delete();
-            }
-        }*/
 
         return parent::update($attributes, $options);
     }
@@ -245,11 +203,6 @@ class Facility extends Model
     public function applications()
     {
         return $this->hasMany(Application::class);
-    }
-
-    public function emails()
-    {
-        return $this->hasMany(Facility\Email::class);
     }
 
     public function addTrainingSpace()

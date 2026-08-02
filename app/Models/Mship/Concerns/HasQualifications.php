@@ -65,7 +65,7 @@ trait HasQualifications
     public function removeQualification(Qualification $qualification)
     {
         if ($this->hasQualification($qualification)) {
-            Log::info("Removing qualification {$qualification->code} from member {$this->id}");
+            Log::info('Removing qualification from member', ['qualification_code' => $qualification->code, 'account_id' => $this->id]);
 
             $memberQualificationPivot = $this->qualifications_pilot->where('code', $qualification->code)->first()->pivot;
 

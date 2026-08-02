@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Bans\Pages;
 
 use App\Filament\Admin\Helpers\Pages\BaseViewRecordPage;
+use App\Filament\Admin\Helpers\Pages\LogPageAccess;
 use App\Filament\Admin\Resources\Bans\BanResource;
 use App\Models\Mship\Note\Type;
 use App\Notifications\Mship\BanModified;
@@ -16,7 +17,14 @@ use Filament\Schemas\Components\Grid;
 
 class ViewBan extends BaseViewRecordPage
 {
+    use LogPageAccess;
+
     protected static string $resource = BanResource::class;
+
+    protected function getLogActionName(): string
+    {
+        return 'ViewBan';
+    }
 
     protected function getHeaderActions(): array
     {

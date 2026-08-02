@@ -13,14 +13,6 @@
 @source '../../../vendor/wire-elements/modal/resources/views/*.blade.php';
 @source '../../../storage/framework/views/*.php';
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
   *,
   ::after,
@@ -29,12 +21,41 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
   }
+
+  :root {
+    --nav-clearance-buffer: 8px;
+    --mobile-page-content-padding-top: 40px;
+    --mobile-fixed-nav-height: 90px;
+  }
+}
+
+/*
+  Tailwind's Preflight (base layer) resets list-style/padding on all ul/ol,
+  which strips bullets from rendered markdown content (syllabus, policy and
+  other <x-markdown> pages) that live inside `.page_content`. Restore them.
+
+  This sits in the `components` layer (not unlayered) on purpose: the
+  `components` layer beats Preflight's `base` layer, so markdown lists get
+  their markers back, while the `utilities` layer still wins over it — so
+  explicit list utilities like `list-none` (e.g. the dashboard lists) keep
+  working and are not forced back to bulleted.
+*/
+@layer components {
+  .page_content ul,
+  .page_content ol {
+    list-style: revert;
+    padding-left: revert;
+  }
 }
 
 .custom-scrollbar::-webkit-scrollbar {
     width: 8px;
     height: 8px;
 }
+[x-cloak] {
+    display: none !important;
+}
+
 .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
 }
@@ -47,4 +68,52 @@
 }
 .custom-scrollbar::-webkit-scrollbar-corner {
     background-color: transparent;
+}
+
+.nav-trigger {
+  @apply flex w-full items-center gap-1 border-0 px-4 py-[14px] text-base font-semibold text-white transition-colors hover:bg-nav-accent aria-expanded:bg-nav-accent lg:w-auto;
+}
+
+.nav-trigger-top {
+  @apply flex items-center gap-1 border-0 px-4 py-[14px] font-semibold text-white transition-colors hover:bg-nav-accent hover:no-underline focus:no-underline active:bg-nav-accent aria-expanded:bg-nav-accent;
+}
+
+.nav-mobile-toggle {
+  @apply inline-flex h-full flex-col items-center justify-center border-0 bg-transparent px-2.5 py-3 transition-colors hover:bg-nav-accent lg:hidden;
+}
+
+.nav-dropdown {
+  @apply min-w-[230px] border-0 bg-nav-accent py-5 lg:absolute lg:left-0 lg:top-full lg:z-50 lg:shadow-lg;
+}
+
+.nav-dropdown-right {
+  @apply absolute right-[5%] top-full z-50 min-w-[230px] border-0 bg-nav-accent py-5 shadow-lg;
+}
+
+.nav-dropdown-link {
+  @apply block px-5 py-1.5 text-white hover:bg-nav-hover-bg hover:text-nav-hover-text hover:no-underline focus:bg-nav-hover-bg focus:text-nav-hover-text focus:no-underline active:bg-nav-hover-bg active:text-nav-hover-text;
+}
+
+.nav-dropdown-link-static {
+  @apply block px-5 py-1.5 text-white;
+}
+
+.nav-dropdown-header {
+  @apply px-5 py-1.5 text-lg font-bold text-white;
+}
+
+.nav-dropdown-divider {
+  @apply my-1 border-t border-white/20;
+}
+
+.nav-dropdown-list {
+  @apply list-none px-0 py-0;
+}
+
+.nav-icon-link {
+  @apply border-0 px-4 py-[14px] text-white transition-colors hover:bg-nav-accent hover:no-underline focus:bg-nav-accent focus:no-underline active:bg-nav-accent;
+}
+
+.nav-chevron {
+  @apply ml-1 h-4 w-4 shrink-0;
 }

@@ -3,6 +3,7 @@
 namespace App\Filament\Training\Pages\Exam;
 
 use App\Enums\ExamResultEnum;
+use App\Filament\Forms\Components\TrainingRichEditor;
 use App\Filament\Training\Concerns\InteractsWithCtsRichEditorNotes;
 use App\Filament\Training\Concerns\InteractsWithTrainingConductAutosave;
 use App\Models\Cts\ExamBooking;
@@ -15,7 +16,7 @@ use App\Repositories\Cts\ExamAssessmentRepository;
 use App\Repositories\Cts\ExamResultRepository;
 use App\Services\Training\ExamResubmissionService;
 use Filament\Actions\Action;
-use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -171,7 +172,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     ->columnSpanFull()
                     ->schema([
                         $this->conductSessionRichEditor(
-                            RichEditor::make("form.{$criteria->id}.comments")
+                            TrainingRichEditor::make("form.{$criteria->id}.comments")
                                 ->label('Comments')
                                 ->default('<p></p>')
                                 ->columnSpan(9)
@@ -206,7 +207,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
             ->columnSpanFull()
             ->schema([
                 $this->conductSessionRichEditor(
-                    RichEditor::make('additional_comments')
+                    TrainingRichEditor::make('additional_comments')
                         ->label('Additional Comments')
                         ->disableToolbarButtons(['attachFiles', 'blockquote'])
                         ->columnSpan(9)
@@ -214,6 +215,9 @@ class ConductExam extends Page implements HasForms, HasInfolists
                             'style' => 'min-height: 200px;',
                         ]),
                     function ($state): void {
+                        if (is_array($state)) {
+                            $state = RichContentRenderer::make($state)->toUnsafeHtml();
+                        }
                         $this->additionalComments = $state;
                         $this->markDirty();
                     },

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Accounts\RelationManagers;
 
+use App\Filament\Admin\Helpers\Pages\LogRelationAccess;
 use Filament\Actions\ViewAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
@@ -10,7 +11,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class VisitTransferRelationManager extends RelationManager
 {
+    use LogRelationAccess;
+
     protected static string $relationship = 'visitTransferApplications';
+
+    protected function getLogActionName(): string
+    {
+        return 'ViewVisitTransferApplications';
+    }
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
