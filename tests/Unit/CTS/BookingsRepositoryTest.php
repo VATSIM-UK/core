@@ -80,6 +80,9 @@ class BookingsRepositoryTest extends TestCase
 
         $this->assertEquals([
             'id' => (string) $bookingTodayOne->id,
+            'source' => 'core',
+            'cts_booking_id' => null,
+            'position_id' => $bookingTodayOne->position_id,
             'date' => $this->today,
             'from' => '17:00',
             'to' => '19:00',
@@ -87,11 +90,16 @@ class BookingsRepositoryTest extends TestCase
             'type' => 'BK',
             'member' => [
                 'id' => (string) $member->id,
+                'cid' => (string) $member->id,
                 'name' => $member->name,
+                'display_name' => $member->name_first.' '.mb_substr($member->name_last, 0, 1).'.',
             ],
         ], (array) $bookings->get(0));
         $this->assertEquals([
             'id' => (string) $bookingTodayTwo->id,
+            'source' => 'core',
+            'cts_booking_id' => null,
+            'position_id' => $bookingTodayTwo->position_id,
             'date' => $this->today,
             'from' => '18:00',
             'to' => '20:00',
@@ -99,7 +107,9 @@ class BookingsRepositoryTest extends TestCase
             'type' => 'ME',
             'member' => [
                 'id' => (string) $member->id,
+                'cid' => (string) $member->id,
                 'name' => $member->name,
+                'display_name' => $member->name_first.' '.mb_substr($member->name_last, 0, 1).'.',
             ],
         ], (array) $bookings->get(1));
     }
@@ -129,12 +139,16 @@ class BookingsRepositoryTest extends TestCase
 
         $this->assertEquals([
             'id' => (string) $member->id,
+            'cid' => (string) $member->id,
             'name' => $member->name,
+            'display_name' => $member->name_first.' '.mb_substr($member->name_last, 0, 1).'.',
         ], $bookings->get(0)->member);
 
         $this->assertEquals([
             'id' => '',
+            'cid' => '',
             'name' => 'Hidden',
+            'display_name' => 'Hidden',
         ], $bookings->get(1)->member);
     }
 

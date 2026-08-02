@@ -70,6 +70,13 @@ class Booking extends Model
             ->where('ends_at', '>', $startsAt);
     }
 
+    public function scopeMemberOverlapping(Builder $query, Carbon $startsAt, Carbon $endsAt, int $memberId): Builder
+    {
+        return $query->where('member_id', $memberId)
+            ->where('starts_at', '<', $endsAt)
+            ->where('ends_at', '>', $startsAt);
+    }
+
     public function scopeOfType(Builder $query, string $type): Builder
     {
         return $query->where('type', $type);

@@ -8,13 +8,15 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/assets/sass/app.scss',
+                'resources/assets/sass/home.scss',
                 'resources/assets/css/tailwind.css',
                 'resources/assets/css/mship-dashboard.css',
+                'resources/assets/css/bookings-calendar.css',
+                'resources/assets/js/bookings-calendar.js',
                 'resources/assets/js/app.js',
-                'resources/assets/sass/home.scss',
                 'resources/assets/js/home.js',
                 'resources/assets/js/snow.js',
-                'resources/assets/js/top-notification.js'
+                'resources/assets/js/top-notification.js',
             ],
             refresh: [
                 ...refreshPaths,
