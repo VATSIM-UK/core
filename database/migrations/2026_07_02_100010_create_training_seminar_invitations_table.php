@@ -19,7 +19,6 @@ return new class extends Migration
                 'attending',
                 'not_interested',
                 'cannot_attend',
-                'expired',
                 'removed_no_response',
                 'removed_two_cannot_attend',
             ])->default('sent');
