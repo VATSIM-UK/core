@@ -85,7 +85,7 @@ class SeminarResource extends Resource
                 ->schema([
                     DatePicker::make('date')->required()->afterOrEqual('today')->minDate(Carbon::today()),
                     TimePicker::make('from')->seconds(false)->required(),
-                    TimePicker::make('to')->seconds(false)->required(),
+                    TimePicker::make('to')->seconds(false)->required()->after('from'),
                 ])->columns(3),
             Section::make('Invitation Settings')
                 ->schema([
