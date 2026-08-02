@@ -305,4 +305,127 @@ class BookingServiceTest extends TestCase
             'ends_at' => Carbon::tomorrow()->setHour(12),
         ]);
     }
+
+    #[Test]
+    public function it_rejects_booking_beyond_90_days(): void
+    {
+        // Member must be qualified for the position, otherwise validateMemberQualification
+        // (which runs before the policy checks) throws first and the test passes for the wrong reason.
+        $member = Account::factory()->withQualification()->create();
+        $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
+        $member->qualifications()->sync([$qual->id]);
+
+        $position = Position::factory()->create(['type' => Position::TYPE_DELIVERY]);
+
+        $this->expectException(\RuntimeException::class);
+
+        $this->service->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::now()->addDays(91)->setHour(10),
+            'ends_at' => Carbon::now()->addDays(91)->setHour(12),
+        ]);
+    }
+
+    #[Test]
+    public function it_does_not_enforce_policy_for_exam_bookings(): void
+    {
+        // Member must be qualified so the policy block runs; only the TYPE_STANDARD
+        // guard should exempt the exam booking from the advance-limit check.
+        $member = Account::factory()->withQualification()->create();
+        $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
+        $member->qualifications()->sync([$qual->id]);
+
+        $position = Position::factory()->create(['type' => Position::TYPE_DELIVERY]);
+
+        // A booking beyond 90 days but of type exam must not trip the advance-limit check.
+        $booking = $this->service->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_EXAM,
+            'starts_at' => Carbon::now()->addDays(91)->setHour(10),
+            'ends_at' => Carbon::now()->addDays(91)->setHour(12),
+        ]);
+
+        $this->assertInstanceOf(Booking::class, $booking);
+    }
+
+    #[Test]
+    public function it_rejects_update_beyond_90_days_for_standard_booking(): void
+    {
+        $member = Account::factory()->withQualification()->create();
+        $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
+        $member->qualifications()->sync([$qual->id]);
+
+        $position = Position::factory()->create(['type' => Position::TYPE_DELIVERY]);
+
+        $booking = $this->service->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::tomorrow()->setHour(10),
+            'ends_at' => Carbon::tomorrow()->setHour(12),
+        ]);
+
+        $this->expectException(\RuntimeException::class);
+
+        $this->service->update($booking, [
+            'starts_at' => Carbon::now()->addDays(91)->setHour(10),
+            'ends_at' => Carbon::now()->addDays(91)->setHour(12),
+        ]);
+    }
+
+    #[Test]
+    public function it_does_not_enforce_policy_when_updating_exam_booking(): void
+    {
+        $member = Account::factory()->withQualification()->create();
+        $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
+        $member->qualifications()->sync([$qual->id]);
+
+        $position = Position::factory()->create(['type' => Position::TYPE_DELIVERY]);
+
+        $booking = $this->service->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_EXAM,
+            'starts_at' => Carbon::tomorrow()->setHour(10),
+            'ends_at' => Carbon::tomorrow()->setHour(12),
+        ]);
+
+        $updated = $this->service->update($booking, [
+            'starts_at' => Carbon::now()->addDays(91)->setHour(10),
+            'ends_at' => Carbon::now()->addDays(91)->setHour(12),
+        ]);
+
+        $this->assertInstanceOf(Booking::class, $updated);
+    }
+
+    #[Test]
+    public function it_enforces_policy_when_non_standard_booking_becomes_standard(): void
+    {
+        // Member must be qualified so the policy block runs; only the type
+        // flip should cause the advance-limit check to fire on update.
+        $member = Account::factory()->withQualification()->create();
+        $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
+        $member->qualifications()->sync([$qual->id]);
+
+        $position = Position::factory()->create(['type' => Position::TYPE_DELIVERY]);
+
+        // Exam bookings are exempt from policy, so this can sit beyond the
+        // advance window.
+        $booking = $this->service->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_EXAM,
+            'starts_at' => Carbon::now()->addDays(91)->setHour(10),
+            'ends_at' => Carbon::now()->addDays(91)->setHour(12),
+        ]);
+
+        $this->expectException(\RuntimeException::class);
+
+        // Flipping to standard with the same times must now trip the advance
+        // limit check, even though nothing else on the booking changed.
+        $this->service->update($booking, ['type' => Booking::TYPE_STANDARD]);
+    }
 }

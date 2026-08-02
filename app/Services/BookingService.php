@@ -8,12 +8,17 @@ use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Mship\Account;
+use App\Services\Bookings\BookingPolicy;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class BookingService
 {
+    public function __construct(
+        private readonly BookingPolicy $policy,
+    ) {}
+
     public function create(array $data): Booking
     {
         if ($data['position_id'] !== null) {
@@ -35,6 +40,22 @@ class BookingService
                 $this->validateMemberQualification(
                     $data['member_id'],
                     $data['position_id']
+                );
+
+                $this->policy->validateAdvanceBookingLimits(
+                    $data['member_id'],
+                    Carbon::parse($data['starts_at'])
+                );
+                $this->policy->validateGatwickLimit($data['member_id']);
+                $this->policy->validateMinimumNotice(
+                    $data['member_id'],
+                    $data['position_id'],
+                    Carbon::parse($data['starts_at'])
+                );
+                $this->policy->validateFutureQualification(
+                    $data['member_id'],
+                    $data['position_id'],
+                    Carbon::parse($data['starts_at'])
                 );
             }
         }
@@ -58,8 +79,19 @@ class BookingService
             $this->validateMemberOverlap($startsAt, $endsAt, $memberId, $booking->id);
         }
 
-        if ($memberId !== null && $positionId !== null && $type === Booking::TYPE_STANDARD && ($positionId !== $booking->position_id || $memberId !== $booking->member_id)) {
+        $bookingChanged = $positionId !== $booking->position_id
+            || $memberId !== $booking->member_id
+            || $startsAt->ne($booking->starts_at)
+            || $endsAt->ne($booking->ends_at)
+            || $type !== $booking->type;
+
+        if ($memberId !== null && $positionId !== null && $type === Booking::TYPE_STANDARD && $bookingChanged) {
             $this->validateMemberQualification($memberId, $positionId);
+
+            $this->policy->validateAdvanceBookingLimits($memberId, $startsAt, $booking->id);
+            $this->policy->validateGatwickLimit($memberId, $booking->id);
+            $this->policy->validateMinimumNotice($memberId, $positionId, $startsAt);
+            $this->policy->validateFutureQualification($memberId, $positionId, $startsAt);
         }
 
         $booking->update($data);

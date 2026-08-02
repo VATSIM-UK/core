@@ -34,25 +34,7 @@ class BookingPolicy
             ->when($excludeBookingId !== null, fn (Builder $q) => $q->where('id', '!=', $excludeBookingId))
             ->count();
 
-        $importedCtsIds = Booking::query()
-            ->where('member_id', $memberId)
-            ->whereNotNull('cts_booking_id')
-            ->pluck('cts_booking_id')
-            ->map(fn ($id) => (int) $id)
-            ->values()
-            ->all();
-
-        $ctsMember = CtsMember::where('cid', $memberId)->first();
-        $ctsCount = 0;
-        if ($ctsMember) {
-            $ctsCount = CtsBooking::query()
-                ->where('member_id', $ctsMember->id)
-                ->where('type', 'BK')
-                ->when(! empty($importedCtsIds), fn (Builder $q) => $q->whereNotIn('id', $importedCtsIds))
-                ->get()
-                ->filter(fn (CtsBooking $b) => $this->ctsStartsAfterCutoff($b, $cutoff))
-                ->count();
-        }
+        $ctsCount = $this->countCtsAdvanceBookings($memberId, $cutoff);
 
         if ($coreCount + $ctsCount >= $maxBookings) {
             throw new \RuntimeException("You can have a maximum of {$maxBookings} advance bookings.");
@@ -79,28 +61,11 @@ class BookingPolicy
             })
             ->count();
 
-        $importedCtsIds = Booking::query()
-            ->where('member_id', $memberId)
-            ->whereNotNull('cts_booking_id')
-            ->pluck('cts_booking_id')
-            ->map(fn ($id) => (int) $id)
-            ->values()
-            ->all();
-
-        $ctsMember = CtsMember::where('cid', $memberId)->first();
-        $ctsCount = 0;
-        if ($ctsMember) {
-            $ctsCount = CtsBooking::query()
-                ->where('member_id', $ctsMember->id)
-                ->where('type', 'BK')
-                ->when(! empty($importedCtsIds), fn (Builder $q) => $q->whereNotIn('id', $importedCtsIds))
-                ->get()
-                ->filter(function (CtsBooking $b) use ($patterns, $cutoff) {
-                    return $this->matchesGatwickPattern($b->position, $patterns)
-                        && $this->ctsStartsAfterCutoff($b, $cutoff);
-                })
-                ->count();
-        }
+        $ctsCount = $this->countCtsAdvanceBookings(
+            $memberId,
+            $cutoff,
+            fn (CtsBooking $b) => $this->matchesGatwickPattern($b->position, $patterns)
+        );
 
         if ($coreCount + $ctsCount >= $maxGatwick) {
             throw new \RuntimeException("You can have a maximum of {$maxGatwick} Gatwick Ground or Delivery bookings.");
@@ -125,7 +90,7 @@ class BookingPolicy
             ->exists();
 
         if (! $controllingNow) {
-            throw new \RuntimeException('You must be currently controlling this position to book less than two hours in advance.');
+            throw new \RuntimeException("You must be currently controlling this position to book less than {$minAdvanceHours} hours in advance.");
         }
     }
 
@@ -139,16 +104,53 @@ class BookingPolicy
                 throw new \RuntimeException('You do not meet the conditions for this position.');
             }
 
-            $activeEndorsement = $member->endorsements->first(
+            $groupEndorsements = $member->endorsements->filter(
                 fn ($endorsement) => $endorsement->endorsable_type === PositionGroup::class
                     && (int) $endorsement->endorsable_id === (int) $group->id
-                    && ($endorsement->expires_at === null || $endorsement->expires_at->gt($startsAt))
+            );
+
+            $activeEndorsement = $groupEndorsements->first(
+                fn ($endorsement) => $endorsement->expires_at === null || $endorsement->expires_at->gt($startsAt)
             );
 
             if (! $activeEndorsement) {
+                if ($groupEndorsements->isEmpty()) {
+                    throw new \RuntimeException('You do not have a valid endorsement for this position.');
+                }
+
                 throw new \RuntimeException('Your endorsement for this position will have expired by the booked time.');
             }
         }
+    }
+
+    private function countCtsAdvanceBookings(int $memberId, Carbon $cutoff, ?callable $predicate = null): int
+    {
+        $importedCtsIds = Booking::query()
+            ->where('member_id', $memberId)
+            ->whereNotNull('cts_booking_id')
+            ->pluck('cts_booking_id')
+            ->map(fn ($id) => (int) $id)
+            ->values()
+            ->all();
+
+        $ctsMember = CtsMember::where('cid', $memberId)->first();
+        if (! $ctsMember) {
+            return 0;
+        }
+
+        return CtsBooking::query()
+            ->where('member_id', $ctsMember->id)
+            ->where('type', 'BK')
+            ->when(! empty($importedCtsIds), fn (Builder $q) => $q->whereNotIn('id', $importedCtsIds))
+            ->get()
+            ->filter(function (CtsBooking $b) use ($cutoff, $predicate) {
+                if ($predicate !== null && ! $predicate($b)) {
+                    return false;
+                }
+
+                return $this->ctsStartsAfterCutoff($b, $cutoff);
+            })
+            ->count();
     }
 
     private function matchesGatwickPattern(string $callsign, array $patterns): bool

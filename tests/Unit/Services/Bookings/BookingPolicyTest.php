@@ -399,6 +399,8 @@ class BookingPolicyTest extends TestCase
 
         $this->expectException(\RuntimeException::class);
 
+        $this->expectExceptionMessage(config('bookings.min_advance_hours').' hours in advance');
+
         $this->policy->validateMinimumNotice(
             $account->id,
             $position->id,
@@ -551,5 +553,24 @@ class BookingPolicyTest extends TestCase
         );
 
         $this->assertTrue(true);
+    }
+
+    #[Test]
+    public function it_rejects_when_member_has_no_endorsement_for_the_group(): void
+    {
+        $account = Account::factory()->create();
+        $position = Position::factory()->create();
+
+        $group = \App\Models\Atc\PositionGroup::factory()->create();
+        $group->positions()->attach($position);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('do not have a valid endorsement');
+
+        $this->policy->validateFutureQualification(
+            $account->id,
+            $position->id,
+            Carbon::now()->addDay(),
+        );
     }
 }
