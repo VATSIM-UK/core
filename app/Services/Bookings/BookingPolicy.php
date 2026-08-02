@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Bookings;
 
+use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\Member as CtsMember;
@@ -101,6 +102,28 @@ class BookingPolicy
 
         if ($coreCount + $ctsCount >= $maxGatwick) {
             throw new \RuntimeException("You can have a maximum of {$maxGatwick} Gatwick Ground or Delivery bookings.");
+        }
+    }
+
+    public function validateMinimumNotice(int $memberId, int $positionId, Carbon $startsAt): void
+    {
+        $minAdvanceHours = (int) config('bookings.min_advance_hours', 2);
+
+        if ($startsAt->gte(Carbon::now()->addHours($minAdvanceHours))) {
+            return;
+        }
+
+        $position = Position::findOrFail($positionId);
+
+        $controllingNow = \App\Models\NetworkData\Atc::query()
+            ->where('account_id', $memberId)
+            ->whereNull('disconnected_at')
+            ->where('callsign', $position->callsign)
+            ->where('connected_at', '<=', $startsAt)
+            ->exists();
+
+        if (! $controllingNow) {
+            throw new \RuntimeException('You must be currently controlling this position to book less than two hours in advance.');
         }
     }
 

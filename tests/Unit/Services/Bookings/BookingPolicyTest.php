@@ -390,4 +390,101 @@ class BookingPolicyTest extends TestCase
 
         $this->policy->validateGatwickLimit($account->id);
     }
+
+    #[Test]
+    public function it_rejects_a_booking_less_than_two_hours_in_advance(): void
+    {
+        $account = Account::factory()->create();
+        $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+
+        $this->expectException(\RuntimeException::class);
+
+        $this->policy->validateMinimumNotice(
+            $account->id,
+            $position->id,
+            Carbon::now()->addHour(),
+        );
+    }
+
+    #[Test]
+    public function it_allows_a_booking_within_two_hours_when_controlling_the_position(): void
+    {
+        $account = Account::factory()->create();
+        $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+
+        factory(\App\Models\NetworkData\Atc::class)->create([
+            'account_id' => $account->id,
+            'callsign' => 'EGKK_TWR',
+            'connected_at' => Carbon::now()->subHour(),
+            'disconnected_at' => null,
+        ]);
+
+        $this->policy->validateMinimumNotice(
+            $account->id,
+            $position->id,
+            Carbon::now()->addMinutes(30),
+        );
+
+        $this->assertTrue(true);
+    }
+
+    #[Test]
+    public function it_rejects_an_extend_within_two_hours_when_controlling_a_different_position(): void
+    {
+        $account = Account::factory()->create();
+        $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+        Position::factory()->create(['callsign' => 'EGKK_APP']);
+
+        factory(\App\Models\NetworkData\Atc::class)->create([
+            'account_id' => $account->id,
+            'callsign' => 'EGKK_APP',
+            'connected_at' => Carbon::now()->subHour(),
+            'disconnected_at' => null,
+        ]);
+
+        $this->expectException(\RuntimeException::class);
+
+        $this->policy->validateMinimumNotice(
+            $account->id,
+            $position->id,
+            Carbon::now()->addMinutes(30),
+        );
+    }
+
+    #[Test]
+    public function it_rejects_an_extend_within_two_hours_when_session_has_ended(): void
+    {
+        $account = Account::factory()->create();
+        $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+
+        factory(\App\Models\NetworkData\Atc::class)->states('offline')->create([
+            'account_id' => $account->id,
+            'callsign' => 'EGKK_TWR',
+            'connected_at' => Carbon::now()->subHours(3),
+            'disconnected_at' => Carbon::now()->subHours(2),
+        ]);
+
+        $this->expectException(\RuntimeException::class);
+
+        $this->policy->validateMinimumNotice(
+            $account->id,
+            $position->id,
+            Carbon::now()->addMinutes(30),
+        );
+    }
+
+    #[Test]
+    public function it_allows_a_booking_two_or_more_hours_in_advance_without_controlling(): void
+    {
+        $account = Account::factory()->create();
+        $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+
+        $this->policy->validateMinimumNotice(
+            $account->id,
+            $position->id,
+            Carbon::now()->addHours(3),
+        );
+
+        $this->assertTrue(true);
+    }
 }
