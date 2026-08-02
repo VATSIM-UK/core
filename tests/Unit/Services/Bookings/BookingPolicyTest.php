@@ -285,4 +285,109 @@ class BookingPolicyTest extends TestCase
 
         $this->assertTrue(true);
     }
+
+    #[Test]
+    public function it_rejects_a_third_gatwick_ground_or_delivery_booking(): void
+    {
+        $account = Account::factory()->create();
+        Position::factory()->create(['callsign' => 'EGKK_GND']);
+        Position::factory()->create(['callsign' => 'EGKK_DEL']);
+
+        Booking::create([
+            'position_id' => Position::where('callsign', 'EGKK_GND')->first()->id,
+            'member_id' => $account->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::now()->addDays(1)->setHour(10),
+            'ends_at' => Carbon::now()->addDays(1)->setHour(12),
+        ]);
+
+        Booking::create([
+            'position_id' => Position::where('callsign', 'EGKK_DEL')->first()->id,
+            'member_id' => $account->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::now()->addDays(2)->setHour(10),
+            'ends_at' => Carbon::now()->addDays(2)->setHour(12),
+        ]);
+
+        $this->expectException(\RuntimeException::class);
+
+        $this->policy->validateGatwickLimit($account->id);
+    }
+
+    #[Test]
+    public function it_allows_two_gatwick_bookings(): void
+    {
+        $account = Account::factory()->create();
+        Position::factory()->create(['callsign' => 'EGKK_GND']);
+        Position::factory()->create(['callsign' => 'EGKK_DEL']);
+
+        Booking::create([
+            'position_id' => Position::where('callsign', 'EGKK_GND')->first()->id,
+            'member_id' => $account->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::now()->addDays(1)->setHour(10),
+            'ends_at' => Carbon::now()->addDays(1)->setHour(12),
+        ]);
+
+        $this->policy->validateGatwickLimit($account->id);
+
+        $this->assertTrue(true);
+    }
+
+    #[Test]
+    public function it_counts_gatwick_split_suffixes(): void
+    {
+        $account = Account::factory()->create();
+        Position::factory()->create(['callsign' => 'EGKK_GND_1']);
+        Position::factory()->create(['callsign' => 'EGKK_DEL_1']);
+
+        Booking::create([
+            'position_id' => Position::where('callsign', 'EGKK_GND_1')->first()->id,
+            'member_id' => $account->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::now()->addDays(1)->setHour(10),
+            'ends_at' => Carbon::now()->addDays(1)->setHour(12),
+        ]);
+
+        Booking::create([
+            'position_id' => Position::where('callsign', 'EGKK_DEL_1')->first()->id,
+            'member_id' => $account->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::now()->addDays(2)->setHour(10),
+            'ends_at' => Carbon::now()->addDays(2)->setHour(12),
+        ]);
+
+        $this->expectException(\RuntimeException::class);
+
+        $this->policy->validateGatwickLimit($account->id);
+    }
+
+    #[Test]
+    public function it_counts_gatwick_cts_bookings_via_cid(): void
+    {
+        $account = Account::factory()->create();
+        $ctsMember = $this->makeCtsMember($account);
+
+        CtsBooking::factory()->create([
+            'member_id' => $ctsMember->id,
+            'type' => 'BK',
+            'position' => 'EGKK_GND',
+            'date' => Carbon::now()->addDays(1)->toDateString(),
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        CtsBooking::factory()->create([
+            'member_id' => $ctsMember->id,
+            'type' => 'BK',
+            'position' => 'EGKK_DEL',
+            'date' => Carbon::now()->addDays(2)->toDateString(),
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        $this->expectException(\RuntimeException::class);
+
+        $this->policy->validateGatwickLimit($account->id);
+    }
 }
