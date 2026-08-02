@@ -12,12 +12,15 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class WaitingListRelationManager extends RelationManager
 {
     protected static string $relationship = 'waitingListAccounts';
 
     protected static ?string $title = 'Waiting List';
+
+    private ?Collection $invitationsByAccountId = null;
 
     public function table(Table $table): Table
     {
@@ -29,6 +32,12 @@ class WaitingListRelationManager extends RelationManager
                 TextColumn::make('account.name')->label('Name')->searchable(['name_first', 'name_last']),
                 IconColumn::make('theory_exam_passed')->label('Theory Passed')->boolean(),
                 TextColumn::make('created_at')->label('Joined')->dateTime('d/m/Y H:i'),
+                TextColumn::make('invitation_status')
+                    ->label('Invitation')
+                    ->badge()
+                    ->state(fn ($record) => $this->invitationFor($record->account_id)?->status)
+                    ->formatStateUsing(fn ($state) => $state?->label() ?? 'Not Invited')
+                    ->color(fn ($state) => $state?->color() ?? 'gray'),
             ])
             ->headerActions([
                 Action::make('inviteNonMember')
@@ -96,6 +105,18 @@ class WaitingListRelationManager extends RelationManager
 
     private function isAlreadyInvited(int $accountId): bool
     {
-        return $this->ownerRecord->invitations()->where('account_id', $accountId)->exists();
+        return $this->invitationFor($accountId) !== null;
+    }
+
+    private function invitationFor(int $accountId)
+    {
+        return $this->loadInvitations()->get($accountId);
+    }
+
+    private function loadInvitations(): Collection
+    {
+        return $this->invitationsByAccountId ??= $this->ownerRecord->invitations()
+            ->get()
+            ->keyBy('account_id');
     }
 }
