@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Services\Bookings;
 
 use App\Models\Atc\Position;
+use App\Models\Atc\PositionGroup;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\Member as CtsMember;
+use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -124,6 +126,28 @@ class BookingPolicy
 
         if (! $controllingNow) {
             throw new \RuntimeException('You must be currently controlling this position to book less than two hours in advance.');
+        }
+    }
+
+    public function validateFutureQualification(int $memberId, int $positionId, Carbon $startsAt): void
+    {
+        $member = Account::with('endorsements')->findOrFail($memberId);
+        $position = Position::with('positionGroups')->findOrFail($positionId);
+
+        foreach ($position->positionGroups as $group) {
+            if (! $group->conditionsMetForUser($member)) {
+                throw new \RuntimeException('You do not meet the conditions for this position.');
+            }
+
+            $activeEndorsement = $member->endorsements->first(
+                fn ($endorsement) => $endorsement->endorsable_type === PositionGroup::class
+                    && (int) $endorsement->endorsable_id === (int) $group->id
+                    && ($endorsement->expires_at === null || $endorsement->expires_at->gt($startsAt))
+            );
+
+            if (! $activeEndorsement) {
+                throw new \RuntimeException('Your endorsement for this position will have expired by the booked time.');
+            }
         }
     }
 

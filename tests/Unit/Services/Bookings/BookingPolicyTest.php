@@ -487,4 +487,69 @@ class BookingPolicyTest extends TestCase
 
         $this->assertTrue(true);
     }
+
+    #[Test]
+    public function it_rejects_when_endorsement_expires_before_booked_time(): void
+    {
+        $account = Account::factory()->create();
+        $position = Position::factory()->create();
+
+        $group = \App\Models\Atc\PositionGroup::factory()->create();
+        $group->positions()->attach($position);
+
+        Account\Endorsement::factory()->create([
+            'account_id' => $account->id,
+            'endorsable_id' => $group->id,
+            'endorsable_type' => \App\Models\Atc\PositionGroup::class,
+            'expires_at' => Carbon::now()->addDays(3),
+        ]);
+
+        $this->expectException(\RuntimeException::class);
+
+        $this->policy->validateFutureQualification(
+            $account->id,
+            $position->id,
+            Carbon::now()->addDays(10),
+        );
+    }
+
+    #[Test]
+    public function it_allows_when_endorsement_expires_after_booked_time(): void
+    {
+        $account = Account::factory()->create();
+        $position = Position::factory()->create();
+
+        $group = \App\Models\Atc\PositionGroup::factory()->create();
+        $group->positions()->attach($position);
+
+        Account\Endorsement::factory()->create([
+            'account_id' => $account->id,
+            'endorsable_id' => $group->id,
+            'endorsable_type' => \App\Models\Atc\PositionGroup::class,
+            'expires_at' => Carbon::now()->addDays(30),
+        ]);
+
+        $this->policy->validateFutureQualification(
+            $account->id,
+            $position->id,
+            Carbon::now()->addDays(10),
+        );
+
+        $this->assertTrue(true);
+    }
+
+    #[Test]
+    public function it_allows_positions_with_no_position_groups(): void
+    {
+        $account = Account::factory()->create();
+        $position = Position::factory()->create();
+
+        $this->policy->validateFutureQualification(
+            $account->id,
+            $position->id,
+            Carbon::now()->addDay(),
+        );
+
+        $this->assertTrue(true);
+    }
 }
