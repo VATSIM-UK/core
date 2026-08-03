@@ -3,12 +3,12 @@
 @section('body')
     @if ($ban->period_finish)
         <p>
-            Your current suspension of access to all of the VATSIM United Kingdom services (Forum/TeamSpeak/CT System) has been
+            Your current suspension of access to all of the VATSIM United Kingdom services (Core/TeamSpeak/CT System) has been
             changed to a total length of {{ $ban_total_length }} (including time served).
         </p>
     @else
         <p>
-            Your current suspension of access to all of the VATSIM United Kingdom services (Forum/TeamSpeak/CT System) has been
+            Your current suspension of access to all of the VATSIM United Kingdom services (Core/TeamSpeak/CT System) has been
             changed to a <strong>permanent</strong> suspension.
         </p>
     @endif

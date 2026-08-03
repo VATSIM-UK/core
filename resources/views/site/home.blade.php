@@ -44,7 +44,9 @@
 								<a class="nav-link" href="{{ route('site.staff') }}">Staff</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="">Meeting Minutes</a> {{-- Link to Meeting Minutes to be created --}}
+								<a class="nav-link"
+									href="https://drive.google.com/drive/folders/19mlijWAU0JjxCPxhJObdKu-D4HM7gLi_?usp=drive_link">Meeting
+									Minutes</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="https://helpdesk.vatsim.uk/">Contact Us</a>
@@ -132,7 +134,7 @@
 								<a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">Calendar</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">Booking
+								<a class="nav-link" href="https://events.vatsim.uk/">Booking
 									System</a>
 							</li>
 						</ul>
