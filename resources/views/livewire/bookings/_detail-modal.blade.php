@@ -36,8 +36,10 @@
 			<template x-if="booking">
 				<div class="px-5 py-4 space-y-3">
 					<div>
-						<span class="text-xs font-medium uppercase tracking-wide text-gray-500">Position</span>
-						<p class="text-gray-900 font-medium" x-text="booking.position"></p>
+						<span class="text-xs font-medium uppercase tracking-wide text-gray-500"
+							x-text="booking.type === 'EV' ? 'Event' : 'Position'"></span>
+						<p class="text-gray-900 font-medium"
+							x-text="booking.type === 'EV' ? (booking.event_name || 'Events') : booking.position"></p>
 					</div>
 					<div class="grid grid-cols-2 gap-4">
 						<div>
@@ -51,13 +53,15 @@
 							</p>
 						</div>
 					</div>
-					<div>
-						<span class="text-xs font-medium uppercase tracking-wide text-gray-500"
-							x-text="booking.type === 'EX' ? 'Examiner' : booking.type === 'ME' ? 'Mentor' : 'Member'"></span>
-						<p class="text-gray-900"
-							x-text="(booking.member?.display_name || booking.member?.name) + (booking.member?.cid ? ' (' + booking.member.cid + ')' : '')">
-						</p>
-					</div>
+					<template x-if="booking.type !== 'EV'">
+						<div>
+							<span class="text-xs font-medium uppercase tracking-wide text-gray-500"
+								x-text="booking.type === 'EX' ? 'Examiner' : booking.type === 'ME' ? 'Mentor' : 'Member'"></span>
+							<p class="text-gray-900"
+								x-text="(booking.member?.display_name || booking.member?.name) + (booking.member?.cid ? ' (' + booking.member.cid + ')' : '')">
+							</p>
+						</div>
+					</template>
 
 					<template x-if="booking.member?.id == '{{ auth()->id() }}' && !ended && booking.type === 'BK'">
 						<div class="pt-4 border-t border-gray-200">
