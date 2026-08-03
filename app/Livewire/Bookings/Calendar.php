@@ -32,6 +32,8 @@ class Calendar extends Component
 
     public array $timelinePositions = [];
 
+    public array $events = [];
+
     public array $timelineScale = [];
 
     public int $filterVersion = 0;
@@ -59,6 +61,7 @@ class Calendar extends Component
             'bookings' => $this->bookings,
             'qualifiedPositions' => $this->qualifiedPositions,
             'timelinePositions' => $this->timelinePositions,
+            'events' => $this->events,
             'timelineHours' => $this->getTimelineHours(),
             'selectedDate' => $this->selectedDate,
             'timelineScale' => array_values($this->timelineScale),
@@ -101,6 +104,7 @@ class Calendar extends Component
     {
         $groups = [];
         $singles = [];
+        $events = [];
 
         foreach ($this->bookings as $booking) {
             $callsign = $booking->position ?? 'Unknown';
@@ -125,6 +129,12 @@ class Calendar extends Component
                 'member' => $booking->member,
                 'type' => $booking->type,
             ];
+
+            if ($booking->type === 'EV') {
+                $events[] = $bookingData + ['position' => $booking->position];
+
+                continue;
+            }
 
             $parts = explode('_', $callsign);
             $prefix = $parts[0] ?? '';
@@ -177,6 +187,9 @@ class Calendar extends Component
             $result[] = array_merge(['type' => 'single'], $data);
         }
 
+        usort($events, fn (array $a, array $b) => $this->timeToMinutes($a['from']) <=> $this->timeToMinutes($b['from']));
+
+        $this->events = $events;
         $this->timelinePositions = $result;
     }
 

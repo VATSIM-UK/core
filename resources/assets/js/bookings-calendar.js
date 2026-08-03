@@ -9,10 +9,37 @@ document.addEventListener('alpine:init', () => {
     window.Alpine.data('bookingsTimeline', (config) => ({
         selectedDate: config.selectedDate,
         isAuthenticated: config.isAuthenticated,
-        nowMinutes: config.nowMinutes,
         isToday: config.isToday,
         scale: config.scale,
         dragging: null,
+        nowPct: 0,
+        baseMinutes: 0,
+        startedAt: 0,
+
+        init() {
+            this.baseMinutes = config.nowMinutes;
+            this.startedAt = Date.now();
+            this.updateNow();
+            this._nowTimer = setInterval(() => {
+                this.updateNow();
+            }, 30000);
+        },
+
+        destroy() {
+            clearInterval(this._nowTimer);
+        },
+
+        updateNow() {
+            this.nowPct = this.minToPct(this.nowMinutes());
+        },
+
+        nowMinutes() {
+            // The timeline is in Zulu. Anchor to the server-rendered Zulu time and
+            // advance it by wall-clock elapsed time. This keeps the line accurate
+            // even if the page sits open or the device clock is offset, since the
+            // elapsed difference is monotonic regardless of the clock's absolute value.
+            return this.baseMinutes + Math.floor((Date.now() - this.startedAt) / 60000);
+        },
 
         minToPct(minutes) {
             const m = Math.max(0, Math.min(1440, Math.round(minutes)));
@@ -23,10 +50,6 @@ document.addEventListener('alpine:init', () => {
             const f = Math.max(0, Math.min(1440, Math.round(fromMin)));
             const t = Math.max(0, Math.min(1440, Math.round(toMin)));
             return Math.max(0.3, this.minToPct(t) - this.minToPct(f));
-        },
-
-        nowPct() {
-            return this.minToPct(this.nowMinutes);
         },
 
         snapToSlot(minutes) {

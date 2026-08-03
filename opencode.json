@@ -39,7 +39,7 @@
       ],
       "enabled": true,
       "environment": {
-        "ALLOW_DELETE_OPERATION": "true",
+        "ALLOW_DDL_OPERATION": "true",
         "ALLOW_INSERT_OPERATION": "true",
         "ALLOW_UPDATE_OPERATION": "true",
         "MYSQL_DISABLE_READ_ONLY_TRANSACTIONS": "true",

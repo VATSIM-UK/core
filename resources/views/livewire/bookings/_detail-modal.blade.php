@@ -14,6 +14,11 @@
         }
         return new Date(endDate + 'T' + b.to + ':00Z') < new Date();
     },
+    formatDate(iso) {
+        if (!iso) return '';
+        const [y, m, d] = iso.split('-');
+        return d + '. ' + m + '. ' + y;
+    },
 }" x-show="open" x-cloak
 		x-on:open-detail-modal.window="open = true; booking = $event.detail?.booking || null; confirmDelete = false; ended = computeEnded(booking);"
 		x-on:close-modal.window="open = false" x-on:booking-deleted.window="open = false"
@@ -37,7 +42,7 @@
 					<div class="grid grid-cols-2 gap-4">
 						<div>
 							<span class="text-xs font-medium uppercase tracking-wide text-gray-500">Date</span>
-							<p class="text-gray-900" x-text="booking.date"></p>
+							<p class="text-gray-900" x-text="formatDate(booking.date)"></p>
 						</div>
 						<div>
 							<span class="text-xs font-medium uppercase tracking-wide text-gray-500">Time</span>
