@@ -8,6 +8,7 @@ use App\Livewire\Bookings\Calendar;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
+use App\Models\Cts\Event;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member as CtsMember;
 use App\Models\Cts\PracticalExaminers;
@@ -622,5 +623,49 @@ class CtsBookingsCalendarTest extends TestCase
 
         $this->assertSame('Unknown', $bookings->first()->member['name'], 'Mentoring booking must not fall back to the student');
         $this->assertSame('', $bookings->first()->member['cid']);
+    }
+
+    #[Test]
+    public function it_shows_events_from_the_cts_events_table(): void
+    {
+        $date = Carbon::parse('2026-08-01');
+        $member = Account::factory()->create();
+        $addBy = CtsMember::factory()->forAccount($member)->create();
+
+        Event::factory()->create([
+            'event' => 'Cross the Pond',
+            'date' => $date->toDateString(),
+            'from' => '18:00:00',
+            'to' => '22:00:00',
+            'add_by' => $addBy->id,
+            'gone' => 0,
+        ]);
+
+        $bookings = app(BookingRepository::class)->getBookings($date);
+
+        $event = $bookings->firstWhere('type', 'EV');
+        $this->assertNotNull($event, 'Events from the CTS events table must appear on the calendar');
+        $this->assertSame('event', $event->source);
+        $this->assertSame('18:00', $event->from);
+        $this->assertSame('22:00', $event->to);
+        $this->assertSame((string) $member->id, $event->member['cid']);
+        $this->assertSame($member->name, $event->member['name']);
+    }
+
+    #[Test]
+    public function it_excludes_events_marked_as_gone(): void
+    {
+        $date = Carbon::parse('2026-08-01');
+
+        Event::factory()->create([
+            'date' => $date->toDateString(),
+            'from' => '18:00:00',
+            'to' => '22:00:00',
+            'gone' => 1,
+        ]);
+
+        $bookings = app(BookingRepository::class)->getBookings($date);
+
+        $this->assertEmpty($bookings->where('type', 'EV'), 'Gone events must not appear on the calendar');
     }
 }

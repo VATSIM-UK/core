@@ -7,6 +7,7 @@ namespace App\Repositories\Cts;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
+use App\Models\Cts\Event;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member as CtsMember;
 use App\Models\Cts\Session;
@@ -49,8 +50,16 @@ class BookingRepository
         $ctsCids = $ctsMembers->pluck('cid')->filter()->unique()->values();
         $ctsAccounts = Account::whereIn('id', $ctsCids)->get()->keyBy('id');
 
+        // Events live in the CTS events table (not cts.bookings), so they must be
+        // pulled in separately or they never appear on the calendar.
+        $events = Event::whereDate('date', $date->toDateString())
+            ->where(fn ($q) => $q->where('gone', 0)->orWhereNull('gone'))
+            ->orderBy('from')
+            ->get();
+
         return $this->formatBookings($core)
             ->concat($ctsOnly->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts)))
+            ->concat($events->map(fn (Event $event) => $this->formatEvent($event)))
             ->sortBy(fn (object $b) => $b->from)
             ->values();
     }
@@ -172,6 +181,22 @@ class BookingRepository
         }
 
         return $fallback;
+    }
+
+    private function formatEvent(Event $event): object
+    {
+        return $this->makeBooking(
+            id: (string) $event->id,
+            source: 'event',
+            ctsBookingId: null,
+            positionId: null,
+            positionCallsign: null,
+            date: $event->date->format('Y-m-d'),
+            from: substr((string) $event->from, 0, 5),
+            to: substr((string) $event->to, 0, 5),
+            type: 'EV',
+            member: $this->formatMember($event->member?->account),
+        );
     }
 
     private function makeBooking(?string $id, string $source, ?int $ctsBookingId, ?int $positionId, ?string $positionCallsign, string $date, string $from, string $to, string $type, array $member): object
