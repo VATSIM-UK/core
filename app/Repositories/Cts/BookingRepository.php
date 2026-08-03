@@ -95,7 +95,7 @@ class BookingRepository
                 from: $booking->starts_at->format('H:i'),
                 to: $booking->ends_at->format('H:i'),
                 type: $type,
-                member: $this->formatMember($booking->member, $type),
+                member: $this->formatMember($booking->member),
             );
         });
     }
@@ -117,7 +117,7 @@ class BookingRepository
             from: substr((string) $cts->from, 0, 5),
             to: substr((string) $cts->to, 0, 5),
             type: $type,
-            member: $this->formatMember($account, $type),
+            member: $this->formatMember($account),
         );
     }
 
@@ -137,12 +137,8 @@ class BookingRepository
         ];
     }
 
-    private function formatMember(?Account $account, string $displayType): array
+    private function formatMember(?Account $account): array
     {
-        if ($displayType === 'EX') {
-            return ['id' => '', 'cid' => '', 'name' => 'Hidden', 'display_name' => 'Hidden'];
-        }
-
         if (! $account) {
             return ['id' => '', 'cid' => '', 'name' => 'Unknown', 'display_name' => 'Unknown'];
         }

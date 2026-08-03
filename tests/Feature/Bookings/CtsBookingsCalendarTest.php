@@ -324,7 +324,7 @@ class CtsBookingsCalendarTest extends TestCase
     }
 
     #[Test]
-    public function it_hides_member_details_for_cts_exam_bookings(): void
+    public function it_shows_member_details_for_cts_exam_bookings(): void
     {
         $date = Carbon::parse('2026-08-01');
         $member = Account::factory()->create();
@@ -342,8 +342,8 @@ class CtsBookingsCalendarTest extends TestCase
 
         $match = $bookings->firstWhere('cts_booking_id', (int) $cts->id);
         $this->assertNotNull($match);
-        $this->assertSame('Hidden', $match->member['display_name']);
-        $this->assertSame('Hidden', $match->member['name']);
+        $this->assertSame((string) $member->id, $match->member['cid']);
+        $this->assertSame($member->name, $match->member['name']);
     }
 
     #[Test]

@@ -52,7 +52,8 @@
 						</div>
 					</div>
 					<div>
-						<span class="text-xs font-medium uppercase tracking-wide text-gray-500">Member</span>
+						<span class="text-xs font-medium uppercase tracking-wide text-gray-500"
+							x-text="booking.type === 'EX' ? 'Examiner' : booking.type === 'ME' ? 'Mentor' : 'Member'"></span>
 						<p class="text-gray-900"
 							x-text="(booking.member?.display_name || booking.member?.name) + (booking.member?.cid ? ' (' + booking.member.cid + ')' : '')">
 						</p>

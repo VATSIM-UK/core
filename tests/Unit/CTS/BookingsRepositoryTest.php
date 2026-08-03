@@ -117,7 +117,7 @@ class BookingsRepositoryTest extends TestCase
     }
 
     #[Test]
-    public function it_hides_member_details_on_exam_booking(): void
+    public function it_shows_member_details_on_exam_booking(): void
     {
         $member = Account::factory()->create();
         $position = Position::factory()->create();
@@ -147,10 +147,10 @@ class BookingsRepositoryTest extends TestCase
         ], $bookings->get(0)->member);
 
         $this->assertEquals([
-            'id' => '',
-            'cid' => '',
-            'name' => 'Hidden',
-            'display_name' => 'Hidden',
+            'id' => (string) $member->id,
+            'cid' => (string) $member->id,
+            'name' => $member->name,
+            'display_name' => $member->name_first.' '.mb_substr($member->name_last, 0, 1).'.',
         ], $bookings->get(1)->member);
     }
 
