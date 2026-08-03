@@ -183,6 +183,7 @@ document.addEventListener('alpine:init', () => {
                         from: booking.from,
                         to: booking.to,
                         member: booking.member,
+                        event_name: booking.event_name,
                     },
                 },
             }));

@@ -648,6 +648,7 @@ class CtsBookingsCalendarTest extends TestCase
         $this->assertSame('event', $event->source);
         $this->assertSame('18:00', $event->from);
         $this->assertSame('22:00', $event->to);
+        $this->assertSame('Cross the Pond', $event->event_name, 'The event name must be carried through for display');
         $this->assertSame((string) $member->id, $event->member['cid']);
         $this->assertSame($member->name, $event->member['name']);
     }

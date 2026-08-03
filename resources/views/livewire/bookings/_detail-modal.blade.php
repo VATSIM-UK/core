@@ -36,8 +36,10 @@
 			<template x-if="booking">
 				<div class="px-5 py-4 space-y-3">
 					<div>
-						<span class="text-xs font-medium uppercase tracking-wide text-gray-500">Position</span>
-						<p class="text-gray-900 font-medium" x-text="booking.position"></p>
+						<span class="text-xs font-medium uppercase tracking-wide text-gray-500"
+							x-text="booking.type === 'EV' ? 'Event' : 'Position'"></span>
+						<p class="text-gray-900 font-medium"
+							x-text="booking.type === 'EV' ? (booking.event_name || 'Events') : booking.position"></p>
 					</div>
 					<div class="grid grid-cols-2 gap-4">
 						<div>

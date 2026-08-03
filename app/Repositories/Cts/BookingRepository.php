@@ -187,7 +187,7 @@ class BookingRepository
 
     private function formatEvent(Event $event): object
     {
-        return $this->makeBooking(
+        $booking = $this->makeBooking(
             id: (string) $event->id,
             source: 'event',
             ctsBookingId: null,
@@ -199,6 +199,10 @@ class BookingRepository
             type: 'EV',
             member: $this->formatMember($event->member?->account),
         );
+
+        $booking->event_name = $event->event;
+
+        return $booking;
     }
 
     private function makeBooking(?string $id, string $source, ?int $ctsBookingId, ?int $positionId, ?string $positionCallsign, string $date, string $from, string $to, string $type, array $member): object
