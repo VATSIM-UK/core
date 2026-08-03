@@ -309,6 +309,18 @@ class CreateCtsBookingEntryTest extends TestCase
             'bookable_id' => $examBooking->id,
             'cts_booking_id' => $cts->id,
         ]);
+
+        // Idempotency: handling the same event again must not create duplicates.
+        $listener->handle($event);
+
+        $this->assertEquals(1, CtsBooking::where('type', 'EX')
+            ->where('member_id', $student->id)
+            ->where('position', 'EGKK_TWR')
+            ->count(), 'The CTS booking must not be duplicated when the event fires again');
+
+        $this->assertEquals(1, Booking::where('type', Booking::TYPE_EXAM)
+            ->where('bookable_id', $examBooking->id)
+            ->count(), 'The core booking must not be duplicated when the event fires again');
     }
 
     #[Test]

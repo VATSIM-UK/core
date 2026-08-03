@@ -164,6 +164,7 @@ class BookingRepository
             $exam = ExamBooking::where('student_id', (int) $cts->member_id)
                 ->where('taken', 1)
                 ->where('taken_date', $cts->date)
+                ->where('taken_from', $cts->from)
                 ->where('position_1', $cts->position)
                 ->first();
 
@@ -174,6 +175,7 @@ class BookingRepository
             $session = Session::where('student_id', (int) $cts->member_id)
                 ->where('taken', 1)
                 ->where('taken_date', $cts->date)
+                ->where('taken_from', $cts->from)
                 ->where('position', $cts->position)
                 ->first();
 

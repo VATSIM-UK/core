@@ -16,6 +16,15 @@ class CreateCtsBookingEntry
     {
         $examBooking = $event->examBooking;
 
+        // Idempotency guard: the same event may be handled more than once (double
+        // dispatch / action retry). If this exam is already mirrored into core,
+        // there is nothing to do.
+        if (Booking::where('bookable_type', $examBooking::class)
+            ->where('bookable_id', $examBooking->id)
+            ->exists()) {
+            return;
+        }
+
         // Create the CTS booking first - it is the source of truth for the callsign,
         // since training positions may not exist in the core positions table.
         $ctsBooking = CtsBooking::create([
