@@ -8,7 +8,10 @@ use App\Livewire\Bookings\Calendar;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member as CtsMember;
+use App\Models\Cts\PracticalExaminers;
+use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Repositories\Cts\BookingRepository;
@@ -324,7 +327,7 @@ class CtsBookingsCalendarTest extends TestCase
     }
 
     #[Test]
-    public function it_shows_member_details_for_cts_exam_bookings(): void
+    public function it_shows_member_details_for_cts_only_standard_bookings(): void
     {
         $date = Carbon::parse('2026-08-01');
         $member = Account::factory()->create();
@@ -332,7 +335,7 @@ class CtsBookingsCalendarTest extends TestCase
 
         $cts = CtsBooking::factory()->create([
             'member_id' => $ctsMember->id,
-            'type' => 'EX',
+            'type' => 'BK',
             'date' => $date->toDateString(),
             'from' => '10:00:00',
             'to' => '12:00:00',
@@ -401,5 +404,223 @@ class CtsBookingsCalendarTest extends TestCase
             ->assertDispatched('booking-warning');
 
         $this->assertDatabaseMissing('bookings', ['member_id' => $member->id]);
+    }
+
+    #[Test]
+    public function it_shows_the_leading_examiner_instead_of_the_student_for_exam_bookings(): void
+    {
+        $date = Carbon::parse('2026-08-01');
+        $studentAccount = Account::factory()->create();
+        $examinerAccount = Account::factory()->create();
+        $student = CtsMember::factory()->forAccount($studentAccount)->create();
+        $examiner = CtsMember::factory()->forAccount($examinerAccount)->create();
+
+        $exam = ExamBooking::factory()->create([
+            'student_id' => $student->id,
+            'position_1' => 'EGKK_TWR',
+            'taken_date' => $date->toDateString(),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        PracticalExaminers::create([
+            'examid' => $exam->id,
+            'senior' => $examiner->id,
+            'other' => null,
+            'trainee' => null,
+        ]);
+
+        Booking::create([
+            'position_id' => null,
+            'member_id' => $studentAccount->id,
+            'type' => Booking::TYPE_EXAM,
+            'starts_at' => $date->toDateString().' 10:00:00',
+            'ends_at' => $date->toDateString().' 12:00:00',
+            'bookable_type' => ExamBooking::class,
+            'bookable_id' => $exam->id,
+        ]);
+
+        $bookings = app(BookingRepository::class)->getBookings($date);
+
+        $this->assertCount(1, $bookings);
+        $this->assertSame((string) $examinerAccount->id, $bookings->first()->member['cid'], 'Exam booking must show the leading examiner, not the student');
+        $this->assertSame($examinerAccount->name, $bookings->first()->member['name']);
+    }
+
+    #[Test]
+    public function it_shows_the_mentor_instead_of_the_student_for_mentoring_bookings(): void
+    {
+        $date = Carbon::parse('2026-08-01');
+        $studentAccount = Account::factory()->create();
+        $mentorAccount = Account::factory()->create();
+        $student = CtsMember::factory()->forAccount($studentAccount)->create();
+        $mentor = CtsMember::factory()->forAccount($mentorAccount)->create();
+
+        $session = Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => $mentor->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => $date->toDateString(),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        Booking::create([
+            'position_id' => null,
+            'member_id' => $studentAccount->id,
+            'type' => Booking::TYPE_MENTORING,
+            'starts_at' => $date->toDateString().' 10:00:00',
+            'ends_at' => $date->toDateString().' 12:00:00',
+            'bookable_type' => Session::class,
+            'bookable_id' => $session->id,
+        ]);
+
+        $bookings = app(BookingRepository::class)->getBookings($date);
+
+        $this->assertCount(1, $bookings);
+        $this->assertSame((string) $mentorAccount->id, $bookings->first()->member['cid'], 'Mentoring booking must show the mentor, not the student');
+        $this->assertSame($mentorAccount->name, $bookings->first()->member['name']);
+    }
+
+    #[Test]
+    public function it_shows_the_leading_examiner_for_cts_only_exam_bookings(): void
+    {
+        $date = Carbon::parse('2026-08-01');
+        $studentAccount = Account::factory()->create();
+        $examinerAccount = Account::factory()->create();
+        $student = CtsMember::factory()->forAccount($studentAccount)->create();
+        $examiner = CtsMember::factory()->forAccount($examinerAccount)->create();
+
+        $exam = ExamBooking::factory()->create([
+            'student_id' => $student->id,
+            'position_1' => 'EGKK_TWR',
+            'taken_date' => $date->toDateString(),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        PracticalExaminers::create([
+            'examid' => $exam->id,
+            'senior' => $examiner->id,
+            'other' => null,
+            'trainee' => null,
+        ]);
+
+        $cts = CtsBooking::factory()->create([
+            'type' => 'EX',
+            'member_id' => $student->id,
+            'position' => 'EGKK_TWR',
+            'date' => $date->toDateString(),
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        $bookings = app(BookingRepository::class)->getBookings($date);
+
+        $match = $bookings->firstWhere('cts_booking_id', (int) $cts->id);
+        $this->assertNotNull($match);
+        $this->assertSame((string) $examinerAccount->id, $match->member['cid'], 'CTS-only exam booking must show the leading examiner, not the student');
+    }
+
+    #[Test]
+    public function it_shows_the_mentor_for_cts_only_mentoring_bookings(): void
+    {
+        $date = Carbon::parse('2026-08-01');
+        $studentAccount = Account::factory()->create();
+        $mentorAccount = Account::factory()->create();
+        $student = CtsMember::factory()->forAccount($studentAccount)->create();
+        $mentor = CtsMember::factory()->forAccount($mentorAccount)->create();
+
+        Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => $mentor->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => $date->toDateString(),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        $cts = CtsBooking::factory()->create([
+            'type' => 'ME',
+            'member_id' => $student->id,
+            'position' => 'EGLL_APP',
+            'date' => $date->toDateString(),
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        $bookings = app(BookingRepository::class)->getBookings($date);
+
+        $match = $bookings->firstWhere('cts_booking_id', (int) $cts->id);
+        $this->assertNotNull($match);
+        $this->assertSame((string) $mentorAccount->id, $match->member['cid'], 'CTS-only mentoring booking must show the mentor, not the student');
+    }
+
+    #[Test]
+    public function it_never_falls_back_to_the_student_when_an_exam_has_no_examiner(): void
+    {
+        $date = Carbon::parse('2026-08-01');
+        $studentAccount = Account::factory()->create();
+        $student = CtsMember::factory()->forAccount($studentAccount)->create();
+
+        // Accepted exam with no PracticalExaminers record (no leading examiner).
+        $exam = ExamBooking::factory()->create([
+            'student_id' => $student->id,
+            'position_1' => 'EGKK_TWR',
+            'taken_date' => $date->toDateString(),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        Booking::create([
+            'position_id' => null,
+            'member_id' => $studentAccount->id,
+            'type' => Booking::TYPE_EXAM,
+            'starts_at' => $date->toDateString().' 10:00:00',
+            'ends_at' => $date->toDateString().' 12:00:00',
+            'bookable_type' => ExamBooking::class,
+            'bookable_id' => $exam->id,
+        ]);
+
+        $bookings = app(BookingRepository::class)->getBookings($date);
+
+        $this->assertSame('Unknown', $bookings->first()->member['name'], 'Exam booking must not fall back to the student');
+        $this->assertSame('', $bookings->first()->member['cid']);
+    }
+
+    #[Test]
+    public function it_never_falls_back_to_the_student_when_a_mentoring_booking_has_no_mentor(): void
+    {
+        $date = Carbon::parse('2026-08-01');
+        $studentAccount = Account::factory()->create();
+        $student = CtsMember::factory()->forAccount($studentAccount)->create();
+
+        // Accepted session with no mentor assigned.
+        $session = Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => null,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => $date->toDateString(),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        Booking::create([
+            'position_id' => null,
+            'member_id' => $studentAccount->id,
+            'type' => Booking::TYPE_MENTORING,
+            'starts_at' => $date->toDateString().' 10:00:00',
+            'ends_at' => $date->toDateString().' 12:00:00',
+            'bookable_type' => Session::class,
+            'bookable_id' => $session->id,
+        ]);
+
+        $bookings = app(BookingRepository::class)->getBookings($date);
+
+        $this->assertSame('Unknown', $bookings->first()->member['name'], 'Mentoring booking must not fall back to the student');
+        $this->assertSame('', $bookings->first()->member['cid']);
     }
 }
