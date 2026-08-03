@@ -197,7 +197,7 @@ class BookingRepository
             from: substr((string) $event->from, 0, 5),
             to: substr((string) $event->to, 0, 5),
             type: 'EV',
-            member: $this->formatMember($event->member?->account),
+            member: $this->formatMember(null),
         );
 
         $booking->event_name = $event->event;

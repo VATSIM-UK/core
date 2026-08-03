@@ -53,13 +53,15 @@
 							</p>
 						</div>
 					</div>
-					<div>
-						<span class="text-xs font-medium uppercase tracking-wide text-gray-500"
-							x-text="booking.type === 'EX' ? 'Examiner' : booking.type === 'ME' ? 'Mentor' : 'Member'"></span>
-						<p class="text-gray-900"
-							x-text="(booking.member?.display_name || booking.member?.name) + (booking.member?.cid ? ' (' + booking.member.cid + ')' : '')">
-						</p>
-					</div>
+					<template x-if="booking.type !== 'EV'">
+						<div>
+							<span class="text-xs font-medium uppercase tracking-wide text-gray-500"
+								x-text="booking.type === 'EX' ? 'Examiner' : booking.type === 'ME' ? 'Mentor' : 'Member'"></span>
+							<p class="text-gray-900"
+								x-text="(booking.member?.display_name || booking.member?.name) + (booking.member?.cid ? ' (' + booking.member.cid + ')' : '')">
+							</p>
+						</div>
+					</template>
 
 					<template x-if="booking.member?.id == '{{ auth()->id() }}' && !ended && booking.type === 'BK'">
 						<div class="pt-4 border-t border-gray-200">
