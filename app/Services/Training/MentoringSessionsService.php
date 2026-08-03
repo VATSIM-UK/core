@@ -5,6 +5,7 @@ namespace App\Services\Training;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Availability;
+use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\CancelReason;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
@@ -335,6 +336,17 @@ class MentoringSessionsService
     {
         $studentMember = Member::find($session->student_id);
 
+        // Create the CTS booking first - it is the source of truth for the callsign,
+        // since training positions may not exist in the core positions table.
+        $ctsBooking = CtsBooking::create([
+            'date' => $session->taken_date,
+            'from' => $session->taken_from,
+            'to' => $session->taken_to,
+            'position' => $session->position,
+            'member_id' => $session->student_id,
+            'type' => 'ME',
+        ]);
+
         Booking::create([
             'position_id' => Position::where('callsign', $session->position)->value('id'),
             'member_id' => $studentMember?->cid,
@@ -343,23 +355,48 @@ class MentoringSessionsService
             'ends_at' => Carbon::parse($session->taken_date)->format('Y-m-d').' '.$session->taken_to,
             'bookable_type' => Session::class,
             'bookable_id' => $session->id,
+            'cts_booking_id' => $ctsBooking->id,
         ]);
     }
 
     private function updateCoreBooking(Session $session): void
     {
-        Booking::where('bookable_type', Session::class)
+        $booking = Booking::where('bookable_type', Session::class)
             ->where('bookable_id', $session->id)
-            ->update([
-                'starts_at' => Carbon::parse($session->taken_date)->format('Y-m-d').' '.$session->taken_from,
-                'ends_at' => Carbon::parse($session->taken_date)->format('Y-m-d').' '.$session->taken_to,
+            ->first();
+
+        if (! $booking) {
+            return;
+        }
+
+        $booking->update([
+            'starts_at' => Carbon::parse($session->taken_date)->format('Y-m-d').' '.$session->taken_from,
+            'ends_at' => Carbon::parse($session->taken_date)->format('Y-m-d').' '.$session->taken_to,
+        ]);
+
+        if ($booking->cts_booking_id) {
+            CtsBooking::where('id', $booking->cts_booking_id)->update([
+                'date' => $session->taken_date,
+                'from' => $session->taken_from,
+                'to' => $session->taken_to,
             ]);
+        }
     }
 
     private function deleteCoreBooking(Session $session): void
     {
-        Booking::where('bookable_type', Session::class)
+        $booking = Booking::where('bookable_type', Session::class)
             ->where('bookable_id', $session->id)
-            ->delete();
+            ->first();
+
+        if (! $booking) {
+            return;
+        }
+
+        if ($booking->cts_booking_id) {
+            CtsBooking::where('id', $booking->cts_booking_id)->delete();
+        }
+
+        $booking->delete();
     }
 }
