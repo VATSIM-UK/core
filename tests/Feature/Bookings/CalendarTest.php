@@ -10,6 +10,8 @@ use App\Models\Booking;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Qualification;
+use App\Models\Mship\State;
+use App\Models\Roster;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
@@ -19,6 +21,13 @@ use Tests\TestCase;
 class CalendarTest extends TestCase
 {
     use DatabaseTransactions;
+
+    private function placeOnRoster(Account $member): Roster
+    {
+        $member->addState(State::findByCode('DIVISION'));
+
+        return Roster::create(['account_id' => $member->id]);
+    }
 
     #[Test]
     public function it_loads_with_todays_date(): void
@@ -98,6 +107,7 @@ class CalendarTest extends TestCase
         $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
         $member->qualifications()->sync([$qual->id]);
         $member = $member->fresh();
+        $this->placeOnRoster($member);
 
         $position = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
 
@@ -267,6 +277,7 @@ class CalendarTest extends TestCase
         $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
         $member->qualifications()->sync([$qual->id]);
         $member = $member->fresh();
+        $this->placeOnRoster($member);
 
         $position = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
 
