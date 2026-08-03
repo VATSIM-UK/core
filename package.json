@@ -14,12 +14,12 @@
     "bootstrap": "^5.3.8",
     "bootstrap-sass": "^3.4.3",
     "jquery-datetimepicker": "^2.5.20",
-    "laravel-vite-plugin": "^3.1.0",
+    "laravel-vite-plugin": "^3.1.3",
     "postcss": "^8.5.25",
     "postcss-nesting": "^14.0.0",
     "sass": "^1.101.0",
     "tailwindcss": "^4.3.0",
-    "vite": "^8.1.3"
+    "vite": "^8.2.0"
   },
   "engines": {
     "node": ">=24.0.0"
