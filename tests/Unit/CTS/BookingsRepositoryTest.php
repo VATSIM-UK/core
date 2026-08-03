@@ -6,6 +6,8 @@ namespace Tests\Unit\CTS;
 
 use App\Models\Atc\Position;
 use App\Models\Booking;
+use App\Models\Cts\Booking as CtsBooking;
+use App\Models\Cts\Member as CtsMember;
 use App\Models\Mship\Account;
 use App\Repositories\Cts\BookingRepository;
 use Carbon\Carbon;
@@ -233,5 +235,38 @@ class BookingsRepositoryTest extends TestCase
         $this->assertEquals($morning->id, (int) $todaysBookings->get(0)->id);
         $this->assertEquals($afternoon->id, (int) $todaysBookings->get(1)->id);
         $this->assertEquals($night->id, (int) $todaysBookings->get(2)->id);
+    }
+
+    #[Test]
+    public function it_merges_core_and_cts_bookings_ordered_by_start_time(): void
+    {
+        $member = Account::factory()->create();
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        // Core booking at 11:00
+        Booking::create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::parse($this->today.' 11:00:00'),
+            'ends_at' => Carbon::parse($this->today.' 13:00:00'),
+        ]);
+
+        // CTS booking at 09:00 — earlier than the core booking
+        $ctsMember = CtsMember::factory()->forAccount($member)->create();
+        CtsBooking::factory()->create([
+            'position' => 'EGKK_APP',
+            'member_id' => $ctsMember->id,
+            'type' => 'BK',
+            'date' => $this->today,
+            'from' => '09:00:00',
+            'to' => '10:30:00',
+        ]);
+
+        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
+
+        $this->assertCount(2, $bookings, 'Must return both core and CTS bookings');
+        $this->assertEquals('09:00', $bookings->get(0)->from, 'CTS booking at 09:00 must come first');
+        $this->assertEquals('11:00', $bookings->get(1)->from, 'Core booking at 11:00 must come second');
     }
 }
