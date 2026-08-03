@@ -8,6 +8,7 @@ use App\Events\Training\Exams\ExamAccepted;
 use App\Listeners\Training\Exams\CreateCtsBookingEntry;
 use App\Models\Atc\Position;
 use App\Models\Booking;
+use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\PracticalExaminers;
@@ -260,5 +261,53 @@ class CreateCtsBookingEntryTest extends TestCase
             ->count();
 
         $this->assertEquals(2, $bookingCount);
+    }
+
+    #[Test]
+    public function it_mirrors_the_booking_into_cts_bookings(): void
+    {
+        $studentAccount = Account::factory()->create();
+        $student = Member::factory()->forAccount($studentAccount)->create();
+
+        $examDate = Carbon::tomorrow();
+        $examBooking = ExamBooking::factory()->create([
+            'student_id' => $student->id,
+            'exam' => 'TWR',
+            'position_1' => 'EGKK_TWR',
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'taken_date' => $examDate->format('Y-m-d'),
+            'taken_from' => '16:00:00',
+            'taken_to' => '17:00:00',
+        ]);
+
+        $event = new ExamAccepted($examBooking);
+        $listener = new CreateCtsBookingEntry;
+        $listener->handle($event);
+
+        $cts = CtsBooking::where('type', 'EX')
+            ->where('member_id', $student->id)
+            ->where('position', 'EGKK_TWR')
+            ->first();
+
+        $this->assertNotNull($cts, 'A CTS booking row must be created for the accepted exam');
+        $this->assertSame($examDate->format('Y-m-d'), $cts->date);
+        $this->assertSame('16:00:00', substr($cts->from, 0, 8));
+        $this->assertSame('17:00:00', substr($cts->to, 0, 8));
+
+        // FK relation rule: core bookings key on the CID, CTS bookings key on the CTS
+        // internal member id (generateCTSInternalID makes them differ).
+        $this->assertNotSame($studentAccount->id, $student->id, 'Test relies on CTS member id differing from the CID');
+        $this->assertSame($student->id, $cts->member_id, 'CTS booking member_id must be the CTS internal member id');
+
+        // The core booking must be FK-linked to the CTS row via cts_booking_id and
+        // reference the student by CID.
+        $this->assertDatabaseHas('bookings', [
+            'member_id' => $studentAccount->id,
+            'type' => Booking::TYPE_EXAM,
+            'bookable_type' => ExamBooking::class,
+            'bookable_id' => $examBooking->id,
+            'cts_booking_id' => $cts->id,
+        ]);
     }
 }
