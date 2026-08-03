@@ -90,7 +90,7 @@
 					{{-- Hour header --}}
 					<div class="flex border-b border-gray-200 bg-gray-50/80 sticky top-0 z-10">
 						<div
-							class="w-32 shrink-0 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">
+							class="w-32 shrink-0 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 sticky left-0 z-[7] bg-gray-50/80">
 							Position
 						</div>
 						<div class="flex-1 relative h-8">
