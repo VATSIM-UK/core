@@ -214,7 +214,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->mentor)
             ->test(AcceptedMentoringSessionsTable::class)
-            ->assertSee('There is already a session booked on this position from 11:00:00 to 13:00:00.');
+            ->assertSee('There is already a session booked on this position from 11:00 to 13:00.');
     }
 
     #[Test]
