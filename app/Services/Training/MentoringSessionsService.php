@@ -336,6 +336,8 @@ class MentoringSessionsService
     {
         $studentMember = Member::find($session->student_id);
 
+        // Create the CTS booking first - it is the source of truth for the callsign,
+        // since training positions may not exist in the core positions table.
         $ctsBooking = CtsBooking::create([
             'date' => $session->taken_date,
             'from' => $session->taken_from,

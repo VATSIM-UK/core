@@ -8,7 +8,6 @@ use App\Events\Training\Exams\ExamAccepted;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
-use App\Services\BookingService;
 use Carbon\Carbon;
 
 class CreateCtsBookingEntry
@@ -17,8 +16,8 @@ class CreateCtsBookingEntry
     {
         $examBooking = $event->examBooking;
 
-        $position = Position::where('callsign', $examBooking->position_1)->first();
-
+        // Create the CTS booking first - it is the source of truth for the callsign,
+        // since training positions may not exist in the core positions table.
         $ctsBooking = CtsBooking::create([
             'date' => $examBooking->taken_date,
             'from' => $examBooking->taken_from,
@@ -28,8 +27,8 @@ class CreateCtsBookingEntry
             'type' => 'EX',
         ]);
 
-        app(BookingService::class)->create([
-            'position_id' => $position?->id,
+        Booking::create([
+            'position_id' => Position::where('callsign', $examBooking->position_1)->value('id'),
             'member_id' => $examBooking->student?->cid,
             'type' => Booking::TYPE_EXAM,
             'starts_at' => Carbon::parse($examBooking->taken_date)->format('Y-m-d').' '.$examBooking->taken_from,

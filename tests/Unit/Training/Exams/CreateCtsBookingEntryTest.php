@@ -310,4 +310,44 @@ class CreateCtsBookingEntryTest extends TestCase
             'cts_booking_id' => $cts->id,
         ]);
     }
+
+    #[Test]
+    public function it_mirrors_a_position_matched_exam_without_self_overlapping(): void
+    {
+        // Regression: the exam listener creates the CTS row first, then mirrors to core.
+        // If mirroring went through BookingService, validateOverlap -> ctsPositionOverlaps
+        // would treat the just-created CTS row as a conflict and throw.
+        $studentAccount = Account::factory()->create();
+        $student = Member::factory()->forAccount($studentAccount)->create();
+        $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
+
+        $examDate = Carbon::tomorrow();
+        $examBooking = ExamBooking::factory()->create([
+            'student_id' => $student->id,
+            'exam' => 'TWR',
+            'position_1' => 'EGKK_TWR',
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'taken_date' => $examDate->format('Y-m-d'),
+            'taken_from' => '16:00:00',
+            'taken_to' => '17:00:00',
+        ]);
+
+        $event = new ExamAccepted($examBooking);
+        (new CreateCtsBookingEntry)->handle($event);
+
+        $this->assertDatabaseHas('bookings', [
+            'position_id' => $position->id,
+            'member_id' => $studentAccount->id,
+            'type' => Booking::TYPE_EXAM,
+            'bookable_id' => $examBooking->id,
+        ]);
+
+        $cts = CtsBooking::where('type', 'EX')
+            ->where('member_id', $student->id)
+            ->where('position', 'EGKK_TWR')
+            ->first();
+
+        $this->assertNotNull($cts, 'A CTS booking row must be created for the accepted exam');
+    }
 }

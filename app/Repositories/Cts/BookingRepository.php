@@ -25,7 +25,7 @@ class BookingRepository
     public function getBookings(Carbon $date): Collection
     {
         $core = Booking::whereDate('starts_at', $date->toDateString())
-            ->with('member', 'position')
+            ->with('member', 'position', 'ctsBooking')
             ->orderBy('starts_at')
             ->get();
 
@@ -62,7 +62,7 @@ class BookingRepository
     {
         $bookings = Booking::whereDate('starts_at', Carbon::now()->toDateString())
             ->liveAtc()
-            ->with('member', 'position')
+            ->with('member', 'position', 'ctsBooking')
             ->orderBy('starts_at')
             ->get();
 
@@ -74,7 +74,7 @@ class BookingRepository
         $bookings = Booking::whereDate('starts_at', Carbon::now()->toDateString())
             ->liveAtc()
             ->notEvent()
-            ->with('member', 'position')
+            ->with('member', 'position', 'ctsBooking')
             ->orderBy('starts_at')
             ->get();
 
@@ -91,7 +91,10 @@ class BookingRepository
                 source: 'core',
                 ctsBookingId: $booking->cts_booking_id !== null ? (int) $booking->cts_booking_id : null,
                 positionId: $booking->position_id,
-                positionCallsign: $booking->position?->callsign,
+                // The CTS booking is the source of truth for the callsign: training
+                // positions may not exist in the core positions table, so prefer the
+                // CTS position and only fall back to the core position relationship.
+                positionCallsign: $booking->ctsBooking?->position ?? $booking->position?->callsign,
                 date: $booking->starts_at->format('Y-m-d'),
                 from: $booking->starts_at->format('H:i'),
                 to: $booking->ends_at->format('H:i'),

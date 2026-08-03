@@ -281,6 +281,118 @@ class MentoringSessionsServiceTest extends TestCase
     }
 
     #[Test]
+    public function reschedule_session_updates_core_and_cts_bookings(): void
+    {
+        Notification::fake();
+
+        $pendingSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => null,
+            'taken' => 0,
+        ]);
+
+        $availability = Availability::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'date' => Carbon::tomorrow(),
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        $this->assertTrue($this->service->acceptSession(
+            $pendingSession->id,
+            $availability->id,
+            $this->mentorAccount,
+            '10:00',
+            '12:00',
+        ));
+
+        $cts = CtsBooking::where('type', 'ME')
+            ->where('member_id', $this->studentMember->id)
+            ->where('position', 'EGLL_APP')
+            ->firstOrFail();
+
+        $newAvailability = Availability::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'date' => Carbon::tomorrow()->addDay(),
+            'from' => '14:00:00',
+            'to' => '16:00:00',
+        ]);
+
+        $this->assertTrue($this->service->rescheduleSession(
+            $pendingSession->id,
+            $newAvailability->id,
+            '14:00',
+            '16:00',
+            $this->mentorAccount,
+        ));
+
+        $newDate = Carbon::tomorrow()->addDay()->format('Y-m-d');
+
+        $this->assertDatabaseHas('bookings', [
+            'type' => Booking::TYPE_MENTORING,
+            'bookable_type' => Session::class,
+            'bookable_id' => $pendingSession->id,
+            'starts_at' => $newDate.' 14:00:00',
+            'ends_at' => $newDate.' 16:00:00',
+        ]);
+
+        $this->assertDatabaseHas('bookings', [
+            'id' => $cts->id,
+            'date' => $newDate,
+            'from' => '14:00:00',
+            'to' => '16:00:00',
+        ], 'cts');
+    }
+
+    #[Test]
+    public function cancel_session_deletes_core_and_cts_bookings(): void
+    {
+        Notification::fake();
+
+        $pendingSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => null,
+            'taken' => 0,
+        ]);
+
+        $availability = Availability::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'date' => Carbon::tomorrow(),
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        $this->assertTrue($this->service->acceptSession(
+            $pendingSession->id,
+            $availability->id,
+            $this->mentorAccount,
+            '10:00',
+            '12:00',
+        ));
+
+        $cts = CtsBooking::where('type', 'ME')
+            ->where('member_id', $this->studentMember->id)
+            ->where('position', 'EGLL_APP')
+            ->firstOrFail();
+
+        $this->assertTrue($this->service->cancelSession(
+            $pendingSession->id,
+            'No longer available.',
+            $this->mentorAccount,
+        ));
+
+        $this->assertDatabaseMissing('bookings', [
+            'type' => Booking::TYPE_MENTORING,
+            'bookable_type' => Session::class,
+            'bookable_id' => $pendingSession->id,
+        ]);
+
+        $this->assertDatabaseMissing('bookings', ['id' => $cts->id], 'cts');
+    }
+
+    #[Test]
     public function accept_session_only_assigns_the_specified_session_when_multiple_pending_sessions_exist(): void
     {
         Notification::fake();

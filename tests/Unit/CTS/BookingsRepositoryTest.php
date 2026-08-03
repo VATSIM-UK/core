@@ -269,4 +269,75 @@ class BookingsRepositoryTest extends TestCase
         $this->assertEquals('09:00', $bookings->get(0)->from, 'CTS booking at 09:00 must come first');
         $this->assertEquals('11:00', $bookings->get(1)->from, 'Core booking at 11:00 must come second');
     }
+
+    #[Test]
+    public function it_renders_the_cts_callsign_for_core_bookings_without_a_core_position(): void
+    {
+        $member = Account::factory()->create();
+        $ctsMember = CtsMember::factory()->forAccount($member)->create();
+
+        // CTS booking on a training position NOT present in the core positions table.
+        $cts = CtsBooking::factory()->create([
+            'position' => 'EGSS_APP',
+            'member_id' => $ctsMember->id,
+            'type' => 'EX',
+            'date' => $this->today,
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        // Core mirror with no position_id (training position is not in core).
+        Booking::create([
+            'position_id' => null,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_EXAM,
+            'starts_at' => Carbon::parse($this->today.' 10:00:00'),
+            'ends_at' => Carbon::parse($this->today.' 12:00:00'),
+            'cts_booking_id' => $cts->id,
+            'bookable_type' => CtsBooking::class,
+            'bookable_id' => $cts->id,
+        ]);
+
+        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
+
+        $this->assertCount(1, $bookings, 'Core mirror and CTS row must deduplicate to one booking');
+        $this->assertSame('EGSS_APP', $bookings->first()->position, 'Must render the CTS callsign (cts-first)');
+    }
+
+    #[Test]
+    public function it_prefers_the_cts_callsign_over_the_core_position_callsign(): void
+    {
+        $member = Account::factory()->create();
+        $ctsMember = CtsMember::factory()->forAccount($member)->create();
+
+        // A core position exists, but the CTS booking is authoritative for the callsign,
+        // so a divergent CTS callsign must win over the core position's callsign.
+        $position = Position::factory()->create(['callsign' => 'EGLL_APP', 'type' => Position::TYPE_APPROACH]);
+
+        $cts = CtsBooking::factory()->create([
+            'position' => 'EGSS_APP',
+            'member_id' => $ctsMember->id,
+            'type' => 'EX',
+            'date' => $this->today,
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        Booking::create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_EXAM,
+            'starts_at' => Carbon::parse($this->today.' 10:00:00'),
+            'ends_at' => Carbon::parse($this->today.' 12:00:00'),
+            'cts_booking_id' => $cts->id,
+            'bookable_type' => CtsBooking::class,
+            'bookable_id' => $cts->id,
+        ]);
+
+        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
+
+        $this->assertCount(1, $bookings);
+        $this->assertSame('EGSS_APP', $bookings->first()->position, 'The CTS callsign must win over the core position callsign');
+        $this->assertSame($position->id, $bookings->first()->position_id);
+    }
 }
