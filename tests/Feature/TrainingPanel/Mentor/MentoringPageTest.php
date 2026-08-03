@@ -181,6 +181,66 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function accepted_sessions_table_shows_warning_when_an_overlapping_booking_exists(): void
+    {
+        $student = Member::factory()->create();
+        $otherMentor = Member::factory()->create();
+
+        Session::factory()->create([
+            'mentor_id' => $this->mentorMember->id,
+            'student_id' => $student->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'filed' => null,
+            'cancelled_datetime' => null,
+            'noShow' => 0,
+        ]);
+
+        Session::factory()->create([
+            'mentor_id' => $otherMentor->id,
+            'student_id' => $student->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '11:00:00',
+            'taken_to' => '13:00:00',
+            'filed' => null,
+            'cancelled_datetime' => null,
+            'noShow' => 0,
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AcceptedMentoringSessionsTable::class)
+            ->assertSee('There is already a session booked on this position from 11:00 to 13:00.');
+    }
+
+    #[Test]
+    public function accepted_sessions_table_does_not_show_warning_when_no_overlapping_booking_exists(): void
+    {
+        $student = Member::factory()->create();
+
+        Session::factory()->create([
+            'mentor_id' => $this->mentorMember->id,
+            'student_id' => $student->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'filed' => null,
+            'cancelled_datetime' => null,
+            'noShow' => 0,
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AcceptedMentoringSessionsTable::class)
+            ->assertDontSee('There is already a session booked on this position');
+    }
+
+    #[Test]
     public function availability_gantt_renders_successfully(): void
     {
         Livewire::actingAs($this->mentor)

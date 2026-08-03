@@ -357,7 +357,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                                 return '';
                             }
 
-                            return $overlap instanceof Session ? 'Overlapping Session Detected' : 'Overlapping Exam Detected';
+                            return app(MentoringSessionsService::class)->overlapHeading($overlap);
                         })
                         ->description(function (Get $get) use ($availability, $pendingSession) {
                             $overlap = $this->getOverlappingBooking($get, $availability, $pendingSession);
@@ -366,11 +366,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                                 return '';
                             }
 
-                            $type = $overlap instanceof Session ? 'session' : 'exam';
-                            $from = $overlap->taken_from;
-                            $to = $overlap->taken_to;
-
-                            return "There is already a {$type} booked on this position from {$from} to {$to}.";
+                            return app(MentoringSessionsService::class)->overlapDescription($overlap);
                         })
                         ->danger()
                         ->visible(function (Get $get) use ($availability, $pendingSession) {
