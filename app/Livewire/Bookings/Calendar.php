@@ -7,6 +7,7 @@ namespace App\Livewire\Bookings;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
+use App\Models\Roster;
 use App\Repositories\Cts\BookingRepository;
 use App\Services\BookingService;
 use Carbon\Carbon;
@@ -30,6 +31,8 @@ class Calendar extends Component
     public string $positionFilter = '';
 
     public array $timelinePositions = [];
+
+    public array $events = [];
 
     public array $timelineScale = [];
 
@@ -58,6 +61,7 @@ class Calendar extends Component
             'bookings' => $this->bookings,
             'qualifiedPositions' => $this->qualifiedPositions,
             'timelinePositions' => $this->timelinePositions,
+            'events' => $this->events,
             'timelineHours' => $this->getTimelineHours(),
             'selectedDate' => $this->selectedDate,
             'timelineScale' => array_values($this->timelineScale),
@@ -86,41 +90,21 @@ class Calendar extends Component
 
     public function getQualifiedPositions(): void
     {
-        $rating = (int) (auth()->user()?->qualification_atc?->vatsim ?? 0);
-        $maxAllowed = $rating + 1;
+        $account = auth()->user();
+        $roster = $account !== null ? Roster::firstWhere('account_id', $account->getKey()) : null;
 
-        $bookableTypes = [
-            Position::TYPE_DELIVERY,
-            Position::TYPE_GROUND,
-            Position::TYPE_TOWER,
-            Position::TYPE_APPROACH,
-            Position::TYPE_ENROUTE,
-            Position::TYPE_FSS,
-        ];
-
-        $allowedTypes = array_filter($bookableTypes, function (int $type) use ($maxAllowed): bool {
-            return Position::minimumVatsimRatingForType($type) <= $maxAllowed;
-        });
-
-        $query = Position::real()->orderBy('callsign');
-
-        if (! empty($allowedTypes)) {
-            $query->whereIn('type', $allowedTypes);
-        }
-
-        $this->qualifiedPositions = $query->pluck('callsign', 'id');
-
-        if ($this->qualifiedPositions->isEmpty()) {
-            $this->qualifiedPositions = Position::real()
-                ->orderBy('callsign')
-                ->pluck('callsign', 'id');
-        }
+        $this->qualifiedPositions = Position::real()
+            ->orderBy('callsign')
+            ->get()
+            ->filter(fn (Position $position): bool => (bool) $roster?->accountCanControl($position))
+            ->pluck('callsign', 'id');
     }
 
     public function buildTimeline(): void
     {
         $groups = [];
         $singles = [];
+        $events = [];
 
         foreach ($this->bookings as $booking) {
             $callsign = $booking->position ?? 'Unknown';
@@ -145,6 +129,12 @@ class Calendar extends Component
                 'member' => $booking->member,
                 'type' => $booking->type,
             ];
+
+            if ($booking->type === 'EV') {
+                $events[] = $bookingData + ['position' => $booking->position];
+
+                continue;
+            }
 
             $parts = explode('_', $callsign);
             $prefix = $parts[0] ?? '';
@@ -197,6 +187,9 @@ class Calendar extends Component
             $result[] = array_merge(['type' => 'single'], $data);
         }
 
+        usort($events, fn (array $a, array $b) => $this->timeToMinutes($a['from']) <=> $this->timeToMinutes($b['from']));
+
+        $this->events = $events;
         $this->timelinePositions = $result;
     }
 

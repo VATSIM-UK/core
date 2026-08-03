@@ -280,6 +280,35 @@ class MentoringSessionsService
             ->first();
     }
 
+    public function findOverlappingBookingForSession(Session $session): Session|ExamBooking|null
+    {
+        if (! $session->taken_date || ! $session->taken_from || ! $session->taken_to) {
+            return null;
+        }
+
+        return $this->checkForOverlappingBookings(
+            $session->position,
+            $session->taken_date,
+            $session->taken_from,
+            $session->taken_to,
+            $session->id
+        );
+    }
+
+    public function overlapHeading(Session|ExamBooking $overlap): string
+    {
+        return $overlap instanceof Session ? 'Overlapping Session Detected' : 'Overlapping Exam Detected';
+    }
+
+    public function overlapDescription(Session|ExamBooking $overlap): string
+    {
+        $type = $overlap instanceof Session ? 'session' : 'exam';
+        $from = Carbon::parse($overlap->taken_from)->format('H:i');
+        $to = Carbon::parse($overlap->taken_to)->format('H:i');
+
+        return "There is already a {$type} booked on this position from {$from} to {$to}.";
+    }
+
     private function validateSessionTimes(Availability $availability, string $takenFrom, string $takenTo): void
     {
         $sessionStart = Carbon::parse($availability->date)->setTimeFromTimeString($takenFrom);

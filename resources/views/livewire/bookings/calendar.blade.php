@@ -35,7 +35,7 @@
 						<i class="fa fa-chevron-left text-[10px]" aria-hidden="true"></i>
 					</a>
 					<span class="text-sm font-medium text-white/90 min-w-[140px] text-center tabular-nums">
-						{{ $selectedDate->format('D, j M Y') }}
+						{{ $selectedDate->format('d. m. Y') }}
 						@if ($selectedDate->isToday())
 							<span class="text-brand/90 text-xs font-normal">· today</span>
 						@endif
@@ -79,8 +79,8 @@
 				$timelineConfig = [
 				    'selectedDate' => $selectedDate->format('Y-m-d'),
 				    'isAuthenticated' => auth()->check(),
-				    'nowMinutes' => (int) now()->format('H') * 60 + (int) now()->format('i'),
 				    'isToday' => $selectedDate->isToday(),
+				    'nowMinutes' => (int) now()->format('H') * 60 + (int) now()->format('i'),
 				    'scale' => $timelineScale,
 				];
 			@endphp
@@ -90,7 +90,7 @@
 					{{-- Hour header --}}
 					<div class="flex border-b border-gray-200 bg-gray-50/80 sticky top-0 z-10">
 						<div
-							class="w-32 shrink-0 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">
+							class="w-32 shrink-0 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 sticky left-0 z-[7] bg-gray-50">
 							Position
 						</div>
 						<div class="flex-1 relative h-8">
@@ -114,7 +114,7 @@
 					</div>
 
 					{{-- Timeline rows --}}
-					@if (empty($timelinePositions))
+					@if (empty($timelinePositions) && empty($events))
 						<div class="px-4 py-16 text-center text-gray-400">
 							<p class="text-sm font-medium text-gray-500">No positions available for this date.</p>
 							<p class="text-xs mt-1">
@@ -133,7 +133,7 @@
 										class="flex border-b border-gray-200 bg-gray-50/90 cursor-pointer hover:bg-brand/5 transition-colors select-none"
 										@click="expanded = !expanded">
 										<div
-											class="w-32 shrink-0 px-3 py-2.5 border-r border-gray-200 flex items-center gap-2 sticky left-0 bg-gray-50/90 z-[6]">
+											class="w-32 shrink-0 px-3 py-2.5 border-r border-gray-200 flex items-center gap-2 sticky left-0 bg-gray-50 z-[6]">
 											<i class="fa fa-chevron-right text-[10px] text-gray-400 shrink-0 transition-transform duration-150"
 												:style="expanded ? 'transform: rotate(90deg)' : ''" aria-hidden="true"></i>
 											<span class="text-sm font-bold text-gray-600 uppercase tracking-wide" x-text="icao"></span>
@@ -175,6 +175,33 @@
 								<div class="flex border-b border-gray-300 bg-gray-100/70 h-4"></div>
 							@endif
 						@endforeach
+
+						@if (!empty($events))
+							{{-- Events row --}}
+							<div class="flex border-b border-gray-200 bg-gray-50/90">
+								<div
+									class="w-32 shrink-0 px-3 py-2.5 border-r border-gray-200 flex items-center gap-2 sticky left-0 bg-gray-50 z-[6]">
+									<i class="fa fa-star text-[10px] text-gray-400 shrink-0" aria-hidden="true"></i>
+									<span class="text-sm font-bold text-gray-600 uppercase tracking-wide">Events</span>
+								</div>
+								<div class="flex-1 relative h-10">
+									<div x-data='{ events: @json($events) }'>
+										<template x-for="booking in events" :key="booking.source + '-' + (booking.id || booking.cts_booking_id)">
+											<div
+												class="absolute top-1 bottom-1 rounded px-2 flex items-center gap-1.5 cursor-pointer text-white text-xs font-medium shadow-sm hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap bg-red-600"
+												:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%'"
+												:title="(booking.member?.display_name || booking.member?.name || 'Unknown') + (booking.member?.cid ? ' (' + booking
+												    .member.cid + ')' : '') + ' \u00b7 ' + booking.from + ' \u2013 ' + booking.to"
+												@click.stop="openDetailModal({ callsign: booking.position || 'Events' }, booking)">
+												<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]" x-text="booking.from"></span>
+												<span class="truncate"
+													x-text="(booking.member?.display_name || booking.member?.name || 'Unknown') + (booking.member?.cid ? ' (' + booking.member.cid + ')' : '')"></span>
+											</div>
+										</template>
+									</div>
+								</div>
+							</div>
+						@endif
 					@endif
 
 					<div class="flex absolute inset-0 z-[1] pointer-events-none">
@@ -190,8 +217,13 @@
 					</div>
 
 					<template x-if="isToday">
-						<div class="absolute inset-y-0 w-px bg-red-500 z-30 pointer-events-none" :style="'left: ' + nowPct() + '%'">
-							<div class="w-2.5 h-2.5 bg-red-500 rounded-full -ml-[4px] -mt-[4px]"></div>
+						<div class="flex absolute inset-0 z-30 pointer-events-none">
+							<div class="w-32 shrink-0"></div>
+							<div class="flex-1 relative">
+								<div class="absolute inset-y-0 w-px bg-red-500" :style="'left: ' + nowPct + '%'">
+									<div class="w-2.5 h-2.5 bg-red-500 rounded-full -ml-[4px] -mt-[4px]"></div>
+								</div>
+							</div>
 						</div>
 					</template>
 				</div>
@@ -201,7 +233,8 @@
 		{{-- Footer --}}
 		<div class="border-t border-gray-200 px-4 py-2.5 bg-gray-50/80 flex items-center">
 			<span class="text-xs text-gray-400">
-				<i class="fa fa-mouse-pointer text-[10px] mr-1" aria-hidden="true"></i> Drag across an empty slot to book - or click
+				<i class="fa fa-mouse-pointer text-[10px] mr-1" aria-hidden="true"></i> Drag across an empty slot to book - or
+				click
 				for a 1-hour slot
 			</span>
 		</div>

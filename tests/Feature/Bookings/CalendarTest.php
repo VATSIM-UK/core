@@ -10,6 +10,8 @@ use App\Models\Booking;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Qualification;
+use App\Models\Mship\State;
+use App\Models\Roster;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
@@ -19,6 +21,13 @@ use Tests\TestCase;
 class CalendarTest extends TestCase
 {
     use DatabaseTransactions;
+
+    private function placeOnRoster(Account $member): Roster
+    {
+        $member->addState(State::findByCode('DIVISION'));
+
+        return Roster::create(['account_id' => $member->id]);
+    }
 
     #[Test]
     public function it_loads_with_todays_date(): void
@@ -98,6 +107,7 @@ class CalendarTest extends TestCase
         $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
         $member->qualifications()->sync([$qual->id]);
         $member = $member->fresh();
+        $this->placeOnRoster($member);
 
         $position = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
 
@@ -267,6 +277,7 @@ class CalendarTest extends TestCase
         $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
         $member->qualifications()->sync([$qual->id]);
         $member = $member->fresh();
+        $this->placeOnRoster($member);
 
         $position = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
 
@@ -356,5 +367,91 @@ class CalendarTest extends TestCase
             ->assertDispatched('booking-error');
 
         $this->assertDatabaseHas('bookings', ['id' => $booking->id]);
+    }
+
+    #[Test]
+    public function it_separates_event_bookings_from_position_rows(): void
+    {
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        Booking::create([
+            'position_id' => $position->id,
+            'member_id' => Account::factory()->create()->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::today()->setHour(10),
+            'ends_at' => Carbon::today()->setHour(12),
+        ]);
+        Booking::create([
+            'position_id' => $position->id,
+            'member_id' => Account::factory()->create()->id,
+            'type' => Booking::TYPE_EVENT,
+            'starts_at' => Carbon::today()->setHour(14),
+            'ends_at' => Carbon::today()->setHour(16),
+        ]);
+
+        $component = Livewire::test(Calendar::class);
+
+        $this->assertCount(1, $component->get('events'), 'Event bookings must appear in the events array');
+        $this->assertSame('EV', $component->get('events')[0]['type']);
+
+        $positions = $component->get('timelinePositions');
+        $positionIds = [];
+        foreach ($positions as $row) {
+            if (isset($row['positions'])) {
+                foreach ($row['positions'] as $pos) {
+                    foreach ($pos['bookings'] as $b) {
+                        $positionIds[] = $b['type'];
+                    }
+                }
+            } elseif (isset($row['bookings'])) {
+                foreach ($row['bookings'] as $b) {
+                    $positionIds[] = $b['type'];
+                }
+            }
+        }
+        $this->assertContains('BK', $positionIds, 'Standard booking must remain in timelinePositions');
+        $this->assertNotContains('EV', $positionIds, 'Event bookings must not appear in timelinePositions');
+    }
+
+    #[Test]
+    public function it_filters_timeline_rows_by_callsign(): void
+    {
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        Booking::create([
+            'position_id' => $position->id,
+            'member_id' => Account::factory()->create()->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::today()->setHour(10),
+            'ends_at' => Carbon::today()->setHour(12),
+        ]);
+
+        $component = Livewire::test(Calendar::class);
+
+        $this->assertNotEmpty($component->get('timelinePositions'), 'Timeline should contain the EGKK booking before filtering');
+        $this->assertSame('', $component->get('positionFilter'));
+        $this->assertSame(0, $component->get('filterVersion'));
+
+        // Applying a non-matching filter hides the row
+        $component->set('positionFilter', 'EGLL');
+
+        $this->assertSame('EGLL', $component->get('positionFilter'));
+        $this->assertSame(1, $component->get('filterVersion'));
+    }
+
+    #[Test]
+    public function it_sets_is_today_flag_when_viewing_today(): void
+    {
+        Livewire::test(Calendar::class)
+            ->assertSet('selectedDate', Carbon::today())
+            ->assertSee('"isToday":true', false);
+    }
+
+    #[Test]
+    public function it_sets_is_today_false_when_viewing_another_date(): void
+    {
+        Livewire::test(Calendar::class, ['year' => 2025, 'month' => 1])
+            ->assertSet('selectedDate', Carbon::create(2025, 1, 1))
+            ->assertSee('"isToday":false', false);
     }
 }
