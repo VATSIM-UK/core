@@ -90,7 +90,7 @@
 					{{-- Hour header --}}
 					<div class="flex border-b border-gray-200 bg-gray-50/80 sticky top-0 z-10">
 						<div
-							class="w-32 shrink-0 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 sticky left-0 z-[7] bg-gray-50/80">
+							class="w-32 shrink-0 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 sticky left-0 z-[7] bg-gray-50">
 							Position
 						</div>
 						<div class="flex-1 relative h-8">
@@ -133,7 +133,7 @@
 										class="flex border-b border-gray-200 bg-gray-50/90 cursor-pointer hover:bg-brand/5 transition-colors select-none"
 										@click="expanded = !expanded">
 										<div
-											class="w-32 shrink-0 px-3 py-2.5 border-r border-gray-200 flex items-center gap-2 sticky left-0 bg-gray-50/90 z-[6]">
+											class="w-32 shrink-0 px-3 py-2.5 border-r border-gray-200 flex items-center gap-2 sticky left-0 bg-gray-50 z-[6]">
 											<i class="fa fa-chevron-right text-[10px] text-gray-400 shrink-0 transition-transform duration-150"
 												:style="expanded ? 'transform: rotate(90deg)' : ''" aria-hidden="true"></i>
 											<span class="text-sm font-bold text-gray-600 uppercase tracking-wide" x-text="icao"></span>
@@ -180,7 +180,7 @@
 							{{-- Events row --}}
 							<div class="flex border-b border-gray-200 bg-gray-50/90">
 								<div
-									class="w-32 shrink-0 px-3 py-2.5 border-r border-gray-200 flex items-center gap-2 sticky left-0 bg-gray-50/90 z-[6]">
+									class="w-32 shrink-0 px-3 py-2.5 border-r border-gray-200 flex items-center gap-2 sticky left-0 bg-gray-50 z-[6]">
 									<i class="fa fa-star text-[10px] text-gray-400 shrink-0" aria-hidden="true"></i>
 									<span class="text-sm font-bold text-gray-600 uppercase tracking-wide">Events</span>
 								</div>
