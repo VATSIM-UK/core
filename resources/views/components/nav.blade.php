@@ -291,8 +291,7 @@
 								<li><a href="{{ route('site.community.teamspeak') }}" class="nav-dropdown-link">TeamSpeak</a></li>
 								<li><a href="{{ route('mship.manage.dashboard') }}" class="nav-dropdown-link">Discord</a></li>
 								<li class="nav-dropdown-divider"></li>
-								<li><a href="{{ route('filament.training.pages.dashboard') }}" class="nav-dropdown-link">Training System</a>
-								</li>
+								<li><a href="https://cts.vatsim.uk/" class="nav-dropdown-link">Training System (CTS)</a></li>
 								<li><a href="https://docs.vatsim.uk/" class="nav-dropdown-link">Docs Site</a></li>
 								<li><a href="https://moodle.vatsim.uk/" class="nav-dropdown-link">eLearning</a></li>
 								<li><a href="https://helpdesk.vatsim.uk/" class="nav-dropdown-link">Helpdesk</a></li>
