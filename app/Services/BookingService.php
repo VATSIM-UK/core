@@ -8,6 +8,7 @@ use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Mship\Account;
+use App\Models\Roster;
 use App\Services\Bookings\BookingPolicy;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -178,15 +179,12 @@ class BookingService
 
     public function validateMemberQualification(int $memberId, int $positionId): void
     {
-        $member = Account::findOrFail($memberId);
         $position = Position::findOrFail($positionId);
+        Account::findOrFail($memberId);
 
-        $rating = (int) ($member->qualification_atc?->vatsim ?? 0);
-        $maxAllowed = $rating + 1;
+        $roster = Roster::firstWhere('account_id', $memberId);
 
-        $minRating = Position::minimumVatsimRatingForType((int) $position->getRawOriginal('type'));
-
-        if ($minRating > $maxAllowed) {
+        if (! $roster?->accountCanControl($position)) {
             throw new \RuntimeException('You are not qualified to book this position.');
         }
     }

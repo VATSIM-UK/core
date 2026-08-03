@@ -7,6 +7,7 @@ namespace App\Livewire\Bookings;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
+use App\Models\Roster;
 use App\Repositories\Cts\BookingRepository;
 use App\Services\BookingService;
 use Carbon\Carbon;
@@ -86,35 +87,14 @@ class Calendar extends Component
 
     public function getQualifiedPositions(): void
     {
-        $rating = (int) (auth()->user()?->qualification_atc?->vatsim ?? 0);
-        $maxAllowed = $rating + 1;
+        $account = auth()->user();
+        $roster = $account !== null ? Roster::firstWhere('account_id', $account->getKey()) : null;
 
-        $bookableTypes = [
-            Position::TYPE_DELIVERY,
-            Position::TYPE_GROUND,
-            Position::TYPE_TOWER,
-            Position::TYPE_APPROACH,
-            Position::TYPE_ENROUTE,
-            Position::TYPE_FSS,
-        ];
-
-        $allowedTypes = array_filter($bookableTypes, function (int $type) use ($maxAllowed): bool {
-            return Position::minimumVatsimRatingForType($type) <= $maxAllowed;
-        });
-
-        $query = Position::real()->orderBy('callsign');
-
-        if (! empty($allowedTypes)) {
-            $query->whereIn('type', $allowedTypes);
-        }
-
-        $this->qualifiedPositions = $query->pluck('callsign', 'id');
-
-        if ($this->qualifiedPositions->isEmpty()) {
-            $this->qualifiedPositions = Position::real()
-                ->orderBy('callsign')
-                ->pluck('callsign', 'id');
-        }
+        $this->qualifiedPositions = Position::real()
+            ->orderBy('callsign')
+            ->get()
+            ->filter(fn (Position $position): bool => (bool) $roster?->accountCanControl($position))
+            ->pluck('callsign', 'id');
     }
 
     public function buildTimeline(): void
