@@ -49,6 +49,7 @@ class BookingRepository
 
         return $this->formatBookings($core)
             ->concat($ctsOnly->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts)))
+            ->sortBy(fn (object $b) => $b->from)
             ->values();
     }
 
