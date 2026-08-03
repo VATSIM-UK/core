@@ -7,6 +7,7 @@ namespace App\Repositories\Cts;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
+use App\Models\Cts\Member as CtsMember;
 use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -36,14 +37,18 @@ class BookingRepository
             ->orderBy('from')
             ->get();
 
+        // Best-effort match of CTS positions to core positions; may fail for positions
+        // that have no core counterpart, in which case the raw CTS position is used.
         $ctsCallsigns = $ctsOnly->pluck('position')->filter()->unique()->values();
         $ctsPositions = Position::whereIn('callsign', $ctsCallsigns)->get()->keyBy('callsign');
 
         $ctsMemberIds = $ctsOnly->pluck('member_id')->filter()->unique()->values();
-        $ctsAccounts = Account::whereIn('id', $ctsMemberIds)->get()->keyBy('id');
+        $ctsMembers = CtsMember::whereIn('id', $ctsMemberIds)->get()->keyBy('id');
+        $ctsCids = $ctsMembers->pluck('cid')->filter()->unique()->values();
+        $ctsAccounts = Account::whereIn('id', $ctsCids)->get()->keyBy('id');
 
         return $this->formatBookings($core)
-            ->concat($ctsOnly->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsAccounts)))
+            ->concat($ctsOnly->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts)))
             ->values();
     }
 
@@ -95,11 +100,12 @@ class BookingRepository
         });
     }
 
-    private function formatCtsBooking(CtsBooking $cts, Collection $positions, Collection $accounts): object
+    private function formatCtsBooking(CtsBooking $cts, Collection $positions, Collection $members, Collection $accounts): object
     {
         $type = (string) $cts->type;
         $position = $positions->get($cts->position);
-        $account = $accounts->get((int) $cts->member_id);
+        $member = $members->get((int) $cts->member_id);
+        $account = $member !== null ? $accounts->get((int) $member->cid) : null;
 
         return $this->makeBooking(
             id: null,
