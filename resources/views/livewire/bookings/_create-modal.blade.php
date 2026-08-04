@@ -212,11 +212,11 @@
 							<label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Position</label>
 							<div x-show="!selectedPosition">
 								<input type="text" x-model="positionSearch" x-on:input.debounce.300ms="runPositionSearch()"
-									placeholder="Type at least {{ $positionSearchMinLength }} characters…"
+									placeholder="Type at least {{ $positionSearchMinLength }} characters..."
 									class="block w-full rounded-lg border-gray-300 bg-white shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5">
 								<div x-show="positionSearchTerm.length > 0 && !positionSearchReady"
 									class="mt-1.5 px-3 py-2 text-xs text-gray-400">
-									Keep typing &mdash; at least {{ $positionSearchMinLength }} characters are needed to search.
+									Keep typing - at least {{ $positionSearchMinLength }} characters are needed to search.
 								</div>
 								<div x-show="positionSearchReady"
 									class="mt-1.5 border border-gray-200 rounded-lg divide-y divide-gray-100 max-h-44 overflow-y-auto shadow-sm">
@@ -228,7 +228,7 @@
 										</button>
 									</template>
 									<div x-show="searchingPositions" class="px-3 py-4 text-sm text-gray-400 text-center">
-										Searching…
+										Searching...
 									</div>
 									<div x-show="!searchingPositions && positionResults.length === 0"
 										class="px-3 py-4 text-sm text-gray-400 text-center">
