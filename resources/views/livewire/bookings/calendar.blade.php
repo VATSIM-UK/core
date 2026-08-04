@@ -100,6 +100,8 @@
 										style="left: {{ $th['scale_left'] }}%; width: {{ $th['scale_width'] }}%" title="{{ $th['label'] }}">
 										@if ($th['show_label'])
 											<span class="text-[10px] text-gray-500 font-medium">{{ $th['label'] }}</span>
+										@elseif ($th['show_short_label'])
+											<span class="text-[10px] text-gray-500 font-medium">{{ $th['short_label'] }}</span>
 										@endif
 										<span class="absolute top-0 bottom-0 w-px bg-gray-300" style="left: 0px"></span>
 										<span class="absolute top-0 bottom-0 w-px bg-gray-300" style="right: 0px"></span>
@@ -204,11 +206,10 @@
 												class="absolute rounded px-2 flex items-center gap-1.5 cursor-pointer text-white text-xs font-medium shadow-sm hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap bg-red-600"
 												:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%; top: ' + bookingTop(pos,
 												    booking) + '; height: ' + blockHeight(pos)"
-												:title="(booking.event_name || booking.position || 'Events') + ' \u00b7 ' + booking.from + ' \u2013 ' +
-												    booking.to"
-												@click.stop="openDetailModal({ callsign: booking.position || 'Events' }, booking)">
+												:title="(booking.event_name || 'Events') + ' \u00b7 ' + booking.from + ' \u2013 ' + booking.to"
+												@click.stop="openDetailModal({ callsign: booking.event_name || 'Events' }, booking)">
 												<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]" x-text="booking.from"></span>
-												<span class="truncate" x-text="booking.event_name || booking.position || 'Events'"></span>
+												<span class="truncate" x-text="booking.event_name || 'Events'"></span>
 											</div>
 										</template>
 									</div>
