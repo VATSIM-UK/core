@@ -22,7 +22,7 @@
                                 }
                             }))"
 							class="px-2.5 py-1 text-xs font-semibold text-brand border border-brand/60 rounded-md hover:bg-brand hover:text-white transition-colors">
-							<i class="fa fa-plus mr-1 text-[9px]" aria-hidden="true"></i> New
+							<i class="fa fa-plus mr-1 text-[9px]" aria-hidden="true"></i> Book
 						</button>
 					@endauth
 				</div>
@@ -67,7 +67,7 @@
 					<i class="fa fa-search absolute left-2.5 top-1/2 -translate-y-1/2 text-white/40 text-[10px]"
 						aria-hidden="true"></i>
 					<input type="text" x-data="{ filter: '{{ $positionFilter }}' }" x-model="filter"
-						x-on:input.debounce.250ms="$wire.set('positionFilter', filter)" placeholder="Filter callsign…"
+						x-on:input.debounce.250ms="$wire.set('positionFilter', filter)" placeholder="Search callsign..."
 						class="w-full pl-7 pr-3 py-1.5 rounded-md border-0 bg-white/10 text-sm text-white placeholder-white/40 ring-1 ring-inset ring-white/15 focus:ring-2 focus:ring-white/40 focus:outline-none focus:bg-white/15 transition-all">
 				</div>
 			</div>
@@ -97,15 +97,19 @@
 							@foreach ($timelineHours as $th)
 								@if ($th['type'] === 'gap')
 									<div class="absolute top-0 bottom-0 flex items-center justify-center bg-gray-300/70"
-										style="left: {{ $th['scale_left'] }}%; width: {{ $th['scale_width'] }}%">
-										<span class="text-[10px] text-gray-500 font-medium">{{ $th['label'] }}</span>
+										style="left: {{ $th['scale_left'] }}%; width: {{ $th['scale_width'] }}%" title="{{ $th['label'] }}">
+										@if ($th['show_label'])
+											<span class="text-[10px] text-gray-500 font-medium">{{ $th['label'] }}</span>
+										@endif
 										<span class="absolute top-0 bottom-0 w-px bg-gray-300" style="left: 0px"></span>
 										<span class="absolute top-0 bottom-0 w-px bg-gray-300" style="right: 0px"></span>
 									</div>
 								@else
 									<div class="absolute top-0 bottom-0 flex items-center text-[10px] text-gray-400 font-medium"
-										style="left: {{ $th['scale_left'] }}%">
-										<span class="pl-1.5">{{ sprintf('%02d:00', $th['hour']) }}</span>
+										style="left: {{ $th['scale_left'] }}%" title="{{ sprintf('%02d:00', $th['hour']) }}">
+										@if ($th['show_label'])
+											<span class="pl-1.5">{{ sprintf('%02d:00', $th['hour']) }}</span>
+										@endif
 										<span class="absolute top-0 bottom-0 w-px bg-gray-200" style="left: -1px"></span>
 									</div>
 								@endif
@@ -184,16 +188,19 @@
 									<i class="fa fa-star text-[10px] text-gray-400 shrink-0" aria-hidden="true"></i>
 									<span class="text-sm font-bold text-gray-600 uppercase tracking-wide">Events</span>
 								</div>
-								<div class="flex-1 relative h-10">
+								<div class="flex-1 relative" x-data='{ pos: { laneCount: @json($eventLaneCount) } }'
+									:style="'height: ' + rowHeight(pos)">
 									<div x-data='{ events: @json($events) }'>
 										<template x-for="booking in events" :key="booking.source + '-' + (booking.id || booking.cts_booking_id)">
 											<div
-												class="absolute top-1 bottom-1 rounded px-2 flex items-center gap-1.5 cursor-pointer text-white text-xs font-medium shadow-sm hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap bg-red-600"
-												:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%'"
-												:title="(booking.event_name || 'Events') + ' \u00b7 ' + booking.from + ' \u2013 ' + booking.to"
+												class="absolute rounded px-2 flex items-center gap-1.5 cursor-pointer text-white text-xs font-medium shadow-sm hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap bg-red-600"
+												:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%; top: ' + bookingTop(pos,
+												    booking) + '; height: ' + blockHeight(pos)"
+												:title="(booking.event_name || booking.position || 'Events') + ' \u00b7 ' + booking.from + ' \u2013 ' +
+												    booking.to"
 												@click.stop="openDetailModal({ callsign: booking.position || 'Events' }, booking)">
 												<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]" x-text="booking.from"></span>
-												<span class="truncate" x-text="booking.event_name || 'Events'"></span>
+												<span class="truncate" x-text="booking.event_name || booking.position || 'Events'"></span>
 											</div>
 										</template>
 									</div>
@@ -243,6 +250,5 @@
 </div>
 
 <script>
-	window.qualifiedPositionsData = @json($qualifiedPositions);
 	window.isAuthenticated = @json(auth()->check());
 </script>
