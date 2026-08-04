@@ -39,7 +39,9 @@
  *   1  gap shading overlay
  *   5  booking blocks
  *   8  drag preview
- *   9  current time marker
+ *   9  current time marker (its line; the ball is drawn in the header row so
+ *      that the header cannot clip it, and is unranked there so the header's
+ *      own Position cell still covers it)
  *  20  sticky position column (rows, group headers, events row)
  *  30  hour header row (sticky vertically, so above the column)
  *

@@ -93,7 +93,7 @@
 							class="w-32 shrink-0 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 sticky left-0 z-[7] bg-gray-50">
 							Position
 						</div>
-						<div class="flex-1 relative h-8">
+						<div class="flex-1 relative h-8" x-ref="headerTrack">
 							@foreach ($timelineHours as $th)
 								@if ($th['type'] === 'gap')
 									<div class="absolute top-0 bottom-0 flex items-center justify-center bg-gray-300/70"
@@ -116,6 +116,16 @@
 									</div>
 								@endif
 							@endforeach
+
+							{{-- Ball of the current time marker, centred on the header's bottom border.
+								It lives in the header rather than with its line so that the header
+								cannot clip it. That also places it above the sticky position column,
+								which the header has to outrank, so nowBallHidden() drops it once a
+								horizontal scroll would put it over the callsigns. --}}
+							<template x-if="isToday && !nowBallHidden()">
+								<div class="absolute top-full -translate-y-1/2 -ml-[4px] w-2.5 h-2.5 bg-red-500 rounded-full"
+									:style="'left: ' + nowPct + '%'"></div>
+							</template>
 						</div>
 					</div>
 
@@ -230,17 +240,16 @@
 						</div>
 					</div>
 
-					{{-- Current time marker. Starts below the hour header (h-8) and sits under
-						the sticky position column, whose spacer here does not stick, so on a
-						horizontal scroll the line passes behind the callsigns rather than over
-						them. See the layer scale in bookings-calendar.css. --}}
+					{{-- Line of the current time marker, starting where the hour header ends
+						(2rem for its h-8 body plus its 1px border) so it meets the ball drawn
+						there. It stays below the sticky position column in the layer scale (see
+						bookings-calendar.css), whose spacer here does not stick, so a horizontal
+						scroll passes the line behind the callsigns rather than over them. --}}
 					<template x-if="isToday">
-						<div class="flex absolute inset-x-0 bottom-0 top-8 z-[9] pointer-events-none">
+						<div class="flex absolute inset-x-0 bottom-0 top-[calc(2rem+1px)] z-[9] pointer-events-none">
 							<div class="w-32 shrink-0"></div>
 							<div class="flex-1 relative">
-								<div class="absolute inset-y-0 w-px bg-red-500" :style="'left: ' + nowPct + '%'">
-									<div class="w-2.5 h-2.5 bg-red-500 rounded-full -ml-[4px] -mt-[4px]"></div>
-								</div>
+								<div class="absolute inset-y-0 w-px bg-red-500" :style="'left: ' + nowPct + '%'"></div>
 							</div>
 						</div>
 					</template>
