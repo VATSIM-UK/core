@@ -25,3 +25,33 @@
 		</div>
 	</div>
 @endif
+{{-- Training Panel Notification --}}
+@if (auth()->user() && !request()->is('training*'))
+	<div data-top-notification-id="vuk-notification-training-beta0126" data-top-notification-cookie-expiration-days="3650"
+		class="top_notification">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-1 icon text-center">
+					<em class="fas fa-graduation-cap"></em>
+				</div>
+				<div class="col-md-8 message">
+					<p><strong>Meet the new Training Panel, {{ auth()->user()->name_first }}!</strong></p>
+					<p>We're moving all training management out of CTS and into the Training Panel, it'll eventually replace CTS
+						entirely, so the sooner you get familiar with it, the better. Found a bug or have any feedback? Let us know in
+						<a href="https://discord.com/channels/705488311346790471/1516503043879993596" target="_blank"
+							rel="noopener">#training-panel-feedback-issues</a> on our discord.
+					</p>
+				</div>
+				<div class="col-md-3 cta text-center">
+					<a href="{{ route('filament.training.pages.dashboard') }}"
+						class="button secondary top_notification_open_and_dismiss"
+						data-top-notification-id="vuk-notification-training-beta0126">
+						Open Training Panel
+					</a>
+					<a href="#" data-top-notification-id="vuk-notification-training-beta0126"
+						class="button top_notification_dismiss tertiary">Close</a>
+				</div>
+			</div>
+		</div>
+	</div>
+@endif
