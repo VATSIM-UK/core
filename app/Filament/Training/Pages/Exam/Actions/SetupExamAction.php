@@ -65,9 +65,25 @@ class SetupExamAction
             });
     }
 
+    protected static function hasTwrData(Get $get): bool
+    {
+        return filled($get('twr_position')) || filled($get('twr_student'));
+    }
+
+    protected static function hasObsData(Get $get): bool
+    {
+        return filled($get('obs_position')) || filled($get('obs_student'));
+    }
+
+    protected static function hasPilotData(Get $get): bool
+    {
+        return filled($get('pilot_exam_type')) || filled($get('pilot_student'));
+    }
+
     protected static function twrToCtrTab(): Tab
     {
         return Tab::make('TWR to CTR')
+            ->disabled(fn (Get $get): bool => static::hasObsData($get) || static::hasPilotData($get))
             ->schema([
                 Select::make('twr_position')
                     ->label('Position')
@@ -83,6 +99,7 @@ class SetupExamAction
                     ->options(fn (Get $get): array => app(ExamSetupService::class)->twrToCtrStudentOptions(
                         $get('twr_position') ? (int) $get('twr_position') : null
                     ))
+                    ->getOptionLabelUsing(fn ($value): ?string => app(ExamSetupService::class)->twrToCtrStudentLabel($value))
                     ->searchable()
                     ->placeholder('Select a position first')
                     ->disabled(fn (Get $get): bool => ! $get('twr_position'))
@@ -94,6 +111,7 @@ class SetupExamAction
     protected static function obsTab(): Tab
     {
         return Tab::make('OBS')
+            ->disabled(fn (Get $get): bool => static::hasTwrData($get) || static::hasPilotData($get))
             ->schema([
                 Select::make('obs_position')
                     ->label('Position')
@@ -109,6 +127,7 @@ class SetupExamAction
                     ->options(fn (Get $get): array => app(ExamSetupService::class)->obsStudentOptions(
                         $get('obs_position') ? (int) $get('obs_position') : null
                     ))
+                    ->getOptionLabelUsing(fn ($value): ?string => app(ExamSetupService::class)->obsStudentLabel($value))
                     ->searchable()
                     ->placeholder('Select a position first')
                     ->disabled(fn (Get $get): bool => ! $get('obs_position'))
@@ -120,6 +139,7 @@ class SetupExamAction
     protected static function pilotTab(): Tab
     {
         return Tab::make('Pilot')
+            ->disabled(fn (Get $get): bool => static::hasTwrData($get) || static::hasObsData($get))
             ->schema([
                 Select::make('pilot_exam_type')
                     ->label('Exam')
