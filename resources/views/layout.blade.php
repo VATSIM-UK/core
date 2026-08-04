@@ -80,7 +80,7 @@
 	<script>
 		// The consent cookie is HttpOnly, so it cannot be read from JavaScript.
 		// Expose the consent state computed server-side instead.
-		window.vukCookieConsent = @json(! \Whitecube\LaravelCookieConsent\Facades\Cookies::shouldDisplayNotice());
+		window.vukCookieConsent = @json(!\Whitecube\LaravelCookieConsent\Facades\Cookies::shouldDisplayNotice());
 	</script>
 	@vite('resources/assets/js/top-notification.js')
 
