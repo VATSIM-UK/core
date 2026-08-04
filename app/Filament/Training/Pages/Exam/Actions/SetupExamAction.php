@@ -55,7 +55,8 @@ class SetupExamAction
                     };
                 } catch (PendingExamExistsException $e) {
                     Notification::make()
-                        ->title($e->getMessage())
+                        ->title('Error')
+                        ->body($e->getMessage())
                         ->danger()
                         ->send();
 
