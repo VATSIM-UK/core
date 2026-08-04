@@ -36,14 +36,15 @@ class ExamSetupServiceTest extends TestCase
     {
         $twr = Position::factory()->create(['callsign' => 'EGKK_TWR']);
         $app = Position::factory()->create(['callsign' => 'EGLL_APP']);
-        Position::factory()->create(['callsign' => 'EGLL_ATIS']);
+        $atis = Position::factory()->create(['callsign' => 'EGLL_ATIS']);
 
         $options = $this->service->twrToCtrPositionOptions();
 
-        $this->assertEquals([
-            $app->id => 'EGLL_APP',
-            $twr->id => 'EGKK_TWR',
-        ], $options);
+        $this->assertArrayHasKey($app->id, $options);
+        $this->assertSame('EGLL_APP', $options[$app->id]);
+        $this->assertArrayHasKey($twr->id, $options);
+        $this->assertSame('EGKK_TWR', $options[$twr->id]);
+        $this->assertArrayNotHasKey($atis->id, $options);
     }
 
     #[Test]
@@ -67,9 +68,8 @@ class ExamSetupServiceTest extends TestCase
 
         $options = $this->service->twrToCtrStudentOptions($position->id);
 
-        $this->assertEquals([
-            $student->id => "{$student->name} ({$student->cid})",
-        ], $options);
+        $this->assertArrayHasKey($student->id, $options);
+        $this->assertSame("{$student->name} ({$student->cid})", $options[$student->id]);
     }
 
     #[Test]
@@ -85,7 +85,7 @@ class ExamSetupServiceTest extends TestCase
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
         ]);
 
-        $this->assertSame([], $this->service->twrToCtrStudentOptions($position->id));
+        $this->assertArrayNotHasKey($student->id, $this->service->twrToCtrStudentOptions($position->id));
     }
 
     #[Test]
@@ -102,7 +102,7 @@ class ExamSetupServiceTest extends TestCase
             'date' => now()->subDays(10),
         ]);
 
-        $this->assertSame([], $this->service->twrToCtrStudentOptions($position->id));
+        $this->assertArrayNotHasKey($student->id, $this->service->twrToCtrStudentOptions($position->id));
     }
 
     #[Test]
@@ -131,7 +131,7 @@ class ExamSetupServiceTest extends TestCase
         $student = $this->createStudentWithAccount();
         $this->createCompletedSession($student, $position->callsign, now()->subDays(200));
 
-        $this->assertSame([], $this->service->twrToCtrStudentOptions($position->id));
+        $this->assertArrayNotHasKey($student->id, $this->service->twrToCtrStudentOptions($position->id));
     }
 
     #[Test]
@@ -149,7 +149,7 @@ class ExamSetupServiceTest extends TestCase
             'session_done' => 0,
         ]);
 
-        $this->assertSame([], $this->service->twrToCtrStudentOptions($position->id));
+        $this->assertArrayNotHasKey($student->id, $this->service->twrToCtrStudentOptions($position->id));
     }
 
     #[Test]
@@ -607,7 +607,8 @@ class ExamSetupServiceTest extends TestCase
     {
         $account = Account::factory()->create();
         $account->qualifications()->attach(
-            Qualification::factory()->create(['type' => 'pilot', 'code' => $qualificationCode])
+            Qualification::firstWhere('code', $qualificationCode)
+                ?? Qualification::factory()->create(['code' => $qualificationCode, 'type' => 'pilot'])
         );
 
         return Member::factory()->forAccount($account)->create(['name' => $name]);

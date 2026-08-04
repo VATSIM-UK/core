@@ -21,6 +21,12 @@ class SetupExamActionTest extends BaseTrainingPanelTestCase
 {
     use DatabaseTransactions;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->panelUser->givePermissionTo('training.exams.access');
+    }
+
     #[Test]
     public function it_shows_the_action_if_authorised()
     {
