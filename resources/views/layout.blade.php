@@ -77,6 +77,11 @@
 		integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
 	</script>
 	@vite('resources/assets/js/app.js')
+	<script>
+		// The consent cookie is HttpOnly, so it cannot be read from JavaScript.
+		// Expose the consent state computed server-side instead.
+		window.vukCookieConsent = @json(! \Whitecube\LaravelCookieConsent\Facades\Cookies::shouldDisplayNotice());
+	</script>
 	@vite('resources/assets/js/top-notification.js')
 
 	@if (Carbon\Carbon::now()->month == 12 || Carbon\Carbon::now()->dayOfYear < 10)
