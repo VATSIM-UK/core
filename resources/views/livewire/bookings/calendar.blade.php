@@ -22,7 +22,7 @@
                                 }
                             }))"
 							class="px-2.5 py-1 text-xs font-semibold text-brand border border-brand/60 rounded-md hover:bg-brand hover:text-white transition-colors">
-							<i class="fa fa-plus mr-1 text-[9px]" aria-hidden="true"></i> New
+							<i class="fa fa-plus mr-1 text-[9px]" aria-hidden="true"></i> Book
 						</button>
 					@endauth
 				</div>
@@ -67,7 +67,7 @@
 					<i class="fa fa-search absolute left-2.5 top-1/2 -translate-y-1/2 text-white/40 text-[10px]"
 						aria-hidden="true"></i>
 					<input type="text" x-data="{ filter: '{{ $positionFilter }}' }" x-model="filter"
-						x-on:input.debounce.250ms="$wire.set('positionFilter', filter)" placeholder="Filter callsign…"
+						x-on:input.debounce.250ms="$wire.set('positionFilter', filter)" placeholder="Search callsign..."
 						class="w-full pl-7 pr-3 py-1.5 rounded-md border-0 bg-white/10 text-sm text-white placeholder-white/40 ring-1 ring-inset ring-white/15 focus:ring-2 focus:ring-white/40 focus:outline-none focus:bg-white/15 transition-all">
 				</div>
 			</div>

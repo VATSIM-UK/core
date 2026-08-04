@@ -316,6 +316,25 @@ class CalendarTest extends TestCase
     }
 
     #[Test]
+    public function it_labels_the_create_button_book(): void
+    {
+        $member = Account::factory()->withQualification()->create();
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->assertSee('</i> Book', false)
+            ->assertDontSee('</i> New', false);
+    }
+
+    #[Test]
+    public function it_labels_the_callsign_box_as_a_search(): void
+    {
+        Livewire::test(Calendar::class)
+            ->assertSee('Search callsign...')
+            ->assertDontSee('Filter callsign');
+    }
+
+    #[Test]
     public function it_shows_the_drag_and_click_booking_hint(): void
     {
         Livewire::test(Calendar::class)
