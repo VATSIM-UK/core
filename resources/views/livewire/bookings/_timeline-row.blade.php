@@ -20,12 +20,15 @@
 
 		{{-- Drag preview --}}
 		<template x-if="dragging && dragging.pos.callsign === pos.callsign">
-			<div class="absolute top-1 bottom-1 rounded bg-brand/30 border border-brand/50 z-[8] pointer-events-none"
+			<div class="absolute top-1 bottom-1 rounded border z-[8] pointer-events-none"
+				:class="dragOverlaps(pos) ? 'bg-red-500/30 border-red-500/70' : 'bg-brand/30 border-brand/50'"
 				:style="'left: ' + minToPct(dragging.startMinutes) + '%; width: ' + minWidth(dragging.startMinutes, dragging
 				    .currentMinutes) + '%'">
 				<span
-					class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded bg-uknavy px-1.5 py-0.5 text-[10px] font-mono tabular-nums text-white shadow"
-					x-text="minuteToTime(dragging.startMinutes) + ' → ' + minuteToTime(dragging.currentMinutes)"></span>
+					class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded px-1.5 py-0.5 text-[10px] font-mono tabular-nums text-white shadow"
+					:class="dragOverlaps(pos) ? 'bg-red-600' : 'bg-uknavy'"
+					x-text="minuteToTime(dragging.startMinutes) + ' \u2192 ' + minuteToTime(dragging.currentMinutes) + (
+					    dragOverlaps(pos) ? ' (overlap)' : '')"></span>
 			</div>
 		</template>
 

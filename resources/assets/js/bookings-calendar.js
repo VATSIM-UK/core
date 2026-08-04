@@ -56,6 +56,23 @@ document.addEventListener('alpine:init', () => {
             return Math.floor(minutes / 15) * 15;
         },
 
+        // A booking whose end is not after its start runs past midnight. Only the
+        // part falling inside the day being rendered can conflict with a drag.
+        bookingEndMinutes(booking) {
+            return booking.endMin > booking.startMin ? booking.endMin : 1440;
+        },
+
+        // True while the in-progress drag covers time already booked on this row,
+        // so the preview can warn before the create modal is even opened.
+        dragOverlaps(pos) {
+            if (!this.dragging || this.dragging.pos.callsign !== pos.callsign) return false;
+            const start = this.dragging.startMinutes;
+            const end = this.dragging.currentMinutes;
+            return (pos.bookings || []).some(
+                (booking) => booking.startMin < end && this.bookingEndMinutes(booking) > start,
+            );
+        },
+
         minuteToTime(minutes) {
             const h = Math.floor(minutes / 60) % 24;
             const m = minutes % 60;
