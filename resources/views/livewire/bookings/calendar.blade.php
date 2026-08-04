@@ -97,15 +97,19 @@
 							@foreach ($timelineHours as $th)
 								@if ($th['type'] === 'gap')
 									<div class="absolute top-0 bottom-0 flex items-center justify-center bg-gray-300/70"
-										style="left: {{ $th['scale_left'] }}%; width: {{ $th['scale_width'] }}%">
-										<span class="text-[10px] text-gray-500 font-medium">{{ $th['label'] }}</span>
+										style="left: {{ $th['scale_left'] }}%; width: {{ $th['scale_width'] }}%" title="{{ $th['label'] }}">
+										@if ($th['show_label'])
+											<span class="text-[10px] text-gray-500 font-medium">{{ $th['label'] }}</span>
+										@endif
 										<span class="absolute top-0 bottom-0 w-px bg-gray-300" style="left: 0px"></span>
 										<span class="absolute top-0 bottom-0 w-px bg-gray-300" style="right: 0px"></span>
 									</div>
 								@else
 									<div class="absolute top-0 bottom-0 flex items-center text-[10px] text-gray-400 font-medium"
-										style="left: {{ $th['scale_left'] }}%">
-										<span class="pl-1.5">{{ sprintf('%02d:00', $th['hour']) }}</span>
+										style="left: {{ $th['scale_left'] }}%" title="{{ sprintf('%02d:00', $th['hour']) }}">
+										@if ($th['show_label'])
+											<span class="pl-1.5">{{ sprintf('%02d:00', $th['hour']) }}</span>
+										@endif
 										<span class="absolute top-0 bottom-0 w-px bg-gray-200" style="left: -1px"></span>
 									</div>
 								@endif

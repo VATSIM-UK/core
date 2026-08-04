@@ -684,6 +684,72 @@ class CalendarTest extends TestCase
         $this->assertSame(['09:00', '11:00', '14:00'], array_column($row['bookings'], 'from'));
     }
 
+    /**
+     * @return array<string, mixed>
+     */
+    private function timelineHeader(string $callsign, array $times): array
+    {
+        $position = Position::factory()->create(['callsign' => $callsign, 'type' => Position::TYPE_APPROACH]);
+
+        foreach ($times as [$from, $to]) {
+            $this->bookOn($position, $from, $to);
+        }
+
+        $markers = Livewire::test(Calendar::class)->instance()->getTimelineHours();
+
+        $indexed = ['hour' => [], 'gap' => []];
+
+        foreach ($markers as $marker) {
+            $indexed[$marker['type']][$marker['hour']] = $marker;
+        }
+
+        return $indexed;
+    }
+
+    #[Test]
+    public function it_hides_the_label_of_an_hour_the_scale_has_compressed(): void
+    {
+        // 09:00 is a lone inactive hour, so it stays an hour tick rather than
+        // collapsing into a band, but the scale squeezes it to a sixth of a
+        // normal hour -- far narrower than the label it would carry.
+        $header = $this->timelineHeader('EGKK_APP', [['08:00', '09:00'], ['10:00', '18:00']]);
+
+        $this->assertFalse($header['hour'][9]['show_label'], 'A compressed hour must not spill its label over the next column');
+        $this->assertTrue($header['hour'][8]['show_label']);
+        $this->assertTrue($header['hour'][10]['show_label']);
+    }
+
+    #[Test]
+    public function it_keeps_a_compressed_hour_label_when_there_is_room_for_it(): void
+    {
+        // Only two active hours, so even a compressed hour is wide enough.
+        $header = $this->timelineHeader('EGKK_APP', [['10:00', '11:00'], ['12:00', '13:00']]);
+
+        $this->assertTrue($header['hour'][11]['show_label']);
+    }
+
+    #[Test]
+    public function it_hides_a_gap_band_label_that_would_not_fit(): void
+    {
+        $header = $this->timelineHeader('EGKK_APP', [['06:00', '13:00'], ['16:00', '23:00']]);
+
+        $this->assertArrayHasKey(13, $header['gap'], 'Three inactive hours must collapse into a band');
+        $this->assertSame(3, $header['gap'][13]['hours']);
+        $this->assertFalse($header['gap'][13]['show_label'], 'A narrow band cannot fit "13:00 - 16:00"');
+
+        $this->assertTrue($header['gap'][0]['show_label'], 'The wider overnight band still fits its label');
+    }
+
+    #[Test]
+    public function it_keeps_short_gaps_as_individual_hour_ticks(): void
+    {
+        $header = $this->timelineHeader('EGKK_APP', [['08:00', '10:00'], ['12:00', '14:00']]);
+
+        $this->assertArrayNotHasKey(10, $header['gap'], 'A two hour gap is below the collapse threshold');
+        $this->assertArrayHasKey(10, $header['hour']);
+        $this->assertArrayHasKey(11, $header['hour']);
+    }
+
     #[Test]
     public function it_sets_is_today_flag_when_viewing_today(): void
     {

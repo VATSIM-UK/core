@@ -35,6 +35,28 @@ class Calendar extends Component
      */
     private const POSITION_SEARCH_LIMIT = 50;
 
+    /**
+     * An inactive stretch of at least this many hours collapses into a single
+     * labelled band instead of keeping one tick per hour.
+     */
+    private const GAP_COLLAPSE_HOURS = 3;
+
+    /**
+     * Narrowest the timeline track can get, in pixels: the min-w-[1680px] body
+     * less the 8rem (112px at the app's 14px root) position column. Header label
+     * widths are measured against this so nothing overlaps at any window size.
+     */
+    private const TIMELINE_TRACK_MIN_WIDTH = 1568;
+
+    /**
+     * Approximate rendered widths, in pixels, of the two header labels at
+     * text-[10px], including their padding and a little slack: "00:00" for an
+     * hour tick and "00:00 - 00:00" for a collapsed gap band.
+     */
+    private const HOUR_LABEL_WIDTH = 40;
+
+    private const GAP_LABEL_WIDTH = 80;
+
     public Carbon $selectedDate;
 
     public string $positionFilter = '';
@@ -408,36 +430,11 @@ class Calendar extends Component
 
             if ($hasActivity) {
                 if ($gapStart !== null) {
-                    $gapHours = $h - $gapStart;
-                    if ($gapHours >= 3) {
-                        $gapMin = $gapStart * 60;
-                        $gapEnd = $h * 60;
-                        $hours[] = [
-                            'type' => 'gap',
-                            'label' => sprintf('%02d:00 – %02d:00', $gapStart, $h),
-                            'hour' => $gapStart,
-                            'hours' => $gapHours,
-                            'scale_left' => $this->scalePos($gapMin),
-                            'scale_width' => $this->scaleWidth($gapMin, $gapEnd),
-                        ];
-                    } else {
-                        for ($gh = $gapStart; $gh < $h; $gh++) {
-                            $hMin = $gh * 60;
-                            $hours[] = [
-                                'type' => 'hour',
-                                'hour' => $gh,
-                                'scale_left' => $this->scalePos($hMin),
-                            ];
-                        }
-                    }
+                    $hours = array_merge($hours, $this->gapMarkers($gapStart, $h));
                     $gapStart = null;
                 }
-                $hMin = $h * 60;
-                $hours[] = [
-                    'type' => 'hour',
-                    'hour' => $h,
-                    'scale_left' => $this->scalePos($hMin),
-                ];
+
+                $hours[] = $this->hourMarker($h);
             } else {
                 if ($gapStart === null) {
                     $gapStart = $h;
@@ -446,30 +443,79 @@ class Calendar extends Component
         }
 
         if ($gapStart !== null) {
-            $gapHours = 24 - $gapStart;
-            if ($gapHours >= 3) {
-                $gapMin = $gapStart * 60;
-                $hours[] = [
-                    'type' => 'gap',
-                    'label' => sprintf('%02d:00 – 00:00', $gapStart),
-                    'hour' => $gapStart,
-                    'hours' => $gapHours,
-                    'scale_left' => $this->scalePos($gapMin),
-                    'scale_width' => $this->scaleWidth($gapMin, 1440),
-                ];
-            } else {
-                for ($gh = $gapStart; $gh < 24; $gh++) {
-                    $hMin = $gh * 60;
-                    $hours[] = [
-                        'type' => 'hour',
-                        'hour' => $gh,
-                        'scale_left' => $this->scalePos($hMin),
-                    ];
-                }
-            }
+            $hours = array_merge($hours, $this->gapMarkers($gapStart, 24));
         }
 
         return $hours;
+    }
+
+    /**
+     * Header markers covering an inactive stretch. A long gap collapses into a
+     * single labelled band; a short one keeps its individual hour ticks, which
+     * the scale has already compressed.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function gapMarkers(int $fromHour, int $toHour): array
+    {
+        if ($toHour - $fromHour >= self::GAP_COLLAPSE_HOURS) {
+            return [$this->gapMarker($fromHour, $toHour)];
+        }
+
+        $markers = [];
+
+        for ($hour = $fromHour; $hour < $toHour; $hour++) {
+            $markers[] = $this->hourMarker($hour);
+        }
+
+        return $markers;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function hourMarker(int $hour): array
+    {
+        $minute = $hour * 60;
+
+        return [
+            'type' => 'hour',
+            'hour' => $hour,
+            'scale_left' => $this->scalePos($minute),
+            'show_label' => $this->labelFits($this->scaleWidth($minute, $minute + 60), self::HOUR_LABEL_WIDTH),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function gapMarker(int $fromHour, int $toHour): array
+    {
+        $fromMinute = $fromHour * 60;
+        $toMinute = $toHour * 60;
+        $width = $this->scaleWidth($fromMinute, $toMinute);
+
+        return [
+            'type' => 'gap',
+            'label' => sprintf("%02d:00 \u{2013} %02d:00", $fromHour, $toHour % 24),
+            'hour' => $fromHour,
+            'hours' => $toHour - $fromHour,
+            'scale_left' => $this->scalePos($fromMinute),
+            'scale_width' => $width,
+            'show_label' => $this->labelFits($width, self::GAP_LABEL_WIDTH),
+        ];
+    }
+
+    /**
+     * Header labels are placed as a percentage of the timeline track, so a
+     * column compressed by the scale can be far narrower than the text it would
+     * carry -- an inactive hour is a sixth of an active one. Drop the label when
+     * it would not fit at the track's minimum width, leaving the tick in place,
+     * rather than letting it spill over the neighbouring column.
+     */
+    private function labelFits(float $widthPct, int $labelWidth): bool
+    {
+        return $widthPct >= ($labelWidth / self::TIMELINE_TRACK_MIN_WIDTH) * 100;
     }
 
     private function buildTimeClusters(array $positions): array
