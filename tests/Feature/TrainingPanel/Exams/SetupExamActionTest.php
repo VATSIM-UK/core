@@ -35,7 +35,6 @@ class SetupExamActionTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_hides_the_action_if_unauthorised()
     {
-        // User only has basic training.access but not training.exams.setup
         $this->panelUser->revokePermissionTo('training.exams.setup');
 
         Livewire::actingAs($this->panelUser)
