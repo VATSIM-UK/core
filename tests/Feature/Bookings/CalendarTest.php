@@ -570,6 +570,120 @@ class CalendarTest extends TestCase
         $this->assertSame([], $results);
     }
 
+    private function bookOn(Position $position, string $from, string $to): Booking
+    {
+        $startsAt = Carbon::today()->setTimeFromTimeString($from);
+        $endsAt = Carbon::today()->setTimeFromTimeString($to);
+
+        if ($endsAt->lessThanOrEqualTo($startsAt)) {
+            $endsAt->addDay();
+        }
+
+        return Booking::create([
+            'position_id' => $position->id,
+            'member_id' => Account::factory()->create()->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => $startsAt,
+            'ends_at' => $endsAt,
+        ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function timelineRowFor(array $timelinePositions, string $callsign): array
+    {
+        foreach ($timelinePositions as $row) {
+            foreach ($row['positions'] ?? [$row] as $position) {
+                if (($position['callsign'] ?? null) === $callsign) {
+                    return $position;
+                }
+            }
+        }
+
+        $this->fail("No timeline row rendered for {$callsign}");
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function rowForBookings(string $callsign, array $times): array
+    {
+        $position = Position::factory()->create(['callsign' => $callsign, 'type' => Position::TYPE_APPROACH]);
+
+        foreach ($times as [$from, $to]) {
+            $this->bookOn($position, $from, $to);
+        }
+
+        return $this->timelineRowFor(
+            Livewire::test(Calendar::class)->get('timelinePositions'),
+            $callsign
+        );
+    }
+
+    #[Test]
+    public function it_keeps_non_overlapping_bookings_in_a_single_lane(): void
+    {
+        $row = $this->rowForBookings('EGKK_APP', [['08:00', '10:00'], ['12:00', '14:00']]);
+
+        $this->assertSame(1, $row['laneCount'], 'Rows without overlap must keep their original height');
+        $this->assertSame([0, 0], array_column($row['bookings'], 'lane'));
+    }
+
+    #[Test]
+    public function it_treats_back_to_back_bookings_as_non_overlapping(): void
+    {
+        $row = $this->rowForBookings('EGKK_APP', [['10:00', '12:00'], ['12:00', '14:00']]);
+
+        $this->assertSame(1, $row['laneCount'], 'A booking starting exactly when another ends does not overlap');
+        $this->assertSame([0, 0], array_column($row['bookings'], 'lane'));
+    }
+
+    #[Test]
+    public function it_stacks_overlapping_bookings_into_separate_lanes(): void
+    {
+        $row = $this->rowForBookings('EGKK_APP', [['10:00', '12:00'], ['11:00', '13:00']]);
+
+        $this->assertSame(2, $row['laneCount']);
+        $this->assertSame([0, 1], array_column($row['bookings'], 'lane'));
+    }
+
+    #[Test]
+    public function it_uses_only_as_many_lanes_as_the_busiest_moment_needs(): void
+    {
+        // The first booking has finished by 13:00, so the last one reuses its lane.
+        $row = $this->rowForBookings('EGKK_APP', [['10:00', '12:00'], ['11:00', '15:00'], ['13:00', '16:00']]);
+
+        $this->assertSame(2, $row['laneCount']);
+        $this->assertSame([0, 1, 0], array_column($row['bookings'], 'lane'));
+    }
+
+    #[Test]
+    public function it_stacks_three_concurrent_bookings(): void
+    {
+        $row = $this->rowForBookings('EGKK_APP', [['10:00', '13:00'], ['11:00', '14:00'], ['12:00', '15:00']]);
+
+        $this->assertSame(3, $row['laneCount']);
+        $this->assertSame([0, 1, 2], array_column($row['bookings'], 'lane'));
+    }
+
+    #[Test]
+    public function it_treats_a_booking_running_past_midnight_as_occupying_the_rest_of_the_day(): void
+    {
+        $row = $this->rowForBookings('EGKK_APP', [['22:00', '02:00'], ['23:00', '23:30']]);
+
+        $this->assertSame(2, $row['laneCount'], 'The overnight booking must not read as a zero-length span');
+        $this->assertSame([0, 1], array_column($row['bookings'], 'lane'));
+    }
+
+    #[Test]
+    public function it_orders_row_bookings_by_start_time(): void
+    {
+        $row = $this->rowForBookings('EGKK_APP', [['14:00', '15:00'], ['09:00', '10:00'], ['11:00', '12:00']]);
+
+        $this->assertSame(['09:00', '11:00', '14:00'], array_column($row['bookings'], 'from'));
+    }
+
     #[Test]
     public function it_sets_is_today_flag_when_viewing_today(): void
     {

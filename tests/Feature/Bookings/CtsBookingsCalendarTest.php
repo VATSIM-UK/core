@@ -677,6 +677,55 @@ class CtsBookingsCalendarTest extends TestCase
     }
 
     #[Test]
+    public function it_stacks_overlapping_events_into_separate_lanes(): void
+    {
+        $date = Carbon::today();
+
+        Event::factory()->create([
+            'event' => 'Early Start',
+            'date' => $date->toDateString(),
+            'from' => '18:00:00',
+            'to' => '21:00:00',
+            'gone' => 0,
+        ]);
+        Event::factory()->create([
+            'event' => 'Late Finish',
+            'date' => $date->toDateString(),
+            'from' => '20:00:00',
+            'to' => '23:00:00',
+            'gone' => 0,
+        ]);
+
+        $component = Livewire::test(Calendar::class);
+
+        $this->assertSame(2, $component->get('eventLaneCount'), 'The events row must grow to fit both events');
+        $this->assertSame([0, 1], array_column($component->get('events'), 'lane'));
+    }
+
+    #[Test]
+    public function it_keeps_the_events_row_at_one_lane_when_events_do_not_overlap(): void
+    {
+        $date = Carbon::today();
+
+        Event::factory()->create([
+            'event' => 'Afternoon',
+            'date' => $date->toDateString(),
+            'from' => '14:00:00',
+            'to' => '16:00:00',
+            'gone' => 0,
+        ]);
+        Event::factory()->create([
+            'event' => 'Evening',
+            'date' => $date->toDateString(),
+            'from' => '18:00:00',
+            'to' => '21:00:00',
+            'gone' => 0,
+        ]);
+
+        $this->assertSame(1, Livewire::test(Calendar::class)->get('eventLaneCount'));
+    }
+
+    #[Test]
     public function it_hides_events_when_a_callsign_filter_is_applied(): void
     {
         $date = Carbon::today();

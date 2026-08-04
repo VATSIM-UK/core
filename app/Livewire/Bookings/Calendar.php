@@ -43,6 +43,8 @@ class Calendar extends Component
 
     public array $events = [];
 
+    public int $eventLaneCount = 1;
+
     public int $filterVersion = 0;
 
     public int $dataVersion = 0;
@@ -80,6 +82,7 @@ class Calendar extends Component
         return view('livewire.bookings.calendar', [
             'timelinePositions' => $this->timelinePositions,
             'events' => $this->events,
+            'eventLaneCount' => $this->eventLaneCount,
             'timelineHours' => $this->getTimelineHours(),
             'selectedDate' => $this->selectedDate,
             'timelineScale' => array_values($this->timelineScale),
@@ -228,7 +231,7 @@ class Calendar extends Component
         ksort($groups);
         foreach ($groups as $icao => $positions) {
             ksort($positions);
-            $posArray = array_values($positions);
+            $posArray = array_values(array_map($this->assignLanes(...), $positions));
             $clusters = $this->buildTimeClusters($posArray);
             $result[] = [
                 'type' => 'group',
@@ -243,13 +246,66 @@ class Calendar extends Component
             $result[] = ['type' => 'separator'];
         }
         foreach ($singles as $data) {
-            $result[] = array_merge(['type' => 'single'], $data);
+            $result[] = array_merge(['type' => 'single'], $this->assignLanes($data));
         }
 
-        usort($events, fn (array $a, array $b) => $this->timeToMinutes($a['from']) <=> $this->timeToMinutes($b['from']));
+        // Events share a single row, so they need lanes for the same reason
+        // position bookings do. assignLanes also orders them by start time.
+        $eventRow = $this->assignLanes(['bookings' => $events]);
 
-        $this->events = $events;
+        $this->events = $eventRow['bookings'];
+        $this->eventLaneCount = $eventRow['laneCount'];
         $this->timelinePositions = $result;
+    }
+
+    /**
+     * Give every booking in a row a vertical lane, so that bookings overlapping
+     * in time can be stacked rather than drawn on top of one another.
+     *
+     * Greedy first fit over bookings ordered by start time: a booking takes the
+     * lowest lane whose previous occupant has already finished, which is optimal
+     * for interval graphs -- it never uses more lanes than the busiest instant
+     * requires. Overlaps are meant to be rare, so most rows come back with one
+     * lane and render exactly as they did before.
+     *
+     * @param  array<string, mixed>  $row
+     * @return array<string, mixed>
+     */
+    private function assignLanes(array $row): array
+    {
+        $bookings = $row['bookings'];
+
+        usort($bookings, fn (array $a, array $b): int => [$a['startMin'], $this->layoutEndMinute($a)]
+            <=> [$b['startMin'], $this->layoutEndMinute($b)]);
+
+        $laneEnds = [];
+
+        foreach ($bookings as $index => $booking) {
+            $lane = 0;
+            while (isset($laneEnds[$lane]) && $laneEnds[$lane] > $booking['startMin']) {
+                $lane++;
+            }
+
+            $laneEnds[$lane] = $this->layoutEndMinute($booking);
+            $bookings[$index]['lane'] = $lane;
+        }
+
+        $row['bookings'] = $bookings;
+        $row['laneCount'] = max(1, count($laneEnds));
+
+        return $row;
+    }
+
+    /**
+     * A booking whose end is not after its start runs past midnight. Only the
+     * part inside the day being rendered can collide with anything on this row,
+     * so for layout it occupies the remainder of the day.
+     *
+     * @param  array<string, mixed>  $booking
+     */
+    private function layoutEndMinute(array $booking): int
+    {
+        return $booking['endMin'] > $booking['startMin'] ? $booking['endMin'] : 1440;
     }
 
     private function computeScale(): void

@@ -5,7 +5,8 @@
 	</div>
 
 	{{-- Timeline bar --}}
-	<div class="flex-1 relative h-10 cursor-crosshair" @mousedown.prevent="handleTimelineMouseDown($event, pos)">
+	<div class="flex-1 relative cursor-crosshair" :style="'height: ' + rowHeight(pos)"
+		@mousedown.prevent="handleTimelineMouseDown($event, pos)">
 		{{-- Empty state hint --}}
 		<template x-if="pos.bookings.length === 0">
 			<div
@@ -35,7 +36,7 @@
 		{{-- Booking blocks --}}
 		<template x-for="booking in pos.bookings" :key="booking.source + '-' + (booking.id || booking.cts_booking_id)">
 			<div
-				class="absolute top-1 bottom-1 rounded px-2 flex items-center gap-1.5 cursor-pointer
+				class="absolute rounded px-2 flex items-center gap-1.5 cursor-pointer
                 text-white text-xs font-medium shadow-sm
                 hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap"
 				data-booking-block
@@ -46,7 +47,8 @@
 				    'bg-red-600': booking.type === 'EV',
 				    'bg-orange-500': booking.type === 'GS',
 				}"
-				:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%'"
+				:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%; top: ' + bookingTop(pos,
+				    booking) + '; height: ' + blockHeight(pos)"
 				:title="(booking.member?.display_name || booking.member?.name || 'Unknown') + (booking.member?.cid ? ' (' + booking.member
 				    .cid + ')' : '') + ' \u00b7 ' + booking.from + ' \u2013 ' + booking.to"
 				@click.stop="openDetailModal(pos, booking)">

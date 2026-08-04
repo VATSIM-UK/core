@@ -184,12 +184,14 @@
 									<i class="fa fa-star text-[10px] text-gray-400 shrink-0" aria-hidden="true"></i>
 									<span class="text-sm font-bold text-gray-600 uppercase tracking-wide">Events</span>
 								</div>
-								<div class="flex-1 relative h-10">
+								<div class="flex-1 relative" x-data='{ pos: { laneCount: @json($eventLaneCount) } }'
+									:style="'height: ' + rowHeight(pos)">
 									<div x-data='{ events: @json($events) }'>
 										<template x-for="booking in events" :key="booking.source + '-' + (booking.id || booking.cts_booking_id)">
 											<div
-												class="absolute top-1 bottom-1 rounded px-2 flex items-center gap-1.5 cursor-pointer text-white text-xs font-medium shadow-sm hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap bg-red-600"
-												:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%'"
+												class="absolute rounded px-2 flex items-center gap-1.5 cursor-pointer text-white text-xs font-medium shadow-sm hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap bg-red-600"
+												:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%; top: ' + bookingTop(pos,
+												    booking) + '; height: ' + blockHeight(pos)"
 												:title="(booking.event_name || booking.position || 'Events') + ' \u00b7 ' + booking.from + ' \u2013 ' +
 												    booking.to"
 												@click.stop="openDetailModal({ callsign: booking.position || 'Events' }, booking)">
