@@ -88,7 +88,7 @@
 			<div x-data='bookingsTimeline(@json($timelineConfig))' class="timeline-scroll" x-cloak>
 				<div class="min-w-[1680px] relative">
 					{{-- Hour header --}}
-					<div class="flex border-b border-gray-200 bg-gray-50/80 sticky top-0 z-10">
+					<div class="flex border-b border-gray-200 bg-gray-50/80 sticky top-0 z-30">
 						<div
 							class="w-32 shrink-0 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 sticky left-0 z-[7] bg-gray-50">
 							Position
@@ -137,7 +137,7 @@
 										class="flex border-b border-gray-200 bg-gray-50/90 cursor-pointer hover:bg-brand/5 transition-colors select-none"
 										@click="expanded = !expanded">
 										<div
-											class="w-32 shrink-0 px-3 py-2.5 border-r border-gray-200 flex items-center gap-2 sticky left-0 bg-gray-50 z-[6]">
+											class="w-32 shrink-0 px-3 py-2.5 -mb-px border-r border-b border-gray-200 flex items-center gap-2 sticky left-0 bg-gray-50 z-20">
 											<i class="fa fa-chevron-right text-[10px] text-gray-400 shrink-0 transition-transform duration-150"
 												:style="expanded ? 'transform: rotate(90deg)' : ''" aria-hidden="true"></i>
 											<span class="text-sm font-bold text-gray-600 uppercase tracking-wide" x-text="icao"></span>
@@ -176,7 +176,15 @@
 									@include('livewire.bookings._timeline-row')
 								</div>
 							@elseif ($item['type'] === 'separator')
-								<div class="flex border-b border-gray-300 bg-gray-100/70 h-4"></div>
+								{{-- Carries a sticky cell like every other row: without one the position column
+									has a gap here, and the full height overlays (gap shading, current time) show
+									through it once the timeline is scrolled. Opaque, not /70, for the same reason. --}}
+								<div class="flex border-b border-gray-300 bg-gray-100 h-4">
+									<div
+										class="w-32 shrink-0 -mb-px border-r border-r-gray-200 border-b border-b-gray-300 bg-gray-100 sticky left-0 z-20">
+									</div>
+									<div class="flex-1"></div>
+								</div>
 							@endif
 						@endforeach
 
@@ -184,7 +192,7 @@
 							{{-- Events row --}}
 							<div class="flex border-b border-gray-200 bg-gray-50/90">
 								<div
-									class="w-32 shrink-0 px-3 py-2.5 border-r border-gray-200 flex items-center gap-2 sticky left-0 bg-gray-50 z-[6]">
+									class="w-32 shrink-0 px-3 py-2.5 -mb-px border-r border-b border-gray-200 flex items-center gap-2 sticky left-0 bg-gray-50 z-20">
 									<i class="fa fa-star text-[10px] text-gray-400 shrink-0" aria-hidden="true"></i>
 									<span class="text-sm font-bold text-gray-600 uppercase tracking-wide">Events</span>
 								</div>
@@ -221,8 +229,12 @@
 						</div>
 					</div>
 
+					{{-- Current time marker. Starts below the hour header (h-8) and sits under
+						the sticky position column, whose spacer here does not stick, so on a
+						horizontal scroll the line passes behind the callsigns rather than over
+						them. See the layer scale in bookings-calendar.css. --}}
 					<template x-if="isToday">
-						<div class="flex absolute inset-0 z-30 pointer-events-none">
+						<div class="flex absolute inset-x-0 bottom-0 top-8 z-[9] pointer-events-none">
 							<div class="w-32 shrink-0"></div>
 							<div class="flex-1 relative">
 								<div class="absolute inset-y-0 w-px bg-red-500" :style="'left: ' + nowPct + '%'">
