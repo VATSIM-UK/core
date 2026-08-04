@@ -22,11 +22,20 @@ use RuntimeException;
 ])]
 class Calendar extends Component
 {
+    /**
+     * Minimum length of a position search term. Almost every UK callsign starts
+     * with "E", so anything shorter matches most of the position table and makes
+     * the qualification check (which is per-position) prohibitively expensive.
+     */
+    public const POSITION_SEARCH_MIN_LENGTH = 3;
+
+    /**
+     * Upper bound on candidate positions considered for a single search, applied
+     * before the per-position qualification filter.
+     */
+    private const POSITION_SEARCH_LIMIT = 50;
+
     public Carbon $selectedDate;
-
-    public Collection $bookings;
-
-    public Collection $qualifiedPositions;
 
     public string $positionFilter = '';
 
@@ -34,11 +43,18 @@ class Calendar extends Component
 
     public array $events = [];
 
-    public array $timelineScale = [];
-
     public int $filterVersion = 0;
 
     public int $dataVersion = 0;
+
+    /**
+     * Derived render state. Deliberately not public: these are large (the scale
+     * alone is 1441 floats) and recomputing them is far cheaper than shipping
+     * them to the browser and back inside the Livewire snapshot on every request.
+     */
+    private Collection $bookings;
+
+    private array $timelineScale = [];
 
     public function mount(?int $year = null, ?int $month = null): void
     {
@@ -49,17 +65,19 @@ class Calendar extends Component
             $this->selectedDate = Carbon::create($year, $month ?? $this->selectedDate->month, (int) $day);
         }
 
-        $this->bookings = collect();
-        $this->qualifiedPositions = collect();
         $this->timelinePositions = [];
         $this->refreshData();
     }
 
     public function render()
     {
+        // On a hydrated request nothing may have touched the derived state yet
+        // (the private properties do not survive serialisation), so load it here.
+        if (! isset($this->bookings)) {
+            $this->loadData();
+        }
+
         return view('livewire.bookings.calendar', [
-            'bookings' => $this->bookings,
-            'qualifiedPositions' => $this->qualifiedPositions,
             'timelinePositions' => $this->timelinePositions,
             'events' => $this->events,
             'timelineHours' => $this->getTimelineHours(),
@@ -70,17 +88,21 @@ class Calendar extends Component
 
     private function refreshData(): void
     {
+        $this->loadData();
+        $this->dataVersion++;
+    }
+
+    private function loadData(): void
+    {
         $this->getBookingsForDate($this->selectedDate);
         $this->computeScale();
-        $this->getQualifiedPositions();
         $this->buildTimeline();
-        $this->dataVersion++;
     }
 
     public function updatedPositionFilter(): void
     {
         $this->filterVersion++;
-        $this->buildTimeline();
+        $this->loadData();
     }
 
     public function getBookingsForDate(Carbon $date): void
@@ -88,16 +110,42 @@ class Calendar extends Component
         $this->bookings = app(BookingRepository::class)->getBookings($date);
     }
 
-    public function getQualifiedPositions(): void
+    /**
+     * Look up bookable positions for the current member on demand.
+     *
+     * The full qualified-position list used to be built on page load, which meant
+     * a qualification check against every position in the table before anything
+     * rendered. Searching narrows the candidate set to a handful of rows instead.
+     *
+     * @return list<array{id: string, callsign: string}>
+     */
+    public function searchPositions(string $query): array
     {
+        $query = strtoupper(trim($query));
+
+        if (mb_strlen($query) < self::POSITION_SEARCH_MIN_LENGTH) {
+            return [];
+        }
+
         $account = auth()->user();
         $roster = $account !== null ? Roster::firstWhere('account_id', $account->getKey()) : null;
 
-        $this->qualifiedPositions = Position::real()
+        if ($roster === null) {
+            return [];
+        }
+
+        return Position::real()
+            ->where('callsign', 'like', '%'.addcslashes($query, '%_\\').'%')
             ->orderBy('callsign')
+            ->limit(self::POSITION_SEARCH_LIMIT)
             ->get()
-            ->filter(fn (Position $position): bool => (bool) $roster?->accountCanControl($position))
-            ->pluck('callsign', 'id');
+            ->filter(fn (Position $position): bool => (bool) $roster->accountCanControl($position))
+            ->map(fn (Position $position): array => [
+                'id' => (string) $position->id,
+                'callsign' => $position->callsign,
+            ])
+            ->values()
+            ->all();
     }
 
     public function buildTimeline(): void

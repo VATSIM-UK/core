@@ -243,6 +243,5 @@
 </div>
 
 <script>
-	window.qualifiedPositionsData = @json($qualifiedPositions);
 	window.isAuthenticated = @json(auth()->check());
 </script>

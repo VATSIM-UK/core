@@ -6,6 +6,7 @@
 		        $timeSlots[] = sprintf('%02d:%02d', $h, $m);
 		    }
 		}
+		$positionSearchMinLength = \App\Livewire\Bookings\Calendar::POSITION_SEARCH_MIN_LENGTH;
 	@endphp
 	<div
 		x-data='{
@@ -16,6 +17,10 @@
     selectedPosition: "",
     selectedCallsign: "",
     positionSearch: "",
+    positionResults: [],
+    searchingPositions: false,
+    positionSearchToken: 0,
+    positionSearchMinLength: @json($positionSearchMinLength),
     errorMessage: null,
     submitting: false,
     get startDatetime() {
@@ -43,13 +48,31 @@
         const m = (e - s) / 60000;
         return m >= 60 ? Math.floor(m / 60) + "h " + (m % 60 ? (m % 60) + "m" : "") : m + "m";
     },
-    get filteredPositions() {
-        const q = (this.positionSearch || "").toUpperCase();
-        if (q.length < 2) return [];
-        const data = window.qualifiedPositionsData || {};
-        return Object.entries(data).filter(([id, callsign]) =>
-            callsign.toUpperCase().includes(q)
-        );
+    get positionSearchTerm() {
+        return (this.positionSearch || "").trim();
+    },
+    get positionSearchReady() {
+        return this.positionSearchTerm.length >= this.positionSearchMinLength;
+    },
+    async runPositionSearch() {
+        if (!this.positionSearchReady) {
+            this.positionResults = [];
+            this.searchingPositions = false;
+            return;
+        }
+        // Responses can arrive out of order; only the newest search may write.
+        const token = ++this.positionSearchToken;
+        this.searchingPositions = true;
+        const results = await $wire.searchPositions(this.positionSearchTerm);
+        if (token !== this.positionSearchToken) return;
+        this.positionResults = results || [];
+        this.searchingPositions = false;
+    },
+    resetPositionSearch() {
+        this.positionSearch = "";
+        this.positionResults = [];
+        this.searchingPositions = false;
+        this.positionSearchToken++;
     },
     addDay(d) {
         const dt = new Date(d + "T00:00:00");
@@ -69,7 +92,7 @@
     selectPosition(id, callsign) {
         this.selectedPosition = id;
         this.selectedCallsign = callsign;
-        this.positionSearch = "";
+        this.resetPositionSearch();
     },
 }'
 		x-show="open" x-cloak
@@ -78,7 +101,7 @@
             date = d.startDate || ''; startTime = d.startTime || ''; endTime = d.endTime || '';
             selectedPosition = d.prefillPositionId || '';
             selectedCallsign = d.prefillCallsign || '';
-            positionSearch = '';
+            resetPositionSearch();
             errorMessage = null; submitting = false;
             open = true;
         "
@@ -188,18 +211,27 @@
 						<div class="mb-5">
 							<label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Position</label>
 							<div x-show="!selectedPosition">
-								<input type="text" x-model="positionSearch" placeholder="Type callsign to search…"
+								<input type="text" x-model="positionSearch" x-on:input.debounce.300ms="runPositionSearch()"
+									placeholder="Type at least {{ $positionSearchMinLength }} characters…"
 									class="block w-full rounded-lg border-gray-300 bg-white shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5">
-								<div x-show="positionSearch.length >= 2"
+								<div x-show="positionSearchTerm.length > 0 && !positionSearchReady"
+									class="mt-1.5 px-3 py-2 text-xs text-gray-400">
+									Keep typing &mdash; at least {{ $positionSearchMinLength }} characters are needed to search.
+								</div>
+								<div x-show="positionSearchReady"
 									class="mt-1.5 border border-gray-200 rounded-lg divide-y divide-gray-100 max-h-44 overflow-y-auto shadow-sm">
-									<template x-for="[id, callsign] in filteredPositions" :key="id">
-										<button type="button" x-on:click="selectPosition(id, callsign)"
+									<template x-for="position in positionResults" :key="position.id">
+										<button type="button" x-on:click="selectPosition(position.id, position.callsign)"
 											class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2">
 											<i class="fa fa-headphones text-[10px] text-gray-300 shrink-0" aria-hidden="true"></i>
-											<span x-text="callsign"></span>
+											<span x-text="position.callsign"></span>
 										</button>
 									</template>
-									<div x-show="filteredPositions.length === 0" class="px-3 py-4 text-sm text-gray-400 text-center">
+									<div x-show="searchingPositions" class="px-3 py-4 text-sm text-gray-400 text-center">
+										Searching…
+									</div>
+									<div x-show="!searchingPositions && positionResults.length === 0"
+										class="px-3 py-4 text-sm text-gray-400 text-center">
 										No matching positions
 									</div>
 								</div>

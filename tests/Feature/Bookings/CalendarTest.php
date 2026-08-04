@@ -439,6 +439,118 @@ class CalendarTest extends TestCase
         $this->assertSame(1, $component->get('filterVersion'));
     }
 
+    private function qualifiedMember(): Account
+    {
+        $member = Account::factory()->withQualification()->create();
+        $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
+        $member->qualifications()->sync([$qual->id]);
+        $member = $member->fresh();
+        $this->placeOnRoster($member);
+
+        return $member;
+    }
+
+    #[Test]
+    public function it_does_not_preload_the_position_list_into_the_page(): void
+    {
+        $member = $this->qualifiedMember();
+        Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->assertDontSee('qualifiedPositionsData');
+    }
+
+    #[Test]
+    public function it_requires_a_minimum_query_length_before_searching_positions(): void
+    {
+        $member = $this->qualifiedMember();
+        Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        $component = Livewire::actingAs($member)->test(Calendar::class);
+
+        $this->assertSame([], $component->instance()->searchPositions('EG'));
+        $this->assertSame([], $component->instance()->searchPositions('  E  '));
+    }
+
+    #[Test]
+    public function it_searches_qualified_positions_by_callsign(): void
+    {
+        $member = $this->qualifiedMember();
+        $match = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+        Position::factory()->create(['callsign' => 'EGLL_APP', 'type' => Position::TYPE_APPROACH]);
+
+        $results = Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->instance()
+            ->searchPositions('egkk');
+
+        $this->assertSame([['id' => (string) $match->id, 'callsign' => 'EGKK_APP']], $results);
+    }
+
+    #[Test]
+    public function it_excludes_positions_the_member_is_not_qualified_for_from_search(): void
+    {
+        $member = Account::factory()->withQualification()->create();
+        $qual = Qualification::factory()->atc()->create(['vatsim' => 1]);
+        $member->qualifications()->sync([$qual->id]);
+        $member = $member->fresh();
+        $this->placeOnRoster($member);
+
+        Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        $results = Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->instance()
+            ->searchPositions('EGKK');
+
+        $this->assertSame([], $results);
+    }
+
+    #[Test]
+    public function it_excludes_virtual_positions_from_search(): void
+    {
+        $member = $this->qualifiedMember();
+        Position::factory()->create([
+            'callsign' => 'EGKK_APP',
+            'type' => Position::TYPE_APPROACH,
+            'virtual' => true,
+        ]);
+
+        $results = Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->instance()
+            ->searchPositions('EGKK');
+
+        $this->assertSame([], $results);
+    }
+
+    #[Test]
+    public function it_returns_no_search_results_for_a_member_not_on_the_roster(): void
+    {
+        $member = Account::factory()->withQualification()->create();
+        Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        $results = Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->instance()
+            ->searchPositions('EGKK');
+
+        $this->assertSame([], $results);
+    }
+
+    #[Test]
+    public function it_returns_no_search_results_for_a_guest(): void
+    {
+        Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        $results = Livewire::test(Calendar::class)
+            ->instance()
+            ->searchPositions('EGKK');
+
+        $this->assertSame([], $results);
+    }
+
     #[Test]
     public function it_sets_is_today_flag_when_viewing_today(): void
     {
