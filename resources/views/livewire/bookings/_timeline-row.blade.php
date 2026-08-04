@@ -1,6 +1,11 @@
 <div class="flex border-b border-gray-100 hover:bg-blue-50/40 transition-colors group">
 	{{-- Position label --}}
-	<div class="w-32 shrink-0 px-3 py-2.5 border-r border-gray-200 flex items-center gap-2 bg-white sticky left-0 z-[6]">
+	{{-- -mb-px stretches this cell over the row's own bottom border. That 1px strip
+		belongs to the row box, which paints below the positioned overlays, so without
+		it the gap shading and time marker show through the column at every row
+		boundary. The matching border-b keeps the rule looking unchanged. --}}
+	<div
+		class="w-32 shrink-0 px-3 py-2.5 -mb-px border-r border-r-gray-200 border-b border-b-gray-100 flex items-center gap-2 bg-white sticky left-0 z-20">
 		<span class="text-[13px] font-semibold text-gray-700 truncate" x-text="pos.callsign"></span>
 	</div>
 

@@ -677,6 +677,49 @@ class CtsBookingsCalendarTest extends TestCase
     }
 
     #[Test]
+    public function it_discards_cts_event_bookings_that_have_a_position(): void
+    {
+        $date = Carbon::today();
+        $member = Account::factory()->create();
+        $ctsMember = CtsMember::factory()->forAccount($member)->create();
+
+        // A controller booked on a real callsign for the event.
+        CtsBooking::factory()->create([
+            'position' => 'EGLL_TWR',
+            'member_id' => $ctsMember->id,
+            'date' => $date->toDateString(),
+            'from' => '18:00:00',
+            'to' => '22:00:00',
+            'type' => 'EV',
+        ]);
+
+        // The event itself.
+        Event::factory()->create([
+            'event' => 'Cross the Pond',
+            'date' => $date->toDateString(),
+            'from' => '18:00:00',
+            'to' => '22:00:00',
+            'gone' => 0,
+        ]);
+
+        $component = Livewire::test(Calendar::class);
+        $events = $component->get('events');
+
+        $this->assertCount(1, $events, 'Only the cts.events row belongs on the events row');
+        $this->assertSame('Cross the Pond', $events[0]['event_name']);
+
+        $callsigns = [];
+        foreach ($component->get('timelinePositions') as $row) {
+            foreach ($row['positions'] ?? [$row] as $position) {
+                if (isset($position['callsign'])) {
+                    $callsigns[] = $position['callsign'];
+                }
+            }
+        }
+        $this->assertNotContains('EGLL_TWR', $callsigns, 'The discarded booking must not create a position row either');
+    }
+
+    #[Test]
     public function it_stacks_overlapping_events_into_separate_lanes(): void
     {
         $date = Carbon::today();

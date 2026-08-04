@@ -36,12 +36,6 @@ class Calendar extends Component
     private const POSITION_SEARCH_LIMIT = 50;
 
     /**
-     * An inactive stretch of at least this many hours collapses into a single
-     * labelled band instead of keeping one tick per hour.
-     */
-    private const GAP_COLLAPSE_HOURS = 3;
-
-    /**
      * Narrowest the timeline track can get, in pixels: the min-w-[1680px] body
      * less the 8rem (112px at the app's 14px root) position column. Header label
      * widths are measured against this so nothing overlaps at any window size.
@@ -49,13 +43,20 @@ class Calendar extends Component
     private const TIMELINE_TRACK_MIN_WIDTH = 1568;
 
     /**
-     * Approximate rendered widths, in pixels, of the two header labels at
-     * text-[10px], including their padding and a little slack: "00:00" for an
-     * hour tick and "00:00 - 00:00" for a collapsed gap band.
+     * Rendered widths, in pixels, of the header labels at text-[10px]: "00:00"
+     * for an hour tick, "00:00 - 00:00" for a gap band, and "00h" for the short
+     * form a band falls back to when the scale has squeezed it too narrow.
+     *
+     * Measured in the browser at 23px, 56px and 16px respectively, plus the
+     * hour tick's 6px pl-1.5, then rounded up by roughly a third: the app asks
+     * for Calibri first (app.scss) but clients without it fall back to Tahoma,
+     * whose digits are appreciably wider.
      */
     private const HOUR_LABEL_WIDTH = 40;
 
-    private const GAP_LABEL_WIDTH = 80;
+    private const GAP_LABEL_WIDTH = 72;
+
+    private const GAP_SHORT_LABEL_WIDTH = 20;
 
     public Carbon $selectedDate;
 
@@ -132,7 +133,15 @@ class Calendar extends Component
 
     public function getBookingsForDate(Carbon $date): void
     {
-        $this->bookings = app(BookingRepository::class)->getBookings($date);
+        // An EV row carrying a callsign is a controller's own booking made during
+        // an event, not the event itself. Only the cts.events rows belong on the
+        // calendar: they have the event name and never a position. Dropping the
+        // rest here rather than at render time keeps them out of the hour scale
+        // and gap collapsing too, so they cannot stretch the timeline invisibly.
+        $this->bookings = app(BookingRepository::class)
+            ->getBookings($date)
+            ->reject(fn (object $booking): bool => $booking->type === 'EV' && $booking->position !== null)
+            ->values();
     }
 
     /**
@@ -212,10 +221,7 @@ class Calendar extends Component
                 // Events carry their name rather than a callsign, and it is the only
                 // label the events row has to show. It is set by the repository as a
                 // dynamic property, so it is absent on every other booking type.
-                $events[] = $bookingData + [
-                    'position' => $booking->position,
-                    'event_name' => $booking->event_name ?? null,
-                ];
+                $events[] = $bookingData + ['event_name' => $booking->event_name ?? null];
 
                 continue;
             }
@@ -430,7 +436,7 @@ class Calendar extends Component
 
             if ($hasActivity) {
                 if ($gapStart !== null) {
-                    $hours = array_merge($hours, $this->gapMarkers($gapStart, $h));
+                    $hours[] = $this->gapMarker($gapStart, $h);
                     $gapStart = null;
                 }
 
@@ -443,32 +449,10 @@ class Calendar extends Component
         }
 
         if ($gapStart !== null) {
-            $hours = array_merge($hours, $this->gapMarkers($gapStart, 24));
+            $hours[] = $this->gapMarker($gapStart, 24);
         }
 
         return $hours;
-    }
-
-    /**
-     * Header markers covering an inactive stretch. A long gap collapses into a
-     * single labelled band; a short one keeps its individual hour ticks, which
-     * the scale has already compressed.
-     *
-     * @return list<array<string, mixed>>
-     */
-    private function gapMarkers(int $fromHour, int $toHour): array
-    {
-        if ($toHour - $fromHour >= self::GAP_COLLAPSE_HOURS) {
-            return [$this->gapMarker($fromHour, $toHour)];
-        }
-
-        $markers = [];
-
-        for ($hour = $fromHour; $hour < $toHour; $hour++) {
-            $markers[] = $this->hourMarker($hour);
-        }
-
-        return $markers;
     }
 
     /**
@@ -487,6 +471,12 @@ class Calendar extends Component
     }
 
     /**
+     * A band covering an inactive stretch, however short. Every inactive hour is
+     * squeezed to a sixth of an active one, so each one gets the band treatment
+     * rather than being left as a narrow, unshaded hour tick that looks like an
+     * ordinary hour. Where the band is too narrow for the full range it falls
+     * back to the duration, so the compressed time is still stated.
+     *
      * @return array<string, mixed>
      */
     private function gapMarker(int $fromHour, int $toHour): array
@@ -494,15 +484,18 @@ class Calendar extends Component
         $fromMinute = $fromHour * 60;
         $toMinute = $toHour * 60;
         $width = $this->scaleWidth($fromMinute, $toMinute);
+        $hours = $toHour - $fromHour;
 
         return [
             'type' => 'gap',
             'label' => sprintf("%02d:00 \u{2013} %02d:00", $fromHour, $toHour % 24),
+            'short_label' => sprintf('%dh', $hours),
             'hour' => $fromHour,
-            'hours' => $toHour - $fromHour,
+            'hours' => $hours,
             'scale_left' => $this->scalePos($fromMinute),
             'scale_width' => $width,
             'show_label' => $this->labelFits($width, self::GAP_LABEL_WIDTH),
+            'show_short_label' => $this->labelFits($width, self::GAP_SHORT_LABEL_WIDTH),
         ];
     }
 

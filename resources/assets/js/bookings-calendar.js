@@ -9,6 +9,10 @@ const LANE_GAP = 0.125;
 const SINGLE_LANE_HEIGHT = 2;
 const STACKED_LANE_HEIGHT = 1.25;
 
+// Half of the current time ball (w-2.5 at a 14px root), in pixels, so it is
+// hidden as soon as it touches the position column rather than half over it.
+const BALL_RADIUS = 5;
+
 // Registers on the Alpine instance bundled with Livewire (exposed as
 // window.Alpine). Using the `alpine:init` hook guarantees the plugin and
 // component are registered before Livewire calls Alpine.start().
@@ -24,6 +28,7 @@ document.addEventListener('alpine:init', () => {
         nowPct: 0,
         baseMinutes: 0,
         startedAt: 0,
+        scrolledBy: 0,
 
         init() {
             this.baseMinutes = config.nowMinutes;
@@ -32,10 +37,35 @@ document.addEventListener('alpine:init', () => {
             this._nowTimer = setInterval(() => {
                 this.updateNow();
             }, 30000);
+            this._boundScroll = () => {
+                this.scrolledBy = this.$el.scrollLeft;
+            };
+            this.$el.addEventListener('scroll', this._boundScroll, { passive: true });
         },
 
         destroy() {
             clearInterval(this._nowTimer);
+            this.$el.removeEventListener('scroll', this._boundScroll);
+        },
+
+        // The current time ball is drawn in the hour header so the header cannot
+        // clip it, which also puts it above the sticky position column. Hide it
+        // once it scrolls behind that column rather than let it sit on top of the
+        // callsigns. The track starts exactly where the column ends, so the ball
+        // is behind the column precisely when its offset is left of the scroll.
+        nowBallHidden() {
+            // Read both reactive values up front. Alpine records dependencies as
+            // they are touched, so returning early below before reading them would
+            // leave this effect with none and it would never re-evaluate.
+            const fraction = this.nowPct / 100;
+            const scrolled = this.scrolledBy;
+            const track = this.$refs.headerTrack;
+
+            // Width is 0 while x-cloak still has the timeline hidden. Fail open:
+            // visible is correct at the initial scroll position.
+            if (!track || !track.offsetWidth) return false;
+
+            return fraction * track.offsetWidth < scrolled + BALL_RADIUS;
         },
 
         updateNow() {

@@ -388,8 +388,26 @@ class CalendarTest extends TestCase
         $this->assertDatabaseHas('bookings', ['id' => $booking->id]);
     }
 
+    /**
+     * @return list<string>
+     */
+    private function bookingTypesOnRows(array $timelinePositions): array
+    {
+        $types = [];
+
+        foreach ($timelinePositions as $row) {
+            foreach ($row['positions'] ?? [$row] as $position) {
+                foreach ($position['bookings'] ?? [] as $booking) {
+                    $types[] = $booking['type'];
+                }
+            }
+        }
+
+        return $types;
+    }
+
     #[Test]
-    public function it_separates_event_bookings_from_position_rows(): void
+    public function it_discards_event_bookings_that_have_a_position(): void
     {
         $position = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
 
@@ -400,6 +418,8 @@ class CalendarTest extends TestCase
             'starts_at' => Carbon::today()->setHour(10),
             'ends_at' => Carbon::today()->setHour(12),
         ]);
+        // A booking on a real callsign made during an event: the controller's own
+        // booking, not the event, so the calendar disregards it entirely.
         Booking::create([
             'position_id' => $position->id,
             'member_id' => Account::factory()->create()->id,
@@ -410,26 +430,29 @@ class CalendarTest extends TestCase
 
         $component = Livewire::test(Calendar::class);
 
-        $this->assertCount(1, $component->get('events'), 'Event bookings must appear in the events array');
-        $this->assertSame('EV', $component->get('events')[0]['type']);
+        $this->assertSame([], $component->get('events'), 'An event booking with a callsign is not an event');
 
-        $positions = $component->get('timelinePositions');
-        $positionIds = [];
-        foreach ($positions as $row) {
-            if (isset($row['positions'])) {
-                foreach ($row['positions'] as $pos) {
-                    foreach ($pos['bookings'] as $b) {
-                        $positionIds[] = $b['type'];
-                    }
-                }
-            } elseif (isset($row['bookings'])) {
-                foreach ($row['bookings'] as $b) {
-                    $positionIds[] = $b['type'];
-                }
-            }
-        }
-        $this->assertContains('BK', $positionIds, 'Standard booking must remain in timelinePositions');
-        $this->assertNotContains('EV', $positionIds, 'Event bookings must not appear in timelinePositions');
+        $types = $this->bookingTypesOnRows($component->get('timelinePositions'));
+        $this->assertSame(['BK'], $types, 'Only the standard booking may remain on the position rows');
+    }
+
+    #[Test]
+    public function it_ignores_discarded_event_bookings_when_scaling_the_timeline(): void
+    {
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        Booking::create([
+            'position_id' => $position->id,
+            'member_id' => Account::factory()->create()->id,
+            'type' => Booking::TYPE_EVENT,
+            'starts_at' => Carbon::today()->setHour(2),
+            'ends_at' => Carbon::today()->setHour(5),
+        ]);
+
+        $hours = Livewire::test(Calendar::class)->instance()->getTimelineHours();
+        $active = array_column(array_filter($hours, fn (array $h): bool => $h['type'] === 'hour'), 'hour');
+
+        $this->assertSame([], $active, 'A discarded booking must not mark its hours as active');
     }
 
     #[Test]
@@ -707,47 +730,55 @@ class CalendarTest extends TestCase
     }
 
     #[Test]
-    public function it_hides_the_label_of_an_hour_the_scale_has_compressed(): void
+    public function it_bands_a_single_compressed_hour(): void
     {
-        // 09:00 is a lone inactive hour, so it stays an hour tick rather than
-        // collapsing into a band, but the scale squeezes it to a sixth of a
-        // normal hour -- far narrower than the label it would carry.
+        // 09:00 is a lone inactive hour. The scale squeezes it to a sixth of a
+        // normal hour, so it has to be shaded as a gap rather than left looking
+        // like an ordinary, slightly narrow hour.
         $header = $this->timelineHeader('EGKK_APP', [['08:00', '09:00'], ['10:00', '18:00']]);
 
-        $this->assertFalse($header['hour'][9]['show_label'], 'A compressed hour must not spill its label over the next column');
-        $this->assertTrue($header['hour'][8]['show_label']);
-        $this->assertTrue($header['hour'][10]['show_label']);
+        $this->assertArrayHasKey(9, $header['gap'], 'Even one compressed hour must render as a band');
+        $this->assertSame(1, $header['gap'][9]['hours']);
+        $this->assertArrayNotHasKey(9, $header['hour'], 'It must not also appear as a plain hour tick');
+
+        $this->assertArrayHasKey(8, $header['hour']);
+        $this->assertArrayHasKey(10, $header['hour']);
     }
 
     #[Test]
-    public function it_keeps_a_compressed_hour_label_when_there_is_room_for_it(): void
-    {
-        // Only two active hours, so even a compressed hour is wide enough.
-        $header = $this->timelineHeader('EGKK_APP', [['10:00', '11:00'], ['12:00', '13:00']]);
-
-        $this->assertTrue($header['hour'][11]['show_label']);
-    }
-
-    #[Test]
-    public function it_hides_a_gap_band_label_that_would_not_fit(): void
-    {
-        $header = $this->timelineHeader('EGKK_APP', [['06:00', '13:00'], ['16:00', '23:00']]);
-
-        $this->assertArrayHasKey(13, $header['gap'], 'Three inactive hours must collapse into a band');
-        $this->assertSame(3, $header['gap'][13]['hours']);
-        $this->assertFalse($header['gap'][13]['show_label'], 'A narrow band cannot fit "13:00 - 16:00"');
-
-        $this->assertTrue($header['gap'][0]['show_label'], 'The wider overnight band still fits its label');
-    }
-
-    #[Test]
-    public function it_keeps_short_gaps_as_individual_hour_ticks(): void
+    public function it_bands_every_inactive_stretch(): void
     {
         $header = $this->timelineHeader('EGKK_APP', [['08:00', '10:00'], ['12:00', '14:00']]);
 
-        $this->assertArrayNotHasKey(10, $header['gap'], 'A two hour gap is below the collapse threshold');
-        $this->assertArrayHasKey(10, $header['hour']);
-        $this->assertArrayHasKey(11, $header['hour']);
+        $this->assertArrayHasKey(10, $header['gap'], 'A two hour gap is banded like any other');
+        $this->assertSame(2, $header['gap'][10]['hours']);
+        $this->assertArrayNotHasKey(10, $header['hour']);
+        $this->assertArrayNotHasKey(11, $header['hour']);
+    }
+
+    #[Test]
+    public function it_falls_back_to_the_duration_when_a_band_is_too_narrow_for_the_range(): void
+    {
+        $header = $this->timelineHeader('EGKK_APP', [['06:00', '13:00'], ['16:00', '23:00']]);
+
+        $band = $header['gap'][13];
+        $this->assertSame(3, $band['hours']);
+        $this->assertFalse($band['show_label'], 'A narrow band cannot fit "13:00 - 16:00"');
+        $this->assertTrue($band['show_short_label'], 'It must still state the compressed time');
+        $this->assertSame('3h', $band['short_label']);
+
+        $this->assertTrue($header['gap'][0]['show_label'], 'The wider overnight band still fits the full range');
+    }
+
+    #[Test]
+    public function it_still_states_the_compressed_time_for_a_one_hour_band(): void
+    {
+        $header = $this->timelineHeader('EGKK_APP', [['08:00', '09:00'], ['10:00', '18:00']]);
+
+        $band = $header['gap'][9];
+        $this->assertFalse($band['show_label']);
+        $this->assertTrue($band['show_short_label']);
+        $this->assertSame('1h', $band['short_label']);
     }
 
     #[Test]

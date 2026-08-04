@@ -28,6 +28,30 @@
     background: #94a3b8;
 }
 
+/*
+ * Timeline layer scale. The position column is sticky while the timeline body
+ * scrolls underneath it, so anything drawn in the track must rank below it or
+ * it will paint over the callsigns once scrolled. The overlays that span the
+ * full track (gap shading, current time) start with a plain, non-sticky w-32
+ * spacer, which scrolls away -- their z-index is what keeps them out of the
+ * column, not their position.
+ *
+ *   1  gap shading overlay
+ *   5  booking blocks
+ *   8  drag preview
+ *   9  current time marker (its line; the ball is drawn in the header row so
+ *      that the header cannot clip it, and is unranked there so the header's
+ *      own Position cell still covers it)
+ *  20  sticky position column (rows, group headers, events row)
+ *  30  hour header row (sticky vertically, so above the column)
+ *
+ * Ranking below the column is necessary but not sufficient: the column must
+ * also leave no vertical gap. A row's border-b belongs to the row box, which
+ * paints below any positioned overlay, so each sticky cell carries -mb-px and
+ * its own matching border to cover that 1px strip -- otherwise the overlays
+ * show through at every row boundary as a dashed line across the column. For
+ * the same reason the separator row has a sticky cell of its own.
+ */
 .sticky.left-0 {
     position: sticky;
     left: 0;
