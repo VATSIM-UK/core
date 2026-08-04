@@ -154,10 +154,15 @@ class Calendar extends Component
         $singles = [];
         $events = [];
 
+        $filter = strtoupper($this->positionFilter);
+
         foreach ($this->bookings as $booking) {
+            $isEvent = $booking->type === 'EV';
             $callsign = $booking->position ?? 'Unknown';
 
-            if ($this->positionFilter !== '' && ! str_starts_with(strtoupper($callsign), strtoupper($this->positionFilter))) {
+            // Events have no callsign, so a callsign search simply excludes them
+            // rather than matching them against the "Unknown" placeholder.
+            if ($filter !== '' && ($isEvent || ! str_starts_with(strtoupper($callsign), $filter))) {
                 continue;
             }
 
@@ -178,8 +183,14 @@ class Calendar extends Component
                 'type' => $booking->type,
             ];
 
-            if ($booking->type === 'EV') {
-                $events[] = $bookingData + ['position' => $booking->position];
+            if ($isEvent) {
+                // Events carry their name rather than a callsign, and it is the only
+                // label the events row has to show. It is set by the repository as a
+                // dynamic property, so it is absent on every other booking type.
+                $events[] = $bookingData + [
+                    'position' => $booking->position,
+                    'event_name' => $booking->event_name ?? null,
+                ];
 
                 continue;
             }

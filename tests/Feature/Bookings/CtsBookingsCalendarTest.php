@@ -654,6 +654,51 @@ class CtsBookingsCalendarTest extends TestCase
     }
 
     #[Test]
+    public function it_carries_the_event_name_through_to_the_timeline(): void
+    {
+        $date = Carbon::today();
+
+        Event::factory()->create([
+            'event' => 'Cross the Pond',
+            'date' => $date->toDateString(),
+            'from' => '18:00:00',
+            'to' => '22:00:00',
+            'gone' => 0,
+        ]);
+
+        $events = Livewire::test(Calendar::class)->get('events');
+
+        $this->assertCount(1, $events);
+        $this->assertSame(
+            'Cross the Pond',
+            $events[0]['event_name'],
+            'The events row renders event_name, so buildTimeline must not drop it'
+        );
+    }
+
+    #[Test]
+    public function it_hides_events_when_a_callsign_filter_is_applied(): void
+    {
+        $date = Carbon::today();
+
+        Event::factory()->create([
+            'event' => 'Unknown Pleasures',
+            'date' => $date->toDateString(),
+            'from' => '18:00:00',
+            'to' => '22:00:00',
+            'gone' => 0,
+        ]);
+
+        $component = Livewire::test(Calendar::class);
+        $this->assertCount(1, $component->get('events'));
+
+        // "UN" used to match the "Unknown" callsign placeholder events are given.
+        $component->set('positionFilter', 'UN');
+
+        $this->assertSame([], $component->get('events'), 'Events have no callsign to match against');
+    }
+
+    #[Test]
     public function it_excludes_events_marked_as_gone(): void
     {
         $date = Carbon::parse('2026-08-01');

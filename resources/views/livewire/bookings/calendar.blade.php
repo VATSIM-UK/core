@@ -190,10 +190,11 @@
 											<div
 												class="absolute top-1 bottom-1 rounded px-2 flex items-center gap-1.5 cursor-pointer text-white text-xs font-medium shadow-sm hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap bg-red-600"
 												:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%'"
-												:title="(booking.event_name || 'Events') + ' \u00b7 ' + booking.from + ' \u2013 ' + booking.to"
+												:title="(booking.event_name || booking.position || 'Events') + ' \u00b7 ' + booking.from + ' \u2013 ' +
+												    booking.to"
 												@click.stop="openDetailModal({ callsign: booking.position || 'Events' }, booking)">
 												<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]" x-text="booking.from"></span>
-												<span class="truncate" x-text="booking.event_name || 'Events'"></span>
+												<span class="truncate" x-text="booking.event_name || booking.position || 'Events'"></span>
 											</div>
 										</template>
 									</div>
