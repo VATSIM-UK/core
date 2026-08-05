@@ -23,6 +23,8 @@ class AvailabilityLogReviewTest extends BaseTrainingPanelTestCase
     {
         parent::setUp();
 
+        $this->panelUser->givePermissionTo('training-places.view.*');
+
         $this->place = TrainingPlace::factory()->createQuietly();
     }
 
@@ -116,8 +118,8 @@ class AvailabilityLogReviewTest extends BaseTrainingPanelTestCase
         $statuses = collect($component->instance()->getTable()->getRecords())
             ->mapWithKeys(fn (AvailabilityLogEntry $entry) => [$entry->event->value => $entry]);
 
-        $this->assertSame('Changed', $this->invokeStatus($component, $statuses['added']));
-        $this->assertSame('Removed', $this->invokeStatus($component, $statuses['edited']));
+        $this->assertSame('Changed', $component->instance()->logEntryStatus($statuses['added']));
+        $this->assertSame('Removed', $component->instance()->logEntryStatus($statuses['edited']));
     }
 
     #[Test]
@@ -132,12 +134,5 @@ class AvailabilityLogReviewTest extends BaseTrainingPanelTestCase
             ->pluck('event.value');
 
         $this->assertSame(['edited', 'added'], $events->all());
-    }
-
-    private function invokeStatus($component, AvailabilityLogEntry $entry): string
-    {
-        $reflection = new \ReflectionMethod($component->instance(), 'logEntryStatus');
-
-        return $reflection->invoke($component->instance(), $entry);
     }
 }

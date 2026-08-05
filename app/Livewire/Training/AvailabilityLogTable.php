@@ -15,6 +15,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class AvailabilityLogTable extends Component implements HasActions, HasSchemas, HasTable
@@ -24,6 +25,15 @@ class AvailabilityLogTable extends Component implements HasActions, HasSchemas, 
     use InteractsWithTable;
 
     public TrainingPlace $trainingPlace;
+
+    private ?Collection $successorCreatedAts = null;
+
+    public function mount(): void
+    {
+        if (! auth()->user()?->can('training-places.view.*')) {
+            abort(403);
+        }
+    }
 
     public function table(Table $table): Table
     {
@@ -70,7 +80,19 @@ class AvailabilityLogTable extends Component implements HasActions, HasSchemas, 
             ->emptyStateHeading('No availability logged yet');
     }
 
-    private function logEntryStatus(AvailabilityLogEntry $entry): string
+    /**
+     * The created_at timestamps of merged/edited successors for this training place,
+     * memoized so the status column does not query once per row.
+     */
+    private function successorCreatedAts(): Collection
+    {
+        return $this->successorCreatedAts ??= AvailabilityLogEntry::query()
+            ->where('training_place_id', $this->trainingPlace->id)
+            ->whereIn('event', [AvailabilityLogEvent::Merged, AvailabilityLogEvent::Edited])
+            ->pluck('created_at');
+    }
+
+    public function logEntryStatus(AvailabilityLogEntry $entry): string
     {
         if ($entry->superseded_at === null) {
             return 'Current';
@@ -80,13 +102,9 @@ class AvailabilityLogTable extends Component implements HasActions, HasSchemas, 
         // version's superseded_at (the write-wiring stamps both with one shared now()).
         // This match is unambiguous because the UI serializes a student's actions - two
         // mutations to one training place within the same wall-clock second do not occur.
-        $hasSuccessor = AvailabilityLogEntry::query()
-            ->where('training_place_id', $entry->training_place_id)
-            ->where('created_at', $entry->superseded_at)
-            ->whereIn('event', [AvailabilityLogEvent::Merged, AvailabilityLogEvent::Edited])
-            ->exists();
-
-        return $hasSuccessor ? 'Changed' : 'Removed';
+        return $this->successorCreatedAts()->contains($entry->superseded_at->format('Y-m-d H:i:s'))
+            ? 'Changed'
+            : 'Removed';
     }
 
     public function render()

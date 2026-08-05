@@ -164,7 +164,7 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function deleting_availability_writes_a_removed_version(): void
+    public function deleting_availability_supersedes_the_current_version_without_a_removed_event(): void
     {
         $date = now()->addDay()->toDateString();
 
@@ -193,7 +193,7 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function bulk_deleting_writes_a_removed_version_per_slot(): void
+    public function bulk_deleting_supersedes_each_current_version_without_removed_events(): void
     {
         $date = now()->addDay()->toDateString();
 

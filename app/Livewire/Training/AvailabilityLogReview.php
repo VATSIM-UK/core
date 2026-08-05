@@ -32,6 +32,10 @@ class AvailabilityLogReview extends Component implements HasActions, HasForms, H
 
     public function mount(): void
     {
+        if (! auth()->user()?->can('training-places.view.*')) {
+            abort(403);
+        }
+
         $this->form->fill([
             'asOf' => now()->format('Y-m-d H:i'),
         ]);
@@ -57,7 +61,11 @@ class AvailabilityLogReview extends Component implements HasActions, HasForms, H
             return null;
         }
 
-        $asOf = Carbon::parse($this->data['asOf']);
+        try {
+            $asOf = Carbon::parse($this->data['asOf']);
+        } catch (\Throwable) {
+            return null;
+        }
 
         return $asOf->isAfter(now()) ? now() : $asOf;
     }
