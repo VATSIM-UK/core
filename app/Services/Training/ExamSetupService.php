@@ -186,6 +186,16 @@ class ExamSetupService
         return Member::find($value)?->name;
     }
 
+    public function twrToCtrStudentLabel(int|string $value): ?string
+    {
+        return Member::find($value)?->name;
+    }
+
+    public function obsStudentLabel(int|string $value): ?string
+    {
+        return Member::find($value)?->name;
+    }
+
     public function setupPilot(string $examType, int $studentId, int $forwardedByUserId): void
     {
         $ctsMember = Member::where('id', $studentId)->firstOrFail();
