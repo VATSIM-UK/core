@@ -26,6 +26,7 @@ Route::group([
     'as' => 'site.bookings.',
     'prefix' => 'atc/bookings',
 ], function () {
-    // Publicly readable; write/edit actions are gated inside the component (see Calendar::createBooking/deleteBooking).
-    Route::get('calendar/{year?}/{month?}', BookingsCalendar::class)->name('calendar');
+    Route::get('calendar/{year?}/{month?}', BookingsCalendar::class)
+        ->middleware(['auth_full_group', 'can:admin.access'])
+        ->name('calendar');
 });

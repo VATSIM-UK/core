@@ -343,9 +343,26 @@ class CalendarTest extends TestCase
     }
 
     #[Test]
-    public function it_is_viewable_without_authentication(): void
+    public function it_redirects_guests_to_login(): void
     {
-        $this->get(route('site.bookings.calendar'))->assertOk();
+        $this->get(route('site.bookings.calendar'))
+            ->assertRedirect(route('landing'));
+    }
+
+    #[Test]
+    public function it_forbids_non_staff_members(): void
+    {
+        $this->actingAs($this->user)
+            ->get(route('site.bookings.calendar'))
+            ->assertForbidden();
+    }
+
+    #[Test]
+    public function it_allows_staff_access(): void
+    {
+        $this->actingAs($this->privacc)
+            ->get(route('site.bookings.calendar'))
+            ->assertOk();
     }
 
     #[Test]
