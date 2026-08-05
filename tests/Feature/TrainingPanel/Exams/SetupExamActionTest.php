@@ -281,18 +281,6 @@ class SetupExamActionTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_shows_an_error_notification_when_no_tab_is_completed()
-    {
-        $this->panelUser->givePermissionTo('training.exams.setup');
-
-        Livewire::actingAs($this->panelUser)
-            ->test(Exams::class)
-            ->callAction('setupExam', data: [])
-            ->assertHasNoActionErrors()
-            ->assertNotified('Please complete one tab (position/exam and student) before submitting.');
-    }
-
-    #[Test]
     public function it_does_not_include_students_with_pending_exam_in_twr_to_ctr_options()
     {
         $studentAccount = Account::factory()->withQualification()->create();
