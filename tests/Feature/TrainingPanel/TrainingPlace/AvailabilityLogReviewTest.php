@@ -115,7 +115,7 @@ class AvailabilityLogReviewTest extends BaseTrainingPanelTestCase
         $component = Livewire::actingAs($this->panelUser)
             ->test(AvailabilityLogTable::class, ['trainingPlace' => $this->place]);
 
-        $statuses = collect($component->instance()->getTable()->getRecords())
+        $statuses = $this->tableRecords($component)
             ->mapWithKeys(fn (AvailabilityLogEntry $entry) => [$entry->event->value => $entry]);
 
         $this->assertSame('Changed', $component->instance()->logEntryStatus($statuses['added']));
@@ -130,9 +130,19 @@ class AvailabilityLogReviewTest extends BaseTrainingPanelTestCase
         $component = Livewire::actingAs($this->panelUser)
             ->test(AvailabilityLogTable::class, ['trainingPlace' => $this->place]);
 
-        $events = collect($component->instance()->getTable()->getRecords())
-            ->pluck('event.value');
+        $events = $this->tableRecords($component)->pluck('event.value');
 
         $this->assertSame(['edited', 'added'], $events->all());
+    }
+
+    private function tableRecords($component): \Illuminate\Support\Collection
+    {
+        $records = $component->instance()->getTable()->getRecords();
+
+        if ($records instanceof \Illuminate\Contracts\Pagination\Paginator) {
+            return $records->getCollection();
+        }
+
+        return collect($records);
     }
 }

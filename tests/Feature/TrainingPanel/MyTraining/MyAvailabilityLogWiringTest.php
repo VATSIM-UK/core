@@ -146,13 +146,11 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
-            ->callTableAction('edit', $slot)
-            ->fillTableActionForm([
+            ->callTableAction('edit', $slot, [
                 'date' => $date,
                 'from' => '17:00',
                 'to' => '20:00',
-            ])
-            ->callMountedTableAction();
+            ]);
 
         $edited = AvailabilityLogEntry::where('training_place_id', $this->place->id)
             ->where('event', 'edited')
