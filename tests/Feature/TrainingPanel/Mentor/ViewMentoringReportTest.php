@@ -611,4 +611,26 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             ->assertDontSee('Session Cancelled by')
             ->assertDontSee('This session has been marked as a student no-show.');
     }
+
+    #[Test]
+    public function test_pilot_session_shows_best_previous_current_labels(): void
+    {
+        $this->mentoringSession->update(['position' => 'P1_PPL(A)']);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee('Best')
+            ->assertSee('Previous')
+            ->assertSee('Current');
+    }
+
+    #[Test]
+    public function test_atc_session_does_not_show_best_previous_current_labels(): void
+    {
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertDontSee('Best')
+            ->assertDontSee('Previous')
+            ->assertDontSee('Current');
+    }
 }

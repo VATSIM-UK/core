@@ -1,5 +1,18 @@
 import collapse from '@alpinejs/collapse';
 
+// Vertical metrics for stacking overlapping bookings within a timeline row.
+// These are rem, not px, because the app sets a 14px root font size (app.scss)
+// and the values have to line up with the Tailwind classes they replaced:
+// LANE_INSET is top-1/bottom-1, and one lane in a 2.5rem (h-10) row leaves 2rem.
+const LANE_INSET = 0.25;
+const LANE_GAP = 0.125;
+const SINGLE_LANE_HEIGHT = 2;
+const STACKED_LANE_HEIGHT = 1.25;
+
+// Half of the current time ball (w-2.5 at a 14px root), in pixels, so it is
+// hidden as soon as it touches the position column rather than half over it.
+const BALL_RADIUS = 5;
+
 // Registers on the Alpine instance bundled with Livewire (exposed as
 // window.Alpine). Using the `alpine:init` hook guarantees the plugin and
 // component are registered before Livewire calls Alpine.start().
@@ -15,6 +28,7 @@ document.addEventListener('alpine:init', () => {
         nowPct: 0,
         baseMinutes: 0,
         startedAt: 0,
+        scrolledBy: 0,
 
         init() {
             this.baseMinutes = config.nowMinutes;
@@ -23,10 +37,35 @@ document.addEventListener('alpine:init', () => {
             this._nowTimer = setInterval(() => {
                 this.updateNow();
             }, 30000);
+            this._boundScroll = () => {
+                this.scrolledBy = this.$el.scrollLeft;
+            };
+            this.$el.addEventListener('scroll', this._boundScroll, { passive: true });
         },
 
         destroy() {
             clearInterval(this._nowTimer);
+            this.$el.removeEventListener('scroll', this._boundScroll);
+        },
+
+        // The current time ball is drawn in the hour header so the header cannot
+        // clip it, which also puts it above the sticky position column. Hide it
+        // once it scrolls behind that column rather than let it sit on top of the
+        // callsigns. The track starts exactly where the column ends, so the ball
+        // is behind the column precisely when its offset is left of the scroll.
+        nowBallHidden() {
+            // Read both reactive values up front. Alpine records dependencies as
+            // they are touched, so returning early below before reading them would
+            // leave this effect with none and it would never re-evaluate.
+            const fraction = this.nowPct / 100;
+            const scrolled = this.scrolledBy;
+            const track = this.$refs.headerTrack;
+
+            // Width is 0 while x-cloak still has the timeline hidden. Fail open:
+            // visible is correct at the initial scroll position.
+            if (!track || !track.offsetWidth) return false;
+
+            return fraction * track.offsetWidth < scrolled + BALL_RADIUS;
         },
 
         updateNow() {
@@ -54,6 +93,49 @@ document.addEventListener('alpine:init', () => {
 
         snapToSlot(minutes) {
             return Math.floor(minutes / 15) * 15;
+        },
+
+        // A booking whose end is not after its start runs past midnight. Only the
+        // part falling inside the day being rendered can conflict with a drag.
+        bookingEndMinutes(booking) {
+            return booking.endMin > booking.startMin ? booking.endMin : 1440;
+        },
+
+        // Vertical layout, in rem, for rows holding overlapping bookings. A row
+        // with a single lane reproduces the original h-10 row and top-1/bottom-1
+        // block exactly; once bookings have to stack, lanes shrink and the row
+        // grows so blocks stay legible rather than being squeezed into one row.
+        laneHeight(pos) {
+            return (pos.laneCount || 1) > 1 ? STACKED_LANE_HEIGHT : SINGLE_LANE_HEIGHT;
+        },
+
+        rowHeight(pos) {
+            const lanes = Math.max(1, pos.laneCount || 1);
+            return this.rem(LANE_INSET * 2 + lanes * this.laneHeight(pos) + (lanes - 1) * LANE_GAP);
+        },
+
+        bookingTop(pos, booking) {
+            return this.rem(LANE_INSET + (booking.lane || 0) * (this.laneHeight(pos) + LANE_GAP));
+        },
+
+        blockHeight(pos) {
+            return this.rem(this.laneHeight(pos));
+        },
+
+        // Trim binary-floating-point noise out of the generated style strings.
+        rem(value) {
+            return Math.round(value * 10000) / 10000 + 'rem';
+        },
+
+        // True while the in-progress drag covers time already booked on this row,
+        // so the preview can warn before the create modal is even opened.
+        dragOverlaps(pos) {
+            if (!this.dragging || this.dragging.pos.callsign !== pos.callsign) return false;
+            const start = this.dragging.startMinutes;
+            const end = this.dragging.currentMinutes;
+            return (pos.bookings || []).some(
+                (booking) => booking.startMin < end && this.bookingEndMinutes(booking) > start,
+            );
         },
 
         minuteToTime(minutes) {
