@@ -18,6 +18,9 @@ class AvailabilityLogEntry extends Model
 
     public const UPDATED_AT = null;
 
+    // created_at/superseded_at are the validity window (valid-from / valid-until),
+    // not audit metadata: the write-wiring sets them explicitly so a successor's
+    // created_at always matches its predecessor's superseded_at.
     protected $fillable = [
         'training_place_id',
         'event',

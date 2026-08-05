@@ -21,8 +21,8 @@ class AvailabilityLogEntryFactory extends Factory
         return [
             'training_place_id' => TrainingPlace::factory(),
             'event' => AvailabilityLogEvent::Added,
-            'slot_from' => '2026-01-10 18:00:00',
-            'slot_to' => '2026-01-10 21:00:00',
+            'slot_from' => now()->addDay(),
+            'slot_to' => now()->addDay()->addHours(3),
             'created_at' => now(),
             'superseded_at' => null,
         ];
