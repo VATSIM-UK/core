@@ -306,8 +306,9 @@ class MentoringSessionsService
         $type = $overlap instanceof Session ? 'session' : 'exam';
         $from = Carbon::parse($overlap->taken_from)->format('H:i');
         $to = Carbon::parse($overlap->taken_to)->format('H:i');
+        $staffName = $overlap instanceof Session ? $overlap->mentor?->name : $overlap->examiners?->primaryExaminer?->name;
 
-        return "There is already a {$type} booked on this position from {$from} to {$to}.";
+        return "{$staffName} already has a {$type} booked on this position from {$from} to {$to}.";
     }
 
     private function validateSessionTimes(Availability $availability, string $takenFrom, string $takenTo): void
