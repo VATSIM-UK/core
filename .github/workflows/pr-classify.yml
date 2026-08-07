@@ -1,8 +1,5 @@
 name: PR Type + Completeness Labeling
 
-# pull_request_target so fork PRs are labelled too. It holds a write-capable token,
-# so never check out the PR head or run project code here — the PR must only ever
-# enter as data (pr.diff).
 on:
   pull_request_target:
     types: [opened]
