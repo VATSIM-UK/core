@@ -236,13 +236,13 @@ class MentoringSessionsService
                 $newMentorAccount = $data['newMentorAccount'];
                 $reason = $data['reason'];
                 $oldMentorName = $oldMentorAccount?->name ?? 'Unknown';
+                $newMentorName = $newMentorAccount->name ?? 'Unknown';
 
                 if ($studentAccount) {
-                    $studentAccount->notify(new MentoringSessionReallocatedStudentNotification($session, $oldMentorName));
+                    $studentAccount->notify(new MentoringSessionReallocatedStudentNotification($session, $newMentorName));
                 }
 
                 if ($oldMentorAccount) {
-                    $newMentorName = $newMentorAccount->name ?? 'Unknown';
                     $oldMentorAccount->notify(new MentoringSessionReallocatedOldMentorNotification($session, $reason, $newMentorName));
                 }
 

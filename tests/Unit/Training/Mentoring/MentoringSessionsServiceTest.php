@@ -31,6 +31,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\View;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -1044,6 +1045,72 @@ class MentoringSessionsServiceTest extends TestCase
         Notification::assertSentTo($this->studentAccount, MentoringSessionReallocatedStudentNotification::class);
         Notification::assertSentTo($this->mentorAccount, MentoringSessionReallocatedOldMentorNotification::class);
         Notification::assertSentTo($newMentorAccount, MentoringSessionReallocatedNewMentorNotification::class);
+    }
+
+    #[Test]
+    public function reallocate_session_sends_student_notification_with_new_mentor_name(): void
+    {
+        Notification::fake();
+
+        $oldMentorAccount = Account::factory()->create([
+            'name_first' => 'Jamie',
+            'name_last' => 'Mentor',
+        ]);
+        $oldMentorAccount->givePermissionTo('training.mentoring.view.*');
+
+        $oldMentorMember = Member::factory()->create([
+            'id' => $oldMentorAccount->generateCTSInternalID($oldMentorAccount->id),
+            'cid' => $oldMentorAccount->id,
+        ]);
+
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $oldMentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        $newMentorAccount = Account::factory()->create([
+            'name_first' => 'Sam',
+            'name_last' => 'Newmentor',
+        ]);
+        Member::factory()->create([
+            'id' => $newMentorAccount->generateCTSInternalID($newMentorAccount->id),
+            'cid' => $newMentorAccount->id,
+        ]);
+
+        $trainingPosition = TrainingPosition::factory()->create([
+            'category' => 'S3 Training',
+            'cts_positions' => ['EGLL_APP'],
+        ]);
+
+        MentorTrainingPosition::create([
+            'account_id' => $newMentorAccount->id,
+            'mentorable_type' => TrainingPosition::class,
+            'mentorable_id' => $trainingPosition->id,
+            'created_by' => $newMentorAccount->id,
+        ]);
+
+        $this->service->reallocateSession(
+            $session->id,
+            $newMentorAccount->id,
+            $oldMentorAccount,
+            'Mentor is unavailable due to prior commitments.',
+        );
+
+        Notification::assertSentTo(
+            $this->studentAccount,
+            MentoringSessionReallocatedStudentNotification::class,
+            function (MentoringSessionReallocatedStudentNotification $notification): bool {
+                $mail = $notification->toMail($this->studentAccount);
+                $html = View::make($mail->view, $mail->data())->render();
+
+                return str_contains($html, 'Sam Newmentor') && ! str_contains($html, 'Jamie Mentor');
+            },
+        );
     }
 
     #[Test]
