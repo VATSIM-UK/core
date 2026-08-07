@@ -1,7 +1,10 @@
 name: PR Type + Completeness Labeling
 
+# pull_request_target so fork PRs are labelled too. It holds a write-capable token,
+# so never check out the PR head or run project code here — the PR must only ever
+# enter as data (pr.diff).
 on:
-  pull_request:
+  pull_request_target:
     types: [opened]
 
 concurrency:
@@ -16,11 +19,14 @@ jobs:
   classify:
     if: >
       github.event.pull_request.draft == false &&
-      github.event.pull_request.head.repo.full_name == github.repository &&
       github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          sparse-checkout: .github
+          sparse-checkout-cone-mode: false
 
       - name: Install OpenCode
         run: curl -fsSL https://opencode.ai/install | bash
@@ -29,6 +35,7 @@ jobs:
         run: gh pr diff ${{ github.event.pull_request.number }} > pr.diff
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
 
       - name: Skip large diffs
         id: size_check
@@ -54,11 +61,18 @@ jobs:
           > opencode_output.json
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          OPENCODE_CONFIG_CONTENT: >-
+            {"permission":{"*":"deny"},
+            "mcp":{},
+            "tools":{"bash":false,"edit":false,"write":false,"patch":false,
+            "read":false,"glob":false,"grep":false,"list":false,
+            "webfetch":false,"websearch":false,"task":false,"skill":false}}
 
       - name: Apply labels
         if: steps.size_check.outputs.skip != 'true'
         run: python3 .github/scripts/apply-pr-labels.py
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           OPENCODE_OUTPUT: opencode_output.json
