@@ -14,6 +14,9 @@ enum RemovalReason: string
     case TrainingPlaceOfferRescinded = 'training_place_offer_rescinded';
     case TrainingPlaceOfferExpired = 'training_place_offer_expired';
     case SelfRemoved = 'self_removed';
+    case SeminarNoResponse = 'seminar_no_response';
+    case SeminarTwoCannotAttend = 'seminar_two_cannot_attend';
+    case SeminarNotInterested = 'seminar_not_interested';
     case Other = 'other';
 
     public function label(): string
@@ -29,6 +32,9 @@ enum RemovalReason: string
             self::TrainingPlaceOfferRescinded => 'Training place offer rescinded',
             self::TrainingPlaceOfferExpired => 'Training place offer expired',
             self::SelfRemoved => 'Member removed themselves',
+            self::SeminarNoResponse => 'Seminar invitation not responded to',
+            self::SeminarTwoCannotAttend => 'Seminar invitation cannot-attend twice',
+            self::SeminarNotInterested => 'Seminar invitation marked not interested',
             self::Other => 'Other (please specify)',
         };
     }
