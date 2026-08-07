@@ -84,6 +84,16 @@
         const [h, m] = t.split(":").map(Number);
         return h * 60 + m;
     },
+    snapToTimeSlot(t) {
+        if (!t) return "";
+        if (this.timeSlots.includes(t)) return t;
+        const mins = this.timeMinutes(t);
+        if (Number.isNaN(mins)) return "";
+        const snapped = ((Math.round(mins / 15) * 15) % 1440 + 1440) % 1440;
+        const h = Math.floor(snapped / 60);
+        const m = snapped % 60;
+        return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
+    },
     validEndTimes() {
         if (!this.startTime) return this.timeSlots;
         const min = this.timeMinutes(this.startTime);
@@ -98,7 +108,9 @@
 		x-show="open" x-cloak
 		x-on:open-create-modal.window="
             const d = $event.detail || {};
-            date = d.startDate || ''; startTime = d.startTime || ''; endTime = d.endTime || '';
+            date = d.startDate || '';
+            startTime = snapToTimeSlot(d.startTime || '');
+            endTime = snapToTimeSlot(d.endTime || '');
             selectedPosition = d.prefillPositionId || '';
             selectedCallsign = d.prefillCallsign || '';
             resetPositionSearch();
@@ -150,6 +162,10 @@
                             errorMessage = 'End time must be after start time.';
                             submitting = false; return;
                         }
+                        if (timeMinutes(startTime) % 15 !== 0 || timeMinutes(endTime) % 15 !== 0) {
+                            errorMessage = 'Start and end times must be on 15-minute boundaries.';
+                            submitting = false; return;
+                        }
                         if (!selectedPosition) {
                             errorMessage = 'Please select a position.';
                             submitting = false; return;
@@ -161,6 +177,7 @@
 						<div class="mb-5">
 							<label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Date</label>
 							<input type="date" x-model="date" required
+								x-on:keydown="if (!['Tab', 'Escape', 'Enter'].includes($event.key)) $event.preventDefault()" x-on:paste.prevent
 								class="block w-full rounded-lg border-gray-300 bg-white shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5">
 						</div>
 
@@ -172,6 +189,7 @@
 									<div class="text-[10px] text-gray-400 font-medium uppercase tracking-wide mb-1.5">Start</div>
 									<div class="relative">
 										<select x-model="startTime"
+											x-on:keydown="if (!['ArrowUp', 'ArrowDown', 'Enter', 'Escape', 'Tab'].includes($event.key)) $event.preventDefault()"
 											class="block w-full rounded-lg border-gray-300 bg-white shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5 appearance-none pr-8">
 											@foreach ($timeSlots as $slot)
 												<option value="{{ $slot }}">{{ $slot }}</option>
@@ -186,6 +204,7 @@
 									<div class="text-[10px] text-gray-400 font-medium uppercase tracking-wide mb-1.5">End</div>
 									<div class="relative">
 										<select x-model="endTime"
+											x-on:keydown="if (!['ArrowUp', 'ArrowDown', 'Enter', 'Escape', 'Tab'].includes($event.key)) $event.preventDefault()"
 											class="block w-full rounded-lg border-gray-300 bg-white shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5 appearance-none pr-8">
 											@foreach ($timeSlots as $slot)
 												<option value="{{ $slot }}">{{ $slot }}</option>
