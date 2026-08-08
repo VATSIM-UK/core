@@ -107,7 +107,7 @@ class QualificationTrainingPlaceFromWaitingListTest extends BaseTrainingPanelTes
     }
 
     #[Test]
-    public function it_rejects_a_trainable_that_is_not_attached_to_the_waiting_list(): void
+    public function it_rejects_a_trainable_that_is_not_attached_to_the_waiting_list_on_manual_setup(): void
     {
         $attachedQualification = $this->pilotQualification();
         $unattachedQualification = Qualification::firstWhere('code', 'IR')
@@ -130,6 +130,36 @@ class QualificationTrainingPlaceFromWaitingListTest extends BaseTrainingPanelTes
             ->assertHasTableActionErrors(['trainable']);
 
         $this->assertDatabaseMissing('training_places', [
+            'waiting_list_account_id' => $waitingListAccount->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_rejects_an_unattached_qualification_on_offer(): void
+    {
+        Notification::fake();
+
+        $attachedQualification = $this->pilotQualification();
+        $unattachedQualification = Qualification::firstWhere('code', 'IR')
+            ?? Qualification::factory()->create(['code' => 'IR', 'type' => 'pilot']);
+
+        $waitingList = $this->pilotWaitingListWithQualification($attachedQualification);
+
+        $student = Account::factory()->create();
+        Member::factory()->create(['cid' => $student->id]);
+        $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
+
+        Livewire::actingAs($this->privacc)
+            ->test(AccountsRelationManager::class, [
+                'ownerRecord' => $waitingList,
+                'pageClass' => ViewRecord::class,
+            ])
+            ->callTableAction('offerTrainingPlace', $waitingListAccount, [
+                'trainable' => Qualification::class.'|'.$unattachedQualification->id,
+            ])
+            ->assertHasTableActionErrors(['trainable']);
+
+        $this->assertDatabaseMissing('training_place_offers', [
             'waiting_list_account_id' => $waitingListAccount->id,
         ]);
     }
