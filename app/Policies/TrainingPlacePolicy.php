@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\WaitingList;
 
 class TrainingPlacePolicy
 {
@@ -12,7 +13,8 @@ class TrainingPlacePolicy
      */
     public function viewAny(Account $account): bool
     {
-        return $account->hasPermissionTo('training-places.view.*');
+        return $this->canViewDepartment($account, WaitingList::ATC_DEPARTMENT)
+            || $this->canViewDepartment($account, WaitingList::PILOT_DEPARTMENT);
     }
 
     /**
@@ -20,7 +22,7 @@ class TrainingPlacePolicy
      */
     public function view(Account $account, TrainingPlace $trainingPlace): bool
     {
-        return $account->hasPermissionTo('training-places.view.*');
+        return $this->canViewDepartment($account, $trainingPlace->department);
     }
 
     /**
@@ -77,5 +79,17 @@ class TrainingPlacePolicy
     public function forceDelete(Account $account, TrainingPlace $trainingPlace): bool
     {
         return false;
+    }
+
+    /**
+     * Wildcard (`training-places.view.*`) grants both departments; otherwise require the
+     * department-specific permission.
+     */
+    public function canViewDepartment(Account $account, string $department): bool
+    {
+        return $account->hasAnyPermission([
+            'training-places.view.*',
+            sprintf('training-places.view.%s', $department),
+        ]);
     }
 }

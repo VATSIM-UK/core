@@ -9,6 +9,7 @@ use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
@@ -82,6 +83,36 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($userWithPermission)
             ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertStatus(200);
+    }
+
+    public function test_page_cannot_be_accessed_with_mismatched_department_permission()
+    {
+        $atcPlace = $this->createTrainingPlace();
+
+        $qualification = Qualification::firstWhere('code', 'PPL')
+            ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
+
+        $pilotPlace = TrainingPlace::withoutEvents(fn () => TrainingPlace::factory()
+            ->forQualification($qualification)
+            ->create());
+
+        $atcUser = Account::factory()->create();
+        Member::factory()->forAccount($atcUser)->create();
+        $atcUser->givePermissionTo('training.access');
+        $atcUser->givePermissionTo('training-places.view.atc');
+
+        Livewire::actingAs($atcUser)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $pilotPlace->id])
+            ->assertForbidden();
+
+        $pilotUser = Account::factory()->create();
+        Member::factory()->forAccount($pilotUser)->create();
+        $pilotUser->givePermissionTo('training.access');
+        $pilotUser->givePermissionTo('training-places.view.pilot');
+
+        Livewire::actingAs($pilotUser)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $atcPlace->id])
+            ->assertForbidden();
     }
 
     public function test_infolist_displays_training_place_details()

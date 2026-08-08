@@ -4,9 +4,12 @@ namespace App\Filament\Training\Resources\TrainingPlaces;
 
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Filament\Training\Resources\TrainingPlaces\Pages\ListTrainingPlaces;
+use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
+use App\Models\Training\WaitingList;
+use App\Policies\TrainingPlacePolicy;
 use App\Services\Training\MentorPermissionService;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
@@ -36,6 +39,31 @@ class TrainingPlaceResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Training';
 
     protected static ?int $navigationSort = 2;
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        /** @var Account|null $user */
+        $user = auth()->user();
+
+        $canViewAtc = self::canViewDepartment($user, WaitingList::ATC_DEPARTMENT);
+        $canViewPilot = self::canViewDepartment($user, WaitingList::PILOT_DEPARTMENT);
+
+        if ($canViewAtc && $canViewPilot) {
+            return $query;
+        }
+
+        if ($canViewAtc) {
+            return $query->where('trainable_type', TrainingPosition::class);
+        }
+
+        if ($canViewPilot) {
+            return $query->where('trainable_type', Qualification::class);
+        }
+
+        return $query->whereRaw('0 = 1');
+    }
 
     public static function table(Table $table): Table
     {
@@ -252,20 +280,38 @@ class TrainingPlaceResource extends Resource
      */
     protected static function categoryFilterOptions(): array
     {
-        $positionCategories = TrainingPosition::query()
-            ->whereNotNull('category')
-            ->where('category', '!=', '')
-            ->distinct()
-            ->orderBy('category')
-            ->pluck('category', 'category');
+        /** @var Account|null $user */
+        $user = auth()->user();
+        $canViewAtc = self::canViewDepartment($user, WaitingList::ATC_DEPARTMENT);
+        $canViewPilot = self::canViewDepartment($user, WaitingList::PILOT_DEPARTMENT);
 
-        $pilotCategories = collect(MentorPermissionService::pilotCategories())
-            ->mapWithKeys(fn (string $category): array => [$category => $category]);
+        $positionCategories = $canViewAtc
+            ? TrainingPosition::query()
+                ->whereNotNull('category')
+                ->where('category', '!=', '')
+                ->distinct()
+                ->orderBy('category')
+                ->pluck('category', 'category')
+            : collect();
+
+        $pilotCategories = $canViewPilot
+            ? collect(MentorPermissionService::pilotCategories())
+                ->mapWithKeys(fn (string $category): array => [$category => $category])
+            : collect();
 
         return $positionCategories
             ->union($pilotCategories)
             ->map(fn (string $category): string => Str::title($category))
             ->all();
+    }
+
+    private static function canViewDepartment(?Account $user, string $department): bool
+    {
+        if (! $user) {
+            return false;
+        }
+
+        return app(TrainingPlacePolicy::class)->canViewDepartment($user, $department);
     }
 
     public static function getPages(): array

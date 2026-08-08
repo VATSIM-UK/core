@@ -49,12 +49,8 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
 
     public function mount(): void
     {
-        // Check training places view permission
         /** @var Account|null $user */
         $user = Auth::user();
-        if (! $user || ! $user->can('training-places.view.*')) {
-            abort(403, 'You do not have permission to view training places.');
-        }
 
         $this->trainingPlace = TrainingPlace::withTrashed()
             ->where('id', $this->trainingPlaceId)
@@ -64,6 +60,10 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
                 'trainable' => fn (MorphTo $morphTo) => $morphTo->morphWith([TrainingPosition::class => ['position']]),
             ])
             ->firstOrFail();
+
+        if (! $user || ! $user->can('view', $this->trainingPlace)) {
+            abort(403, 'You do not have permission to view training places.');
+        }
     }
 
     public function getTitle(): string|Htmlable
