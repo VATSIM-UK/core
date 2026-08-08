@@ -89,6 +89,13 @@ class TrainingPlaceOffer extends Model
         );
     }
 
+    protected function trainableTypeLabel(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => $this->trainable instanceof Qualification ? 'Qualification' : 'Position',
+        );
+    }
+
     public function trainingTeamDiscordChannelId(): string
     {
         if ($this->department === WaitingList::PILOT_DEPARTMENT) {

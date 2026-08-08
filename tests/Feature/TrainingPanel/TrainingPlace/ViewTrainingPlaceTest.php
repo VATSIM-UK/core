@@ -123,7 +123,23 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             ->assertStatus(200)
             ->assertSee($trainingPlace->account->name)
             ->assertSee($trainingPlace->account->id)
+            ->assertSee('Position')
             ->assertSee($trainingPlace->trainingPosition->position->name);
+    }
+
+    public function test_infolist_displays_qualification_label_for_pilot_training_places()
+    {
+        $qualification = Qualification::firstWhere('code', 'PPL')
+            ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
+
+        $trainingPlace = TrainingPlace::withoutEvents(fn () => TrainingPlace::factory()
+            ->forQualification($qualification)
+            ->create());
+
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertSee('Qualification')
+            ->assertSee($trainingPlace->display_name);
     }
 
     public function test_infolist_displays_dates_correctly()

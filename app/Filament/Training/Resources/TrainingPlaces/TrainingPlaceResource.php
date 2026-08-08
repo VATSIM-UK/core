@@ -199,7 +199,7 @@ class TrainingPlaceResource extends Resource
                     ),
 
                 TextColumn::make('display_name')
-                    ->label('Position')
+                    ->label(fn (): string => self::trainableColumnLabel(auth()->user()))
                     ->state(fn (TrainingPlace $record): string => $record->display_name)
                     ->searchable(query: fn (Builder $query, string $search): Builder => $query->where(function (Builder $query) use ($search) {
                         $query->whereHasMorph(
@@ -312,6 +312,18 @@ class TrainingPlaceResource extends Resource
         }
 
         return app(TrainingPlacePolicy::class)->canViewDepartment($user, $department);
+    }
+
+    private static function trainableColumnLabel(?Account $user): string
+    {
+        $canViewAtc = self::canViewDepartment($user, WaitingList::ATC_DEPARTMENT);
+        $canViewPilot = self::canViewDepartment($user, WaitingList::PILOT_DEPARTMENT);
+
+        return match (true) {
+            $canViewAtc && $canViewPilot => 'Position / Qualification',
+            $canViewPilot => 'Qualification',
+            default => 'Position',
+        };
     }
 
     public static function getPages(): array

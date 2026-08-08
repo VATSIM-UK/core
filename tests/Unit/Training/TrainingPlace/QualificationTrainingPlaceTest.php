@@ -46,6 +46,7 @@ class QualificationTrainingPlaceTest extends TestCase
         $this->assertInstanceOf(Qualification::class, $trainingPlace->trainable);
         $this->assertNull($trainingPlace->trainingPosition);
         $this->assertTrue($trainingPlace->qualification->is($qualification));
+        $this->assertSame('Qualification', $trainingPlace->trainable_type_label);
         $this->assertDatabaseHas('training_places', [
             'id' => $trainingPlace->id,
             'trainable_type' => Qualification::class,
