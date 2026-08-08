@@ -101,6 +101,13 @@ class TrainingPlace extends Model
         );
     }
 
+    protected function trainableTypeLabel(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => $this->trainable instanceof Qualification ? 'Qualification' : 'Position',
+        );
+    }
+
     public function availabilityWarningDays(): int
     {
         return (int) config(

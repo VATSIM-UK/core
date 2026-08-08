@@ -262,7 +262,7 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
                 TextEntry::make('account.name')->label('Name'),
                 TextEntry::make('account.id')->label('CID'),
                 TextEntry::make('display_name')
-                    ->label('Position')
+                    ->label(fn (): string => $this->trainingPlace->trainable_type_label)
                     ->state(fn (): string => $this->trainingPlace->trainingPosition?->position?->name ?? $this->trainingPlace->display_name),
                 TextEntry::make('created_at')->label('Training Start')->date('d/m/Y'),
                 TextEntry::make('waitingListAccount.created_at')
