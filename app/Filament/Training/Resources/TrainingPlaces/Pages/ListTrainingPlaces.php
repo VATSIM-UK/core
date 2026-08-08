@@ -176,6 +176,12 @@ class ListTrainingPlaces extends ListRecords
             ]);
         }
 
+        if ($trainable instanceof Qualification && $trainable->type !== QualificationTypeEnum::Pilot->value) {
+            throw ValidationException::withMessages([
+                'trainable' => 'The selected qualification is not a pilot qualification.',
+            ]);
+        }
+
         return $trainable;
     }
 }

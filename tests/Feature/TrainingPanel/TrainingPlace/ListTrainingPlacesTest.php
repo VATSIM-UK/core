@@ -12,6 +12,7 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\ValidationException;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
@@ -143,6 +144,56 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
             'trainable_type' => Qualification::class,
             'trainable_id' => $qualification->id,
         ]);
+    }
+
+    #[Test]
+    public function it_rejects_adhoc_creation_for_non_pilot_qualifications()
+    {
+        $this->panelUser->givePermissionTo('training-places.view.*');
+        $this->panelUser->givePermissionTo('training-places.create-adhoc');
+
+        $qualification = Qualification::factory()->atc()->create();
+
+        $student = Account::factory()->create();
+        Member::factory()->create(['cid' => $student->id]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ListTrainingPlaces::class)
+            ->callAction('createAdhocTrainingPlace', data: [
+                'account_id' => $student->id,
+                'trainable' => Qualification::class.'|'.$qualification->id,
+                'reason' => 'This is a valid reason for creating an ad-hoc training place.',
+            ])
+            ->assertHasActionErrors(['trainable']);
+
+        $this->assertDatabaseMissing('training_places', [
+            'account_id' => $student->id,
+            'trainable_type' => Qualification::class,
+            'trainable_id' => $qualification->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_rejects_non_pilot_qualifications_when_resolving_adhoc_trainable()
+    {
+        $this->panelUser->givePermissionTo('training-places.view.*');
+
+        $qualification = Qualification::factory()->atc()->create();
+
+        $component = Livewire::actingAs($this->panelUser)
+            ->test(ListTrainingPlaces::class)
+            ->instance();
+
+        $this->assertInstanceOf(ListTrainingPlaces::class, $component);
+
+        $method = new \ReflectionMethod(ListTrainingPlaces::class, 'resolveAdhocTrainable');
+
+        try {
+            $method->invoke($component, Qualification::class.'|'.$qualification->id);
+            $this->fail('Expected ValidationException was not thrown.');
+        } catch (ValidationException $exception) {
+            $this->assertArrayHasKey('trainable', $exception->errors());
+        }
     }
 
     #[Test]
