@@ -125,7 +125,7 @@ class CheckAvailability implements ShouldQueue
                 'training_place_id' => $this->trainingPlace->id,
                 'availability_check_id' => $availabilityCheck->id,
                 'status' => 'pending',
-                'expires_at' => now()->addDays(5)->endOfDay(),
+                'expires_at' => now()->addDays($this->trainingPlace->availabilityWarningDays())->endOfDay(),
             ]);
             $account->notify(new AvailabilityWarningCreated($warning));
         });

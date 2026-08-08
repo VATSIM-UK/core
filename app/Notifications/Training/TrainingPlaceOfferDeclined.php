@@ -43,6 +43,6 @@ class TrainingPlaceOfferDeclined extends Notification implements DiscordNotifica
 
     public function getChannel(): string
     {
-        return $this->trainingPlaceOffer->trainingPosition?->training_team_discord_channel_id ?? '';
+        return $this->trainingPlaceOffer->trainingTeamDiscordChannelId();
     }
 }

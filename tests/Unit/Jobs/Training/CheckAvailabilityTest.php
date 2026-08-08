@@ -12,6 +12,7 @@ use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPlace\AvailabilityCheck;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlace;
@@ -219,6 +220,34 @@ class CheckAvailabilityTest extends TestCase
             now()->addDays(5)->endOfDay()->timestamp,
             $warning->expires_at->timestamp,
             60 // Allow 60 seconds delta for test execution time
+        );
+    }
+
+    #[Test]
+    public function it_creates_a_seven_day_availability_warning_for_pilot_training_places(): void
+    {
+        $qualification = Qualification::firstWhere('code', 'PPL')
+            ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
+
+        $pilotPlace = TrainingPlace::withoutEvents(fn () => TrainingPlace::factory()
+            ->forQualification($qualification)
+            ->create([
+                'account_id' => $this->account->id,
+                'waiting_list_account_id' => null,
+            ]));
+
+        $pilotPlace->forceFill([
+            'created_at' => now()->subHours(TrainingPlace::AVAILABILITY_CHECK_GRACE_PERIOD_HOURS + 1),
+        ])->saveQuietly();
+
+        (new CheckAvailability($pilotPlace->fresh(['trainable', 'account'])))->handle();
+
+        $warning = AvailabilityWarning::where('training_place_id', $pilotPlace->id)->first();
+        $this->assertNotNull($warning);
+        $this->assertEqualsWithDelta(
+            now()->addDays(7)->endOfDay()->timestamp,
+            $warning->expires_at->timestamp,
+            60
         );
     }
 

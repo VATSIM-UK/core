@@ -89,6 +89,15 @@ class TrainingPlaceOffer extends Model
         );
     }
 
+    public function trainingTeamDiscordChannelId(): string
+    {
+        if ($this->department === WaitingList::PILOT_DEPARTMENT) {
+            return (string) config('training.discord.pilot_training_team_channel_id', '');
+        }
+
+        return (string) ($this->trainingPosition?->training_team_discord_channel_id ?? '');
+    }
+
     protected function statusLabel(): Attribute
     {
         return Attribute::make(get: fn () => $this->status->label());
