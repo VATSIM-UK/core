@@ -146,14 +146,16 @@ jobs:
       - name: Serve Application
         run: php artisan serve -q &
 
-      - name: Create CTS database
-        run: php artisan cts:migrate:fresh
-
-      - name: Run migrations
-        run: php artisan migrate --force
-
       - name: Execute Tests
-        run: php artisan test --display-notices
+        run: php artisan test --parallel --processes=4 --recreate-databases --log-junit=junit.xml
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          report_type: test_results
+          files: junit.xml
 
   trigger-deploy:
     name: Trigger Deploy
