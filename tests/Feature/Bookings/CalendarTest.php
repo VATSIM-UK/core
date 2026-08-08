@@ -101,6 +101,79 @@ class CalendarTest extends TestCase
     }
 
     #[Test]
+    public function it_rejects_end_time_before_start_time(): void
+    {
+        $member = Account::factory()->withQualification()->create();
+        $this->placeOnRoster($member);
+        $position = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->call('createBooking', [
+                'starts_at' => Carbon::tomorrow()->setTime(12, 0)->format('Y-m-d H:i:s'),
+                'ends_at' => Carbon::tomorrow()->setTime(10, 0)->format('Y-m-d H:i:s'),
+                'position_id' => (string) $position->id,
+            ])
+            ->assertDispatched('booking-error');
+
+        $this->assertDatabaseMissing('bookings', ['member_id' => $member->id]);
+    }
+
+    #[Test]
+    public function it_rejects_times_not_on_fifteen_minute_boundaries(): void
+    {
+        $member = Account::factory()->withQualification()->create();
+        $this->placeOnRoster($member);
+        $position = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->call('createBooking', [
+                'starts_at' => Carbon::tomorrow()->setTime(10, 7)->format('Y-m-d H:i:s'),
+                'ends_at' => Carbon::tomorrow()->setTime(12, 0)->format('Y-m-d H:i:s'),
+                'position_id' => (string) $position->id,
+            ])
+            ->assertDispatched('booking-error');
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->call('createBooking', [
+                'starts_at' => Carbon::tomorrow()->setTime(10, 0)->format('Y-m-d H:i:s'),
+                'ends_at' => Carbon::tomorrow()->setTime(12, 10)->format('Y-m-d H:i:s'),
+                'position_id' => (string) $position->id,
+            ])
+            ->assertDispatched('booking-error');
+
+        $this->assertDatabaseMissing('bookings', ['member_id' => $member->id]);
+    }
+
+    #[Test]
+    public function it_accepts_times_on_fifteen_minute_boundaries(): void
+    {
+        $member = Account::factory()->withQualification()->create();
+        $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
+        $member->qualifications()->sync([$qual->id]);
+        $member = $member->fresh();
+        $this->placeOnRoster($member);
+
+        $position = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->call('createBooking', [
+                'starts_at' => Carbon::tomorrow()->setTime(10, 15)->format('Y-m-d H:i:s'),
+                'ends_at' => Carbon::tomorrow()->setTime(11, 45)->format('Y-m-d H:i:s'),
+                'position_id' => (string) $position->id,
+            ])
+            ->assertDispatched('booking-created');
+
+        $this->assertDatabaseHas('bookings', [
+            'member_id' => $member->id,
+            'position_id' => $position->id,
+        ]);
+    }
+
+    #[Test]
     public function it_creates_a_booking_successfully(): void
     {
         $member = Account::factory()->withQualification()->create();

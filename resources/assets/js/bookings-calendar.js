@@ -177,7 +177,8 @@ document.addEventListener('alpine:init', () => {
             event.preventDefault();
             const bar = event.currentTarget;
             const pct = this.getPosFromEvent(event, bar);
-            const startMinutes = this.pctToMinutes(pct);
+            // Latest start that still leaves room for a 15-minute slot before midnight.
+            const startMinutes = Math.min(1425, this.pctToMinutes(pct));
             this.dragging = {
                 pos,
                 bar,
@@ -207,6 +208,10 @@ document.addEventListener('alpine:init', () => {
                     end = start + 15;
                 }
             }
+            // Clamp to the day and re-snap so the minimum-slot nudge cannot leave
+            // the selection off a 15-minute boundary or outside 00:00–24:00.
+            start = this.snapToSlot(Math.max(0, Math.min(1425, start)));
+            end = this.snapToSlot(Math.max(start + 15, Math.min(1440, end)));
             this.dragging.startMinutes = start;
             this.dragging.currentMinutes = end;
         },
@@ -236,7 +241,7 @@ document.addEventListener('alpine:init', () => {
             if (!this.isAuthenticated) return;
             const bar = event.currentTarget;
             const pct = this.getPosFromEvent(event, bar);
-            const startMinutes = this.pctToMinutes(pct);
+            const startMinutes = Math.min(1380, this.pctToMinutes(pct));
             const endMinutes = startMinutes + 60;
             const endDate = endMinutes >= 1440 ? this.addDay(this.selectedDate) : this.selectedDate;
 

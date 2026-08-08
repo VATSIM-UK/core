@@ -1,11 +1,6 @@
 <template x-teleport="body">
 	@php
-		$timeSlots = [];
-		for ($h = 0; $h < 24; $h++) {
-		    foreach ([0, 15, 30, 45] as $m) {
-		        $timeSlots[] = sprintf('%02d:%02d', $h, $m);
-		    }
-		}
+		$timeSlots = \App\Support\Bookings\BookingTimeSlots::all();
 		$positionSearchMinLength = \App\Livewire\Bookings\Calendar::POSITION_SEARCH_MIN_LENGTH;
 	@endphp
 	<div
@@ -84,10 +79,29 @@
         const [h, m] = t.split(":").map(Number);
         return h * 60 + m;
     },
-    validEndTimes() {
+    snapToTimeSlot(t) {
+        if (!t) return "";
+        if (this.timeSlots.includes(t)) return t;
+        const mins = this.timeMinutes(t);
+        if (Number.isNaN(mins)) return "";
+        const snapped = ((Math.round(mins / 15) * 15) % 1440 + 1440) % 1440;
+        const h = Math.floor(snapped / 60);
+        const m = snapped % 60;
+        return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
+    },
+    get validEndTimes() {
         if (!this.startTime) return this.timeSlots;
         const min = this.timeMinutes(this.startTime);
-        return this.timeSlots;
+        return this.timeSlots.filter((t) => this.timeMinutes(t) > min);
+    },
+    ensureValidEndTime() {
+        if (!this.startTime) return;
+        if (this.endTime && this.validEndTimes.includes(this.endTime)) return;
+        const preferred = this.timeMinutes(this.startTime) + 60;
+        const preferredSlot = this.timeSlots.find((t) => this.timeMinutes(t) === preferred);
+        this.endTime = preferredSlot && this.validEndTimes.includes(preferredSlot)
+            ? preferredSlot
+            : (this.validEndTimes[0] || "");
     },
     selectPosition(id, callsign) {
         this.selectedPosition = id;
@@ -98,7 +112,10 @@
 		x-show="open" x-cloak
 		x-on:open-create-modal.window="
             const d = $event.detail || {};
-            date = d.startDate || ''; startTime = d.startTime || ''; endTime = d.endTime || '';
+            date = d.startDate || '';
+            startTime = snapToTimeSlot(d.startTime || '');
+            endTime = snapToTimeSlot(d.endTime || '');
+            ensureValidEndTime();
             selectedPosition = d.prefillPositionId || '';
             selectedCallsign = d.prefillCallsign || '';
             resetPositionSearch();
@@ -150,6 +167,10 @@
                             errorMessage = 'End time must be after start time.';
                             submitting = false; return;
                         }
+                        if (timeMinutes(startTime) % 15 !== 0 || timeMinutes(endTime) % 15 !== 0) {
+                            errorMessage = 'Start and end times must be on 15-minute boundaries.';
+                            submitting = false; return;
+                        }
                         if (!selectedPosition) {
                             errorMessage = 'Please select a position.';
                             submitting = false; return;
@@ -161,6 +182,7 @@
 						<div class="mb-5">
 							<label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Date</label>
 							<input type="date" x-model="date" required
+								x-on:keydown="if (!['Tab', 'Escape', 'Enter'].includes($event.key)) $event.preventDefault()" x-on:paste.prevent
 								class="block w-full rounded-lg border-gray-300 bg-white shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5">
 						</div>
 
@@ -171,7 +193,8 @@
 								<div>
 									<div class="text-[10px] text-gray-400 font-medium uppercase tracking-wide mb-1.5">Start</div>
 									<div class="relative">
-										<select x-model="startTime"
+										<select x-model="startTime" x-on:change="ensureValidEndTime()"
+											x-on:keydown="if (!['ArrowUp', 'ArrowDown', 'Enter', 'Escape', 'Tab'].includes($event.key)) $event.preventDefault()"
 											class="block w-full rounded-lg border-gray-300 bg-white shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5 appearance-none pr-8">
 											@foreach ($timeSlots as $slot)
 												<option value="{{ $slot }}">{{ $slot }}</option>
@@ -186,10 +209,11 @@
 									<div class="text-[10px] text-gray-400 font-medium uppercase tracking-wide mb-1.5">End</div>
 									<div class="relative">
 										<select x-model="endTime"
+											x-on:keydown="if (!['ArrowUp', 'ArrowDown', 'Enter', 'Escape', 'Tab'].includes($event.key)) $event.preventDefault()"
 											class="block w-full rounded-lg border-gray-300 bg-white shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5 appearance-none pr-8">
-											@foreach ($timeSlots as $slot)
-												<option value="{{ $slot }}">{{ $slot }}</option>
-											@endforeach
+											<template x-for="slot in validEndTimes" :key="slot">
+												<option :value="slot" x-text="slot"></option>
+											</template>
 										</select>
 										<i
 											class="fa fa-chevron-down absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none"

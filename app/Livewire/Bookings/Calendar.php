@@ -588,6 +588,11 @@ class Calendar extends Component
         return (int) $parts[0] * 60 + (int) $parts[1];
     }
 
+    private function isOnFifteenMinuteBoundary(Carbon $time): bool
+    {
+        return $time->second === 0 && $time->minute % 15 === 0;
+    }
+
     public function createBooking(array $data): void
     {
         if (! auth()->check()) {
@@ -620,11 +625,23 @@ class Calendar extends Component
                 return;
             }
 
+            if (! $this->isOnFifteenMinuteBoundary($startsAt)) {
+                $this->dispatch('booking-error', message: 'Start and end times must be on 15-minute boundaries.');
+
+                return;
+            }
+
             if (! empty($data['ends_at'])) {
                 $endsAt = Carbon::parse($data['ends_at']);
 
-                if ($startsAt->equalTo($endsAt)) {
-                    $this->dispatch('booking-error', message: 'Booking length cannot be zero minutes.');
+                if (! $this->isOnFifteenMinuteBoundary($endsAt)) {
+                    $this->dispatch('booking-error', message: 'Start and end times must be on 15-minute boundaries.');
+
+                    return;
+                }
+
+                if ($endsAt->lessThanOrEqualTo($startsAt)) {
+                    $this->dispatch('booking-error', message: 'End time must be after start time.');
 
                     return;
                 }
