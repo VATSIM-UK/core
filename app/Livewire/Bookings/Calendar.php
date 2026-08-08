@@ -36,8 +36,8 @@ class Calendar extends Component
     private const POSITION_SEARCH_LIMIT = 50;
 
     /**
-     * Narrowest the timeline track can get, in pixels: the min-w-[1680px] body
-     * less the 8rem (112px at the app's 14px root) position column. Header label
+     * Narrowest the timeline track can get, in pixels: the min-w-[1708px] body
+     * less the 10rem (140px at the app's 14px root) position column. Header label
      * widths are measured against this so nothing overlaps at any window size.
      */
     private const TIMELINE_TRACK_MIN_WIDTH = 1568;

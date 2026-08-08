@@ -5,8 +5,8 @@
 		it the gap shading and time marker show through the column at every row
 		boundary. The matching border-b keeps the rule looking unchanged. --}}
 	<div
-		class="w-32 shrink-0 px-3 py-2.5 -mb-px border-r border-r-gray-200 border-b border-b-gray-100 flex items-center gap-2 bg-white sticky left-0 z-20">
-		<span class="text-[13px] font-semibold text-gray-700 truncate" x-text="pos.callsign"></span>
+		class="w-40 shrink-0 px-3 py-2.5 -mb-px border-r border-r-gray-200 border-b border-b-gray-100 flex items-center gap-2 bg-white sticky left-0 z-20">
+		<span class="text-[13px] font-semibold text-gray-700 truncate" :title="pos.callsign" x-text="pos.callsign"></span>
 	</div>
 
 	{{-- Timeline bar --}}
