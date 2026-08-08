@@ -27,5 +27,5 @@ hooks = [
     { id = "check-toml" },
     { id = "pretty-format-json", args = [
         "--autofix",
-    ], exclude = "composer\\.lock|package-lock\\.json" },
+    ], exclude = "composer\\.lock|package-lock\\.json|\\.devcontainer/devcontainer\\.json|\\.vscode/settings\\.json|\\.vscode/tasks\\.json" },
 ]

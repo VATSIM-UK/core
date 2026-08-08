@@ -1,39 +1,70 @@
-# Usage: .devcontainer/load-dotenv.sh docker-compose -f .devcontainer/docker-compose.dev.yml up
+# Docker Compose configuration for the local development environment.
+# Runs the PHP application, Redis, MySQL, and phpMyAdmin on a shared network.
 
 services:
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    command: redis-server --requirepass root
-    environment:
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
 
+    # Main PHP and Nginx application.
+    vatsimuk-core:
+        build:
+            context: .
+            dockerfile: Dockerfile
 
-  mysql:
-    image: mysql:8.0
-    volumes:
-      - db-data:/var/lib/mysql
-      - ./mysql_init:/docker-entrypoint-initdb.d
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASS}
-      MYSQL_DATABASE: ${DB_MYSQL_NAME}
-    ports:
-      - ${DB_MYSQL_PORT}:3306
-    expose:
-      - "3306"
+        # Load development and application environment variables.
+        env_file:
+            - .env
+            - ../.env
 
-  pma:
-    image: phpmyadmin
-    ports:
-      - "8090:80"
-    environment:
-      - PMA_ARBITRARY=1
-      - PMA_HOST=mysql
-      - PMA_PORT=${DB_MYSQL_PORT}
-    depends_on:
-      - mysql
+        # Expose the application at http://localhost.
+        ports:
+            - "80:80"
 
+        # Start MySQL before the application container.
+        # This does not guarantee that MySQL is ready to accept connections.
+        depends_on:
+            - mysql
 
+        # Mount the project source into the container for local development.
+        volumes:
+            - "..:/workspace:cached"
+
+    # Redis service for caching, sessions, queues, and other temporary data.
+    # Available to other containers at redis:6379.
+    redis:
+        image: redis:7-alpine
+
+    # MySQL 8 database for local development.
+    mysql:
+        image: mysql:8.0
+
+        volumes:
+            # Persist database data between container recreations.
+            - db-data:/var/lib/mysql
+
+            # Run initialisation scripts when the database is first created.
+            - ./mysql_init:/docker-entrypoint-initdb.d
+
+        environment:
+            # Local development credentials only.
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: core
+
+        # Expose MySQL to the host on MYSQL_BIND_PORT, defaulting to 13306.
+        # Other containers should connect using mysql:3306.
+        ports:
+            - "${MYSQL_BIND_PORT:-13306}:3306"
+
+    # Browser-based MySQL administration at http://localhost:8090.
+    pma:
+        image: phpmyadmin
+
+        ports:
+            - "8090:80"
+
+        # Allow the database server to be entered on the login page.
+        # Use mysql as the server name when connecting to this Compose stack.
+        environment:
+            - PMA_ARBITRARY=1
+
+# Persistent storage used by MySQL.
 volumes:
-  db-data:
+    db-data:
