@@ -640,8 +640,8 @@ class Calendar extends Component
                     return;
                 }
 
-                if ($startsAt->equalTo($endsAt)) {
-                    $this->dispatch('booking-error', message: 'Booking length cannot be zero minutes.');
+                if ($endsAt->lessThanOrEqualTo($startsAt)) {
+                    $this->dispatch('booking-error', message: 'End time must be after start time.');
 
                     return;
                 }
