@@ -177,7 +177,8 @@ document.addEventListener('alpine:init', () => {
             event.preventDefault();
             const bar = event.currentTarget;
             const pct = this.getPosFromEvent(event, bar);
-            // Latest start that still leaves room for a 15-minute slot before midnight.
+            // Latest start that still leaves room for a 15-minute drag before midnight.
+            // Clicks (no drag) are widened to 1 hour in _dragEnd and clamped there.
             const startMinutes = Math.min(1425, this.pctToMinutes(pct));
             this.dragging = {
                 pos,
@@ -186,6 +187,8 @@ document.addEventListener('alpine:init', () => {
                 startMinutes,
                 currentMinutes: startMinutes + 15,
                 startPct: this.minToPct(startMinutes),
+                originX: event.clientX,
+                didDrag: false,
             };
             this._boundDragMove = this._boundDragMove || this._dragMove.bind(this);
             this._boundDragEnd = this._boundDragEnd || this._dragEnd.bind(this);
@@ -195,6 +198,12 @@ document.addEventListener('alpine:init', () => {
 
         _dragMove(e) {
             if (!this.dragging) return;
+            // Distinguish a click from a drag. A 15-minute selection looks the same
+            // whether the pointer never moved or only reached the next quarter-hour,
+            // so use pointer travel rather than the resulting range.
+            if (Math.abs(e.clientX - this.dragging.originX) > 5) {
+                this.dragging.didDrag = true;
+            }
             const pct = this.getPosFromEvent(e, this.dragging.bar);
             const pointer = this.pctToMinutes(pct);
             const anchor = this.dragging.anchorMinutes;
@@ -221,28 +230,13 @@ document.addEventListener('alpine:init', () => {
             document.removeEventListener('mousemove', this._boundDragMove);
             document.removeEventListener('mouseup', this._boundDragEnd);
             const d = this.dragging;
-            const endMinutes = d.currentMinutes;
-            const endDate = endMinutes >= 1440 ? this.addDay(this.selectedDate) : this.selectedDate;
-
-            window.dispatchEvent(new CustomEvent('open-create-modal', {
-                detail: {
-                    startDate: this.selectedDate,
-                    startTime: this.minuteToTime(d.startMinutes),
-                    endDate,
-                    endTime: this.minuteToTime(endMinutes),
-                    prefillPositionId: d.pos.position_id ? String(d.pos.position_id) : '',
-                    prefillCallsign: d.pos.callsign || '',
-                },
-            }));
-            this.dragging = null;
-        },
-
-        handleTimelineClick(event, pos) {
-            if (!this.isAuthenticated) return;
-            const bar = event.currentTarget;
-            const pct = this.getPosFromEvent(event, bar);
-            const startMinutes = Math.min(1380, this.pctToMinutes(pct));
-            const endMinutes = startMinutes + 60;
+            // Footer advertises "click for a 1-hour slot"; drag keeps the selected range.
+            let startMinutes = d.startMinutes;
+            let endMinutes = d.currentMinutes;
+            if (!d.didDrag) {
+                startMinutes = Math.min(1380, d.anchorMinutes);
+                endMinutes = startMinutes + 60;
+            }
             const endDate = endMinutes >= 1440 ? this.addDay(this.selectedDate) : this.selectedDate;
 
             window.dispatchEvent(new CustomEvent('open-create-modal', {
@@ -251,10 +245,11 @@ document.addEventListener('alpine:init', () => {
                     startTime: this.minuteToTime(startMinutes),
                     endDate,
                     endTime: this.minuteToTime(endMinutes),
-                    prefillPositionId: pos.position_id ? String(pos.position_id) : '',
-                    prefillCallsign: pos.callsign || '',
+                    prefillPositionId: d.pos.position_id ? String(d.pos.position_id) : '',
+                    prefillCallsign: d.pos.callsign || '',
                 },
             }));
+            this.dragging = null;
         },
 
         openDetailModal(pos, booking) {
