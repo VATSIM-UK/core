@@ -14,7 +14,7 @@ enum AvailabilityLogEvent: string
     {
         return match ($this) {
             self::Added => 'Added',
-            self::Merged => 'Merged',
+            self::Merged => 'Extended',
             self::Edited => 'Edited',
         };
     }
