@@ -8,6 +8,7 @@ use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Models\Training\Mentoring\MentoringScope;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\MentorPermissionService;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -94,7 +95,7 @@ class MentoringPolicy
      */
     public function viewStudentTrainingPlace(Account $user): bool
     {
-        return $user->can('training-places.view.*');
+        return $user->can('viewAny', TrainingPlace::class);
     }
 
     // Action permissions

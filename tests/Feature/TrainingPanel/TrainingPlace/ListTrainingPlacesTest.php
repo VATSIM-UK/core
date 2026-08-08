@@ -253,6 +253,102 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function it_scopes_list_records_to_department_view_permission()
+    {
+        $qualification = Qualification::firstWhere('code', 'PPL')
+            ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
+
+        $ctsPosition = CtsPosition::factory()->create(['callsign' => 'EGLL_APP']);
+        $trainingPosition = TrainingPosition::factory()
+            ->withCtsPositions([$ctsPosition->callsign])
+            ->create();
+
+        $waitingList = WaitingList::factory()->create();
+        $pilotStudent = Account::factory()->create();
+        $atcStudent = Account::factory()->create();
+        Member::factory()->create(['cid' => $pilotStudent->id]);
+        Member::factory()->create(['cid' => $atcStudent->id]);
+
+        $pilotWaitingListAccount = $waitingList->addToWaitingList($pilotStudent, $this->privacc);
+        $atcWaitingListAccount = $waitingList->addToWaitingList($atcStudent, $this->privacc);
+
+        $qualificationPlace = TrainingPlace::withoutEvents(fn () => TrainingPlace::create([
+            'waiting_list_account_id' => $pilotWaitingListAccount->id,
+            'account_id' => $pilotStudent->id,
+            'trainable_type' => Qualification::class,
+            'trainable_id' => $qualification->id,
+        ]));
+
+        $positionPlace = TrainingPlace::withoutEvents(fn () => TrainingPlace::create([
+            'waiting_list_account_id' => $atcWaitingListAccount->id,
+            'account_id' => $atcStudent->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
+        ]));
+
+        $atcUser = Account::factory()->create();
+        $atcUser->givePermissionTo('training.access');
+        $atcUser->givePermissionTo('training-places.view.atc');
+
+        Livewire::actingAs($atcUser)
+            ->test(ListTrainingPlaces::class)
+            ->assertCanSeeTableRecords([$positionPlace])
+            ->assertCanNotSeeTableRecords([$qualificationPlace]);
+
+        $pilotUser = Account::factory()->create();
+        $pilotUser->givePermissionTo('training.access');
+        $pilotUser->givePermissionTo('training-places.view.pilot');
+
+        Livewire::actingAs($pilotUser)
+            ->test(ListTrainingPlaces::class)
+            ->assertCanSeeTableRecords([$qualificationPlace])
+            ->assertCanNotSeeTableRecords([$positionPlace]);
+    }
+
+    #[Test]
+    public function it_shows_all_departments_when_user_has_wildcard_view_permission()
+    {
+        $qualification = Qualification::firstWhere('code', 'PPL')
+            ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
+
+        $ctsPosition = CtsPosition::factory()->create(['callsign' => 'EGLL_APP']);
+        $trainingPosition = TrainingPosition::factory()
+            ->withCtsPositions([$ctsPosition->callsign])
+            ->create();
+
+        $waitingList = WaitingList::factory()->create();
+        $pilotStudent = Account::factory()->create();
+        $atcStudent = Account::factory()->create();
+        Member::factory()->create(['cid' => $pilotStudent->id]);
+        Member::factory()->create(['cid' => $atcStudent->id]);
+
+        $pilotWaitingListAccount = $waitingList->addToWaitingList($pilotStudent, $this->privacc);
+        $atcWaitingListAccount = $waitingList->addToWaitingList($atcStudent, $this->privacc);
+
+        $qualificationPlace = TrainingPlace::withoutEvents(fn () => TrainingPlace::create([
+            'waiting_list_account_id' => $pilotWaitingListAccount->id,
+            'account_id' => $pilotStudent->id,
+            'trainable_type' => Qualification::class,
+            'trainable_id' => $qualification->id,
+        ]));
+
+        $positionPlace = TrainingPlace::withoutEvents(fn () => TrainingPlace::create([
+            'waiting_list_account_id' => $atcWaitingListAccount->id,
+            'account_id' => $atcStudent->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
+        ]));
+
+        $user = Account::factory()->create();
+        $user->givePermissionTo('training.access');
+        $user->givePermissionTo('training-places.view.*');
+
+        Livewire::actingAs($user)
+            ->test(ListTrainingPlaces::class)
+            ->assertCanSeeTableRecords([$qualificationPlace, $positionPlace]);
+    }
+
+    #[Test]
     public function it_cannot_render_training_places_list_page_without_permission()
     {
         // Arrange

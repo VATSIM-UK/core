@@ -30,7 +30,7 @@ class AvailabilityLogTable extends Component implements HasActions, HasSchemas, 
 
     public function mount(): void
     {
-        if (! auth()->user()?->can('training-places.view.*')) {
+        if (! auth()->user()?->can('view', $this->trainingPlace)) {
             abort(403);
         }
     }

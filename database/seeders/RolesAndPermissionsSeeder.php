@@ -180,6 +180,8 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Training Places Permissions
             'training-places.view.*',
+            'training-places.view.atc',
+            'training-places.view.pilot',
             'training-places.manual-setup',
             'training-places.manual-setup.atc',
             'training-places.manual-setup.pilot',

@@ -32,7 +32,7 @@ class AvailabilityLogReview extends Component implements HasActions, HasForms, H
 
     public function mount(): void
     {
-        if (! auth()->user()?->can('training-places.view.*')) {
+        if (! auth()->user()?->can('view', $this->trainingPlace)) {
             abort(403);
         }
 
