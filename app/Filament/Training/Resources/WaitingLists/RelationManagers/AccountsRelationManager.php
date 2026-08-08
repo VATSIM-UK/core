@@ -6,6 +6,8 @@ use App\Enums\TrainingPlaceOfferStatus;
 use App\Filament\Support\NameColumn;
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Models\Mship\Feedback\Feedback;
+use App\Models\Mship\Qualification;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\Removal;
 use App\Models\Training\WaitingList\RemovalReason;
@@ -33,6 +35,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\ValidationException;
 
 /**
  * @property WaitingList $ownerRecord
@@ -157,28 +160,21 @@ class AccountsRelationManager extends RelationManager
                                         ->content('No feedback on record for this member.'),
                                 ])
                                 ->collapsible()
-                                ->columns(3),
+                                ->columns(3)
+                                ->visible(fn () => $record->waitingList->isAtcList()),
 
-                            Select::make('training_position_id')
-                                ->label('Training Position')
-                                ->options(function ($livewire) {
-                                    return $livewire->ownerRecord->trainingPositions
-                                        ->mapWithKeys(fn ($tp) => [$tp->id => $tp->position?->callsign ?? "Position #{$tp->id}"])
-                                        ->toArray();
-                                })
-                                ->required()
-                                ->helperText('Select the training position to offer to this member.'),
+                            $this->trainableSelect('offer to this member'),
                         ];
                     })
-                    ->action(function (WaitingListAccount $record, array $data, $livewire) {
-                        $trainingPosition = $livewire->ownerRecord->trainingPositions()->findOrFail($data['training_position_id']);
+                    ->action(function (WaitingListAccount $record, array $data) {
+                        $trainable = $this->resolveAttachedTrainable($data['trainable']);
 
                         $service = app(TrainingPlaceOfferService::class);
-                        $service->offerTrainingPlace($record, $trainingPosition);
+                        $service->offerTrainingPlace($record, $trainable);
                     })
                     ->successNotificationTitle('Training place offered successfully')
                     ->modalHeading('Offer Training Place')
-                    ->modalDescription('Select a training position to offer this member.')
+                    ->modalDescription(fn (): string => $this->selectTrainableDescription('offer this member'))
                     ->modalSubmitActionLabel('Offer Training Place')
                     ->modalCancelActionLabel('Cancel')
                     ->color('success'),
@@ -371,21 +367,13 @@ class AccountsRelationManager extends RelationManager
                         ->icon('heroicon-o-academic-cap')
                         ->visible(fn ($record) => $this->can('trainingPlacesManualSetup', $record->waitingList))
                         ->schema([
-                            Select::make('training_position_id')
-                                ->label('Training Position')
-                                ->options(function ($livewire) {
-                                    return $livewire->ownerRecord->trainingPositions
-                                        ->mapWithKeys(fn ($tp) => [$tp->id => $tp->position?->callsign ?? "Position #{$tp->id}"])
-                                        ->toArray();
-                                })
-                                ->required()
-                                ->helperText('Select the training position to offer to this user.'),
+                            $this->trainableSelect('set up for this user'),
                         ])
                         ->action(function (WaitingListAccount $record, array $data, $livewire) {
-                            $trainingPosition = $livewire->ownerRecord->trainingPositions()->findOrFail($data['training_position_id']);
+                            $trainable = $this->resolveAttachedTrainable($data['trainable']);
 
                             $service = app(TrainingPlaceService::class);
-                            $trainingPlace = $service->createManualTrainingPlace($record, $trainingPosition);
+                            $trainingPlace = $service->createManualTrainingPlace($record, $trainable);
 
                             Notification::make()
                                 ->title('Training place offered successfully')
@@ -402,7 +390,7 @@ class AccountsRelationManager extends RelationManager
                         })
                         ->successNotificationTitle('Training place offered successfully')
                         ->modalHeading('Manual Setup Training Place')
-                        ->modalDescription('Select a training position to manually setup a training place for this user.')
+                        ->modalDescription(fn (): string => $this->selectTrainableDescription('manually set up a training place for this user'))
                         ->modalSubmitActionLabel('Setup Training Place')
                         ->modalCancelActionLabel('Cancel'),
                 ]),
@@ -446,6 +434,75 @@ class AccountsRelationManager extends RelationManager
     public static function removalReasonOptions(): array
     {
         return RemovalReason::formOptions();
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function trainableOptions(): array
+    {
+        return $this->ownerRecord->trainables
+            ->mapWithKeys(function (Model $trainable): array {
+                $key = $trainable->getMorphClass().'|'.$trainable->getKey();
+
+                $label = match (true) {
+                    $trainable instanceof Qualification => "{$trainable->name_long} ({$trainable->code})",
+                    $trainable instanceof TrainingPosition => $trainable->position?->callsign ?? "Position #{$trainable->id}",
+                    default => (string) $trainable->getKey(),
+                };
+
+                return [$key => $label];
+            })
+            ->all();
+    }
+
+    protected function trainableNoun(): string
+    {
+        return $this->ownerRecord->isPilotList() ? 'pilot qualification' : 'training position';
+    }
+
+    protected function trainableSelect(string $purpose): Select
+    {
+        $noun = $this->trainableNoun();
+
+        return Select::make('trainable')
+            ->label(ucwords($noun))
+            ->options(fn (): array => $this->trainableOptions())
+            ->required()
+            ->helperText("Select the {$noun} to {$purpose}.");
+    }
+
+    protected function selectTrainableDescription(string $purpose): string
+    {
+        return "Select a {$this->trainableNoun()} to {$purpose}.";
+    }
+
+    /**
+     * Resolve a composite "{morphClass}|{id}" key to a trainable still attached to this waiting list.
+     *
+     * @return TrainingPosition|Qualification
+     */
+    protected function resolveAttachedTrainable(string $compositeKey): Model
+    {
+        [$type, $id] = array_pad(explode('|', $compositeKey, 2), 2, null);
+
+        if (! filled($type) || ! filled($id)) {
+            throw ValidationException::withMessages([
+                'trainable' => 'Invalid training selection.',
+            ]);
+        }
+
+        $trainable = $this->ownerRecord->trainables->first(
+            fn (Model $model): bool => $model->getMorphClass() === $type && (string) $model->getKey() === (string) $id
+        );
+
+        if (! $trainable) {
+            throw ValidationException::withMessages([
+                'trainable' => 'The selected option is not linked to this waiting list.',
+            ]);
+        }
+
+        return $trainable;
     }
 
     // Display All Manual Flags where display option is enabled

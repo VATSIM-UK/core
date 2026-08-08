@@ -7,6 +7,7 @@ use App\Models\Cts\Session as CtsSession;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPosition\TrainingPosition;
+use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Observers\Training\TrainingPlaceObserver;
 use App\Services\Training\MentorPermissionService;
@@ -89,6 +90,15 @@ class TrainingPlace extends Model
 
             return 'Unknown';
         });
+    }
+
+    protected function department(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => $this->trainable instanceof Qualification
+                ? WaitingList::PILOT_DEPARTMENT
+                : WaitingList::ATC_DEPARTMENT
+        );
     }
 
     /**

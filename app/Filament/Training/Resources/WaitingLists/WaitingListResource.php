@@ -2,11 +2,13 @@
 
 namespace App\Filament\Training\Resources\WaitingLists;
 
+use App\Enums\QualificationTypeEnum;
 use App\Filament\Training\Resources\WaitingLists\Pages\CreateWaitingList;
 use App\Filament\Training\Resources\WaitingLists\Pages\EditWaitingList;
 use App\Filament\Training\Resources\WaitingLists\Pages\ListWaitingLists;
 use App\Filament\Training\Resources\WaitingLists\Pages\ViewWaitingList;
 use App\Filament\Training\Resources\WaitingLists\RelationManagers\AccountsRelationManager;
+use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use Filament\Actions\ViewAction;
@@ -19,6 +21,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 class WaitingListResource extends Resource
@@ -42,7 +45,7 @@ class WaitingListResource extends Resource
                 Select::make('department')->options([
                     'atc' => 'ATC Training',
                     'pilot' => 'Pilot Training',
-                ])->disabledOn('edit')->required(),
+                ])->disabledOn('edit')->required()->live(),
 
                 Section::make('Additional Settings')
                     ->columnSpanFull()
@@ -53,7 +56,22 @@ class WaitingListResource extends Resource
                             ->relationship('trainingPositions')
                             ->multiple()
                             ->preload()
-                            ->getOptionLabelFromRecordUsing(fn (TrainingPosition $record) => $record->position?->callsign ?? "Position #{$record->id}"),
+                            ->getOptionLabelFromRecordUsing(fn (TrainingPosition $record) => $record->position?->callsign ?? "Position #{$record->id}")
+                            ->visible(fn ($get) => $get('department') === WaitingList::ATC_DEPARTMENT),
+
+                        Select::make('qualifications')
+                            ->label('Pilot Qualifications')
+                            ->helperText('Link this waiting list to one or more pilot qualifications.')
+                            ->relationship(
+                                'qualifications',
+                                modifyQueryUsing: fn (Builder $query) => $query
+                                    ->ofType(QualificationTypeEnum::Pilot->value)
+                                    ->orderBy('vatsim'),
+                            )
+                            ->multiple()
+                            ->preload()
+                            ->getOptionLabelFromRecordUsing(fn (Qualification $record) => "{$record->name_long} ({$record->code})")
+                            ->visible(fn ($get) => $get('department') === WaitingList::PILOT_DEPARTMENT),
 
                         Toggle::make('feature_toggles.check_atc_hours')
                             ->label('Check ATC Hours')
