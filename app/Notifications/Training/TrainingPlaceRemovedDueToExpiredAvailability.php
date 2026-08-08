@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Notifications\Training;
 
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
+use App\Models\Training\WaitingList;
 use App\Notifications\DiscordNotification;
 use App\Notifications\DiscordNotificationChannel;
 use App\Notifications\Notification;
@@ -45,21 +46,27 @@ class TrainingPlaceRemovedDueToExpiredAvailability extends Notification implemen
     {
         $trainingPlace = $this->availabilityWarning->trainingPlace;
         $removalDate = now()->format('d M Y');
+        $isPilot = $trainingPlace->department === WaitingList::PILOT_DEPARTMENT;
 
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
             ->subject('Attention: Your Training Place Has Been Removed - Availability Check Expired')
-            ->view('emails.training.training_place_removed_expired_availability', [
-                'recipient' => $notifiable,
-                'training_place_position_name' => $trainingPlace->trainingPosition?->position?->name ?? $trainingPlace->display_name,
-                'removal_date' => $removalDate,
-            ]);
+            ->view(
+                $isPilot
+                    ? 'emails.training.training_place_removed_expired_availability_pilot'
+                    : 'emails.training.training_place_removed_expired_availability',
+                [
+                    'recipient' => $notifiable,
+                    'training_place_position_name' => $trainingPlace->trainingPosition?->position?->name ?? $trainingPlace->display_name,
+                    'removal_date' => $removalDate,
+                ]
+            );
     }
 
     public function toDiscord($notifiable)
     {
         $trainingPlace = $this->availabilityWarning->trainingPlace;
-        $positionLabel = $this->positionLabel($trainingPlace);
+        $positionLabel = $this->placeLabel($trainingPlace);
 
         return [
             'content' => null,
@@ -83,10 +90,10 @@ class TrainingPlaceRemovedDueToExpiredAvailability extends Notification implemen
 
     public function getChannel(): string
     {
-        return $this->availabilityWarning->trainingPlace->trainingPosition?->training_team_discord_channel_id ?? '';
+        return $this->availabilityWarning->trainingPlace->trainingTeamDiscordChannelId();
     }
 
-    private function positionLabel($trainingPlace): string
+    private function placeLabel($trainingPlace): string
     {
         $position = $trainingPlace->trainingPosition?->position;
 

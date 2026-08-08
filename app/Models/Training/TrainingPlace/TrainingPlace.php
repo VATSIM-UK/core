@@ -101,6 +101,23 @@ class TrainingPlace extends Model
         );
     }
 
+    public function availabilityWarningDays(): int
+    {
+        return (int) config(
+            'training.availability_warning_days.'.$this->department,
+            config('training.availability_warning_days.atc', 5)
+        );
+    }
+
+    public function trainingTeamDiscordChannelId(): string
+    {
+        if ($this->department === WaitingList::PILOT_DEPARTMENT) {
+            return (string) config('training.discord.pilot_training_team_channel_id', '');
+        }
+
+        return (string) ($this->trainingPosition?->training_team_discord_channel_id ?? '');
+    }
+
     protected function category(): Attribute
     {
         return Attribute::make(get: function (): ?string {
