@@ -34,8 +34,8 @@
 						title="Previous day" wire:navigate>
 						<i class="fa fa-chevron-left text-[10px]" aria-hidden="true"></i>
 					</a>
-					<span class="text-sm font-medium text-white/90 min-w-[140px] text-center tabular-nums">
-						{{ $selectedDate->format('d. m. Y') }}
+					<span class="text-sm font-medium text-white/90 min-w-[200px] text-center whitespace-nowrap">
+						{{ $selectedDate->format('l, d. m. Y') }}
 						@if ($selectedDate->isToday())
 							<span class="text-brand/90 text-xs font-normal">· today</span>
 						@endif
