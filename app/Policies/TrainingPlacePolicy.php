@@ -55,9 +55,20 @@ class TrainingPlacePolicy
         return $account->hasPermissionTo('training-places.restore.*');
     }
 
-    public function createAdhoc(Account $account): bool
+    public function createAdhoc(Account $account, ?string $department = null): bool
     {
-        return $account->hasPermissionTo('training-places.create-adhoc');
+        if ($department !== null) {
+            return $account->hasAnyPermission([
+                'training-places.create-adhoc',
+                sprintf('training-places.create-adhoc.%s', $department),
+            ]);
+        }
+
+        return $account->hasAnyPermission([
+            'training-places.create-adhoc',
+            'training-places.create-adhoc.atc',
+            'training-places.create-adhoc.pilot',
+        ]);
     }
 
     /**

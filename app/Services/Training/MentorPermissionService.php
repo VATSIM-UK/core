@@ -90,6 +90,11 @@ class MentorPermissionService
         return array_keys(self::PILOT_CATEGORY_ROLE_MAP);
     }
 
+    public static function categoryForQualificationCode(string $code): ?string
+    {
+        return array_flip(self::PILOT_CATEGORY_QUALIFICATION_MAP)[$code] ?? null;
+    }
+
     public static function categoryType(string $category): string
     {
         return in_array($category, self::atcCategories(), true) ? 'atc' : 'pilot';
