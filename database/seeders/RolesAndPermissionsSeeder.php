@@ -181,7 +181,11 @@ class RolesAndPermissionsSeeder extends Seeder
             // Training Places Permissions
             'training-places.view.*',
             'training-places.manual-setup',
+            'training-places.manual-setup.atc',
+            'training-places.manual-setup.pilot',
             'training-places.create-adhoc',
+            'training-places.create-adhoc.atc',
+            'training-places.create-adhoc.pilot',
             'training-places.revoke.*',
             'training-places.restore.*',
             'training-places.loas.create.*',

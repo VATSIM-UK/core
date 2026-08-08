@@ -45,8 +45,8 @@ class TrainingPlaceCategoryChart extends ChartWidget
     {
         $counts = TrainingPlace::with('trainable')
             ->get()
-            ->groupBy(fn (TrainingPlace $place): string => filled($place->trainingPosition?->category)
-                ? $place->trainingPosition->category
+            ->groupBy(fn (TrainingPlace $place): string => filled($place->category)
+                ? $place->category
                 : 'Uncategorised')
             ->map->count()
             ->sortDesc();

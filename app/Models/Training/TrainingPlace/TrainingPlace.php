@@ -101,6 +101,21 @@ class TrainingPlace extends Model
         );
     }
 
+    protected function category(): Attribute
+    {
+        return Attribute::make(get: function (): ?string {
+            if (filled($this->trainingPosition?->category)) {
+                return $this->trainingPosition->category;
+            }
+
+            $code = $this->qualification?->code;
+
+            return $code
+                ? MentorPermissionService::categoryForQualificationCode($code)
+                : null;
+        });
+    }
+
     /**
      * The CTS position callsigns associated with this training place's trainable.
      *
