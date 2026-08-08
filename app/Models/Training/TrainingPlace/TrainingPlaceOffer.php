@@ -5,6 +5,7 @@ namespace App\Models\Training\TrainingPlace;
 use App\Enums\TrainingPlaceOfferStatus;
 use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPosition\TrainingPosition;
+use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -77,6 +78,15 @@ class TrainingPlaceOffer extends Model
 
             return 'Unknown';
         });
+    }
+
+    protected function department(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => $this->trainable instanceof Qualification
+                ? WaitingList::PILOT_DEPARTMENT
+                : WaitingList::ATC_DEPARTMENT
+        );
     }
 
     protected function statusLabel(): Attribute
