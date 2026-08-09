@@ -12,7 +12,19 @@
 				@foreach ($students as $student)
 					<div class="flex-1 min-w-[140px] px-3 py-2 flex flex-col justify-center text-center bg-inherit">
 						<div class="font-semibold text-xs text-gray-950 dark:text-white truncate">
-							{{ $student->name }}
+							<a
+									href="{{ \App\Filament\Training\Pages\Mentor\MentoringHistory::getUrl(
+									    parameters: [
+									        'tableFilters' => [
+									            'student' => ['value' => $student->cid],
+									        ],
+									        'category' => \App\Services\Training\MentorPermissionService::ALL_CATEGORIES,
+									    ],
+									    panel: 'training',
+									) }}"
+									target="_blank" rel="noopener noreferrer" class="truncate">
+									{{ $student->name }}
+								</a>
 						</div>
 						<div class="text-[10px] text-gray-500 dark:text-gray-400">
 							{{ $student->cid }}
