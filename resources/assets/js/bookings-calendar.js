@@ -41,11 +41,43 @@ document.addEventListener('alpine:init', () => {
                 this.scrolledBy = this.$el.scrollLeft;
             };
             this.$el.addEventListener('scroll', this._boundScroll, { passive: true });
+            // Wait for Alpine to drop x-cloak (display:none → 0-width track) before
+            // measuring. Narrow viewports otherwise stay pinned at midnight.
+            this.$nextTick(() => this.scrollToNow());
         },
 
         destroy() {
             clearInterval(this._nowTimer);
             this.$el.removeEventListener('scroll', this._boundScroll);
+        },
+
+        // Centre today's "now" marker in the horizontal viewport. Desktop often
+        // shows it already; mobile's ~375px window only covers the early hours
+        // from scrollLeft 0, so without this the red line is off-screen.
+        scrollToNow(attempt = 0) {
+            if (!this.isToday || attempt > 10) return;
+
+            const track = this.$refs.headerTrack;
+            const scrollEl = this.$el;
+            if (!track || !track.offsetWidth || !scrollEl.clientWidth) {
+                requestAnimationFrame(() => this.scrollToNow(attempt + 1));
+                return;
+            }
+
+            const nowInTrack = (this.nowPct / 100) * track.offsetWidth;
+            const nowInContent =
+                track.getBoundingClientRect().left -
+                scrollEl.getBoundingClientRect().left +
+                scrollEl.scrollLeft +
+                nowInTrack;
+            const maxScroll = Math.max(0, scrollEl.scrollWidth - scrollEl.clientWidth);
+            const target = Math.max(
+                0,
+                Math.min(maxScroll, Math.round(nowInContent - scrollEl.clientWidth / 2)),
+            );
+
+            scrollEl.scrollLeft = target;
+            this.scrolledBy = target;
         },
 
         // The current time ball is drawn in the hour header so the header cannot
