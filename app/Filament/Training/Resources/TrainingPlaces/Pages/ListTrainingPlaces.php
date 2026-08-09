@@ -2,7 +2,6 @@
 
 namespace App\Filament\Training\Resources\TrainingPlaces\Pages;
 
-use App\Enums\QualificationTypeEnum;
 use App\Filament\Admin\Forms\Components\AccountSelect;
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Filament\Training\Resources\TrainingPlaces\TrainingPlaceResource;
@@ -139,8 +138,8 @@ class ListTrainingPlaces extends ListRecords
         }
 
         if ($user?->can('createAdhoc', [TrainingPlace::class, WaitingList::PILOT_DEPARTMENT])) {
-            $options['Pilot Qualifications'] = Qualification::ofType(QualificationTypeEnum::Pilot->value)
-                ->orderBy('vatsim')
+            $options['Pilot Qualifications'] = Qualification::pilotTrainable()
+                ->orderBy('code')
                 ->get()
                 ->mapWithKeys(fn (Qualification $qualification): array => [
                     Qualification::class.'|'.$qualification->id => "{$qualification->name_long} ({$qualification->code})",
@@ -176,7 +175,7 @@ class ListTrainingPlaces extends ListRecords
             ]);
         }
 
-        if ($trainable instanceof Qualification && $trainable->type !== QualificationTypeEnum::Pilot->value) {
+        if ($trainable instanceof Qualification && ! $trainable->isPilotTrainable()) {
             throw ValidationException::withMessages([
                 'trainable' => 'The selected qualification is not a pilot qualification.',
             ]);

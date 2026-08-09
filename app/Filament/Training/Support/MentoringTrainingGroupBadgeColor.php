@@ -25,6 +25,7 @@ final class MentoringTrainingGroupBadgeColor
         'P1 Training' => Color::Cyan,
         'P2 Training' => Color::Teal,
         'P3 Training' => Color::Indigo,
+        'TFP Training' => Color::Lime,
     ];
 
     public static function forCategory(?string $category): string|array
