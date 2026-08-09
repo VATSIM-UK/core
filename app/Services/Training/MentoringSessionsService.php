@@ -9,8 +9,10 @@ use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\CancelReason;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
+use App\Models\Cts\Position as CtsPosition;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledByStudentNotification;
@@ -31,7 +33,83 @@ use InvalidArgumentException;
 class MentoringSessionsService
 {
     /**
+     * Creates a mentoring session for a training-place student from an availability slot.
+     *
+     * Transaction note: `DB::transaction()` only wraps the default (Core) connection.
+     * CTS writes (`Session`, CTS bookings) use the `cts` connection and are not rolled
+     * back if a later Core write fails. Notifications are deferred with `DB::afterCommit()`
+     * so they only run after the Core transaction commits.
+     */
+    public function createSession(
+        TrainingPlace $trainingPlace,
+        Availability $availability,
+        Account $mentorAccount,
+        string $position,
+        string $takenFrom,
+        string $takenTo,
+    ): bool {
+        return DB::transaction(function () use ($trainingPlace, $availability, $mentorAccount, $position, $takenFrom, $takenTo) {
+            $trainingPlace->loadMissing(['trainable', 'account']);
+
+            $mentorMember = Member::where('cid', $mentorAccount->id)->firstOrFail();
+            $studentMember = Member::where('cid', $trainingPlace->account_id)->first();
+
+            if (! $studentMember || $studentMember->id !== $availability->student_id) {
+                throw new InvalidArgumentException('The selected availability does not belong to this training place student.');
+            }
+
+            $placeCallsigns = $trainingPlace->trainableCtsPositions();
+
+            if (! in_array($position, $placeCallsigns, true)) {
+                throw new InvalidArgumentException('The selected position is not valid for this training place.');
+            }
+
+            if ($mentorAccount->cannot('create', [Session::class, $position])) {
+                throw new AuthorizationException('You are not authorized to create mentoring sessions for this position.');
+            }
+
+            if ($trainingPlace->isOnLeaveOfAbsence()) {
+                throw new InvalidArgumentException('Cannot create a mentoring session while the student is on leave of absence.');
+            }
+
+            $this->validateSessionTimes($availability, $takenFrom, $takenTo);
+
+            $ctsPosition = CtsPosition::query()->where('callsign', $position)->first();
+
+            if (! $ctsPosition) {
+                throw new InvalidArgumentException("CTS position not found for callsign [{$position}].");
+            }
+
+            $session = Session::query()->create([
+                'rts_id' => $ctsPosition->rts_id ?? 0,
+                'position' => $ctsPosition->callsign,
+                'progress_sheet_id' => $ctsPosition->prog_sheet_id ?? 0,
+                'student_id' => $studentMember->id,
+                'student_rating' => $studentMember->rating ?? 0,
+                'request_time' => now(),
+                'mentor_id' => $mentorMember->id,
+                'mentor_rating' => $mentorAccount->qualification_atc?->vatsim,
+                'taken' => 1,
+                'taken_date' => $availability->date,
+                'taken_from' => $takenFrom,
+                'taken_to' => $takenTo,
+                'taken_time' => now(),
+            ]);
+
+            DB::afterCommit(function () use ($session) {
+                $this->notifyParticipants($session, 'accepted');
+            });
+
+            $this->createCoreBooking($session);
+
+            return true;
+        });
+    }
+
+    /**
      * Accepts a pending session by claiming a student's availability slot.
+     *
+     * @deprecated Prefer createSession() for Training Panel mentoring.
      */
     public function acceptSession(int $sessionId, int $availabilityId, Account $mentorAccount, string $takenFrom, string $takenTo): bool
     {
@@ -141,15 +219,6 @@ class MentoringSessionsService
                 'sesh_type' => 'ME',
                 'reason' => $reason,
                 'reason_by' => $cancellerMember->id,
-            ]);
-
-            Session::create([
-                'rts_id' => $session->rts_id,
-                'position' => $session->position,
-                'progress_sheet_id' => $session->progress_sheet_id,
-                'student_id' => $session->student_id,
-                'student_rating' => $session->student_rating,
-                'request_time' => Carbon::now(),
             ]);
 
             DB::afterCommit(function () use ($session, $reason, $cancellerAccount) {

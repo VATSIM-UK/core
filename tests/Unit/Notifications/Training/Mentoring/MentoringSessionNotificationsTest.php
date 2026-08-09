@@ -89,7 +89,7 @@ class MentoringSessionNotificationsTest extends TestCase
         $html = View::make($mail->view, $mail->data())->render();
 
         $this->assertStringContainsString('Dear Alex Student', $html);
-        $this->assertStringContainsString('has accepted your mentoring session request', $html);
+        $this->assertStringContainsString('has booked a mentoring session with you', $html);
         $this->assertStringContainsString('EGLL_APP', $html);
         $this->assertStringContainsString('Jamie Mentor', $html);
         $this->assertStringContainsString($this->session->formattedSessionDateTime(), $html);
