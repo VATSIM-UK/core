@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "544e4b6892ba52fb7c0b30e4377ec545",
+    "content-hash": "1328cf4f9cb04952f0c3c0ab8d27b823",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -15568,6 +15568,60 @@
             "time": "2026-05-31T15:00:08+00:00"
         },
         {
+            "name": "webbingbrasil/filament-copyactions",
+            "version": "4.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webbingbrasil/filament-copyactions.git",
+                "reference": "40575d597780d17e2c8384820e7c7e2e45a28330"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webbingbrasil/filament-copyactions/zipball/40575d597780d17e2c8384820e7c7e2e45a28330",
+                "reference": "40575d597780d17e2c8384820e7c7e2e45a28330",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^4.0|^5.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Webbingbrasil\\FilamentCopyActions\\FilamentCopyActionsProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Webbingbrasil\\FilamentCopyActions\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Danilo Andrade",
+                    "email": "danilo@webbingbrasil.com.br",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A easy-to-use copy actions for Filament Admin.",
+            "homepage": "https://github.com/webbingbrasil/filament-copyactions",
+            "keywords": [
+                "filament",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/webbingbrasil/filament-copyactions/issues",
+                "source": "https://github.com/webbingbrasil/filament-copyactions/tree/4.0.3"
+            },
+            "time": "2026-03-31T15:23:38+00:00"
+        },
+        {
             "name": "webmozart/assert",
             "version": "2.4.1",
             "source": {
@@ -19691,5 +19745,5 @@
     "platform-dev": {
         "ext-json": "*"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }

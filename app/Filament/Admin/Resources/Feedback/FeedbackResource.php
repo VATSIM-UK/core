@@ -28,6 +28,7 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Webbingbrasil\FilamentCopyActions\Actions\CopyAction;
 
 class FeedbackResource extends Resource
 {
@@ -128,7 +129,9 @@ class FeedbackResource extends Resource
 
                                 TextEntry::make('response')
                                     ->label('Answer')
-                                    ->extraAttributes(['style' => 'white-space: pre-line;'])
+                                    ->suffixAction(CopyAction::make()
+                                        ->copyable(fn ($record) => $record->response)
+                                        ->successNotificationMessage('Copied!'))
                                     ->state(fn ($record) => $record->response),
                             ]),
                     ]),
