@@ -44,6 +44,13 @@ class CalendarTest extends TestCase
     }
 
     #[Test]
+    public function it_shows_the_weekday_before_the_selected_date(): void
+    {
+        Livewire::test(Calendar::class, ['year' => 2026, 'month' => 7])
+            ->assertSee('Wednesday, 01. 07. 2026', false);
+    }
+
+    #[Test]
     public function it_shows_error_when_not_authenticated(): void
     {
         Livewire::test(Calendar::class)

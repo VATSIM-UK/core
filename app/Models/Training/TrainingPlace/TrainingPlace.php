@@ -7,6 +7,7 @@ use App\Models\Cts\Session as CtsSession;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPosition\TrainingPosition;
+use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Observers\Training\TrainingPlaceObserver;
 use App\Services\Training\MentorPermissionService;
@@ -88,6 +89,54 @@ class TrainingPlace extends Model
             }
 
             return 'Unknown';
+        });
+    }
+
+    protected function department(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => $this->trainable instanceof Qualification
+                ? WaitingList::PILOT_DEPARTMENT
+                : WaitingList::ATC_DEPARTMENT
+        );
+    }
+
+    protected function trainableTypeLabel(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => $this->trainable instanceof Qualification ? 'Qualification' : 'Position',
+        );
+    }
+
+    public function availabilityWarningDays(): int
+    {
+        return (int) config(
+            'training.availability_warning_days.'.$this->department,
+            config('training.availability_warning_days.atc', 5)
+        );
+    }
+
+    public function trainingTeamDiscordChannelId(): string
+    {
+        if ($this->department === WaitingList::PILOT_DEPARTMENT) {
+            return (string) config('training.discord.pilot_training_team_channel_id', '');
+        }
+
+        return (string) ($this->trainingPosition?->training_team_discord_channel_id ?? '');
+    }
+
+    protected function category(): Attribute
+    {
+        return Attribute::make(get: function (): ?string {
+            if (filled($this->trainingPosition?->category)) {
+                return $this->trainingPosition->category;
+            }
+
+            $code = $this->qualification?->code;
+
+            return $code
+                ? MentorPermissionService::categoryForQualificationCode($code)
+                : null;
         });
     }
 

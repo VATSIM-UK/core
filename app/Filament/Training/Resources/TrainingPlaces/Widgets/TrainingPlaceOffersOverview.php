@@ -4,9 +4,11 @@ namespace App\Filament\Training\Resources\TrainingPlaces\Widgets;
 
 use App\Enums\TrainingPlaceOfferStatus;
 use App\Filament\Support\NameColumn;
+use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
+use App\Policies\TrainingPlacePolicy;
 use App\Services\Training\TrainingPlaceOfferService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
@@ -55,7 +57,7 @@ class TrainingPlaceOffersOverview extends BaseWidget
                     ->searchable(),
 
                 TextColumn::make('display_name')
-                    ->label('Position')
+                    ->label(fn (): string => $this->trainableColumnLabel(auth()->user()))
                     ->state(fn (TrainingPlaceOffer $record): string => $record->display_name),
 
                 TextColumn::make('status')
@@ -187,5 +189,22 @@ class TrainingPlaceOffersOverview extends BaseWidget
             ->defaultPaginationPageOption(10)
             ->emptyStateHeading('No training place offers')
             ->emptyStateDescription('No offers match the current filter.');
+    }
+
+    private function trainableColumnLabel(?Account $user): string
+    {
+        if (! $user) {
+            return 'Position';
+        }
+
+        $policy = app(TrainingPlacePolicy::class);
+        $canViewAtc = $policy->canViewDepartment($user, WaitingList::ATC_DEPARTMENT);
+        $canViewPilot = $policy->canViewDepartment($user, WaitingList::PILOT_DEPARTMENT);
+
+        return match (true) {
+            $canViewAtc && $canViewPilot => 'Position / Qualification',
+            $canViewPilot => 'Qualification',
+            default => 'Position',
+        };
     }
 }

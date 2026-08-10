@@ -85,7 +85,8 @@ class WaitingListPolicy
 
     public function trainingPlacesManualSetup(Account $account, WaitingList $waitingList)
     {
-        return $account->hasAnyPermission('training-places.manual-setup');
+        return $this->checkHasPermissionForList($account, $waitingList, 'training-places.manual-setup.%s')
+            || $account->hasPermissionTo('training-places.manual-setup');
     }
 
     /**
