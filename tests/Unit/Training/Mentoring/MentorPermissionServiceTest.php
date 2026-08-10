@@ -87,6 +87,43 @@ class MentorPermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function it_assigns_tfp_mentor_permissions_using_the_mentor_cts_callsign(): void
+    {
+        $actor = Account::factory()->create();
+        $mentor = $this->createAccountWithMember();
+        $category = 'TFP Training';
+
+        CtsPosition::firstOrCreate(['callsign' => 'TFP']);
+        CtsPosition::firstOrCreate(['callsign' => 'TFP_FLIGHT']);
+        $qualification = $this->getOrCreateQualification('TFP');
+
+        $this->service->assignToMentorable($mentor, $qualification, $actor, $category);
+
+        $this->assertDatabaseHas('mentor_training_positions', [
+            'account_id' => $mentor->id,
+            'mentorable_type' => Qualification::class,
+            'mentorable_id' => $qualification->id,
+            'created_by' => $actor->id,
+        ]);
+
+        $this->assertDatabaseHas('position_validations', [
+            'member_id' => $mentor->member->id,
+            'position_id' => CtsPosition::where('callsign', 'TFP')->firstOrFail()->id,
+            'status' => PositionValidationStatusEnum::Mentor->value,
+        ], 'cts');
+
+        $this->assertDatabaseMissing('position_validations', [
+            'member_id' => $mentor->member->id,
+            'position_id' => CtsPosition::where('callsign', 'TFP_FLIGHT')->firstOrFail()->id,
+            'status' => PositionValidationStatusEnum::Mentor->value,
+        ], 'cts');
+
+        $this->assertSame(['TFP_FLIGHT'], $this->service->getCtsCallsignsForMentorable($qualification));
+        $this->assertSame(['TFP'], $this->service->getCtsMentorCallsignsForMentorable($qualification));
+        $this->assertTrue($mentor->fresh()->hasRole('Pilot Mentor'));
+    }
+
+    #[Test]
     public function it_does_not_create_duplicate_permissions_or_cts_validations(): void
     {
         $actor = Account::factory()->create();
@@ -362,7 +399,11 @@ class MentorPermissionServiceTest extends TestCase
 
     private function getOrCreateQualification(string $code): Qualification
     {
-        return Qualification::firstWhere('code', $code) ?? Qualification::factory()->create(['code' => $code, 'type' => 'pilot']);
+        return Qualification::firstWhere('code', $code) ?? Qualification::factory()->create([
+            'code' => $code,
+            'type' => $code === 'TFP' ? 'pilot_virtual' : 'pilot',
+            'vatsim' => 0,
+        ]);
     }
 
     public static function atcCategoryRoleProvider(): array
@@ -378,7 +419,8 @@ class MentorPermissionServiceTest extends TestCase
         return collect(MentorPermissionService::PILOT_CATEGORY_ROLE_MAP)
             ->map(function (string $role, string $category) {
                 $code = MentorPermissionService::PILOT_CATEGORY_QUALIFICATION_MAP[$category];
-                $ctsCallsign = MentorPermissionService::QUALIFICATION_CTS_POSITION_MAP[$code];
+                $ctsCallsign = MentorPermissionService::QUALIFICATION_CTS_MENTOR_POSITION_MAP[$code]
+                    ?? MentorPermissionService::QUALIFICATION_CTS_POSITION_MAP[$code];
 
                 return [$category, $role, $code, $ctsCallsign];
             })

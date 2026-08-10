@@ -119,6 +119,38 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function it_can_create_an_adhoc_tfp_virtual_qualification_training_place()
+    {
+        $this->panelUser->givePermissionTo('training-places.view.*');
+        $this->panelUser->givePermissionTo('training-places.create-adhoc.pilot');
+
+        $qualification = Qualification::firstWhere('code', 'TFP')
+            ?? Qualification::factory()->pilotVirtual()->create(['code' => 'TFP']);
+
+        $student = Account::factory()->create();
+        Member::factory()->create([
+            'cid' => $student->id,
+            'name' => 'TFP Student',
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ListTrainingPlaces::class)
+            ->callAction('createAdhocTrainingPlace', data: [
+                'account_id' => $student->id,
+                'trainable' => Qualification::class.'|'.$qualification->id,
+                'reason' => 'This is a valid reason for creating an ad-hoc TFP training place.',
+            ])
+            ->assertNotified();
+
+        $this->assertDatabaseHas('training_places', [
+            'account_id' => $student->id,
+            'trainable_type' => Qualification::class,
+            'trainable_id' => $qualification->id,
+            'waiting_list_account_id' => null,
+        ]);
+    }
+
+    #[Test]
     public function it_rejects_adhoc_qualification_creation_with_only_atc_permission()
     {
         $this->panelUser->givePermissionTo('training-places.view.*');
