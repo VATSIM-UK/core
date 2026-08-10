@@ -72,10 +72,12 @@ class TheoryExamQuestionsTest extends BaseTrainingPanelTestCase
             ->test(TheoryExamQuestions::class)
             ->assertSuccessful();
 
-        $component->assertSee('S1');
-        $component->assertDontSee('S2');
-        $component->assertDontSee('S3');
-        $component->assertSee('C1');
+        $allowedLevels = $component->get('allowedLevels');
+
+        $this->assertContains('S1', $allowedLevels);
+        $this->assertContains('C1', $allowedLevels);
+        $this->assertNotContains('S2', $allowedLevels);
+        $this->assertNotContains('S3', $allowedLevels);
     }
 
     #[Test]
