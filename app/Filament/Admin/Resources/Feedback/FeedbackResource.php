@@ -15,6 +15,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -23,6 +24,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -142,7 +144,10 @@ class FeedbackResource extends Resource
                 TextColumn::make('form.name')->label('Feedback Type')
                     ->sortable(),
                 NameColumn::make('account.name')->label('Subject'),
-                TextColumn::make('submitter.name')->label('Submitted By')->visible(self::canSeeSubmitter()),
+                TextColumn::make('submitter.name')
+                    ->label('Submitted By')
+                    ->visible(self::canSeeSubmitter())
+                    ->searchable(self::canSeeSubmitter() ? ['name_first', 'name_last'] : false),
                 TextColumn::make('created_at')
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
@@ -182,6 +187,21 @@ class FeedbackResource extends Resource
                     ->options(
                         Qualification::whereType('atc')->get()->mapWithKeys(fn ($qualification) => [$qualification->id => $qualification->name])
                     ),
+
+                Filter::make('position')
+                    ->label('Controller Position')
+                    ->schema([
+                        TextInput::make('position')
+                            ->label('Position')
+                            ->placeholder('Starts with, e.g. EGKK'),
+                    ])
+                    ->query(fn (Builder $query, array $data): Builder => $query->when(
+                        filled($data['position'] ?? null),
+                        fn (Builder $query) => $query->wherePositionLike(strtoupper((string) $data['position']))
+                    ))
+                    ->indicateUsing(fn (array $state): array => filled($state['position'] ?? null)
+                        ? ['Position: '.strtoupper((string) $state['position'])]
+                        : []),
             ])
             ->recordActions([
                 ViewAction::make(),
