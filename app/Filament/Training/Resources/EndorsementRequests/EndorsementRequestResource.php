@@ -127,6 +127,7 @@ class EndorsementRequestResource extends Resource
                     ->icon('heroicon-m-document-text')
                     ->label('Notes')
                     ->modalHeading('Request Notes')
+                    ->modalFooterActions([])
                     ->form([
                         Textarea::make('notes')
                             ->hiddenLabel()
