@@ -107,6 +107,19 @@ class ViewVisitTransferApplication extends ViewRecord
                         ->required(),
                 ])->authorize(fn ($record) => auth()->user()->can('reject', $record)),
 
+            Action::make('reopen_for_review')
+                ->label('Reopen for Manual Review')
+                ->color('warning')
+                ->modalHeading('Reopen Application')
+                ->modalDescription('This will return this rejected application to Under Review.')
+                ->requiresConfirmation()
+                ->action(fn ($record, array $data) => $record->reopenForReview(auth()->user(), $data['staff_note']))
+                ->schema([
+                    Textarea::make('staff_note')
+                        ->label('Staff Note')
+                        ->required(),
+                ])->authorize(fn ($record) => auth()->user()->can('reopenForReview', $record)),
+
             Action::make('complete')
                 ->label('Complete')
                 ->color('primary')
