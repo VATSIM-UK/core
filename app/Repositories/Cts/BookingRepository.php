@@ -97,7 +97,7 @@ class BookingRepository
 
         $core = Booking::where('member_id', $account->getKey())
             ->where('starts_at', '>=', $today)
-            ->notEvent()
+            ->where('type', Booking::TYPE_STANDARD)
             ->with('member', 'position', 'ctsBooking', 'bookable')
             ->orderBy('starts_at')
             ->get();
@@ -113,7 +113,7 @@ class BookingRepository
         $cts = CtsBooking::query()
             ->where('member_id', $ctsMember->getKey())
             ->whereDate('date', '>=', $today->toDateString())
-            ->whereIn('type', ['BK', 'EX', 'ME'])
+            ->where('type', 'BK')
             ->when(! empty($importedIds), fn ($q) => $q->whereNotIn('id', $importedIds))
             ->orderBy('date')
             ->orderBy('from')

@@ -104,6 +104,84 @@ class MyBookingsTest extends TestCase
     }
 
     #[Test]
+    public function it_excludes_exam_bookings(): void
+    {
+        $member = Account::factory()->create();
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
+
+        Booking::create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_EXAM,
+            'starts_at' => Carbon::tomorrow()->setHour(10),
+            'ends_at' => Carbon::tomorrow()->setHour(12),
+        ]);
+
+        $bookings = app(BookingRepository::class)->getMemberUpcomingBookings($member);
+
+        $this->assertTrue($bookings->isEmpty());
+    }
+
+    #[Test]
+    public function it_excludes_mentoring_bookings(): void
+    {
+        $member = Account::factory()->create();
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
+
+        Booking::create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_MENTORING,
+            'starts_at' => Carbon::tomorrow()->setHour(10),
+            'ends_at' => Carbon::tomorrow()->setHour(12),
+        ]);
+
+        $bookings = app(BookingRepository::class)->getMemberUpcomingBookings($member);
+
+        $this->assertTrue($bookings->isEmpty());
+    }
+
+    #[Test]
+    public function it_excludes_cts_exam_bookings(): void
+    {
+        $member = Account::factory()->create();
+        $ctsMember = CtsMember::factory()->forAccount($member)->create();
+
+        CtsBooking::factory()->create([
+            'position' => 'EGXX_FSS',
+            'member_id' => $ctsMember->id,
+            'type' => 'EX',
+            'date' => Carbon::tomorrow()->toDateString(),
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        $bookings = app(BookingRepository::class)->getMemberUpcomingBookings($member);
+
+        $this->assertTrue($bookings->isEmpty());
+    }
+
+    #[Test]
+    public function it_excludes_cts_mentoring_bookings(): void
+    {
+        $member = Account::factory()->create();
+        $ctsMember = CtsMember::factory()->forAccount($member)->create();
+
+        CtsBooking::factory()->create([
+            'position' => 'EGXX_FSS',
+            'member_id' => $ctsMember->id,
+            'type' => 'ME',
+            'date' => Carbon::tomorrow()->toDateString(),
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        $bookings = app(BookingRepository::class)->getMemberUpcomingBookings($member);
+
+        $this->assertTrue($bookings->isEmpty());
+    }
+
+    #[Test]
     public function it_excludes_cts_event_bookings(): void
     {
         $member = Account::factory()->create();
