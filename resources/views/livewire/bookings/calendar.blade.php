@@ -28,37 +28,29 @@
 				</div>
 
 				<div class="flex items-center gap-2 ml-auto">
-					<a
-						href="{{ route('site.bookings.calendar', ['year' => $selectedDate->copy()->subDay()->year, 'month' => $selectedDate->copy()->subDay()->month]) }}?day={{ $selectedDate->copy()->subDay()->day }}"
+					<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->subDay()->toDateString() }}')"
 						class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
-						title="Previous day" wire:navigate>
+						title="Previous day">
 						<i class="fa fa-chevron-left text-[10px]" aria-hidden="true"></i>
-					</a>
+					</button>
 					<span class="text-sm font-medium text-white/90 min-w-[200px] text-center whitespace-nowrap">
 						{{ $selectedDate->format('l, d. m. Y') }}
 						@if ($selectedDate->isToday())
 							<span class="text-brand/90 text-xs font-normal">· today</span>
 						@endif
 					</span>
-					<a
-						href="{{ route('site.bookings.calendar', ['year' => $selectedDate->copy()->addDay()->year, 'month' => $selectedDate->copy()->addDay()->month]) }}?day={{ $selectedDate->copy()->addDay()->day }}"
+					<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->addDay()->toDateString() }}')"
 						class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
-						title="Next day" wire:navigate>
+						title="Next day">
 						<i class="fa fa-chevron-right text-[10px]" aria-hidden="true"></i>
-					</a>
-					<input type="date" value="{{ $selectedDate->format('Y-m-d') }}"
-						x-on:change="
-							const d = new Date($event.target.value + 'T00:00:00');
-							const y = d.getFullYear();
-							const m = d.getMonth() + 1;
-							const day = d.getDate();
-							window.Livewire.navigate('/atc/bookings/calendar/' + y + '/' + m + '?day=' + day);
-						"
+					</button>
+					<input type="date" value="{{ $selectedDate->format('Y-m-d') }}" wire:change="jumpToDate($event.target.value)"
 						class="ml-1 w-[130px] rounded-md border-0 bg-white/10 px-2 py-1 text-xs text-white ring-1 ring-inset ring-white/15 focus:ring-2 focus:ring-white/40 focus:outline-none [color-scheme:dark]"
 						title="Jump to date">
-					<a href="{{ route('site.bookings.calendar') }}"
-						class="px-2.5 py-1 rounded-md bg-white/15 hover:bg-white/25 transition-colors text-[11px] font-medium text-white"
-						wire:navigate>Today</a>
+					<button type="button" wire:click="jumpToDate('{{ \Carbon\Carbon::today()->toDateString() }}')"
+						class="px-2.5 py-1 rounded-md bg-white/15 hover:bg-white/25 transition-colors text-[11px] font-medium text-white">
+						Today
+					</button>
 				</div>
 			</div>
 
