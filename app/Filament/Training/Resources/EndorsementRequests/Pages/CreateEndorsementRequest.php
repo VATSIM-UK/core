@@ -5,6 +5,7 @@ namespace App\Filament\Training\Resources\EndorsementRequests\Pages;
 use App\Events\Training\EndorsementRequestApproved;
 use App\Filament\Training\Pages\Endorsements;
 use App\Filament\Training\Resources\EndorsementRequests\EndorsementRequestResource;
+use App\Models\Mship\Account\EndorsementRequest;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
@@ -29,6 +30,7 @@ class CreateEndorsementRequest extends CreateRecord
     {
         return Action::make('createAndApprove')
             ->label('Create and Approve')
+            ->visible(auth()->user()?->can('approveAny', EndorsementRequest::class))
             ->modalHeading('Approve')
             ->modalSubmitActionLabel('Approve')
             ->color('success')
