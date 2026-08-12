@@ -81,6 +81,8 @@ class Calendar extends Component
 
     private array $timelineScale = [];
 
+    private Collection $upcomingBookings;
+
     public function mount(?int $year = null, ?int $month = null): void
     {
         $this->selectedDate = Carbon::today();
@@ -109,6 +111,7 @@ class Calendar extends Component
             'timelineHours' => $this->getTimelineHours(),
             'selectedDate' => $this->selectedDate,
             'timelineScale' => array_values($this->timelineScale),
+            'upcomingBookings' => $this->upcomingBookings,
         ]);
     }
 
@@ -123,12 +126,30 @@ class Calendar extends Component
         $this->getBookingsForDate($this->selectedDate);
         $this->computeScale();
         $this->buildTimeline();
+
+        $this->upcomingBookings = auth()->check() && ! auth()->user()->is_banned
+            ? app(BookingRepository::class)->getMemberUpcomingBookings(auth()->user())
+            : collect();
     }
 
     public function updatedPositionFilter(): void
     {
         $this->filterVersion++;
         $this->loadData();
+    }
+
+    public function jumpToDate(string $date): void
+    {
+        $this->selectedDate = Carbon::parse($date);
+        $this->refreshData();
+
+        $this->js(sprintf(
+            "history.pushState({}, '', '%s')",
+            route('site.bookings.calendar', [
+                'year' => $this->selectedDate->year,
+                'month' => $this->selectedDate->month,
+            ]).'?day='.$this->selectedDate->day
+        ));
     }
 
     public function getBookingsForDate(Carbon $date): void

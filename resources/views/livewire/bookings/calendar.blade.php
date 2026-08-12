@@ -28,37 +28,29 @@
 				</div>
 
 				<div class="flex items-center gap-2 ml-auto">
-					<a
-						href="{{ route('site.bookings.calendar', ['year' => $selectedDate->copy()->subDay()->year, 'month' => $selectedDate->copy()->subDay()->month]) }}?day={{ $selectedDate->copy()->subDay()->day }}"
+					<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->subDay()->toDateString() }}')"
 						class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
-						title="Previous day" wire:navigate>
+						title="Previous day">
 						<i class="fa fa-chevron-left text-[10px]" aria-hidden="true"></i>
-					</a>
+					</button>
 					<span class="text-sm font-medium text-white/90 min-w-[200px] text-center whitespace-nowrap">
 						{{ $selectedDate->format('l, d. m. Y') }}
 						@if ($selectedDate->isToday())
 							<span class="text-brand/90 text-xs font-normal">· today</span>
 						@endif
 					</span>
-					<a
-						href="{{ route('site.bookings.calendar', ['year' => $selectedDate->copy()->addDay()->year, 'month' => $selectedDate->copy()->addDay()->month]) }}?day={{ $selectedDate->copy()->addDay()->day }}"
+					<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->addDay()->toDateString() }}')"
 						class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
-						title="Next day" wire:navigate>
+						title="Next day">
 						<i class="fa fa-chevron-right text-[10px]" aria-hidden="true"></i>
-					</a>
-					<input type="date" value="{{ $selectedDate->format('Y-m-d') }}"
-						x-on:change="
-							const d = new Date($event.target.value + 'T00:00:00');
-							const y = d.getFullYear();
-							const m = d.getMonth() + 1;
-							const day = d.getDate();
-							window.Livewire.navigate('/atc/bookings/calendar/' + y + '/' + m + '?day=' + day);
-						"
+					</button>
+					<input type="date" value="{{ $selectedDate->format('Y-m-d') }}" wire:change="jumpToDate($event.target.value)"
 						class="ml-1 w-[130px] rounded-md border-0 bg-white/10 px-2 py-1 text-xs text-white ring-1 ring-inset ring-white/15 focus:ring-2 focus:ring-white/40 focus:outline-none [color-scheme:dark]"
 						title="Jump to date">
-					<a href="{{ route('site.bookings.calendar') }}"
-						class="px-2.5 py-1 rounded-md bg-white/15 hover:bg-white/25 transition-colors text-[11px] font-medium text-white"
-						wire:navigate>Today</a>
+					<button type="button" wire:click="jumpToDate('{{ \Carbon\Carbon::today()->toDateString() }}')"
+						class="px-2.5 py-1 rounded-md bg-white/15 hover:bg-white/25 transition-colors text-[11px] font-medium text-white">
+						Today
+					</button>
 				</div>
 			</div>
 
@@ -266,6 +258,60 @@
 			</span>
 		</div>
 	</section>
+
+	@auth
+		<section class="max-w-2xl mx-auto bg-white rounded-xl shadow-sm ring-1 ring-gray-200/80 overflow-hidden">
+			<div class="bg-uknavy text-white">
+				<div class="px-3 sm:px-4 py-2.5 flex items-center gap-2">
+					<i class="fa fa-calendar-check shrink-0 text-xs sm:text-sm text-white" aria-hidden="true"></i>
+					<p class="text-sm sm:text-base font-semibold leading-snug text-white m-0">My future bookings</p>
+				</div>
+			</div>
+
+			@if ($upcomingBookings->isEmpty())
+				<div class="px-4 py-10 text-center text-gray-400">
+					<p class="text-sm">No upcoming bookings.</p>
+				</div>
+			@else
+				{{-- Column headers --}}
+				<div class="flex border-b border-gray-200 bg-gray-50/80">
+					<div
+						class="w-40 shrink-0 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">
+						Date
+					</div>
+					<div class="flex-1 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">Callsign</div>
+					<div class="w-32 shrink-0 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">Time</div>
+					<div class="w-24 shrink-0 px-3 py-2"></div>
+				</div>
+
+				@foreach ($upcomingBookings as $upcomingBooking)
+					<div class="flex border-b border-gray-100 hover:bg-blue-50/40 transition-colors">
+						<div class="w-40 shrink-0 px-3 py-2.5 border-r border-r-gray-200 bg-white flex items-center gap-2">
+							<span class="text-[13px] font-semibold text-gray-700 whitespace-nowrap">
+								{{ \Carbon\Carbon::parse($upcomingBooking->date)->format('D, d. m. Y') }}
+							</span>
+						</div>
+						<div class="flex-1 px-3 py-2.5 flex items-center">
+							<span class="text-[13px] font-semibold text-gray-700 font-mono">
+								{{ $upcomingBooking->position ?? 'Unknown' }}
+							</span>
+						</div>
+						<div class="w-32 shrink-0 px-3 py-2.5 flex items-center">
+							<span class="text-[13px] text-gray-600 font-mono tabular-nums whitespace-nowrap">
+								{{ sprintf('%s - %s', $upcomingBooking->from, $upcomingBooking->to) }}
+							</span>
+						</div>
+						<div class="w-24 shrink-0 px-3 py-2.5 flex items-center justify-end">
+							<button type="button" wire:click="jumpToDate('{{ $upcomingBooking->date }}')"
+								class="px-2.5 py-1 text-xs font-semibold text-brand border border-brand/60 rounded-md hover:bg-brand hover:text-white transition-colors">
+								<i class="fa fa-arrow-right mr-1 text-[9px]" aria-hidden="true"></i> Jump
+							</button>
+						</div>
+					</div>
+				@endforeach
+			@endif
+		</section>
+	@endauth
 
 	@include('livewire.bookings._create-modal')
 	@include('livewire.bookings._detail-modal')
