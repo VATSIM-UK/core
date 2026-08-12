@@ -173,14 +173,15 @@ class EndorsementRequestResource extends Resource
         ];
     }
 
-    public static function approvalSchema(EndorsementRequest $endorsementRequest): array
+    public static function approvalSchema(?EndorsementRequest $endorsementRequest = null): array
     {
         return [
             Textarea::make('request_notes')
                 ->label('Request Notes')
-                ->default($endorsementRequest->notes)
+                ->default($endorsementRequest?->notes)
                 ->disabled()
-                ->columnSpanFull(),
+                ->columnSpanFull()
+                ->visible(fn () => filled($endorsementRequest?->notes)),
 
             Select::make('type')
                 ->options([
