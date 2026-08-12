@@ -3,6 +3,7 @@
 namespace App\Console\Commands\VisitTransfer;
 
 use App\Console\Commands\Command;
+use App\Enums\VTCheckStatus;
 use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeExpiredException;
 use App\Models\VisitTransfer\Application;
 
@@ -65,7 +66,14 @@ class ApplicationsCleanup extends Command
                 $application->setCheckOutcome('90_day', $application->check90DayQualification());
                 $application->setCheckOutcome('50_hours', $application->check50Hours());
 
-                $application->markAsUnderReview('Automated checks have completed.');
+                if ($application->check_outcome_90_day === VTCheckStatus::Failed || $application->check_outcome_50_hours === VTCheckStatus::Failed) {
+                    $application->reject(
+                        'Your application has been automatically rejected as one or more of the automated checks failed. Please contact the Community team via the helpdesk if you believe this is in error.',
+                        'Application automatically rejected after failing an automated check. 90-day: '.$application->check_outcome_90_day->label().', 50-hours: '.$application->check_outcome_50_hours->label().'.'
+                    );
+                } else {
+                    $application->markAsUnderReview('Automated checks have completed.');
+                }
             } else {
                 $application->markAsUnderReview('Automated checks have been disabled for this facility - requires manual checking.');
             }
