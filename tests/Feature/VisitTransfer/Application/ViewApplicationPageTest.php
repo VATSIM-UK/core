@@ -349,64 +349,6 @@ class ViewApplicationPageTest extends BaseAdminTestCase
     }
 
     #[Test]
-    public function it_shows_reopen_for_review_action_if_user_can_reopen()
-    {
-        $this->adminUser->givePermissionTo('vt.application.accept.*');
-
-        $this->application->status = Application::STATUS_REJECTED;
-        $this->application->save();
-
-        $component = Livewire::actingAs($this->adminUser)
-            ->test(ViewVisitTransferApplication::class, ['record' => $this->application->id])
-            ->assertSuccessful()
-            ->assertActionVisible('reopen_for_review');
-    }
-
-    #[Test]
-    public function it_hides_reopen_for_review_action_without_permission()
-    {
-        $this->application->status = Application::STATUS_REJECTED;
-        $this->application->save();
-
-        $component = Livewire::actingAs($this->adminUser)
-            ->test(ViewVisitTransferApplication::class, ['record' => $this->application->id])
-            ->assertSuccessful()
-            ->assertActionHidden('reopen_for_review');
-    }
-
-    #[Test]
-    public function it_hides_reopen_for_review_action_when_application_is_not_rejected()
-    {
-        $this->adminUser->givePermissionTo('vt.application.accept.*');
-
-        $this->application->status = Application::STATUS_SUBMITTED;
-        $this->application->save();
-
-        $component = Livewire::actingAs($this->adminUser)
-            ->test(ViewVisitTransferApplication::class, ['record' => $this->application->id])
-            ->assertSuccessful()
-            ->assertActionHidden('reopen_for_review');
-    }
-
-    #[Test]
-    public function it_can_reopen_a_rejected_application_for_manual_review()
-    {
-        $this->adminUser->givePermissionTo('vt.application.accept.*');
-
-        $this->application->status = Application::STATUS_REJECTED;
-        $this->application->save();
-
-        Livewire::actingAs($this->adminUser)
-            ->test(ViewVisitTransferApplication::class, ['record' => $this->application->id])
-            ->callAction('reopen_for_review', data: ['staff_note' => 'Reopened for manual review after contacting the member.'])
-            ->assertHasNoFormErrors();
-
-        $this->application->refresh();
-
-        $this->assertTrue($this->application->is_under_review);
-    }
-
-    #[Test]
     public function it_can_change_facility_with_permission()
     {
         $this->adminUser->givePermissionTo('vt.application.modify.*');

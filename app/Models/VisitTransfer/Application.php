@@ -16,7 +16,6 @@ use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeExpiredException
 use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeWithdrawnException;
 use App\Exceptions\VisitTransfer\Application\ApplicationNotAcceptedException;
 use App\Exceptions\VisitTransfer\Application\ApplicationNotRejectableException;
-use App\Exceptions\VisitTransfer\Application\ApplicationNotReopenableException;
 use App\Exceptions\VisitTransfer\Application\ApplicationNotUnderReviewException;
 use App\Exceptions\VisitTransfer\Application\AttemptingToTransferToNonTrainingFacilityException;
 use App\Exceptions\VisitTransfer\Application\CheckOutcomeAlreadySetException;
@@ -656,13 +655,6 @@ class Application extends Model
         event(new ApplicationUnderReview($this));
     }
 
-    public function reopenForReview(?Account $actor = null, ?string $staffReason = 'Application reopened for manual review.')
-    {
-        $this->guardAgainstNonReopenableApplication();
-
-        $this->markAsUnderReview($staffReason, $actor);
-    }
-
     public function reject($publicReason = 'No reason was provided.', $staffReason = null, ?Account $actor = null)
     {
         $this->guardAgainstNonRejectableApplication();
@@ -907,15 +899,6 @@ class Application extends Model
         }
 
         throw new ApplicationNotRejectableException($this);
-    }
-
-    private function guardAgainstNonReopenableApplication()
-    {
-        if ($this->is_rejected) {
-            return true;
-        }
-
-        throw new ApplicationNotReopenableException($this);
     }
 
     private function guardAgainstUnAcceptableApplication()
