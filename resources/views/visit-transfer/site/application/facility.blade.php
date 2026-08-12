@@ -62,7 +62,7 @@
 						class="form-inline">
 						@csrf
 						<div class="form-group">
-							<input type="text" name="facility-code" id="facility-code">
+							<input type="text" name="facility-code" class="form-control" id="facility-code">
 						</div>
 						<button type="submit" class="btn btn-primary">Submit</button>
 					</form>
