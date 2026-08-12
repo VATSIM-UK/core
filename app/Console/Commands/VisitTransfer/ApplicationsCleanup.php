@@ -66,6 +66,7 @@ class ApplicationsCleanup extends Command
                 $application->setCheckOutcome('90_day', $application->check90DayQualification());
                 $application->setCheckOutcome('50_hours', $application->check50Hours());
 
+                // If automated checks fail, automatically reject the application
                 if ($application->check_outcome_90_day === VTCheckStatus::Failed || $application->check_outcome_50_hours === VTCheckStatus::Failed) {
                     $application->reject(
                         'Your application has been automatically rejected as one or more of the automated checks failed. Please contact the Community team via the helpdesk if you believe this is in error.',
