@@ -267,6 +267,60 @@
 		</div>
 	</section>
 
+	@auth
+		<section class="max-w-2xl mx-auto bg-white rounded-xl shadow-sm ring-1 ring-gray-200/80 overflow-hidden">
+			<div class="bg-uknavy text-white">
+				<div class="px-3 sm:px-4 py-2.5 flex items-center gap-2">
+					<i class="fa fa-calendar-check shrink-0 text-xs sm:text-sm text-white" aria-hidden="true"></i>
+					<p class="text-sm sm:text-base font-semibold leading-snug text-white m-0">My future bookings</p>
+				</div>
+			</div>
+
+			@if ($upcomingBookings->isEmpty())
+				<div class="px-4 py-10 text-center text-gray-400">
+					<p class="text-sm">No upcoming bookings.</p>
+				</div>
+			@else
+				{{-- Column headers --}}
+				<div class="flex border-b border-gray-200 bg-gray-50/80">
+					<div
+						class="w-40 shrink-0 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">
+						Date
+					</div>
+					<div class="flex-1 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">Callsign</div>
+					<div class="w-32 shrink-0 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">Time</div>
+					<div class="w-24 shrink-0 px-3 py-2"></div>
+				</div>
+
+				@foreach ($upcomingBookings as $upcomingBooking)
+					<div class="flex border-b border-gray-100 hover:bg-blue-50/40 transition-colors">
+						<div class="w-40 shrink-0 px-3 py-2.5 border-r border-r-gray-200 bg-white flex items-center gap-2">
+							<span class="text-[13px] font-semibold text-gray-700 whitespace-nowrap">
+								{{ \Carbon\Carbon::parse($upcomingBooking->date)->format('D, d. m. Y') }}
+							</span>
+						</div>
+						<div class="flex-1 px-3 py-2.5 flex items-center">
+							<span class="text-[13px] font-semibold text-gray-700 font-mono">
+								{{ $upcomingBooking->position ?? 'Unknown' }}
+							</span>
+						</div>
+						<div class="w-32 shrink-0 px-3 py-2.5 flex items-center">
+							<span class="text-[13px] text-gray-600 font-mono tabular-nums whitespace-nowrap">
+								{{ sprintf('%s - %s', $upcomingBooking->from, $upcomingBooking->to) }}
+							</span>
+						</div>
+						<div class="w-24 shrink-0 px-3 py-2.5 flex items-center justify-end">
+							<button type="button" wire:click="jumpToDate('{{ $upcomingBooking->date }}')"
+								class="px-2.5 py-1 text-xs font-semibold text-brand border border-brand/60 rounded-md hover:bg-brand hover:text-white transition-colors">
+								<i class="fa fa-arrow-right mr-1 text-[9px]" aria-hidden="true"></i> Jump
+							</button>
+						</div>
+					</div>
+				@endforeach
+			@endif
+		</section>
+	@endauth
+
 	@include('livewire.bookings._create-modal')
 	@include('livewire.bookings._detail-modal')
 </div>

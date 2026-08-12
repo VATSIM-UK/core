@@ -91,6 +91,47 @@ class BookingRepository
         return $this->formatBookings($bookings);
     }
 
+    public function getMemberUpcomingBookings(Account $account): Collection
+    {
+        $today = Carbon::today();
+
+        $core = Booking::where('member_id', $account->getKey())
+            ->where('starts_at', '>=', $today)
+            ->notEvent()
+            ->with('member', 'position', 'ctsBooking', 'bookable')
+            ->orderBy('starts_at')
+            ->get();
+
+        $ctsMember = CtsMember::where('cid', $account->getKey())->first();
+
+        if ($ctsMember === null) {
+            return $this->formatBookings($core)->values();
+        }
+
+        $importedIds = $core->pluck('cts_booking_id')->filter()->map(fn ($id) => (int) $id)->values()->all();
+
+        $cts = CtsBooking::query()
+            ->where('member_id', $ctsMember->getKey())
+            ->whereDate('date', '>=', $today->toDateString())
+            ->whereIn('type', ['BK', 'EX', 'ME'])
+            ->when(! empty($importedIds), fn ($q) => $q->whereNotIn('id', $importedIds))
+            ->orderBy('date')
+            ->orderBy('from')
+            ->get();
+
+        $ctsPositions = Position::whereIn('callsign', $cts->pluck('position')->filter()->unique()->values())
+            ->get()
+            ->keyBy('callsign');
+
+        $ctsMembers = collect([$ctsMember->getKey() => $ctsMember]);
+        $ctsAccounts = Account::whereIn('id', [$account->getKey()])->get()->keyBy('id');
+
+        return $this->formatBookings($core)
+            ->concat($cts->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts)))
+            ->sortBy(fn (object $b) => $b->date.' '.$b->from)
+            ->values();
+    }
+
     private function formatBookings(Collection $bookings): Collection
     {
         return $bookings->map(function (Booking $booking) {
