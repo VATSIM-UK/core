@@ -53,7 +53,6 @@ class BookingRepository
         // Events live in the CTS events table (not cts.bookings), so they must be
         // pulled in separately or they never appear on the calendar.
         $events = Event::whereDate('date', $date->toDateString())
-            ->where(fn ($q) => $q->where('gone', 0)->orWhereNull('gone'))
             ->orderBy('from')
             ->get();
 

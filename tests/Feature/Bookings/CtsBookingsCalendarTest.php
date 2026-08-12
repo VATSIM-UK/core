@@ -791,7 +791,7 @@ class CtsBookingsCalendarTest extends TestCase
     }
 
     #[Test]
-    public function it_excludes_events_marked_as_gone(): void
+    public function it_includes_events_marked_as_gone(): void
     {
         $date = Carbon::parse('2026-08-01');
 
@@ -804,6 +804,6 @@ class CtsBookingsCalendarTest extends TestCase
 
         $bookings = app(BookingRepository::class)->getBookings($date);
 
-        $this->assertEmpty($bookings->where('type', 'EV'), 'Gone events must not appear on the calendar');
+        $this->assertNotEmpty($bookings->where('type', 'EV'), 'Gone events must still appear on the calendar');
     }
 }
