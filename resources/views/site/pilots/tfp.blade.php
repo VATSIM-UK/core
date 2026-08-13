@@ -212,7 +212,7 @@
 									join: <br>
 									IFR: <a href="https://moodle.vatsim.uk/course/view.php?id=63" rel="external nofollow noopener"
 										target="_blank">https://moodle.vatsim.uk/course/view.php?id=63</a> <br>
-									VFR: <a href="https://moodle.vatsim.uk/course/view.php?id=63" rel="external nofollow noopener"
+									VFR: <a href="https://moodle.vatsim.uk/course/view.php?id=76" rel="external nofollow noopener"
 										target="_blank">https://moodle.vatsim.uk/course/view.php?id=76</a>
 								</p>
 
