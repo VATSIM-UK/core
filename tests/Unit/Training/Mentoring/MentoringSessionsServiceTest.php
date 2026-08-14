@@ -265,9 +265,12 @@ class MentoringSessionsServiceTest extends TestCase
         $this->assertSame('12:00:00', substr($cts->to, 0, 8));
 
         // FK relation rule: core bookings key on the CID, CTS bookings key on the CTS
-        // internal member id. These differ (generateCTSInternalID), so the mirror must
-        // store the internal id on the CTS side and the CID on the core side.
-        $this->assertNotSame($this->studentAccount->id, $this->studentMember->id, 'Test relies on CTS member id differing from the CID');
+        // internal member id generated from the CID.
+        $this->assertSame(
+            $this->studentAccount->generateCTSInternalID($this->studentAccount->id),
+            $this->studentMember->id,
+            'CTS member id must match the generated internal id for the account CID',
+        );
         $this->assertSame($this->studentMember->id, $cts->member_id, 'CTS booking member_id must be the CTS internal member id');
 
         // The core booking must be FK-linked to the CTS row via cts_booking_id and
