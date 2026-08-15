@@ -9,6 +9,7 @@ use App\Models\Mship\State;
 use App\Models\NetworkData\Atc;
 use App\Models\Roster;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Services\Training\WaitingListSelfEnrolment;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -281,7 +282,7 @@ class WaitingListSelfEnrolmentServiceTest extends TestCase
         $this->assertTrue(WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList));
     }
 
-    public function test_cannot_enrol_when_holding_active_training_place()
+    public function test_cannot_enrol_when_holding_active_training_place_and_list_has_no_trainables_attached()
     {
         $account = Account::factory()->create();
         TrainingPlace::factory()->create([
@@ -295,6 +296,116 @@ class WaitingListSelfEnrolmentServiceTest extends TestCase
         ]);
 
         $this->assertFalse(WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList));
+    }
+
+    public function test_cannot_enrol_when_holding_active_training_place_on_position_attached_to_list()
+    {
+        $account = Account::factory()->create();
+        $position = TrainingPosition::factory()->create();
+
+        $waitingList = WaitingList::factory()->create([
+            'self_enrolment_enabled' => true,
+            'home_members_only' => false,
+            'requires_roster_membership' => false,
+        ]);
+        $waitingList->trainingPositions()->attach($position->id);
+
+        TrainingPlace::factory()->create([
+            'account_id' => $account->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $position->id,
+        ]);
+
+        $this->assertFalse(WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList));
+    }
+
+    public function test_can_enrol_when_holding_active_training_place_on_position_not_attached_to_list()
+    {
+        $account = Account::factory()->create();
+        $listPosition = TrainingPosition::factory()->create();
+        $otherPosition = TrainingPosition::factory()->create();
+
+        $waitingList = WaitingList::factory()->create([
+            'self_enrolment_enabled' => true,
+            'home_members_only' => false,
+            'requires_roster_membership' => false,
+        ]);
+        $waitingList->trainingPositions()->attach($listPosition->id);
+
+        TrainingPlace::factory()->create([
+            'account_id' => $account->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $otherPosition->id,
+        ]);
+
+        $this->assertTrue(WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList));
+    }
+
+    public function test_cannot_enrol_when_holding_active_training_place_on_qualification_attached_to_list()
+    {
+        $account = Account::factory()->create();
+        $qualification = Qualification::code('S1')->first();
+
+        $waitingList = WaitingList::factory()->create([
+            'department' => WaitingList::PILOT_DEPARTMENT,
+            'self_enrolment_enabled' => true,
+            'home_members_only' => false,
+            'requires_roster_membership' => false,
+        ]);
+        $waitingList->qualifications()->attach($qualification->id);
+
+        TrainingPlace::factory()->create([
+            'account_id' => $account->id,
+            'trainable_type' => Qualification::class,
+            'trainable_id' => $qualification->id,
+        ]);
+
+        $this->assertFalse(WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList));
+    }
+
+    public function test_can_enrol_when_holding_active_training_place_on_qualification_not_attached_to_list()
+    {
+        $account = Account::factory()->create();
+        $listQualification = Qualification::code('S1')->first();
+        $otherQualification = Qualification::code('S2')->first();
+
+        $waitingList = WaitingList::factory()->create([
+            'department' => WaitingList::PILOT_DEPARTMENT,
+            'self_enrolment_enabled' => true,
+            'home_members_only' => false,
+            'requires_roster_membership' => false,
+        ]);
+        $waitingList->qualifications()->attach($listQualification->id);
+
+        TrainingPlace::factory()->create([
+            'account_id' => $account->id,
+            'trainable_type' => Qualification::class,
+            'trainable_id' => $otherQualification->id,
+        ]);
+
+        $this->assertTrue(WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList));
+    }
+
+    public function test_can_enrol_when_holding_active_training_place_on_qualification_but_list_only_has_positions_attached()
+    {
+        $account = Account::factory()->create();
+        $position = TrainingPosition::factory()->create();
+        $qualification = Qualification::code('S1')->first();
+
+        $waitingList = WaitingList::factory()->create([
+            'self_enrolment_enabled' => true,
+            'home_members_only' => false,
+            'requires_roster_membership' => false,
+        ]);
+        $waitingList->trainingPositions()->attach($position->id);
+
+        TrainingPlace::factory()->create([
+            'account_id' => $account->id,
+            'trainable_type' => Qualification::class,
+            'trainable_id' => $qualification->id,
+        ]);
+
+        $this->assertTrue(WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList));
     }
 
     public function test_cannot_enrol_when_required_endorsement_missing()
