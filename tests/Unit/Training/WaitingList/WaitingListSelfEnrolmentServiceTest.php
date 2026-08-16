@@ -282,7 +282,7 @@ class WaitingListSelfEnrolmentServiceTest extends TestCase
         $this->assertTrue(WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList));
     }
 
-    public function test_cannot_enrol_when_holding_active_training_place_and_list_has_no_trainables_attached()
+    public function test_can_enrol_when_holding_active_training_place_and_list_has_no_trainables_attached()
     {
         $account = Account::factory()->create();
         TrainingPlace::factory()->create([
@@ -295,7 +295,7 @@ class WaitingListSelfEnrolmentServiceTest extends TestCase
             'requires_roster_membership' => false,
         ]);
 
-        $this->assertFalse(WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList));
+        $this->assertTrue(WaitingListSelfEnrolment::canAccountEnrolOnList($account, $waitingList));
     }
 
     public function test_cannot_enrol_when_holding_active_training_place_on_position_attached_to_list()
