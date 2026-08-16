@@ -104,7 +104,7 @@ class WaitingListSelfEnrolment
 
         if ($trainables->isEmpty()) {
             // If there are no trainables then we should pass this check
-            return true;
+            return false;
         }
 
         $idsByType = $trainables
