@@ -124,6 +124,17 @@ class MentorPermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function it_resolves_qualification_codes_for_a_cts_callsign(): void
+    {
+        $this->assertSame(['PPL'], $this->service->qualificationCodesForCtsCallsign('P1_PPL(A)'));
+        $this->assertSame(['IR'], $this->service->qualificationCodesForCtsCallsign('P2_SEIR(A)'));
+        $this->assertSame(['CMEL'], $this->service->qualificationCodesForCtsCallsign('P3_CMEL(A)'));
+        $this->assertSame(['TFP'], $this->service->qualificationCodesForCtsCallsign('TFP_FLIGHT'));
+
+        $this->assertSame([], $this->service->qualificationCodesForCtsCallsign('EGKK_TWR'));
+    }
+
+    #[Test]
     public function it_does_not_create_duplicate_permissions_or_cts_validations(): void
     {
         $actor = Account::factory()->create();
