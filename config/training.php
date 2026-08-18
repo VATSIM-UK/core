@@ -9,7 +9,7 @@ return [
 
     'availability_warning_days' => [
         'atc' => (int) env('TRAINING_AVAILABILITY_WARNING_DAYS_ATC', 5),
-        'pilot' => (int) env('TRAINING_AVAILABILITY_WARNING_DAYS_PILOT', 7),
+        'pilot' => (int) env('TRAINING_AVAILABILITY_WARNING_DAYS_PILOT', 5),
     ],
 
     'pilot' => [

@@ -13,6 +13,7 @@ use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Notifications\Training\AvailabilityWarningCreated;
 use App\Services\Training\AvailabilityWarnings;
 use App\Services\Training\TrainingPlaceService;
+use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\DB;
@@ -43,6 +44,14 @@ class CheckAvailability implements ShouldQueue
 
         if ($this->trainingPlace->isWithinAvailabilityCheckGracePeriod()) {
             return;
+        }
+
+        if ($this->trainingPlace->isPilot()) {
+            $lastSession = $this->trainingPlace->lastCompletedSession();
+
+            if ($lastSession && Carbon::parse($lastSession->taken_date)->addDays(7)->isFuture()) {
+                return;
+            }
         }
 
         $account = $this->trainingPlace->account;
