@@ -131,7 +131,7 @@ class TrainingPlace extends Model
             ->where('student_id', $member->id)
             ->whereIn('position', $ctsPositions)
             ->whereNull('cancelled_datetime')
-            ->where('no_show', 0)
+            ->where('noShow', 0)
             ->where(function ($query) {
                 $query->where('taken_date', '<', now()->toDateString())
                     ->orWhere(function ($q) {
