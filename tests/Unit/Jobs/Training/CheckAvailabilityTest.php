@@ -224,7 +224,7 @@ class CheckAvailabilityTest extends TestCase
     }
 
     #[Test]
-    public function it_creates_a_seven_day_availability_warning_for_pilot_training_places(): void
+    public function it_creates_a_five_day_availability_warning_for_pilot_training_places(): void
     {
         $qualification = Qualification::firstWhere('code', 'PPL')
             ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
@@ -245,7 +245,7 @@ class CheckAvailabilityTest extends TestCase
         $warning = AvailabilityWarning::where('training_place_id', $pilotPlace->id)->first();
         $this->assertNotNull($warning);
         $this->assertEqualsWithDelta(
-            now()->addDays(7)->endOfDay()->timestamp,
+            now()->addDays(5)->endOfDay()->timestamp,
             $warning->expires_at->timestamp,
             60
         );
