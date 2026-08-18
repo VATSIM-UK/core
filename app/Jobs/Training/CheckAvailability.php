@@ -46,14 +46,6 @@ class CheckAvailability implements ShouldQueue
             return;
         }
 
-        if ($this->trainingPlace->isPilot()) {
-            $lastSession = $this->trainingPlace->lastCompletedSession();
-
-            if ($lastSession && Carbon::parse($lastSession->taken_date)->addDays(7)->isFuture()) {
-                return;
-            }
-        }
-
         $account = $this->trainingPlace->account;
 
         if (! $account->member) {
@@ -72,6 +64,21 @@ class CheckAvailability implements ShouldQueue
         $existingAvailabilityWarning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)->where('status', 'pending')->first();
 
         $hasPendingExam = app(TrainingPlaceService::class)->hasPendingExam($this->trainingPlace);
+
+        if ($this->trainingPlace->isPilot()) {
+            $lastSession = $this->trainingPlace->lastCompletedSession();
+
+            if ($lastSession && Carbon::parse($lastSession->taken_date)->addDays(7)->isFuture()) {
+                $availabilityCheck = AvailabilityCheck::create([
+                    'training_place_id' => $this->trainingPlace->id,
+                    'status' => AvailabilityCheckStatus::Passed,
+                ]);
+
+                if ($existingAvailabilityWarning) {
+                    AvailabilityWarnings::markWarningAsResolved($existingAvailabilityWarning, $availabilityCheck->id);
+                }
+            }
+        }
 
         if ($hasPendingExam) {
             $availabilityCheck = AvailabilityCheck::create([
