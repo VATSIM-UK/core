@@ -77,6 +77,8 @@ class CheckAvailability implements ShouldQueue
                 if ($existingAvailabilityWarning) {
                     AvailabilityWarnings::markWarningAsResolved($existingAvailabilityWarning, $availabilityCheck->id);
                 }
+
+                return;
             }
         }
 

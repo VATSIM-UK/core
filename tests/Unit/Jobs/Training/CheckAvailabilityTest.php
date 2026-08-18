@@ -252,7 +252,7 @@ class CheckAvailabilityTest extends TestCase
     }
 
     #[Test]
-    public function it_skips_availability_check_for_pilot_training_place_when_session_completed_within_seven_days(): void
+    public function it_creates_a_passed_availability_check_for_pilot_training_place_when_session_completed_within_seven_days(): void
     {
         Notification::fake();
 
@@ -282,9 +282,16 @@ class CheckAvailabilityTest extends TestCase
         // Act: Run the job with no availability records at all
         (new CheckAvailability($pilotPlace->fresh(['trainable', 'account'])))->handle();
 
-        // Assert: No availability check is created
+        // Assert: A passed availability check is created
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $pilotPlace->id,
+            'status' => AvailabilityCheckStatus::Passed->value,
+        ]);
+
+        // Assert: No failed availability check is created
         $this->assertDatabaseMissing('availability_checks', [
             'training_place_id' => $pilotPlace->id,
+            'status' => AvailabilityCheckStatus::Failed->value,
         ]);
 
         // Assert: No availability warning is created
@@ -293,6 +300,66 @@ class CheckAvailabilityTest extends TestCase
         ]);
 
         Notification::assertNothingSent();
+    }
+
+    #[Test]
+    public function it_resolves_pending_warning_when_pilot_check_passes_due_to_recent_session(): void
+    {
+        Notification::fake();
+
+        $qualification = Qualification::firstWhere('code', 'PPL')
+            ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
+
+        $pilotPlace = TrainingPlace::withoutEvents(fn () => TrainingPlace::factory()
+            ->forQualification($qualification)
+            ->create([
+                'account_id' => $this->account->id,
+                'waiting_list_account_id' => null,
+            ]));
+
+        $pilotPlace->forceFill([
+            'created_at' => now()->subHours(TrainingPlace::AVAILABILITY_CHECK_GRACE_PERIOD_HOURS + 1),
+        ])->saveQuietly();
+
+        // Existing pending warning for the pilot place
+        $existingCheck = AvailabilityCheck::factory()->failed()->create([
+            'training_place_id' => $pilotPlace->id,
+        ]);
+        AvailabilityWarning::factory()->pending()->create([
+            'training_place_id' => $pilotPlace->id,
+            'availability_check_id' => $existingCheck->id,
+        ]);
+
+        // Completed session within the last 7 days
+        Session::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'position' => 'P1_PPL(A)',
+            'taken_date' => now()->subDays(3)->format('Y-m-d'),
+            'taken_to' => now()->subDays(3)->format('H:i:s'),
+            'cancelled_datetime' => null,
+        ]);
+
+        // Act: Run the job
+        (new CheckAvailability($pilotPlace->fresh(['trainable', 'account'])))->handle();
+
+        // Assert: A passed check was created
+        $passedCheck = AvailabilityCheck::where('training_place_id', $pilotPlace->id)
+            ->where('status', AvailabilityCheckStatus::Passed)
+            ->first();
+        $this->assertNotNull($passedCheck);
+
+        // Assert: The pending warning was resolved and linked to the passed check
+        $resolvedWarning = AvailabilityWarning::where('training_place_id', $pilotPlace->id)
+            ->where('status', 'resolved')
+            ->first();
+        $this->assertNotNull($resolvedWarning, 'Job should resolve the pending warning when check passes due to recent session');
+        $this->assertEquals($passedCheck->id, $resolvedWarning->resolved_availability_check_id);
+
+        // Assert: No new warning is created
+        $this->assertDatabaseMissing('availability_warnings', [
+            'training_place_id' => $pilotPlace->id,
+            'status' => 'pending',
+        ]);
     }
 
     #[Test]
