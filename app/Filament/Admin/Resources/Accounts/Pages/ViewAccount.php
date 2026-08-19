@@ -11,6 +11,7 @@ use App\Models\Contact;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\State;
 use App\Models\Roster;
+use App\Notifications\Mship\TwoFactorReset;
 use App\Notifications\Mship\UserImpersonated;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\HtmlString;
+use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 
 class ViewAccount extends BaseViewRecordPage
 {
@@ -125,6 +127,37 @@ class ViewAccount extends BaseViewRecordPage
                     })
                     ->requiresConfirmation()
                     ->successNotificationTitle('Password removed'),
+                Action::make('reset_two_factor')
+                    ->label('Reset Two-Factor Authentication')
+                    ->visible(fn () => $this->record->hasEnabledTwoFactorAuthentication()
+                        && auth()->user()->can('resetTwoFactor', $this->record))
+                    ->color('warning')
+                    ->icon('heroicon-o-shield-exclamation')
+                    ->modalHeading('Reset Two-Factor Authentication')
+                    ->modalDescription('This clears the member\'s authenticator secret and all of their recovery codes. They will be required to enrol again before they can use the site.')
+                    ->schema([
+                        Textarea::make('reason')
+                            ->label('Reason')
+                            ->helperText('You MUST include the Helpdesk ticket reference. The member will be emailed to tell them their two-factor authentication was reset, and this reason will be recorded on their account.')
+                            ->minLength(10)
+                            ->required(),
+                    ])
+                    ->action(function (array $data) {
+                        app(DisableTwoFactorAuthentication::class)($this->record);
+
+                        $this->record->addNote(
+                            Type::isShortCode('security')->first(),
+                            'Two-factor authentication reset: '.$data['reason'],
+                            auth()->user(),
+                        );
+
+                        $this->record->notify(new TwoFactorReset(auth()->user()));
+
+                        $this->refreshFormData(['two_factor_enabled']);
+                        $this->dispatch('refreshNotes');
+                    })
+                    ->requiresConfirmation()
+                    ->successNotificationTitle('Two-factor authentication reset'),
                 Action::make('unlink_discord')
                     ->label('Unlink Discord')
                     ->visible(fn () => $this->record->discord_id && auth()->user()->can('unlinkDiscordAccount', $this->record))

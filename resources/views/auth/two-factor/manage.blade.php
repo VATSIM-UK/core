@@ -69,6 +69,13 @@
 					onclick="return confirm('This will invalidate your existing recovery codes. Continue?');">
 			</form>
 
+			<form method="POST" action="{{ route('two-factor.rekey') }}" class="form-horizontal"
+				style="margin-bottom: 1.5em;">
+				@csrf
+				<input class="btn btn-warning" type="submit" value="Replace Authenticator App"
+					onclick="return confirm('This will immediately stop your current authenticator application and ALL of your existing recovery codes from working. You will need to finish setting up your new device straight away. Continue?');">
+			</form>
+
 			@if (!Auth::user()->mandatory_two_factor)
 				<form method="POST" action="{{ route('two-factor.disable') }}"
 					onsubmit="return confirm('Disable two-factor authentication for this account?');">

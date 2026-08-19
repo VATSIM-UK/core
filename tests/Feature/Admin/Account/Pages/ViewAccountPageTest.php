@@ -7,7 +7,10 @@ use App\Jobs\UpdateMember;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\State;
 use App\Models\Roster;
+use App\Notifications\Mship\TwoFactorReset;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Notification;
+use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 use Livewire\Livewire;
 use Tests\Feature\Admin\BaseAdminTestCase;
 
@@ -374,5 +377,98 @@ class ViewAccountPageTest extends BaseAdminTestCase
 
         Livewire::test(ViewAccount::class, ['record' => $this->privacc->refresh()->id])
             ->assertActionHidden('grant_visiting_status');
+    }
+
+    protected function enableTwoFactorFor(\App\Models\Mship\Account $account): void
+    {
+        app(EnableTwoFactorAuthentication::class)($account, true);
+
+        $account->forceFill(['two_factor_confirmed_at' => now()])->save();
+    }
+
+    public function test_cant_reset_two_factor_without_permission()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->enableTwoFactorFor($this->privacc);
+
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->refresh()->id])
+            ->assertActionHidden('reset_two_factor');
+    }
+
+    public function test_reset_two_factor_hidden_when_two_factor_disabled()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('account.remove-password.*');
+
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+            ->assertActionHidden('reset_two_factor');
+    }
+
+    public function test_can_reset_two_factor_with_permission()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('account.remove-password.*');
+        $this->enableTwoFactorFor($this->privacc);
+
+        $this->assertTrue($this->privacc->fresh()->hasEnabledTwoFactorAuthentication());
+
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->refresh()->id])
+            ->assertActionVisible('reset_two_factor')
+            ->callAction('reset_two_factor', data: ['reason' => 'Lost phone and codes, HELPDESK-1234']);
+
+        $fresh = $this->privacc->fresh();
+
+        $this->assertNull($fresh->two_factor_secret);
+        $this->assertNull($fresh->two_factor_recovery_codes);
+        $this->assertNull($fresh->two_factor_confirmed_at);
+        $this->assertFalse($fresh->hasEnabledTwoFactorAuthentication());
+    }
+
+    public function test_reset_two_factor_creates_a_security_note()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('account.remove-password.*');
+        $this->enableTwoFactorFor($this->privacc);
+
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->refresh()->id])
+            ->callAction('reset_two_factor', data: ['reason' => 'Lost phone and codes, HELPDESK-1234']);
+
+        $this->assertDatabaseHas('mship_account_note', [
+            'note_type_id' => Type::isShortCode('security')->first()->id,
+            'account_id' => $this->privacc->id,
+            'writer_id' => $this->user->id,
+            'content' => 'Two-factor authentication reset: Lost phone and codes, HELPDESK-1234',
+        ]);
+    }
+
+    public function test_reset_two_factor_notifies_the_member()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('account.remove-password.*');
+        $this->enableTwoFactorFor($this->privacc);
+
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->refresh()->id])
+            ->callAction('reset_two_factor', data: ['reason' => 'Lost phone and codes, HELPDESK-1234']);
+
+        Notification::assertSentTo($this->privacc, TwoFactorReset::class);
+    }
+
+    public function test_reset_two_factor_requires_a_reason()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('account.remove-password.*');
+        $this->enableTwoFactorFor($this->privacc);
+
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->refresh()->id])
+            ->callAction('reset_two_factor', data: ['reason' => 'short'])
+            ->assertHasActionErrors(['reason']);
+
+        $this->assertTrue($this->privacc->fresh()->hasEnabledTwoFactorAuthentication());
     }
 }
