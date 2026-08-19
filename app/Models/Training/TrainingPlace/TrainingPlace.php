@@ -101,11 +101,46 @@ class TrainingPlace extends Model
         );
     }
 
+    public function isPilot(): bool
+    {
+        return $this->department === WaitingList::PILOT_DEPARTMENT;
+    }
+
     protected function trainableTypeLabel(): Attribute
     {
         return Attribute::make(
             get: fn (): string => $this->trainable instanceof Qualification ? 'Qualification' : 'Position',
         );
+    }
+
+    public function lastCompletedSession()
+    {
+        $member = $this->account?->member;
+
+        if (! $member) {
+            return null;
+        }
+
+        $ctsPositions = $this->trainableCtsPositions();
+
+        if (empty($ctsPositions)) {
+            return null;
+        }
+
+        return CtsSession::query()
+            ->where('student_id', $member->id)
+            ->whereIn('position', $ctsPositions)
+            ->whereNull('cancelled_datetime')
+            ->where('noShow', 0)
+            ->where(function ($query) {
+                $query->where('taken_date', '<', now()->toDateString())
+                    ->orWhere(function ($q) {
+                        $q->where('taken_date', '=', now()->toDateString())
+                            ->where('taken_to', '<=', now()->toTimeString());
+                    });
+            })
+            ->orderByDesc('taken_date')
+            ->first();
     }
 
     public function availabilityWarningDays(): int
