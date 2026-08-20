@@ -51,11 +51,13 @@
 				    'bg-amber-800': booking.type === 'EX',
 				    'bg-red-600': booking.type === 'EV',
 				    'bg-orange-500': booking.type === 'GS',
+				    'ring-2 ring-yellow-300 ring-inset font-bold z-[6]': isOwnBooking(booking),
 				}"
 				:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%; top: ' + bookingTop(pos,
 				    booking) + '; height: ' + blockHeight(pos)"
 				:title="(booking.member?.display_name || booking.member?.name || 'Unknown') + (booking.member?.cid ? ' (' + booking.member
-				    .cid + ')' : '') + ' \u00b7 ' + booking.from + ' \u2013 ' + booking.to"
+				    .cid + ')' : '') + (isOwnBooking(booking) ? ' \u00b7 your booking' : '') + ' \u00b7 ' + booking.from +
+				    ' \u2013 ' + booking.to"
 				@click.stop="openDetailModal(pos, booking)">
 				<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]" x-text="booking.from"></span>
 				<span class="truncate"
