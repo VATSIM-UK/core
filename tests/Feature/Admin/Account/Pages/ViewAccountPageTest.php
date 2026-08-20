@@ -404,9 +404,14 @@ class ViewAccountPageTest extends BaseAdminTestCase
         $this->enableTwoFactorFor($this->privacc);
 
         Livewire::actingAs($this->user);
+        // callAction() asserts the action is visible before invoking it, which
+        // can never happen here by design. Mount and call it directly instead,
+        // as a crafted request would, to exercise the abort_unless() backstop.
         Livewire::test(ViewAccount::class, ['record' => $this->privacc->refresh()->id])
             ->assertActionHidden('reset_two_factor')
-            ->callAction('reset_two_factor', data: ['reason' => 'Lost phone and codes, HELPDESK-1234'])
+            ->mountAction('reset_two_factor')
+            ->setActionData(['reason' => 'Lost phone and codes, HELPDESK-1234'])
+            ->callMountedAction()
             ->assertForbidden();
 
         $this->assertTrue($this->privacc->fresh()->hasEnabledTwoFactorAuthentication());
