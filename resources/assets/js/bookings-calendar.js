@@ -22,6 +22,7 @@ document.addEventListener('alpine:init', () => {
     window.Alpine.data('bookingsTimeline', (config) => ({
         selectedDate: config.selectedDate,
         isAuthenticated: config.isAuthenticated,
+        currentMemberCid: config.currentMemberCid,
         isToday: config.isToday,
         scale: config.scale,
         dragging: null,
@@ -131,6 +132,12 @@ document.addEventListener('alpine:init', () => {
         // part falling inside the day being rendered can conflict with a drag.
         bookingEndMinutes(booking) {
             return booking.endMin > booking.startMin ? booking.endMin : 1440;
+        },
+
+        // True when the logged-in member owns this booking, so it can be picked
+        // out from everyone else's on the same timeline.
+        isOwnBooking(booking) {
+            return !!this.currentMemberCid && booking.member?.cid === this.currentMemberCid;
         },
 
         // Vertical layout, in rem, for rows holding overlapping bookings. A row
