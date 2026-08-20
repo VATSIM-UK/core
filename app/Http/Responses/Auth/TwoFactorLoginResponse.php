@@ -13,6 +13,11 @@ class TwoFactorLoginResponse implements TwoFactorLoginResponseContract
             return new JsonResponse('', 204);
         }
 
+        if ($request->filled('recovery_code')) {
+            return redirect()->route('two-factor.setup')
+                ->withSuccess('You signed in using a recovery code. Here are your remaining recovery codes.');
+        }
+
         return redirect()->intended(route('mship.manage.dashboard'));
     }
 }

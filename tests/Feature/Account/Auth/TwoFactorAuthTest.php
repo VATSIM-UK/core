@@ -163,7 +163,7 @@ class TwoFactorAuthTest extends TestCase
         $this->post(route('two-factor.login.store'), [
             'recovery_code' => $recoveryCode,
         ])
-            ->assertRedirect(route('mship.manage.dashboard'));
+            ->assertRedirect(route('two-factor.setup'));
 
         $this->assertAuthenticatedAs($this->account);
         $this->assertNull(session('login.id'));

@@ -38,7 +38,7 @@ class RecoveryCodeNotificationTest extends TestCase
         ]);
 
         $this->post(route('two-factor.login.store'), ['recovery_code' => $recoveryCode])
-            ->assertRedirect(route('mship.manage.dashboard'));
+            ->assertRedirect(route('two-factor.setup'));
 
         Notification::assertSentTo($this->account, RecoveryCodeUsed::class);
     }
