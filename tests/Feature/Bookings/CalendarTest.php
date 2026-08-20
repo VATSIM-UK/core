@@ -423,18 +423,18 @@ class CalendarTest extends TestCase
     }
 
     #[Test]
-    public function it_redirects_guests_to_login(): void
+    public function it_allows_guests_to_view(): void
     {
         $this->get(route('site.bookings.calendar'))
-            ->assertRedirect(route('landing'));
+            ->assertOk();
     }
 
     #[Test]
-    public function it_forbids_non_staff_members(): void
+    public function it_allows_non_staff_members_to_view(): void
     {
         $this->actingAs($this->user)
             ->get(route('site.bookings.calendar'))
-            ->assertForbidden();
+            ->assertOk();
     }
 
     #[Test]

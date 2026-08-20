@@ -27,6 +27,5 @@ Route::group([
     'prefix' => 'atc/bookings',
 ], function () {
     Route::get('calendar/{year?}/{month?}', BookingsCalendar::class)
-        ->middleware(['auth_full_group', 'can:admin.access'])
         ->name('calendar');
 });
