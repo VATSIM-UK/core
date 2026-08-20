@@ -12,6 +12,7 @@ use App\Models\Mship\Note\Type;
 use App\Models\Mship\State;
 use App\Models\Roster;
 use App\Notifications\Mship\TwoFactorReset;
+use App\Notifications\Mship\TwoFactorResetPerformed;
 use App\Notifications\Mship\UserImpersonated;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -157,6 +158,10 @@ class ViewAccount extends BaseViewRecordPage
                         );
 
                         $this->record->notify(new TwoFactorReset(auth()->user()));
+
+                        // Notify Privileged users that a member's two-factor authentication was reset
+                        Contact::where('key', 'PRIVACC')->first()
+                            ->notify(new TwoFactorResetPerformed($this->record, auth()->user(), $data['reason']));
 
                         $this->refreshFormData(['two_factor_enabled']);
                         $this->dispatch('refreshNotes');

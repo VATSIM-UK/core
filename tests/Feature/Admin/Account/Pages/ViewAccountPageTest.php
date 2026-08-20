@@ -4,10 +4,12 @@ namespace Tests\Feature\Admin\Account\Pages;
 
 use App\Filament\Admin\Resources\Accounts\Pages\ViewAccount;
 use App\Jobs\UpdateMember;
+use App\Models\Contact;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\State;
 use App\Models\Roster;
 use App\Notifications\Mship\TwoFactorReset;
+use App\Notifications\Mship\TwoFactorResetPerformed;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Notification;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
@@ -456,6 +458,22 @@ class ViewAccountPageTest extends BaseAdminTestCase
             ->callAction('reset_two_factor', data: ['reason' => 'Lost phone and codes, HELPDESK-1234']);
 
         Notification::assertSentTo($this->privacc, TwoFactorReset::class);
+    }
+
+    public function test_reset_two_factor_notifies_privileged_users()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('account.remove-password.*');
+        $this->enableTwoFactorFor($this->privacc);
+
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->refresh()->id])
+            ->callAction('reset_two_factor', data: ['reason' => 'Lost phone and codes, HELPDESK-1234']);
+
+        Notification::assertSentTo(
+            Contact::where('key', 'PRIVACC')->first(),
+            TwoFactorResetPerformed::class,
+        );
     }
 
     public function test_reset_two_factor_requires_a_reason()
