@@ -144,10 +144,15 @@ class ViewAccount extends BaseViewRecordPage
                             ->required(),
                     ])
                     ->action(function (array $data) {
-                        // visible() governs rendering only, so re-check the gate here:
+                        // visible() governs rendering only, so re-check both gates here:
                         // this must not be reachable by a crafted request from someone
-                        // who can view the page but holds no reset permission.
-                        abort_unless(auth()->user()->can('resetTwoFactor', $this->record), 403);
+                        // who can view the page but holds no reset permission, or against
+                        // a member who no longer has two-factor enabled.
+                        abort_unless(
+                            $this->record->hasEnabledTwoFactorAuthentication()
+                            && auth()->user()->can('resetTwoFactor', $this->record),
+                            403,
+                        );
 
                         app(DisableTwoFactorAuthentication::class)($this->record);
 

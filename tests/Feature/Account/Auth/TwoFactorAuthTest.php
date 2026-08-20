@@ -2,9 +2,12 @@
 
 namespace Tests\Feature\Account\Auth;
 
+use App\Libraries\UKCP;
 use App\Models\Mship\Account;
+use Illuminate\Support\Collection;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 use Laravel\Fortify\Fortify;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PragmaRX\Google2FA\Google2FA;
 use Spatie\Permission\Models\Role;
@@ -26,6 +29,11 @@ class TwoFactorAuthTest extends TestCase
     #[Test]
     public function dashboard_offers_two_factor_setup_link_when_not_enabled(): void
     {
+        $this->mock(UKCP::class, function (MockInterface $mock) {
+            $mock->shouldReceive('getValidTokensFor')
+                ->andReturn(Collection::make());
+        });
+
         $this->actingAs($this->account)
             ->get(route('mship.manage.dashboard'))
             ->assertOk()

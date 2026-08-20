@@ -46,6 +46,8 @@ class RecoveryCodeUsed extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        return [];
+        return [
+            'message' => 'A recovery code was used to sign in to your account.',
+        ];
     }
 }

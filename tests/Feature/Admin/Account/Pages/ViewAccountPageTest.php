@@ -398,6 +398,20 @@ class ViewAccountPageTest extends BaseAdminTestCase
             ->assertActionHidden('reset_two_factor');
     }
 
+    public function test_cant_reset_two_factor_via_crafted_request_without_permission()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->enableTwoFactorFor($this->privacc);
+
+        Livewire::actingAs($this->user);
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->refresh()->id])
+            ->assertActionHidden('reset_two_factor')
+            ->callAction('reset_two_factor', data: ['reason' => 'Lost phone and codes, HELPDESK-1234'])
+            ->assertForbidden();
+
+        $this->assertTrue($this->privacc->fresh()->hasEnabledTwoFactorAuthentication());
+    }
+
     public function test_reset_two_factor_hidden_when_two_factor_disabled()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
