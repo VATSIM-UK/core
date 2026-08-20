@@ -22,6 +22,7 @@ use App\Models\Mship\Concerns\HasNotifications;
 use App\Models\Mship\Concerns\HasPassword;
 use App\Models\Mship\Concerns\HasQualifications;
 use App\Models\Mship\Concerns\HasRoles;
+use App\Models\Mship\Concerns\HasSeminarInvitations;
 use App\Models\Mship\Concerns\HasStates;
 use App\Models\Mship\Concerns\HasTeamSpeakRegistrations;
 use App\Models\Mship\Concerns\HasTwoFactor;
@@ -243,6 +244,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         HasPassword,
         HasQualifications,
         HasRoles,
+        HasSeminarInvitations,
         HasStates,
         HasTeamSpeakRegistrations,
         HasTwoFactor,

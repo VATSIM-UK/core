@@ -493,6 +493,76 @@ class MockCtsDatabase
         );
 
         DB::connection('cts')->statement(
+            "CREATE TABLE `group_sessions` (
+                `group_session_id` mediumint NOT NULL AUTO_INCREMENT,
+                `rts_id` mediumint NOT NULL,
+                `name` varchar(60) NOT NULL,
+                `description` varchar(60) NOT NULL,
+                `date` date NOT NULL,
+                `from` time NOT NULL,
+                `to` time NOT NULL,
+                `min_target_rating` tinyint NOT NULL,
+                `max_target_rating` tinyint NOT NULL,
+                `min_mentor_rating` tinyint NOT NULL,
+                `max_mentors` smallint NOT NULL,
+                `max_students` smallint NOT NULL,
+                `sequence_cutoff` smallint NOT NULL DEFAULT '999',
+                `members_only` tinyint(1) NOT NULL DEFAULT '1',
+                `leader_id` int NOT NULL,
+                `prepared` tinyint(1) NOT NULL DEFAULT '0',
+                `completed` tinyint(1) NOT NULL DEFAULT '0',
+                `timestamp` timestamp NULL DEFAULT NULL,
+                PRIMARY KEY (`group_session_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+        );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `group_sessions_comments` (
+                `group_sessions_comments_id` bigint NOT NULL AUTO_INCREMENT,
+                `group_session_id` int NOT NULL,
+                `added_by` int NOT NULL,
+                `type` enum('G','I') NOT NULL DEFAULT 'G',
+                `type_id` int NOT NULL,
+                `comment` mediumtext NOT NULL,
+                PRIMARY KEY (`group_sessions_comments_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+        );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `group_sessions_mentors` (
+                `group_sessions_mentor_id` int NOT NULL AUTO_INCREMENT,
+                `group_session_id` mediumint NOT NULL,
+                `member_id` int NOT NULL,
+                `allow_report_entry` tinyint(1) NOT NULL DEFAULT '0',
+                `added_by` int NOT NULL,
+                `timestamp` timestamp NULL DEFAULT NULL,
+                PRIMARY KEY (`group_sessions_mentor_id`),
+                UNIQUE KEY `group_session_member_unique` (`group_session_id`,`member_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+        );
+
+        DB::connection('cts')->statement(
+            'CREATE TABLE `group_sessions_positions` (
+                `group_sessions_position_id` int NOT NULL AUTO_INCREMENT,
+                `group_session_id` int NOT NULL,
+                `position` varchar(10) NOT NULL,
+                PRIMARY KEY (`group_sessions_position_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;'
+        );
+
+        DB::connection('cts')->statement(
+            "CREATE TABLE `group_sessions_students` (
+                `group_sessions_student_id` int NOT NULL AUTO_INCREMENT,
+                `group_session_id` mediumint NOT NULL,
+                `member_id` int NOT NULL,
+                `addedBy` varchar(10) NOT NULL DEFAULT 'SELF',
+                `signup_date` timestamp NULL DEFAULT NULL,
+                PRIMARY KEY (`group_sessions_student_id`),
+                UNIQUE KEY `group_session_member_unique` (`group_session_id`,`member_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+        );
+
+        DB::connection('cts')->statement(
             "CREATE TABLE `prog_sheet_name` (
             `prog_sheet_id` smallint unsigned NOT NULL AUTO_INCREMENT,
             `name` varchar(50) NOT NULL DEFAULT '',
@@ -692,5 +762,10 @@ class MockCtsDatabase
         DB::connection('cts')->statement('DROP TABLE IF EXISTS `report_notes`;');
         DB::connection('cts')->statement('DROP TABLE IF EXISTS `email_settings_rts`;');
         DB::connection('cts')->statement('DROP TABLE IF EXISTS `email_settings_gen`;');
+        DB::connection('cts')->statement('DROP TABLE IF EXISTS `group_sessions`;');
+        DB::connection('cts')->statement('DROP TABLE IF EXISTS `group_sessions_comments`;');
+        DB::connection('cts')->statement('DROP TABLE IF EXISTS `group_sessions_mentors`;');
+        DB::connection('cts')->statement('DROP TABLE IF EXISTS `group_sessions_positions`;');
+        DB::connection('cts')->statement('DROP TABLE IF EXISTS `group_sessions_students`;');
     }
 }
