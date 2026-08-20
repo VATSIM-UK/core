@@ -24,6 +24,22 @@ class TwoFactorAuthTest extends TestCase
     }
 
     #[Test]
+    public function dashboard_offers_two_factor_setup_link_when_not_enabled(): void
+    {
+        $this->actingAs($this->account)
+            ->get(route('mship.manage.dashboard'))
+            ->assertOk()
+            ->assertSee(route('two-factor.setup'), false)
+            ->assertSee('Click to Enable', false);
+
+        $this->actingAs($this->account)
+            ->get(route('mship.manage.dashboard.beta'))
+            ->assertOk()
+            ->assertSee(route('two-factor.setup'), false)
+            ->assertSee('Enable two-factor', false);
+    }
+
+    #[Test]
     public function mandatory_two_factor_middleware_redirects_to_setup(): void
     {
         $role = factory(Role::class)->create(['two_factor_mandatory' => true]);

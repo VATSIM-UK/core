@@ -195,6 +195,26 @@
 									@endif
 								</div>
 							</div>
+						@else
+							<div class="px-5 py-3 flex flex-col sm:flex-row sm:items-start gap-3 sm:justify-between">
+								<div class="flex gap-3 min-w-0">
+									<div class="size-9 shrink-0 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600">
+										<i class="fa fa-shield"></i>
+									</div>
+									<div class="min-w-0">
+										<p class="text-xs font-semibold text-gray-900 m-0">Two-factor authentication</p>
+										<p class="mt-1 text-sm text-gray-500 mb-0">
+											Extra protection using an authenticator app on your phone or computer.
+										</p>
+									</div>
+								</div>
+								<div class="flex flex-col items-start sm:items-end gap-2 sm:pl-4 shrink-0">
+									<span
+										class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-600 ring-1 ring-inset ring-gray-300">Disabled</span>
+									<a href="{{ route('two-factor.setup') }}"
+										class="text-sm font-medium text-brand hover:text-sky-700 no-underline">Enable two-factor</a>
+								</div>
+							</div>
 						@endif
 
 						<div class="px-5 py-3 flex flex-col sm:flex-row sm:items-start gap-3 sm:justify-between">
