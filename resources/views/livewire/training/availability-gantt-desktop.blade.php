@@ -50,19 +50,19 @@
 									{{ $student->name }}
 								</a>
 							</div>
-							@if ($student->pending_position)
+							@if ($student->primary_position)
 								@php
 									$isAllCategories = empty($category);
 									$badgeColor = $isAllCategories
 									    ? \App\Filament\Training\Support\MentoringTrainingGroupBadgeColor::forCtsCallsign(
-									        $student->pending_position,
+									        $student->primary_position,
 									    )
 									    : 'gray';
 								@endphp
 
 								<span class="shrink-0 max-w-full overflow-visible">
 									<x-filament::badge :color="$badgeColor" size="sm">
-										{{ $student->pending_position }}
+										{{ $student->primary_position }}
 									</x-filament::badge>
 								</span>
 							@endif

@@ -8,8 +8,10 @@ use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Training\Mentoring\MentoringScope;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\MentoringSessionsService;
 use App\Services\Training\MentorPermissionService;
+use App\Services\Training\TrainingPlaceService;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -22,6 +24,7 @@ use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
+use Illuminate\Support\Collection;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 
@@ -30,6 +33,8 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
     use InteractsWithActions;
     use InteractsWithForms;
     use RemembersTrainingGroupCategory;
+
+    public const STUDENTS_PER_PAGE = 6;
 
     #[Url]
     public string $date;
@@ -41,11 +46,9 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
     public ?string $positionFilter = null;
 
-    public int $studentsPerPage = 6;
+    public int $studentsPerPage = self::STUDENTS_PER_PAGE;
 
     public int $studentsPage = 1;
-
-    public ?int $pendingSessionId = null;
 
     public function mount()
     {
@@ -134,18 +137,101 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         return $this->category ? $user->getAssignedCallsignsForCategory($this->category) : $user->getAllAssignedCallsigns();
     }
 
+    /**
+     * Active training places a mentor may book against for the current allow-list.
+     *
+     * @return Collection<int, TrainingPlace>
+     */
+    protected function eligibleTrainingPlaces(): Collection
+    {
+        $allowedCallsigns = $this->getAllowedCallsigns();
+
+        if ($allowedCallsigns === []) {
+            return collect();
+        }
+
+        return TrainingPlace::query()
+            ->with([
+                'trainable',
+                'account',
+                'leaveOfAbsences' => fn ($query) => $query->current(),
+            ])
+            ->get()
+            ->filter(fn (TrainingPlace $place) => $this->isTrainingPlaceBookable($place, $allowedCallsigns))
+            ->values();
+    }
+
+    /**
+     * @param  array<int, string>  $allowedCallsigns
+     */
+    protected function isTrainingPlaceBookable(TrainingPlace $place, array $allowedCallsigns): bool
+    {
+        if ($place->leaveOfAbsences->isNotEmpty()) {
+            return false;
+        }
+
+        $placeCallsigns = $place->trainableCtsPositions();
+
+        if (! array_intersect($placeCallsigns, $allowedCallsigns)) {
+            return false;
+        }
+
+        if ($this->hasPendingExamForPlace($place)) {
+            return false;
+        }
+
+        $member = Member::query()->where('cid', $place->account_id)->first();
+
+        if (! $member) {
+            return false;
+        }
+
+        return ! $this->hasFutureBookedSession($member->id, $placeCallsigns);
+    }
+
+    protected function hasPendingExamForPlace(TrainingPlace $place): bool
+    {
+        // Pending exams are only modelled for ATC training positions today.
+        if (! $place->trainingPosition) {
+            return false;
+        }
+
+        return app(TrainingPlaceService::class)->hasPendingExam($place);
+    }
+
+    /**
+     * @param  array<int, string>  $callsigns
+     */
+    protected function hasFutureBookedSession(int $memberId, array $callsigns): bool
+    {
+        if ($callsigns === []) {
+            return false;
+        }
+
+        return Session::query()
+            ->where('student_id', $memberId)
+            ->whereIn('position', $callsigns)
+            ->whereNotNull('taken_date')
+            ->where('taken_date', '>=', now()->toDateString())
+            ->where('session_done', 0)
+            ->whereNull('cancelled_datetime')
+            ->exists();
+    }
+
     public function getStudentsProperty()
     {
         $targetDate = Carbon::parse($this->date);
-        $allowedCallsigns = $this->getAllowedCallsigns();
+        $places = $this->eligibleTrainingPlaces();
+
+        if ($places->isEmpty()) {
+            return collect();
+        }
+
+        $placeByCid = $places->keyBy('account_id');
+        $accountIds = $placeByCid->keys()->all();
 
         return Member::query()
-            ->whereHas('sessions', function ($query) use ($allowedCallsigns) {
-                $query->whereNull('mentor_id')
-                    ->whereNull('filed')
-                    ->whereNull('cancelled_datetime')
-                    ->whereIn('position', $allowedCallsigns);
-            })
+            ->whereIn('cid', $accountIds)
             ->whereHas('availabilities', function ($query) use ($targetDate) {
                 $query->whereDate('date', $targetDate);
             })
@@ -154,15 +240,6 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                     ->orderBy('from', 'asc');
             }])
             ->addSelect([
-                'pending_position' => Session::select('position')
-                    ->whereColumn('student_id', 'members.id')
-                    ->whereNull('mentor_id')
-                    ->whereNull('filed')
-                    ->whereNull('cancelled_datetime')
-                    ->whereIn('position', $allowedCallsigns)
-                    ->orderBy('id')
-                    ->limit(1),
-
                 'last_session_date' => Session::selectRaw("CONCAT(taken_date, ' ', COALESCE(taken_from, '00:00:00'))")
                     ->whereColumn('student_id', 'members.id')
                     ->whereNotNull('taken_date')
@@ -172,7 +249,13 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                     ->limit(1),
             ])
             ->orderByRaw("COALESCE(last_session_date, '1970-01-01 00:00:00') ASC")
-            ->get();
+            ->get()
+            ->each(function (Member $member) use ($placeByCid) {
+                /** @var TrainingPlace|null $place */
+                $place = $placeByCid->get($member->cid);
+                $member->setAttribute('primary_position', $place?->primaryCtsPosition());
+                $member->setAttribute('training_place_id', $place?->id);
+            });
     }
 
     public function render()
@@ -231,30 +314,25 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                 $availability = Availability::findOrFail($arguments['availability_id']);
                 $student = Member::findOrFail($availability->student_id);
 
-                return "Accept Mentoring Session: {$student->name}";
+                return "Create Mentoring Session: {$student->name}";
             })
             ->modalDescription(function (array $arguments) {
                 $availability = Availability::findOrFail($arguments['availability_id']);
                 $date = Carbon::parse($availability->date)->format('l, jS F Y');
 
-                return "You are accepting a mentoring request for {$date}. Please confirm the exact start and end times below.";
+                return "You are creating a mentoring session for {$date}. Please choose a position and confirm the exact start and end times below.";
             })
-            ->modalSubmitActionLabel('Accept Session')
+            ->modalSubmitActionLabel('Create Session')
             ->form(function (array $arguments) {
                 $availability = Availability::findOrFail($arguments['availability_id']);
                 $student = Member::findOrFail($availability->student_id);
-                $allowedCallsigns = $this->getAllowedCallsigns();
+                $place = $this->trainingPlaceForStudentCid((int) $student->cid);
+                $positionOptions = $this->bookablePositionOptions($place);
+                $defaultPosition = $place?->primaryCtsPosition();
 
-                $pendingSession = Session::query()
-                    ->where('student_id', $student->id)
-                    ->whereNull('mentor_id')
-                    ->whereNull('filed')
-                    ->whereNull('cancelled_datetime')
-                    ->whereIn('position', $allowedCallsigns)
-                    ->orderBy('id')
-                    ->first();
-
-                $this->pendingSessionId = $pendingSession?->id;
+                if ($defaultPosition && ! array_key_exists($defaultPosition, $positionOptions)) {
+                    $defaultPosition = array_key_first($positionOptions);
+                }
 
                 $minTime = Carbon::parse($availability->from)->format('H:i');
                 $maxTime = Carbon::parse($availability->to)->format('H:i');
@@ -275,9 +353,13 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                             ->label('Student CID')
                             ->content($student->cid),
 
-                        Placeholder::make('position')
+                        Select::make('position')
                             ->label('Position')
-                            ->content($pendingSession?->position ?? 'N/A'),
+                            ->required()
+                            ->options($positionOptions)
+                            ->default($defaultPosition)
+                            ->live()
+                            ->searchable(),
                     ]),
 
                     Grid::make(2)->schema([
@@ -325,7 +407,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
                     Callout::make('slot_in_past')
                         ->heading('This availability slot is in the past')
-                        ->description('The student\'s availability window for this slot has already expired. You won\'t be able to accept a session during this slot.')
+                        ->description('The student\'s availability window for this slot has already expired. You won\'t be able to create a session during this slot.')
                         ->danger()
                         ->visible(function () use ($availability) {
                             $slotEnd = Carbon::parse($availability->date)
@@ -350,8 +432,8 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                         }),
 
                     Callout::make('overlapping_booking')
-                        ->heading(function (Get $get) use ($availability, $pendingSession) {
-                            $overlap = $this->getOverlappingBooking($get, $availability, $pendingSession);
+                        ->heading(function (Get $get) use ($availability) {
+                            $overlap = $this->getOverlappingBooking($get, $availability);
 
                             if (! $overlap) {
                                 return '';
@@ -359,8 +441,8 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
                             return app(MentoringSessionsService::class)->overlapHeading($overlap);
                         })
-                        ->description(function (Get $get) use ($availability, $pendingSession) {
-                            $overlap = $this->getOverlappingBooking($get, $availability, $pendingSession);
+                        ->description(function (Get $get) use ($availability) {
+                            $overlap = $this->getOverlappingBooking($get, $availability);
 
                             if (! $overlap) {
                                 return '';
@@ -369,8 +451,8 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                             return app(MentoringSessionsService::class)->overlapDescription($overlap);
                         })
                         ->danger()
-                        ->visible(function (Get $get) use ($availability, $pendingSession) {
-                            return $this->getOverlappingBooking($get, $availability, $pendingSession) !== null;
+                        ->visible(function (Get $get) use ($availability) {
+                            return $this->getOverlappingBooking($get, $availability) !== null;
                         }),
                 ];
             })
@@ -378,11 +460,12 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                 $availability = Availability::findOrFail($arguments['availability_id']);
                 $student = Member::findOrFail($availability->student_id);
                 $formattedDate = Carbon::parse($availability->date)->format('d/m/Y');
+                $place = $this->trainingPlaceForStudentCid((int) $student->cid);
 
-                if (! $this->pendingSessionId) {
+                if (! $place) {
                     Notification::make()
                         ->title('Booking Failed')
-                        ->body('We could not find an active pending session request for this slot. It may have been cancelled or already claimed.')
+                        ->body('We could not find an eligible training place for this student.')
                         ->danger()
                         ->send();
 
@@ -402,13 +485,29 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                     return;
                 }
 
-                $success = $mentoringService->acceptSession($this->pendingSessionId, $availability->id, auth()->user(), $data['taken_from'], $data['taken_to']);
-                $this->pendingSessionId = null;
+                try {
+                    $success = $mentoringService->createSession(
+                        $place,
+                        $availability,
+                        auth()->user(),
+                        $data['position'],
+                        $data['taken_from'],
+                        $data['taken_to'],
+                    );
+                } catch (\Throwable $e) {
+                    Notification::make()
+                        ->title('Booking Failed')
+                        ->body($e->getMessage())
+                        ->danger()
+                        ->send();
+
+                    return;
+                }
 
                 if ($success) {
                     Notification::make()
-                        ->title('Session Accepted Successfully')
-                        ->body("You have now accepted a session to mentor {$student->name} on {$formattedDate} from {$data['taken_from']} to {$data['taken_to']}.")
+                        ->title('Session Created Successfully')
+                        ->body("You have created a session to mentor {$student->name} on {$formattedDate} from {$data['taken_from']} to {$data['taken_to']}.")
                         ->success()
                         ->send();
 
@@ -419,7 +518,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
                 Notification::make()
                     ->title('Booking Failed')
-                    ->body('We could not find an active pending session request for this slot. It may have been cancelled or already claimed.')
+                    ->body('We could not create a mentoring session for this slot.')
                     ->danger()
                     ->send();
             });
@@ -430,21 +529,43 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         return self::STUDENTS_PER_PAGE;
     }
 
-    protected function getOverlappingBooking(Get $get, Availability $availability, ?Session $pendingSession): Session|ExamBooking|null
+    protected function trainingPlaceForStudentCid(int $cid): ?TrainingPlace
+    {
+        return $this->eligibleTrainingPlaces()->firstWhere('account_id', $cid);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function bookablePositionOptions(?TrainingPlace $place): array
+    {
+        if (! $place) {
+            return [];
+        }
+
+        $options = array_values(array_intersect(
+            $place->trainableCtsPositions(),
+            $this->getAllowedCallsigns(),
+        ));
+
+        return array_combine($options, $options) ?: [];
+    }
+
+    protected function getOverlappingBooking(Get $get, Availability $availability): Session|ExamBooking|null
     {
         $takenFrom = $get('taken_from');
         $takenTo = $get('taken_to');
+        $position = $get('position');
 
-        if (! $takenFrom || ! $takenTo || ! $pendingSession) {
+        if (! $takenFrom || ! $takenTo || ! $position) {
             return null;
         }
 
         return app(MentoringSessionsService::class)->checkForOverlappingBookings(
-            $pendingSession->position,
+            $position,
             $availability->date,
             $takenFrom,
             $takenTo,
-            $pendingSession->id
         );
     }
 

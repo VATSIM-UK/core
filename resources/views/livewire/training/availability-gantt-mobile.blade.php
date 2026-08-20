@@ -32,14 +32,14 @@
 						@php
 							$isAllCategories = empty($category);
 							$badgeColor = $isAllCategories
-							    ? \App\Filament\Training\Support\MentoringTrainingGroupBadgeColor::forCtsCallsign($student->pending_position)
+							    ? \App\Filament\Training\Support\MentoringTrainingGroupBadgeColor::forCtsCallsign($student->primary_position)
 							    : 'gray';
 						@endphp
 
-						@if ($student->pending_position)
+						@if ($student->primary_position)
 							<div class="mt-0.5 shrink-0 max-w-full overflow-visible">
 								<x-filament::badge :color="$badgeColor" size="sm">
-									{{ $student->pending_position }}
+									{{ $student->primary_position }}
 								</x-filament::badge>
 							</div>
 						@endif

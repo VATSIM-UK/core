@@ -10,9 +10,11 @@ use App\Models\Cts\Availability;
 use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
+use App\Models\Cts\Position as CtsPosition;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Models\Training\Mentoring\MentorTrainingPosition;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedStudentNotification;
@@ -70,6 +72,141 @@ class MentoringSessionsServiceTest extends TestCase
             'id' => $this->studentAccount->generateCTSInternalID($this->studentAccount->id),
             'cid' => $this->studentAccount->id,
         ]);
+    }
+
+    #[Test]
+    public function create_session_creates_taken_session_booking_and_notifications(): void
+    {
+        Notification::fake();
+
+        $trainingPosition = TrainingPosition::factory()->create([
+            'cts_positions' => ['EGLL_APP', 'EGLL_TWR'],
+            'cts_primary_position' => 'EGLL_APP',
+        ]);
+
+        $place = TrainingPlace::withoutEvents(fn () => TrainingPlace::factory()->create([
+            'account_id' => $this->studentAccount->id,
+            'training_position_id' => $trainingPosition->id,
+        ]));
+
+        CtsPosition::factory()->create([
+            'callsign' => 'EGLL_APP',
+            'rts_id' => 9,
+            'prog_sheet_id' => 3,
+        ]);
+
+        $availability = Availability::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'date' => Carbon::tomorrow()->format('Y-m-d'),
+            'from' => '10:00:00',
+            'to' => '14:00:00',
+        ]);
+
+        $this->assertTrue($this->service->createSession(
+            $place,
+            $availability,
+            $this->mentorAccount,
+            'EGLL_APP',
+            '10:00',
+            '12:00',
+        ));
+
+        $session = Session::query()
+            ->where('student_id', $this->studentMember->id)
+            ->where('mentor_id', $this->mentorMember->id)
+            ->latest('id')
+            ->first();
+
+        $this->assertNotNull($session);
+        $this->assertSame(1, (int) $session->taken);
+        $this->assertSame('EGLL_APP', $session->position);
+        $this->assertSame(9, (int) $session->rts_id);
+        $this->assertSame(3, (int) $session->progress_sheet_id);
+        $this->assertSame(Carbon::tomorrow()->format('Y-m-d'), $session->taken_date);
+        $this->assertDatabaseHas('bookings', [
+            'bookable_type' => Session::class,
+            'bookable_id' => $session->id,
+            'type' => Booking::TYPE_MENTORING,
+        ]);
+        Notification::assertSentTo($this->studentAccount, MentoringSessionAcceptedStudentNotification::class);
+        Notification::assertSentTo($this->mentorAccount, MentoringSessionAcceptedMentorNotification::class);
+    }
+
+    #[Test]
+    public function create_session_rejects_position_outside_training_place(): void
+    {
+        $trainingPosition = TrainingPosition::factory()->create([
+            'cts_positions' => ['EGLL_APP'],
+            'cts_primary_position' => 'EGLL_APP',
+        ]);
+
+        $place = TrainingPlace::withoutEvents(fn () => TrainingPlace::factory()->create([
+            'account_id' => $this->studentAccount->id,
+            'training_position_id' => $trainingPosition->id,
+        ]));
+
+        $availability = Availability::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'date' => Carbon::tomorrow()->format('Y-m-d'),
+            'from' => '10:00:00',
+            'to' => '14:00:00',
+        ]);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The selected position is not valid for this training place.');
+
+        $this->service->createSession(
+            $place,
+            $availability,
+            $this->mentorAccount,
+            'EGLL_TWR',
+            '10:00',
+            '12:00',
+        );
+    }
+
+    #[Test]
+    public function create_session_rejects_when_mentor_is_not_authorized_for_the_position(): void
+    {
+        $unauthorizedMentorAccount = Account::factory()->create();
+        Member::factory()->create([
+            'id' => $unauthorizedMentorAccount->generateCTSInternalID($unauthorizedMentorAccount->id),
+            'cid' => $unauthorizedMentorAccount->id,
+        ]);
+
+        $trainingPosition = TrainingPosition::factory()->create([
+            'cts_positions' => ['EGLL_APP'],
+            'cts_primary_position' => 'EGLL_APP',
+        ]);
+
+        $place = TrainingPlace::withoutEvents(fn () => TrainingPlace::factory()->create([
+            'account_id' => $this->studentAccount->id,
+            'training_position_id' => $trainingPosition->id,
+        ]));
+
+        CtsPosition::factory()->create([
+            'callsign' => 'EGLL_APP',
+            'rts_id' => 9,
+            'prog_sheet_id' => 3,
+        ]);
+
+        $availability = Availability::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'date' => Carbon::tomorrow()->format('Y-m-d'),
+            'from' => '10:00:00',
+            'to' => '14:00:00',
+        ]);
+
+        $this->expectException(AuthorizationException::class);
+
+        $this->service->createSession(
+            $place,
+            $availability,
+            $unauthorizedMentorAccount,
+            'EGLL_APP',
+            '10:00',
+            '12:00',
+        );
     }
 
     #[Test]
@@ -778,7 +915,7 @@ class MentoringSessionsServiceTest extends TestCase
     }
 
     #[Test]
-    public function cancel_session_creates_new_pending_session_request_for_student(): void
+    public function cancel_session_does_not_create_a_new_pending_session_request_for_student(): void
     {
         Notification::fake();
 
@@ -804,25 +941,11 @@ class MentoringSessionsServiceTest extends TestCase
             $this->mentorAccount,
         );
 
-        $newPending = Session::query()
-            ->where('student_id', $this->studentMember->id)
-            ->whereNull('mentor_id')
-            ->whereNull('cancelled_datetime')
-            ->where('id', '!=', $session->id)
-            ->latest('id')
-            ->first();
-
-        $this->assertNotNull($newPending);
-        $this->assertSame($pendingBefore + 1, Session::query()
+        $this->assertSame($pendingBefore, Session::query()
             ->where('student_id', $this->studentMember->id)
             ->whereNull('mentor_id')
             ->whereNull('cancelled_datetime')
             ->count());
-        $this->assertSame(42, $newPending->rts_id);
-        $this->assertSame('EGLL_APP', $newPending->position);
-        $this->assertSame(7, $newPending->progress_sheet_id);
-        $this->assertSame(3, $newPending->student_rating);
-        $this->assertNotNull($newPending->request_time);
     }
 
     #[Test]
@@ -890,7 +1013,7 @@ class MentoringSessionsServiceTest extends TestCase
     }
 
     #[Test]
-    public function cancel_session_by_student_creates_new_pending_session_request(): void
+    public function cancel_session_by_student_does_not_create_a_new_pending_session_request(): void
     {
         Notification::fake();
 
@@ -904,26 +1027,23 @@ class MentoringSessionsServiceTest extends TestCase
             'taken' => 1,
         ]);
 
+        $pendingBefore = Session::query()
+            ->where('student_id', $this->studentMember->id)
+            ->whereNull('mentor_id')
+            ->whereNull('cancelled_datetime')
+            ->count();
+
         $this->service->cancelSession(
             $session->id,
             'Unable to attend.',
             $this->studentAccount,
         );
 
-        $newPending = Session::query()
+        $this->assertSame($pendingBefore, Session::query()
             ->where('student_id', $this->studentMember->id)
             ->whereNull('mentor_id')
             ->whereNull('cancelled_datetime')
-            ->where('id', '!=', $session->id)
-            ->latest('id')
-            ->first();
-
-        $this->assertNotNull($newPending);
-        $this->assertSame(42, $newPending->rts_id);
-        $this->assertSame('EGLL_APP', $newPending->position);
-        $this->assertSame(7, $newPending->progress_sheet_id);
-        $this->assertSame(3, $newPending->student_rating);
-        $this->assertNotNull($newPending->request_time);
+            ->count());
     }
 
     #[Test]
