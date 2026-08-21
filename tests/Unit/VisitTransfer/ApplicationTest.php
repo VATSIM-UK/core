@@ -354,4 +354,31 @@ class ApplicationTest extends TestCase
         $this->assertTrue($this->user->fresh()->hasState($visiting));
 
     }
+
+    #[Test]
+    public function rejecting_an_application_records_the_reason_as_an_account_note()
+    {
+        $application = Application::factory()->transfer('atc')->create([
+            'account_id' => $this->user->id,
+            'status' => Application::STATUS_SUBMITTED,
+        ]);
+
+        $application->reject('Some public reason.', 'A staff note about the rejection.');
+
+        $this->assertTrue($application->fresh()->is_rejected);
+        $this->assertStringContainsString('A staff note about the rejection.', $this->user->fresh()->notes->first()->content);
+    }
+
+    #[Test]
+    public function it_can_reopen_a_rejected_application_for_manual_review()
+    {
+        $application = Application::factory()->transfer('atc')->create([
+            'account_id' => $this->user->id,
+            'status' => Application::STATUS_REJECTED,
+        ]);
+
+        $application->reopenForReview();
+
+        $this->assertTrue($application->fresh()->is_under_review);
+    }
 }
