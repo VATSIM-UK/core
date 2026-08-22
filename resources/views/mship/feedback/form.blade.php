@@ -1,12 +1,80 @@
 @extends('layout')
 
+@section('styles')
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+@endsection
+
 @section('scripts')
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/build/jquery.datetimepicker.full.min.js"
 		integrity="sha384-8Lb23xW0dVl+HHrv90JF6PpwygXa7Z0zZIK9+RWorNDyubrG7Ppu7JJw32U8op0i" crossorigin="anonymous">
 	</script>
+		
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('.datetimepickercustom').datetimepicker();
+
+			$('.searchable-select').select2({
+				placeholder: "Select or search position...",
+				allowClear: true,
+				width: '100%'
+			});
+
+			var $pages = $('.feedback-page');
+			var total = $pages.length;
+			var idx = 0;
+
+			function renderPage() {
+				$pages.hide().eq(idx).show();
+				$('#feedbackStep').text(idx + 1);
+				$('#feedbackPrev').toggle(idx > 0);
+				$('#feedbackNext').toggle(idx < total - 1);
+				$('#feedbackSubmit').toggle(idx === total - 1);
+			}
+
+			function pageValid() {
+				var ok = true,
+					first = null;
+				$pages.eq(idx).find('.form-group[data-required="true"]').each(function() {
+					var $g = $(this),
+						filled = false;
+					$g.find('input[type=radio],input[type=checkbox]').each(function() {
+						if (this.checked) filled = true;
+					});
+					
+					$g.find('input:not([type=radio]):not([type=checkbox]),textarea,select').each(function() {
+						if ($.trim($(this).val() || '') !== '') filled = true;
+					});
+					
+					$g.find('.select2-hidden-accessible').each(function() {
+						if ($.trim($(this).val() || '') !== '') filled = true;
+					});
+
+					$g.toggleClass('has-error', !filled);
+					if (!filled) {
+						ok = false;
+						first = first || $g;
+					}
+				});
+				if (first) $('html,body').animate({
+					scrollTop: first.offset().top - 100
+				}, 200);
+				return ok;
+			}
+
+			$('#feedbackNext').click(function() {
+				if (pageValid()) {
+					idx++;
+					renderPage();
+				}
+			});
+			$('#feedbackPrev').click(function() {
+				idx--;
+				renderPage();
+			});
+
+			if (total) renderPage();
 		});
 	</script>
 @endsection
@@ -15,10 +83,7 @@
 	<div class="panel panel-ukblue">
 		<div class="panel-heading">Submit Feedback</div>
 		<div class="panel-body">
-			<!-- Content Of Panel [START] -->
-			<!-- Top Row [START] -->
 			<div class="row">
-
 				<div class="col-md-7 col-md-offset-2">
 					@if (!isset($form))
 						<form method="POST" action="{{ route('mship.feedback.new') }}">
@@ -61,14 +126,26 @@
 								All questions are required unless an <i>(optional)</i> is displayed beside it.
 							</p>
 							<hr>
-							@foreach ($questions as $question)
-								<div class="form-group{{ $errors->has($question->slug) ? ' has-error' : '' }}">
-									<label for="{{ $question->slug }}">{!! $question->question . ($question->required ? '' : ' (optional)') !!}</label> </br>
-									{!! $question->form_html !!}
+
+							@php $pages = $questions->groupBy('page'); @endphp
+
+							<p class="text-center">Step <span id="feedbackStep">1</span> of {{ $pages->count() }}</p>
+							@foreach ($pages as $pageQuestions)
+								<div class="feedback-page" style="{{ $loop->first ? '' : 'display:none;' }}">
+									@foreach ($pageQuestions as $question)
+										<div class="form-group{{ $errors->has($question->slug) ? ' has-error' : '' }}"
+											data-required="{{ $question->required ? 'true' : 'false' }}">
+											<label for="{{ $question->slug }}">{!! $question->question . ($question->required ? '' : ' (optional)') !!}</label> </br>
+											{!! $question->form_html !!}
+										</div>
+									@endforeach
 								</div>
 							@endforeach
-							<div class="form-group">
-								<button type="submit" class="btn btn-success">Submit</button>
+
+							<div class="form-group text-center">
+								<button type="button" id="feedbackPrev" class="btn btn-default" style="display:none;">Previous</button>
+								<button type="button" id="feedbackNext" class="btn btn-primary">Next <i class="fa fa-arrow-right"></i></button>
+								<button type="submit" id="feedbackSubmit" class="btn btn-success" style="display:none;">Submit</button>
 							</div>
 						</form>
 					@endif
