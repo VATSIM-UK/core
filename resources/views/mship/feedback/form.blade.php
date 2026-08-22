@@ -20,23 +20,42 @@
 			}
 
 			function pageValid() {
-				var ok = true, first = null;
-				$pages.eq(idx).find('.form-group[data-required="true"]').each(function () {
-					var $g = $(this), filled = false;
-					$g.find('input[type=radio],input[type=checkbox]').each(function () { if (this.checked) filled = true; });
-					$g.find('input:not([type=radio]):not([type=checkbox]),textarea,select').each(function () { if ($.trim($(this).val() || '') !== '') filled = true; });
+				var ok = true,
+					first = null;
+				$pages.eq(idx).find('.form-group[data-required="true"]').each(function() {
+					var $g = $(this),
+						filled = false;
+					$g.find('input[type=radio],input[type=checkbox]').each(function() {
+						if (this.checked) filled = true;
+					});
+					$g.find('input:not([type=radio]):not([type=checkbox]),textarea,select').each(function() {
+						if ($.trim($(this).val() || '') !== '') filled = true;
+					});
 					$g.toggleClass('has-error', !filled);
-					if (!filled) { ok = false; first = first || $g; }
+					if (!filled) {
+						ok = false;
+						first = first || $g;
+					}
 				});
-				if (first) $('html,body').animate({ scrollTop: first.offset().top - 100 }, 200);
+				if (first) $('html,body').animate({
+					scrollTop: first.offset().top - 100
+				}, 200);
 				return ok;
 			}
 
-			$('#feedbackNext').click(function () { if (pageValid()) { idx++; renderPage(); } });
-			$('#feedbackPrev').click(function () { idx--; renderPage(); });
+			$('#feedbackNext').click(function() {
+				if (pageValid()) {
+					idx++;
+					renderPage();
+				}
+			});
+			$('#feedbackPrev').click(function() {
+				idx--;
+				renderPage();
+			});
 
 			if (total) renderPage();
-			});
+		});
 	</script>
 @endsection
 
@@ -90,26 +109,27 @@
 								All questions are required unless an <i>(optional)</i> is displayed beside it.
 							</p>
 							<hr>
-							
+
 							@php $pages = $questions->groupBy('page'); @endphp
 
 							<p class="text-center">Step <span id="feedbackStep">1</span> of {{ $pages->count() }}</p>
-								@foreach ($pages as $pageQuestions)
-									<div class="feedback-page" style="{{ $loop->first ? '' : 'display:none;' }}">
-										@foreach ($pageQuestions as $question)
-											<div class="form-group{{ $errors->has($question->slug) ? ' has-error' : '' }}" data-required="{{ $question->required ? 'true' : 'false' }}">
-												<label for="{{ $question->slug }}">{!! $question->question . ($question->required ? '' : ' (optional)') !!}</label> </br>
-												{!! $question->form_html !!}
-											</div>
-										@endforeach
-									</div>
-								@endforeach
-
-								<div class="form-group text-center">
-									<button type="button" id="feedbackPrev" class="btn btn-default" style="display:none;">Previous</button>
-									<button type="button" id="feedbackNext" class="btn btn-primary">Next <i class="fa fa-arrow-right"></i></button>
-									<button type="submit" id="feedbackSubmit" class="btn btn-success" style="display:none;">Submit</button>
+							@foreach ($pages as $pageQuestions)
+								<div class="feedback-page" style="{{ $loop->first ? '' : 'display:none;' }}">
+									@foreach ($pageQuestions as $question)
+										<div class="form-group{{ $errors->has($question->slug) ? ' has-error' : '' }}"
+											data-required="{{ $question->required ? 'true' : 'false' }}">
+											<label for="{{ $question->slug }}">{!! $question->question . ($question->required ? '' : ' (optional)') !!}</label> </br>
+											{!! $question->form_html !!}
+										</div>
+									@endforeach
 								</div>
+							@endforeach
+
+							<div class="form-group text-center">
+								<button type="button" id="feedbackPrev" class="btn btn-default" style="display:none;">Previous</button>
+								<button type="button" id="feedbackNext" class="btn btn-primary">Next <i class="fa fa-arrow-right"></i></button>
+								<button type="submit" id="feedbackSubmit" class="btn btn-success" style="display:none;">Submit</button>
+							</div>
 						</form>
 					@endif
 				</div>
