@@ -7,7 +7,36 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('.datetimepickercustom').datetimepicker();
-		});
+			var $pages = $('.feedback-page');
+			var total = $pages.length;
+			var idx = 0;
+
+			function renderPage() {
+				$pages.hide().eq(idx).show();
+				$('#feedbackStep').text(idx + 1);
+				$('#feedbackPrev').toggle(idx > 0);
+				$('#feedbackNext').toggle(idx < total - 1);
+				$('#feedbackSubmit').toggle(idx === total - 1);
+			}
+
+			function pageValid() {
+				var ok = true, first = null;
+				$pages.eq(idx).find('.form-group[data-required="true"]').each(function () {
+					var $g = $(this), filled = false;
+					$g.find('input[type=radio],input[type=checkbox]').each(function () { if (this.checked) filled = true; });
+					$g.find('input:not([type=radio]):not([type=checkbox]),textarea,select').each(function () { if ($.trim($(this).val() || '') !== '') filled = true; });
+					$g.toggleClass('has-error', !filled);
+					if (!filled) { ok = false; first = first || $g; }
+				});
+				if (first) $('html,body').animate({ scrollTop: first.offset().top - 100 }, 200);
+				return ok;
+			}
+
+			$('#feedbackNext').click(function () { if (pageValid()) { idx++; renderPage(); } });
+			$('#feedbackPrev').click(function () { idx--; renderPage(); });
+
+			if (total) renderPage();
+			});
 	</script>
 @endsection
 
@@ -61,15 +90,26 @@
 								All questions are required unless an <i>(optional)</i> is displayed beside it.
 							</p>
 							<hr>
-							@foreach ($questions as $question)
-								<div class="form-group{{ $errors->has($question->slug) ? ' has-error' : '' }}">
-									<label for="{{ $question->slug }}">{!! $question->question . ($question->required ? '' : ' (optional)') !!}</label> </br>
-									{!! $question->form_html !!}
+							
+							@php $pages = $questions->groupBy('page'); @endphp
+
+							<p class="text-center">Step <span id="feedbackStep">1</span> of {{ $pages->count() }}</p>
+								@foreach ($pages as $pageQuestions)
+									<div class="feedback-page" style="{{ $loop->first ? '' : 'display:none;' }}">
+										@foreach ($pageQuestions as $question)
+											<div class="form-group{{ $errors->has($question->slug) ? ' has-error' : '' }}" data-required="{{ $question->required ? 'true' : 'false' }}">
+												<label for="{{ $question->slug }}">{!! $question->question . ($question->required ? '' : ' (optional)') !!}</label> </br>
+												{!! $question->form_html !!}
+											</div>
+										@endforeach
+									</div>
+								@endforeach
+
+								<div class="form-group text-center">
+									<button type="button" id="feedbackPrev" class="btn btn-default" style="display:none;">Previous</button>
+									<button type="button" id="feedbackNext" class="btn btn-primary">Next <i class="fa fa-arrow-right"></i></button>
+									<button type="submit" id="feedbackSubmit" class="btn btn-success" style="display:none;">Submit</button>
 								</div>
-							@endforeach
-							<div class="form-group">
-								<button type="submit" class="btn btn-success">Submit</button>
-							</div>
 						</form>
 					@endif
 				</div>
