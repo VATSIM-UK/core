@@ -225,6 +225,134 @@ class FeedbackTest extends TestCase
             ->assertSessionHas('success');
     }
 
+    #[Test]
+    public function test_it_orders_questions_by_page_then_sequence()
+    {
+        $form = Form::whereSlug('atc')->first();
+        if (! $form) {
+            $this->markTestSkipped('could not find atc form');
+        }
+
+        $response = $this->actingAs($this->user, 'web')
+            ->get(route('mship.feedback.new.form', $form->slug));
+
+        $response->assertSuccessful();
+
+        $questions = $form->questions()->orderBy('page')->orderBy('sequence')->get();
+        $previousPage = 0;
+        $previousSequence = 0;
+        foreach ($questions as $question) {
+            if ($question->page === $previousPage) {
+                $this->assertGreaterThan($previousSequence, $question->sequence);
+            } else {
+                $this->assertGreaterThan($previousPage, $question->page);
+            }
+            $previousPage = $question->page;
+            $previousSequence = $question->sequence;
+        }
+    }
+
+    #[Test]
+    public function test_it_renders_feedback_page_navigation_elements()
+    {
+        $this->actingAs($this->user, 'web')
+            ->get(route('mship.feedback.new.form', $this->form->slug))
+            ->assertSuccessful()
+            ->assertSee('feedbackStep')
+            ->assertSee('feedbackPrev')
+            ->assertSee('feedbackNext')
+            ->assertSee('feedbackSubmit');
+    }
+
+    #[Test]
+    public function test_it_renders_step_indicator_with_page_count()
+    {
+        $this->actingAs($this->user, 'web')
+            ->get(route('mship.feedback.new.form', $this->form->slug))
+            ->assertSuccessful()
+            ->assertSee('Step')
+            ->assertSee('of');
+    }
+
+    #[Test]
+    public function test_it_renders_feedback_page_containers()
+    {
+        $this->actingAs($this->user, 'web')
+            ->get(route('mship.feedback.new.form', $this->form->slug))
+            ->assertSuccessful()
+            ->assertSee('feedback-page', false);
+    }
+
+    #[Test]
+    public function test_it_renders_required_data_attributes_on_form_groups()
+    {
+        $response = $this->actingAs($this->user, 'web')
+            ->get(route('mship.feedback.new.form', $this->form->slug));
+
+        $response->assertSuccessful();
+
+        $questions = $this->form->questions()->orderBy('page')->orderBy('sequence')->get();
+        $hasRequired = $questions->contains('required', true);
+        $hasOptional = $questions->contains('required', false);
+
+        if ($hasRequired) {
+            $response->assertSee('data-required="true"', false);
+        }
+        if ($hasOptional) {
+            $response->assertSee('data-required="false"', false);
+        }
+    }
+
+    #[Test]
+    public function test_it_groups_questions_by_page_in_response()
+    {
+        $response = $this->actingAs($this->user, 'web')
+            ->get(route('mship.feedback.new.form', $this->form->slug));
+
+        $response->assertSuccessful();
+
+        $questions = $this->form->questions()->orderBy('page')->orderBy('sequence')->get();
+        $pages = $questions->groupBy('page');
+
+        $html = $response->getContent();
+        foreach ($pages as $pageNum => $pageQuestions) {
+            foreach ($pageQuestions as $question) {
+                $this->assertStringContainsString(
+                    $question->question,
+                    $html,
+                    "Question '{$question->slug}' (page {$pageNum}) not found in response"
+                );
+            }
+        }
+    }
+
+    #[Test]
+    public function test_it_renders_multi_page_form_with_correct_step_count()
+    {
+        $response = $this->actingAs($this->user, 'web')
+            ->get(route('mship.feedback.new.form', $this->form->slug));
+
+        $response->assertSuccessful();
+
+        $questions = $this->form->questions()->orderBy('page')->orderBy('sequence')->get();
+        $pageCount = $questions->groupBy('page')->count();
+
+        $response->assertSee('of '.$pageCount);
+    }
+
+    #[Test]
+    public function test_it_renders_navigation_buttons_for_multi_page_form()
+    {
+        $response = $this->actingAs($this->user, 'web')
+            ->get(route('mship.feedback.new.form', $this->form->slug));
+
+        $response->assertSuccessful();
+
+        $response->assertSee('btn-default', false)
+            ->assertSee('btn-primary', false)
+            ->assertSee('btn-success', false);
+    }
+
     /**
      * Build form data with answers to all questions.
      */
