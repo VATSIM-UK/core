@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mship;
 
 use App\Events\Mship\Feedback\NewFeedbackEvent;
+use App\Models\Atc\Position;
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Answer;
 use App\Models\Mship\Feedback\Form;
@@ -57,6 +58,29 @@ class Feedback extends \App\Http\Controllers\BaseController
         // Lets parse the questions ready for inserting
         foreach ($questions as $question) {
             $question->form_html = '';
+
+            if ($question->type->name == 'position_selector') {
+                $callsigns = Position::query()->orderBy('callsign')->pluck('callsign', 'callsign')->toArray();
+
+                $options = $question->options;
+                $options['values'] = $callsigns;
+                $question->options = $options;
+
+                $selectHtml = sprintf('<select class="form-control searchable-select" name="%1$s" id="%1$s">', $question->slug);
+                $selectHtml .= '<option value=""></option>';
+                foreach ($callsigns as $key => $value) {
+                    $selected = '';
+                    if (old($question->slug) == $value) {
+                        $selected = 'selected';
+                    }
+                    $selectHtml .= sprintf($question->type->code, $question->slug, old($question->slug), $value, $value, $selected);
+                }
+                $selectHtml .= '</select>';
+                $question->form_html = $selectHtml;
+
+                continue;
+            }
+
             if ($question->type->requires_value == true) {
                 if (isset($question->options['values'])) {
                     foreach ($question->options['values'] as $key => $value) {

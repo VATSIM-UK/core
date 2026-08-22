@@ -1,12 +1,26 @@
 @extends('layout')
 
+@section('styles')
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+@endsection
+
 @section('scripts')
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/build/jquery.datetimepicker.full.min.js"
 		integrity="sha384-8Lb23xW0dVl+HHrv90JF6PpwygXa7Z0zZIK9+RWorNDyubrG7Ppu7JJw32U8op0i" crossorigin="anonymous">
 	</script>
+		
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('.datetimepickercustom').datetimepicker();
+
+			$('.searchable-select').select2({
+				placeholder: "Select or search position...",
+				allowClear: true,
+				width: '100%'
+			});
+
 			var $pages = $('.feedback-page');
 			var total = $pages.length;
 			var idx = 0;
@@ -28,9 +42,15 @@
 					$g.find('input[type=radio],input[type=checkbox]').each(function() {
 						if (this.checked) filled = true;
 					});
+					
 					$g.find('input:not([type=radio]):not([type=checkbox]),textarea,select').each(function() {
 						if ($.trim($(this).val() || '') !== '') filled = true;
 					});
+					
+					$g.find('.select2-hidden-accessible').each(function() {
+						if ($.trim($(this).val() || '') !== '') filled = true;
+					});
+
 					$g.toggleClass('has-error', !filled);
 					if (!filled) {
 						ok = false;
@@ -63,10 +83,7 @@
 	<div class="panel panel-ukblue">
 		<div class="panel-heading">Submit Feedback</div>
 		<div class="panel-body">
-			<!-- Content Of Panel [START] -->
-			<!-- Top Row [START] -->
 			<div class="row">
-
 				<div class="col-md-7 col-md-offset-2">
 					@if (!isset($form))
 						<form method="POST" action="{{ route('mship.feedback.new') }}">
