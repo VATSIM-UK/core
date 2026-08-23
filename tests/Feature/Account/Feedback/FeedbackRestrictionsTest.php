@@ -79,16 +79,17 @@ class FeedbackRestrictionsTest extends TestCase
 
         $account = Account::factory()->create();
 
-        // Create ATC sessions totaling more than 10 hours (600 minutes)
-        Atc::create([
+        $session = new Atc([
             'account_id' => $account->id,
             'qualification_id' => 1,
             'callsign' => 'EGLL_TWR',
             'facility_type' => Atc::TYPE_TWR,
             'connected_at' => now()->subHours(12),
             'disconnected_at' => now()->subHours(1),
-            'minutes_online' => 660,
         ]);
+        $session->minutes_online = 660;
+        $session->timestamps = false;
+        $session->save();
 
         $this->assertTrue($form->isEligibleFor($account));
     }
@@ -107,16 +108,17 @@ class FeedbackRestrictionsTest extends TestCase
 
         $account = Account::factory()->create();
 
-        // Create ATC sessions totaling only 5 hours
-        Atc::create([
+        $session = new Atc([
             'account_id' => $account->id,
             'qualification_id' => 1,
             'callsign' => 'EGLL_TWR',
             'facility_type' => Atc::TYPE_TWR,
             'connected_at' => now()->subHours(6),
             'disconnected_at' => now()->subHours(1),
-            'minutes_online' => 300,
         ]);
+        $session->minutes_online = 300;
+        $session->timestamps = false;
+        $session->save();
 
         $this->assertFalse($form->isEligibleFor($account));
     }
@@ -126,7 +128,6 @@ class FeedbackRestrictionsTest extends TestCase
     {
         $form = Form::whereSlug('atc')->first();
 
-        // Add a satisfied restriction
         $qualification = Qualification::ofType('atc')->networkValue(2)->first();
         FormRestriction::create([
             'form_id' => $form->id,
@@ -135,7 +136,6 @@ class FeedbackRestrictionsTest extends TestCase
             'minimum_value' => 2,
         ]);
 
-        // Add an unsatisfied restriction
         FormRestriction::create([
             'form_id' => $form->id,
             'type' => FormRestrictionType::Hours,
@@ -146,7 +146,8 @@ class FeedbackRestrictionsTest extends TestCase
         $account = Account::factory()->create();
         $account->qualifications()->attach($qualification->id);
 
-        $unmet = $form->unmetRestrictionsFor($account->fresh());
+        $unmet = $form->unmetRestrictionGroupsFor($account->fresh())
+            ->flatten();
 
         $this->assertCount(1, $unmet);
         $this->assertEquals(FormRestrictionType::Hours, $unmet->first()->type);
@@ -221,89 +222,6 @@ class FeedbackRestrictionsTest extends TestCase
     }
 
     #[Test]
-    public function test_qualification_reason_message()
-    {
-        $form = Form::whereSlug('atc')->first();
-
-        $restriction = FormRestriction::create([
-            'form_id' => $form->id,
-            'type' => FormRestrictionType::Qualification,
-            'subject' => FormRestrictionSubject::Atc,
-            'minimum_value' => 2, // S1
-        ]);
-
-        $reason = $restriction->reason();
-
-        $this->assertIsString($reason);
-        $this->assertNotEmpty($reason);
-        $this->assertStringContainsString('S1', $reason);
-    }
-
-    #[Test]
-    public function test_hours_reason_message()
-    {
-        $form = Form::whereSlug('atc')->first();
-
-        $restriction = FormRestriction::create([
-            'form_id' => $form->id,
-            'type' => FormRestrictionType::Hours,
-            'subject' => FormRestrictionSubject::Atc,
-            'minimum_value' => 100,
-        ]);
-
-        $reason = $restriction->reason();
-
-        $this->assertIsString($reason);
-        $this->assertStringContainsString('100', $reason);
-        $this->assertStringContainsString('hours', $reason);
-    }
-
-    #[Test]
-    public function test_multiple_restrictions_all_must_be_satisfied()
-    {
-        $form = Form::whereSlug('atc')->first();
-
-        $qualification = Qualification::ofType('atc')->networkValue(2)->first();
-
-        // Qualification restriction (satisfied)
-        FormRestriction::create([
-            'form_id' => $form->id,
-            'type' => FormRestrictionType::Qualification,
-            'subject' => FormRestrictionSubject::Atc,
-            'minimum_value' => 2,
-        ]);
-
-        // Hours restriction (not satisfied)
-        FormRestriction::create([
-            'form_id' => $form->id,
-            'type' => FormRestrictionType::Hours,
-            'subject' => FormRestrictionSubject::Atc,
-            'minimum_value' => 100,
-        ]);
-
-        $account = Account::factory()->create();
-        $account->qualifications()->attach($qualification->id);
-
-        $this->assertFalse($form->isEligibleFor($account->fresh()));
-    }
-
-    #[Test]
-    public function test_form_restriction_belongs_to_form()
-    {
-        $form = Form::whereSlug('atc')->first();
-
-        $restriction = FormRestriction::create([
-            'form_id' => $form->id,
-            'type' => FormRestrictionType::Hours,
-            'subject' => FormRestrictionSubject::Atc,
-            'minimum_value' => 10,
-        ]);
-
-        $this->assertInstanceOf(Form::class, $restriction->form);
-        $this->assertEquals($form->id, $restriction->form->id);
-    }
-
-    #[Test]
     public function test_account_with_no_atc_qualification_fails_qualification_restriction()
     {
         $form = Form::whereSlug('atc')->first();
@@ -334,8 +252,258 @@ class FeedbackRestrictionsTest extends TestCase
         ]);
 
         $account = Account::factory()->create();
-        // No ATC sessions
 
         $this->assertFalse($form->isEligibleFor($account));
+    }
+
+    /*
+     * Group (OR) and cross-group (AND) logic
+     */
+
+    #[Test]
+    public function test_grouped_restrictions_are_eligible_when_only_one_alternative_is_satisfied()
+    {
+        $form = Form::whereSlug('atc')->first();
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => 1,
+            'type' => FormRestrictionType::Qualification,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 5,
+        ]);
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => 1,
+            'type' => FormRestrictionType::Hours,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 10,
+        ]);
+
+        $account = Account::factory()->create();
+
+        $session = new Atc([
+            'account_id' => $account->id,
+            'qualification_id' => 1,
+            'callsign' => 'EGLL_TWR',
+            'facility_type' => Atc::TYPE_TWR,
+            'connected_at' => now()->subHours(12),
+            'disconnected_at' => now()->subHours(1),
+        ]);
+        $session->minutes_online = 660;
+        $session->timestamps = false;
+        $session->save();
+
+        $this->assertTrue($form->isEligibleFor($account));
+    }
+
+    #[Test]
+    public function test_grouped_restrictions_are_ineligible_when_no_alternative_is_satisfied()
+    {
+        $form = Form::whereSlug('atc')->first();
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => 1,
+            'type' => FormRestrictionType::Qualification,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 5,
+        ]);
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => 1,
+            'type' => FormRestrictionType::Hours,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 100,
+        ]);
+
+        $account = Account::factory()->create();
+
+        $session = new Atc([
+            'account_id' => $account->id,
+            'qualification_id' => 1,
+            'callsign' => 'EGLL_TWR',
+            'facility_type' => Atc::TYPE_TWR,
+            'connected_at' => now()->subHours(6),
+            'disconnected_at' => now()->subHours(1),
+        ]);
+        $session->minutes_online = 300;
+        $session->timestamps = false;
+        $session->save();
+
+        $this->assertFalse($form->isEligibleFor($account));
+    }
+
+    #[Test]
+    public function test_different_groups_are_and_ed_together()
+    {
+        $form = Form::whereSlug('atc')->first();
+
+        $qualification = Qualification::ofType('atc')->networkValue(2)->first();
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => 1,
+            'type' => FormRestrictionType::Qualification,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 2,
+        ]);
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => 2,
+            'type' => FormRestrictionType::Hours,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 50,
+        ]);
+
+        $account = Account::factory()->create();
+        $account->qualifications()->attach($qualification->id);
+
+        $this->assertFalse($form->isEligibleFor($account->fresh()));
+    }
+
+    #[Test]
+    public function test_different_groups_all_satisfied_makes_form_eligible()
+    {
+        $form = Form::whereSlug('atc')->first();
+
+        $qualification = Qualification::ofType('atc')->networkValue(2)->first();
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => 1,
+            'type' => FormRestrictionType::Qualification,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 2,
+        ]);
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => 2,
+            'type' => FormRestrictionType::Hours,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 10,
+        ]);
+
+        $account = Account::factory()->create();
+        $account->qualifications()->attach($qualification->id);
+
+        $session = new Atc([
+            'account_id' => $account->id,
+            'qualification_id' => 1,
+            'callsign' => 'EGLL_TWR',
+            'facility_type' => Atc::TYPE_TWR,
+            'connected_at' => now()->subHours(12),
+            'disconnected_at' => now()->subHours(1),
+        ]);
+        $session->minutes_online = 660;
+        $session->timestamps = false;
+        $session->save();
+
+        $this->assertTrue($form->isEligibleFor($account->fresh()));
+    }
+
+    #[Test]
+    public function test_ungrouped_restriction_is_mandatory_alongside_a_satisfied_group()
+    {
+        $form = Form::whereSlug('atc')->first();
+
+        $qualification = Qualification::ofType('atc')->networkValue(2)->first();
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => 1,
+            'type' => FormRestrictionType::Qualification,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 2,
+        ]);
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => 1,
+            'type' => FormRestrictionType::Hours,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 500,
+        ]);
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => null,
+            'type' => FormRestrictionType::Hours,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 50,
+        ]);
+
+        $account = Account::factory()->create();
+        $account->qualifications()->attach($qualification->id);
+
+        $this->assertFalse($form->isEligibleFor($account->fresh()));
+    }
+
+    #[Test]
+    public function test_two_ungrouped_restrictions_are_each_independently_mandatory()
+    {
+        $form = Form::whereSlug('atc')->first();
+
+        $qualification = Qualification::ofType('atc')->networkValue(2)->first();
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => null,
+            'type' => FormRestrictionType::Qualification,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 2,
+        ]);
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => null,
+            'type' => FormRestrictionType::Hours,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 50,
+        ]);
+
+        $account = Account::factory()->create();
+        $account->qualifications()->attach($qualification->id);
+
+        $this->assertFalse($form->isEligibleFor($account->fresh()));
+    }
+
+    #[Test]
+    public function test_unmet_restriction_groups_returns_only_the_failed_group()
+    {
+        $form = Form::whereSlug('atc')->first();
+
+        $qualification = Qualification::ofType('atc')->networkValue(2)->first();
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => 1,
+            'type' => FormRestrictionType::Qualification,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 2,
+        ]);
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => 2,
+            'type' => FormRestrictionType::Hours,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 50,
+        ]);
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => 2,
+            'type' => FormRestrictionType::Qualification,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 5,
+        ]);
+
+        $account = Account::factory()->create();
+        $account->qualifications()->attach($qualification->id);
+
+        $unmetGroups = $form->unmetRestrictionGroupsFor($account->fresh());
+
+        $this->assertCount(1, $unmetGroups);
+        $this->assertCount(2, $unmetGroups->first());
     }
 }

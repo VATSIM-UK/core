@@ -15,6 +15,7 @@ class FormRestriction extends Model
 
     protected $fillable = [
         'form_id',
+        'restriction_group',
         'type',
         'subject',
         'minimum_value',
@@ -24,6 +25,7 @@ class FormRestriction extends Model
         'type' => FormRestrictionType::class,
         'subject' => FormRestrictionSubject::class,
         'minimum_value' => 'integer',
+        'restriction_group' => 'integer',
     ];
 
     public function form()
@@ -69,8 +71,8 @@ class FormRestriction extends Model
     public function reason(): string
     {
         return match ($this->type) {
-            FormRestrictionType::Qualification => "requires at least a {$this->minimumQualificationCode()} rating to complete this feedback form",
-            FormRestrictionType::Hours => "requires at least {$this->minimum_value} {$this->subject->label()} hours to submit",
+            FormRestrictionType::Qualification => "requires at least a {$this->minimumQualificationCode()} rating",
+            FormRestrictionType::Hours => "requires at least {$this->minimum_value} {$this->subject->label()} hours",
         };
     }
 

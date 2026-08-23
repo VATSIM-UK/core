@@ -28,8 +28,10 @@ class Feedback extends \App\Http\Controllers\BaseController
             if ($f->isEligibleFor(\Auth::user())) {
                 $feedbackForms[$f->slug] = $f->name;
             } else {
-                $reasons = $f->unmetRestrictionsFor(\Auth::user())
-                    ->map(fn ($r) => $r->reason())
+                $reasons = $f->unmetRestrictionGroupsFor(\Auth::user())
+                    ->map(function ($group) {
+                        return $group->map(fn ($r) => $r->reason())->implode(' or ');
+                    })
                     ->all();
 
                 $ineligibleForms[$f->slug] = [

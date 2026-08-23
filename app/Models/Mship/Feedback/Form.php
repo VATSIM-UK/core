@@ -91,13 +91,26 @@ class Form extends Model
         return $this->hasMany(FormRestriction::class);
     }
 
+    /**
+     * Restrictions sharing a `restriction_group` are OR'd (any one satisfies the group).
+     * Ungrouped restrictions, and each distinct group, are AND'd together.
+     */
     public function isEligibleFor(Account $account): bool
     {
-        return $this->restrictions->every(fn (FormRestriction $r) => $r->isSatisfiedBy($account));
+        return $this->restrictionGroups()
+            ->every(fn ($group) => $group->contains(fn (FormRestriction $r) => $r->isSatisfiedBy($account)));
     }
 
-    public function unmetRestrictionsFor(Account $account)
+    public function unmetRestrictionGroupsFor(Account $account)
     {
-        return $this->restrictions->reject(fn (FormRestriction $r) => $r->isSatisfiedBy($account));
+        return $this->restrictionGroups()
+            ->reject(fn ($group) => $group->contains(fn (FormRestriction $r) => $r->isSatisfiedBy($account)));
+    }
+
+    private function restrictionGroups()
+    {
+        return $this->restrictions
+            ->groupBy(fn (FormRestriction $r) => $r->restriction_group ?? 'ungrouped-'.$r->id)
+            ->values();
     }
 }
