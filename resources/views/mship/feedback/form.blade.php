@@ -36,8 +36,6 @@
 				$('#feedbackStep').text(idx + 1);
 				$('#feedbackPrev').toggle(idx > 0);
 				$('#feedbackNext').toggle(idx < total - 1);
-
-
 				$('#feedbackSubmit').toggle(idx === total - 1);
 			}
 
