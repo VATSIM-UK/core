@@ -47,7 +47,7 @@ class Feedback extends \App\Http\Controllers\BaseController
     public function getFeedback(Form $form)
     {
         /** @var Question[] $questions */
-        $questions = $form->questions()->orderBy('sequence')->get();
+        $questions = $form->questions()->orderBy('page')->orderBy('sequence')->get();
         if (! $questions || ! $form->enabled) {
             // We have no questions to display!
             return Redirect::route('mship.manage.dashboard')
