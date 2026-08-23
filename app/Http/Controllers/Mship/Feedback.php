@@ -17,6 +17,62 @@ class Feedback extends \App\Http\Controllers\BaseController
 {
     private $returnList;
 
+    private function hasAtcSessionAround(int $accountId, \Carbon\Carbon $eventDatetime): bool
+    {
+        $windowStart = $eventDatetime->copy()->subMinutes(30);
+        $windowEnd = $eventDatetime->copy()->addMinutes(30);
+
+        return Atc::query()->where('account_id', $accountId)
+            ->where('connected_at', '<=', $windowEnd)
+            ->where(function ($query) use ($windowStart) {
+                $query->whereNull('disconnected_at')
+                    ->orWhere('disconnected_at', '>=', $windowStart);
+            })
+            ->isUk()
+            ->exists();
+    }
+
+    public function checkAtcSession(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'cid' => 'required|exists:mship_account,id',
+            'datetime' => 'required|date|before_or_equal:now',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Please enter a valid CID and date/time.',
+            ], 422);
+        }
+
+        $cid = $request->input('cid');
+
+        if ($cid == \Auth::user()->id) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'You cannot leave feedback about yourself.',
+            ]);
+        }
+
+        $account = Account::find($cid);
+        if (! $account) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'This user was not found. Please ensure that you have entered the CID correctly, and that they are a UK member.',
+            ]);
+        }
+
+        $eventDatetime = \Carbon\Carbon::parse($request->input('datetime'));
+
+        $valid = $this->hasAtcSessionAround($account->id, $eventDatetime);
+
+        return response()->json([
+            'valid' => $valid,
+            'message' => $valid ? null : 'We could not find a controlling session for the specified user around the time you submitted the feedback. Please ensure you have entered the correct CID, and that the controller was online around the time you submitted the feedback (within 30 minutes either side).',
+        ]);
+    }
+
     public function getFeedbackFormSelect()
     {
         $forms = Form::whereEnabled(true)->orderBy('id', 'asc')->public()->getModels();
@@ -190,19 +246,7 @@ class Feedback extends \App\Http\Controllers\BaseController
         $eventDatetime = $datetimefield ? \Carbon\Carbon::parse($request->input($datetimefield)) : now();
 
         if ($form->slug == 'atc') {
-            // check if the controller has controlled within a session that overlaps the +-30 minute window around the event time
-            $windowStart = $eventDatetime->copy()->subMinutes(30);
-            $windowEnd = $eventDatetime->copy()->addMinutes(30);
-            $hasFeedbackSession = Atc::query()->where('account_id', $account->id)
-                ->where('connected_at', '<=', $windowEnd)
-                ->where(function ($query) use ($windowStart) {
-                    $query->whereNull('disconnected_at')
-                        ->orWhere('disconnected_at', '>=', $windowStart);
-                })
-                ->isUk()
-                ->exists();
-
-            if (! $hasFeedbackSession) {
+            if (! $this->hasAtcSessionAround($account->id, $eventDatetime)) {
                 return Redirect::route('mship.manage.dashboard')
                     ->withError('We could not find a controlling session for the specified user around the time you submitted the feedback. Please ensure you have entered the correct CID, and that the controller was online around the time you submitted the feedback (within 30 minutes either side).');
             }
