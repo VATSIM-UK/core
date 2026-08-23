@@ -8,7 +8,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/build/jquery.datetimepicker.full.min.js"
 		integrity="sha384-8Lb23xW0dVl+HHrv90JF6PpwygXa7Z0zZIK9+RWorNDyubrG7Ppu7JJw32U8op0i" crossorigin="anonymous">
 	</script>
-		
+
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 	<script type="text/javascript">
@@ -18,6 +18,8 @@
 			$('.searchable-select').select2({
 				placeholder: "Select or search position...",
 				allowClear: true,
+
+
 				width: '100%'
 			});
 
@@ -42,11 +44,11 @@
 					$g.find('input[type=radio],input[type=checkbox]').each(function() {
 						if (this.checked) filled = true;
 					});
-					
+
 					$g.find('input:not([type=radio]):not([type=checkbox]),textarea,select').each(function() {
 						if ($.trim($(this).val() || '') !== '') filled = true;
 					});
-					
+
 					$g.find('.select2-hidden-accessible').each(function() {
 						if ($.trim($(this).val() || '') !== '') filled = true;
 					});
