@@ -15,7 +15,7 @@ return new class extends Migration
             $table->foreignId('form_id')->constrained('mship_feedback_forms')->cascadeOnDelete();
             $table->unsignedInteger('restriction_group')->nullable();
             $table->enum('type', array_column(FormRestrictionType::cases(), 'value'));
-            $table->enum('subject', array_column(FormRestrictionSubject::cases(), 'value'));
+            $table->enum('subject', array_column(FormRestrictionSubject::cases(), 'value'))->nullable();
             // For 'qualification': minimum qualification 'vatsim' rank value required (>=)
             // For 'hours': minimum number of hours required (>=)
             $table->unsignedInteger('minimum_value');
