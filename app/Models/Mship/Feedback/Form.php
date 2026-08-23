@@ -4,6 +4,7 @@ namespace App\Models\Mship\Feedback;
 
 use App\Models\Contact;
 use App\Models\Model;
+use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -83,5 +84,20 @@ class Form extends Model
     public function contact()
     {
         return $this->belongsTo(Contact::class);
+    }
+
+    public function restrictions()
+    {
+        return $this->hasMany(FormRestriction::class);
+    }
+
+    public function isEligibleFor(Account $account): bool
+    {
+        return $this->restrictions->every(fn (FormRestriction $r) => $r->isSatisfiedBy($account));
+    }
+
+    public function unmetRestrictionsFor(Account $account)
+    {
+        return $this->restrictions->reject(fn (FormRestriction $r) => $r->isSatisfiedBy($account));
     }
 }

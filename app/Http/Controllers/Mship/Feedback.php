@@ -20,15 +20,30 @@ class Feedback extends \App\Http\Controllers\BaseController
     public function getFeedbackFormSelect()
     {
         $forms = Form::whereEnabled(true)->orderBy('id', 'asc')->public()->getModels();
+
         $feedbackForms = [];
+        $ineligibleForms = [];
+
         foreach ($forms as $f) {
-            $feedbackForms[$f->slug] = $f->name;
+            if ($f->isEligibleFor(\Auth::user())) {
+                $feedbackForms[$f->slug] = $f->name;
+            } else {
+                $reasons = $f->unmetRestrictionsFor(\Auth::user())
+                    ->map(fn ($r) => $r->reason())
+                    ->all();
+
+                $ineligibleForms[$f->slug] = [
+                    'name' => $f->name,
+                    'reasons' => $reasons,
+                ];
+            }
         }
 
         $this->setTitle('Submit Feedback');
 
         return $this->viewMake('mship.feedback.form')
-            ->with('feedbackForms', $feedbackForms);
+            ->with('feedbackForms', $feedbackForms)
+            ->with('ineligibleForms', $ineligibleForms);
     }
 
     public function postFeedbackFormSelect(Request $request)
@@ -47,6 +62,11 @@ class Feedback extends \App\Http\Controllers\BaseController
 
     public function getFeedback(Form $form)
     {
+        if (! $form->isEligibleFor(\Auth::user())) {
+            return Redirect::route('mship.feedback.new')
+                ->withError('You do not meet the requirements to complete this feedback form.');
+        }
+
         /** @var Question[] $questions */
         $questions = $form->questions()->orderBy('page')->orderBy('sequence')->get();
         if (! $questions || ! $form->enabled) {
@@ -112,6 +132,11 @@ class Feedback extends \App\Http\Controllers\BaseController
 
     public function postFeedback(Form $form, Request $request)
     {
+        if (! $form->isEligibleFor(\Auth::user())) {
+            return Redirect::route('mship.feedback.new')
+                ->withError('You do not meet the requirements to complete this feedback form.');
+        }
+
         $questions = $form->questions;
         $cidfield = null;
         $datetimefield = null;

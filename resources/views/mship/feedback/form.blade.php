@@ -102,6 +102,23 @@
 								<button type="submit" class="btn btn-primary">Next <i class="fa fa-arrow-right"></i></button>
 							</p>
 						</form>
+
+						@if (!empty($ineligibleForms))
+							<hr>
+							<p class="text-muted"><small>The following feedback types are currently unavailable to you:</small></p>
+							<ul class="list-unstyled">
+								@foreach ($ineligibleForms as $slug => $data)
+									<li class="text-muted" style="margin-bottom: 8px;">
+										<i class="fa fa-lock" aria-hidden="true"></i>
+										<b>{{ $data['name'] }}</b>
+										-
+										@foreach ($data['reasons'] as $i => $reason)
+											{{ $reason }}{{ !$loop->last ? ', and ' : '' }}
+										@endforeach
+									</li>
+								@endforeach
+							</ul>
+						@endif
 					@else
 						<form method="POST" action="{{ route('mship.feedback.new.form.post', $form) }}" autocomplete="off">
 							@csrf

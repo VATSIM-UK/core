@@ -1,0 +1,85 @@
+<?php
+
+namespace App\Models\Mship\Feedback;
+
+use App\Enums\Feedback\FormRestrictionSubject;
+use App\Enums\Feedback\FormRestrictionType;
+use App\Models\Model;
+use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
+use App\Models\NetworkData\Atc;
+
+class FormRestriction extends Model
+{
+    protected $table = 'mship_feedback_form_restrictions';
+
+    protected $fillable = [
+        'form_id',
+        'type',
+        'subject',
+        'minimum_value',
+    ];
+
+    protected $casts = [
+        'type' => FormRestrictionType::class,
+        'subject' => FormRestrictionSubject::class,
+        'minimum_value' => 'integer',
+    ];
+
+    public function form()
+    {
+        return $this->belongsTo(Form::class);
+    }
+
+    public function isSatisfiedBy(Account $account): bool
+    {
+        return match ($this->type) {
+            FormRestrictionType::Qualification => $this->accountMeetsQualification($account),
+            FormRestrictionType::Hours => $this->accountMeetsHours($account),
+        };
+    }
+
+    private function accountMeetsQualification(Account $account): bool
+    {
+        $qualification = match ($this->subject) {
+            FormRestrictionSubject::Atc => $account->qualification_atc,
+            FormRestrictionSubject::Pilot => null, // extend when pilot qualification lookup is needed
+        };
+
+        if (! $qualification) {
+            return false;
+        }
+
+        return $qualification->vatsim >= $this->minimum_value;
+    }
+
+    private function accountMeetsHours(Account $account): bool
+    {
+        $totalMinutes = match ($this->subject) {
+            FormRestrictionSubject::Atc => Atc::query()
+                ->where('account_id', $account->id)
+                ->whereNotNull('minutes_online')
+                ->sum('minutes_online'),
+            FormRestrictionSubject::Pilot => 0, // extend when pilot hours source is available
+        };
+
+        return ($totalMinutes / 60) >= $this->minimum_value;
+    }
+
+    public function reason(): string
+    {
+        return match ($this->type) {
+            FormRestrictionType::Qualification => "requires at least a {$this->minimumQualificationCode()} rating to complete this feedback form",
+            FormRestrictionType::Hours => "requires at least {$this->minimum_value} {$this->subject->label()} hours to submit",
+        };
+    }
+
+    private function minimumQualificationCode(): string
+    {
+        $qualification = Qualification::ofType($this->subject->value)
+            ->networkValue($this->minimum_value)
+            ->first();
+
+        return $qualification->code;
+    }
+}
