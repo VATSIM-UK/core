@@ -506,4 +506,194 @@ class FeedbackRestrictionsTest extends TestCase
         $this->assertCount(1, $unmetGroups);
         $this->assertCount(2, $unmetGroups->first());
     }
+
+    #[Test]
+    public function test_form_eligible_when_account_age_restriction_satisfied()
+    {
+        $form = Form::whereSlug('atc')->first();
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'type' => FormRestrictionType::AccountAge,
+            'subject' => null,
+            'minimum_value' => 90,
+        ]);
+
+        $account = Account::factory()->create([
+            'joined_at' => now()->subDays(200),
+        ]);
+
+        $this->assertTrue($form->isEligibleFor($account));
+    }
+
+    #[Test]
+    public function test_form_ineligible_when_account_age_restriction_not_satisfied()
+    {
+        $form = Form::whereSlug('atc')->first();
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'type' => FormRestrictionType::AccountAge,
+            'subject' => null,
+            'minimum_value' => 90,
+        ]);
+
+        $account = Account::factory()->create([
+            'joined_at' => now()->subDays(10),
+        ]);
+
+        $this->assertFalse($form->isEligibleFor($account));
+    }
+
+    #[Test]
+    public function test_form_eligible_when_account_age_exactly_meets_minimum()
+    {
+        $form = Form::whereSlug('atc')->first();
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'type' => FormRestrictionType::AccountAge,
+            'subject' => null,
+            'minimum_value' => 90,
+        ]);
+
+        $account = Account::factory()->create([
+            'joined_at' => now()->subDays(90),
+        ]);
+
+        $this->assertTrue($form->isEligibleFor($account));
+    }
+
+    #[Test]
+    public function test_account_with_no_joined_at_fails_account_age_restriction()
+    {
+        $form = Form::whereSlug('atc')->first();
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'type' => FormRestrictionType::AccountAge,
+            'subject' => null,
+            'minimum_value' => 1,
+        ]);
+
+        $account = Account::factory()->create([
+            'joined_at' => null,
+        ]);
+
+        $this->assertFalse($form->isEligibleFor($account));
+    }
+
+    #[Test]
+    public function test_account_age_reason_message_describes_days()
+    {
+        $restriction = FormRestriction::create([
+            'form_id' => Form::whereSlug('atc')->first()->id,
+            'type' => FormRestrictionType::AccountAge,
+            'subject' => null,
+            'minimum_value' => 10,
+        ]);
+
+        $reason = $restriction->reason();
+
+        $this->assertIsString($reason);
+        $this->assertStringContainsString('10 days', $reason);
+    }
+
+    #[Test]
+    public function test_account_age_reason_message_describes_months()
+    {
+        $restriction = FormRestriction::create([
+            'form_id' => Form::whereSlug('atc')->first()->id,
+            'type' => FormRestrictionType::AccountAge,
+            'subject' => null,
+            'minimum_value' => 60,
+        ]);
+
+        $reason = $restriction->reason();
+
+        $this->assertStringContainsString('2 months', $reason);
+    }
+
+    #[Test]
+    public function test_account_age_reason_message_describes_years()
+    {
+        $restriction = FormRestriction::create([
+            'form_id' => Form::whereSlug('atc')->first()->id,
+            'type' => FormRestrictionType::AccountAge,
+            'subject' => null,
+            'minimum_value' => 365,
+        ]);
+
+        $reason = $restriction->reason();
+
+        $this->assertStringContainsString('1 year', $reason);
+    }
+
+    #[Test]
+    public function test_account_age_and_qualification_restrictions_are_both_mandatory_when_ungrouped()
+    {
+        $form = Form::whereSlug('atc')->first();
+
+        $qualification = Qualification::ofType('atc')->networkValue(2)->first();
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'type' => FormRestrictionType::Qualification,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 2,
+        ]);
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'type' => FormRestrictionType::AccountAge,
+            'subject' => null,
+            'minimum_value' => 90,
+        ]);
+
+        $account = Account::factory()->create([
+            'joined_at' => now()->subDays(10),
+        ]);
+        $account->qualifications()->attach($qualification->id);
+
+        $this->assertFalse($form->isEligibleFor($account->fresh()));
+    }
+
+    #[Test]
+    public function test_account_age_can_be_one_of_several_or_alternatives_in_a_group()
+    {
+        $form = Form::whereSlug('atc')->first();
+
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => 1,
+            'type' => FormRestrictionType::AccountAge,
+            'subject' => null,
+            'minimum_value' => 365, // not satisfied
+        ]);
+        FormRestriction::create([
+            'form_id' => $form->id,
+            'restriction_group' => 1,
+            'type' => FormRestrictionType::Hours,
+            'subject' => FormRestrictionSubject::Atc,
+            'minimum_value' => 10,
+        ]);
+
+        $account = Account::factory()->create([
+            'joined_at' => now()->subDays(10),
+        ]);
+
+        $session = new Atc([
+            'account_id' => $account->id,
+            'qualification_id' => 1,
+            'callsign' => 'EGLL_TWR',
+            'facility_type' => Atc::TYPE_TWR,
+            'connected_at' => now()->subHours(12),
+            'disconnected_at' => now()->subHours(1),
+        ]);
+        $session->minutes_online = 660;
+        $session->timestamps = false;
+        $session->save();
+
+        $this->assertTrue($form->isEligibleFor($account));
+    }
 }
