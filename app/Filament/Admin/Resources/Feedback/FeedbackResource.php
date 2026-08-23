@@ -13,7 +13,6 @@ use App\Models\Mship\Qualification;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
@@ -22,6 +21,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -120,23 +120,7 @@ class FeedbackResource extends Resource
 
                 Section::make('Answers')
                     ->columnSpanFull()
-                    ->schema([
-                        Repeater::make('Answers')
-                            ->relationship('answers')
-                            ->label('')
-                            ->schema([
-                                TextEntry::make('question')
-                                    ->label('Question')
-                                    ->state(fn ($record) => $record->question?->question),
-
-                                TextEntry::make('response')
-                                    ->label('Answer')
-                                    ->suffixAction(CopyAction::make()
-                                        ->copyable(fn ($record) => $record->response)
-                                        ->successNotificationMessage('Copied!'))
-                                    ->state(fn ($record) => $record->response),
-                            ]),
-                    ]),
+                    ->schema(fn ($record) => self::answerPageFieldsets($record)),
             ]);
     }
 
@@ -351,5 +335,36 @@ class FeedbackResource extends Resource
             ->title("{$count} feedback record(s) {$successLabel} successfully.")
             ->success()
             ->send();
+    }
+
+    private static function answerPageFieldsets($record): array
+    {
+        $answersByPage = $record->answers()
+            ->with('question')
+            ->get()
+            ->filter(fn ($answer) => $answer->question !== null)
+            ->sortBy(fn ($answer) => $answer->question->sequence)
+            ->groupBy(fn ($answer) => $answer->question->page);
+
+        return $answersByPage
+            ->sortKeys()
+            ->map(function ($answers, $page) {
+                return Fieldset::make("Page {$page}")
+                    ->columnSpanFull()
+                    ->extraAttributes(['class' => '[&>legend]:hidden'])
+                    ->schema(
+                        $answers->map(fn ($answer) => TextEntry::make("answer_{$answer->id}")
+                            ->label($answer->question->question)
+                            ->columnSpanFull()
+                            ->state($answer->response)
+                            ->weight(FontWeight::Light)
+                            ->suffixAction(CopyAction::make()
+                                ->copyable(fn () => $answer->response)
+                                ->successNotificationMessage('Copied!'))
+                        )->all()
+                    );
+            })
+            ->values()
+            ->all();
     }
 }
