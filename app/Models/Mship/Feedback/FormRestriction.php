@@ -95,7 +95,7 @@ class FormRestriction extends Model
             ->networkValue($this->minimum_value)
             ->first();
 
-        return $qualification->code;
+        return $qualification?->code ?? (string) $this->minimum_value;
     }
 
     private function minimumAgeDescription(): string
