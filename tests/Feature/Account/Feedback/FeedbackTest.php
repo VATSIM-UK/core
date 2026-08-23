@@ -368,8 +368,8 @@ class FeedbackTest extends TestCase
             } elseif ($question->type->name == 'datetime') {
                 $formData[$question->slug] = $eventTime->format('Y-m-d H:i');
             } elseif ($question->type->name == 'position_selector') {
-                $position = Position::query()->first();
-                $formData[$question->slug] = $position?->callsign ?? 'EGLL_TWR';
+                $position = Position::query()->first() ?? Position::factory()->create(['callsign' => 'EGLL_TWR']);
+                $formData[$question->slug] = $position->callsign;
             } elseif ($question->type->requires_value) {
                 if (isset($question->options['values']) && ! empty($question->options['values'])) {
                     $formData[$question->slug] = $question->options['values'][0];
