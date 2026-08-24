@@ -7,10 +7,12 @@ namespace App\Livewire\Bookings;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
+use App\Models\Cts\Member as CtsMember;
 use App\Models\Roster;
 use App\Repositories\Cts\BookingRepository;
 use App\Services\BookingService;
 use Carbon\Carbon;
+use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Livewire\Attributes\Layout;
@@ -628,45 +630,52 @@ class Calendar extends Component
             return;
         }
 
+        // Mandatory: every check in BookingService::create() is gated behind a
+        // non-null position_id.
         $positionId = ! empty($data['position_id']) ? (int) $data['position_id'] : null;
-        $customCallsign = ! empty($data['custom_callsign']) ? $data['custom_callsign'] : null;
 
-        if (! $positionId && ! $customCallsign) {
-            $this->dispatch('booking-error', message: 'Please select a position or enter a custom callsign.');
+        if (! $positionId) {
+            $this->dispatch('booking-error', message: 'Please select a position.');
 
             return;
         }
 
-        if (! empty($data['starts_at'])) {
-            $startsAt = Carbon::parse($data['starts_at']);
+        // Required, and string-typed: validating only when present would let a
+        // caller skip the checks below by omitting the field.
+        $startsAtInput = $data['starts_at'] ?? null;
+        $endsAtInput = $data['ends_at'] ?? null;
 
-            if ($startsAt->isPast()) {
-                $this->dispatch('booking-error', message: 'Bookings cannot start in the past.');
+        if (! is_string($startsAtInput) || ! is_string($endsAtInput) || $startsAtInput === '' || $endsAtInput === '') {
+            $this->dispatch('booking-error', message: 'Please provide a start and end time.');
 
-                return;
-            }
+            return;
+        }
 
-            if (! $this->isOnFifteenMinuteBoundary($startsAt)) {
-                $this->dispatch('booking-error', message: 'Start and end times must be on 15-minute boundaries.');
+        try {
+            $startsAt = Carbon::parse($startsAtInput);
+            $endsAt = Carbon::parse($endsAtInput);
+        } catch (InvalidFormatException) {
+            $this->dispatch('booking-error', message: 'Please provide a valid start and end time.');
 
-                return;
-            }
+            return;
+        }
 
-            if (! empty($data['ends_at'])) {
-                $endsAt = Carbon::parse($data['ends_at']);
+        if ($startsAt->isPast()) {
+            $this->dispatch('booking-error', message: 'Bookings cannot start in the past.');
 
-                if (! $this->isOnFifteenMinuteBoundary($endsAt)) {
-                    $this->dispatch('booking-error', message: 'Start and end times must be on 15-minute boundaries.');
+            return;
+        }
 
-                    return;
-                }
+        if (! $this->isOnFifteenMinuteBoundary($startsAt) || ! $this->isOnFifteenMinuteBoundary($endsAt)) {
+            $this->dispatch('booking-error', message: 'Start and end times must be on 15-minute boundaries.');
 
-                if ($endsAt->lessThanOrEqualTo($startsAt)) {
-                    $this->dispatch('booking-error', message: 'End time must be after start time.');
+            return;
+        }
 
-                    return;
-                }
-            }
+        if ($endsAt->lessThanOrEqualTo($startsAt)) {
+            $this->dispatch('booking-error', message: 'End time must be after start time.');
+
+            return;
         }
 
         try {
@@ -674,8 +683,8 @@ class Calendar extends Component
                 'position_id' => $positionId,
                 'member_id' => auth()->id(),
                 'type' => Booking::TYPE_STANDARD,
-                'starts_at' => Carbon::parse($data['starts_at']),
-                'ends_at' => Carbon::parse($data['ends_at']),
+                'starts_at' => $startsAt,
+                'ends_at' => $endsAt,
             ]);
             $this->refreshData();
             $this->dispatch('booking-created');
@@ -722,8 +731,19 @@ class Calendar extends Component
 
             $core = Booking::where('cts_booking_id', $ctsId)->first();
 
+            // member_id is a CTS-internal id, assigned independently of the CID
+            // (see HasCTSAccount::generateCTSInternalID), so it has to be
+            // translated before it can be compared with auth()->id().
+            $ctsMember = CtsMember::find((int) $cts->member_id);
+
+            if ($ctsMember === null) {
+                $this->dispatch('booking-error', message: 'Booking not found.');
+
+                return;
+            }
+
             $isStandard = $cts->type === 'BK';
-            $memberId = (int) $cts->member_id;
+            $memberId = (int) $ctsMember->cid;
             $endsAt = $this->ctsEndsAt($cts);
         } else {
             $this->dispatch('booking-error', message: 'Booking not found.');

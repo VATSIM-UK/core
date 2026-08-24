@@ -261,19 +261,22 @@ class BookingRepository
         ];
     }
 
+    /**
+     * The calendar is public, so this carries only what a booking block renders.
+     * Never the full name: it would be shipped to every visitor in the Livewire
+     * snapshot, publishing a name-to-CID mapping the page never shows.
+     */
     private function formatMember(?Account $account): array
     {
         if (! $account) {
-            return ['id' => '', 'cid' => '', 'name' => 'Unknown', 'display_name' => 'Unknown'];
+            return ['cid' => '', 'display_name' => 'Unknown'];
         }
 
-        $firstName = $account->name_first;
+        $firstName = $account->name_preferred;
         $lastInitial = mb_substr($account->name_last, 0, 1).'.';
 
         return [
-            'id' => (string) $account->id,
             'cid' => (string) $account->id,
-            'name' => $account->name,
             'display_name' => $firstName.' '.$lastInitial,
         ];
     }

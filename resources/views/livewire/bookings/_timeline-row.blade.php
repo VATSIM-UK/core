@@ -55,13 +55,13 @@
 				}"
 				:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%; top: ' + bookingTop(pos,
 				    booking) + '; height: ' + blockHeight(pos)"
-				:title="(booking.member?.display_name || booking.member?.name || 'Unknown') + (booking.member?.cid ? ' (' + booking.member
+				:title="(booking.member?.display_name || 'Unknown') + (booking.member?.cid ? ' (' + booking.member
 				    .cid + ')' : '') + (isOwnBooking(booking) ? ' \u00b7 your booking' : '') + ' \u00b7 ' + booking.from +
 				    ' \u2013 ' + booking.to"
 				@click.stop="openDetailModal(pos, booking)">
 				<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]" x-text="booking.from"></span>
 				<span class="truncate"
-					x-text="(booking.member?.display_name || booking.member?.name || 'Unknown') + (booking.member?.cid ? ' (' + booking.member.cid + ')' : '')"></span>
+					x-text="(booking.member?.display_name || 'Unknown') + (booking.member?.cid ? ' (' + booking.member.cid + ')' : '')"></span>
 			</div>
 		</template>
 	</div>
