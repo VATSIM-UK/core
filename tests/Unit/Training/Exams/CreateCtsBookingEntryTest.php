@@ -296,7 +296,7 @@ class CreateCtsBookingEntryTest extends TestCase
         $this->assertSame('17:00:00', substr($cts->to, 0, 8));
 
         // FK relation rule: core bookings key on the CID, CTS bookings key on the CTS
-        // internal member id (generateCTSInternalID makes them differ).
+        // internal member id (MemberFactory::forAccount makes them differ).
         $this->assertNotSame($studentAccount->id, $student->id, 'Test relies on CTS member id differing from the CID');
         $this->assertSame($student->id, $cts->member_id, 'CTS booking member_id must be the CTS internal member id');
 

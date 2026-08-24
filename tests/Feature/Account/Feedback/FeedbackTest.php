@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Account\Feedback;
 
+use App\Models\Atc\Position;
 use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Form;
 use App\Models\NetworkData\Atc;
@@ -366,6 +367,9 @@ class FeedbackTest extends TestCase
                 $formData[$question->slug] = $targetAccount->id;
             } elseif ($question->type->name == 'datetime') {
                 $formData[$question->slug] = $eventTime->format('Y-m-d H:i');
+            } elseif ($question->type->name == 'position_selector') {
+                $position = Position::query()->first() ?? Position::factory()->create(['callsign' => 'EGLL_TWR']);
+                $formData[$question->slug] = $position->callsign;
             } elseif ($question->type->requires_value) {
                 if (isset($question->options['values']) && ! empty($question->options['values'])) {
                     $formData[$question->slug] = $question->options['values'][0];

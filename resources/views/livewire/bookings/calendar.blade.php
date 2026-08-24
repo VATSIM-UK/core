@@ -135,6 +135,35 @@
 							</p>
 						</div>
 					@else
+						@if (!empty($events))
+							{{-- Events row, always first: an event applies division-wide and sets the
+								context for the position rows under it. Kept in this branch so a day with
+								neither still falls through to the empty state above. --}}
+							<div class="flex border-b border-gray-200 bg-gray-50/90">
+								<div
+									class="w-40 shrink-0 px-3 py-2.5 -mb-px border-r border-b border-gray-200 flex items-center gap-2 sticky left-0 bg-gray-50 z-20">
+									<i class="fa fa-star text-[10px] text-gray-400 shrink-0" aria-hidden="true"></i>
+									<span class="text-sm font-bold text-gray-600 uppercase tracking-wide">Events</span>
+								</div>
+								<div class="flex-1 relative" x-data='{ pos: { laneCount: @json($eventLaneCount) } }'
+									:style="'height: ' + rowHeight(pos)">
+									<div x-data='{ events: @json($events) }'>
+										<template x-for="booking in events" :key="booking.source + '-' + (booking.id || booking.cts_booking_id)">
+											<div
+												class="absolute rounded px-2 flex items-center gap-1.5 cursor-pointer text-white text-xs font-medium shadow-sm hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap bg-red-600"
+												:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%; top: ' + bookingTop(pos,
+												    booking) + '; height: ' + blockHeight(pos)"
+												:title="(booking.event_name || 'Events') + ' \u00b7 ' + booking.from + ' \u2013 ' + booking.to"
+												@click.stop="openDetailModal({ callsign: booking.event_name || 'Events' }, booking)">
+												<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]" x-text="booking.from"></span>
+												<span class="truncate" x-text="booking.event_name || 'Events'"></span>
+											</div>
+										</template>
+									</div>
+								</div>
+							</div>
+						@endif
+
 						@foreach ($timelinePositions as $item)
 							@if ($item['type'] === 'group')
 								<div x-data='{ expanded: true, clusters: @json($item['clusters']), icao: @json($item['icao']) }'>
@@ -192,33 +221,6 @@
 								</div>
 							@endif
 						@endforeach
-
-						@if (!empty($events))
-							{{-- Events row --}}
-							<div class="flex border-b border-gray-200 bg-gray-50/90">
-								<div
-									class="w-40 shrink-0 px-3 py-2.5 -mb-px border-r border-b border-gray-200 flex items-center gap-2 sticky left-0 bg-gray-50 z-20">
-									<i class="fa fa-star text-[10px] text-gray-400 shrink-0" aria-hidden="true"></i>
-									<span class="text-sm font-bold text-gray-600 uppercase tracking-wide">Events</span>
-								</div>
-								<div class="flex-1 relative" x-data='{ pos: { laneCount: @json($eventLaneCount) } }'
-									:style="'height: ' + rowHeight(pos)">
-									<div x-data='{ events: @json($events) }'>
-										<template x-for="booking in events" :key="booking.source + '-' + (booking.id || booking.cts_booking_id)">
-											<div
-												class="absolute rounded px-2 flex items-center gap-1.5 cursor-pointer text-white text-xs font-medium shadow-sm hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap bg-red-600"
-												:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%; top: ' + bookingTop(pos,
-												    booking) + '; height: ' + blockHeight(pos)"
-												:title="(booking.event_name || 'Events') + ' \u00b7 ' + booking.from + ' \u2013 ' + booking.to"
-												@click.stop="openDetailModal({ callsign: booking.event_name || 'Events' }, booking)">
-												<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]" x-text="booking.from"></span>
-												<span class="truncate" x-text="booking.event_name || 'Events'"></span>
-											</div>
-										</template>
-									</div>
-								</div>
-							</div>
-						@endif
 					@endif
 
 					<div class="flex absolute inset-0 z-[1] pointer-events-none">
@@ -251,12 +253,33 @@
 		</div>
 
 		{{-- Footer --}}
-		<div class="border-t border-gray-200 px-4 py-2.5 bg-gray-50/80 flex items-center">
+		<div class="border-t border-gray-200 px-4 py-2.5 bg-gray-50/80 flex flex-wrap items-center gap-x-5 gap-y-2">
 			<span class="text-xs text-gray-400">
 				<i class="fa fa-mouse-pointer text-[10px] mr-1" aria-hidden="true"></i> Drag across an empty slot to book - or
 				click
 				for a 1-hour slot
 			</span>
+
+			{{-- Driven off TYPE_LEGEND so a new booking type cannot go unexplained. --}}
+			<ul class="flex flex-wrap items-center gap-x-3 gap-y-1.5 m-0 p-0 list-none sm:ml-auto">
+				@foreach ($typeLegend as $code => $legend)
+					<li class="flex items-center gap-1.5">
+						<span class="w-4 h-4 rounded shrink-0 flex items-center justify-center text-white {{ $legend['colour'] }}">
+							@if ($legend['icon'])
+								@svg($legend['icon'], 'w-3 h-3')
+							@endif
+						</span>
+						<span class="text-xs text-gray-500">{{ $legend['label'] }}</span>
+					</li>
+				@endforeach
+				@auth
+					{{-- Not a type: the ring is drawn over whatever colour the type has. --}}
+					<li class="flex items-center gap-1.5">
+						<span class="w-4 h-4 rounded shrink-0 bg-uknavy ring-2 ring-yellow-300 ring-inset"></span>
+						<span class="text-xs text-gray-500">Your booking</span>
+					</li>
+				@endauth
+			</ul>
 		</div>
 	</section>
 

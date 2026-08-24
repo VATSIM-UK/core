@@ -55,13 +55,28 @@
 				}"
 				:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%; top: ' + bookingTop(pos,
 				    booking) + '; height: ' + blockHeight(pos)"
-				:title="(booking.member?.display_name || booking.member?.name || 'Unknown') + (booking.member?.cid ? ' (' + booking.member
-				    .cid + ')' : '') + (isOwnBooking(booking) ? ' \u00b7 your booking' : '') + ' \u00b7 ' + booking.from +
-				    ' \u2013 ' + booking.to"
+				:title="$bookingTypeLabel(booking.type) + ' \u00b7 ' +
+				    (booking.member?.display_name || 'Unknown') +
+				    (booking.member?.cid ? ' (' + booking.member.cid + ')' : '') +
+				    (isOwnBooking(booking) ? ' \u00b7 your booking' : '') +
+				    ' \u00b7 ' + booking.from + ' \u2013 ' + booking.to"
 				@click.stop="openDetailModal(pos, booking)">
+				{{-- Shape cue, not colour alone. First and shrink-0, so a narrow block clips
+					the label rather than this. --}}
+				<template x-if="booking.type === 'ME'">
+					@svg('heroicon-m-academic-cap', 'w-3.5 h-3.5 shrink-0')
+				</template>
+				<template x-if="booking.type === 'EX'">
+					@svg('heroicon-m-clipboard-document-check', 'w-3.5 h-3.5 shrink-0')
+				</template>
+				<template x-if="booking.type === 'GS'">
+					@svg('heroicon-m-user-group', 'w-3.5 h-3.5 shrink-0')
+				</template>
+				{{-- The icons are aria-hidden, so the type reaches assistive tech here. --}}
+				<span class="sr-only" x-text="$bookingTypeLabel(booking.type)"></span>
 				<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]" x-text="booking.from"></span>
 				<span class="truncate"
-					x-text="(booking.member?.display_name || booking.member?.name || 'Unknown') + (booking.member?.cid ? ' (' + booking.member.cid + ')' : '')"></span>
+					x-text="(booking.member?.display_name || 'Unknown') + (booking.member?.cid ? ' (' + booking.member.cid + ')' : '')"></span>
 			</div>
 		</template>
 	</div>
