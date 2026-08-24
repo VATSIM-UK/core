@@ -123,10 +123,8 @@ class BookingsRepositoryTest extends TestCase
             'position' => 'EGKK_APP',
             'type' => 'ME',
             'member' => [
-                'id' => (string) $mentorAccount->id,
                 'cid' => (string) $mentorAccount->id,
-                'name' => $mentorAccount->name,
-                'display_name' => $mentorAccount->name_first.' '.mb_substr($mentorAccount->name_last, 0, 1).'.',
+                'display_name' => $mentorAccount->name_preferred.' '.mb_substr($mentorAccount->name_last, 0, 1).'.',
             ],
         ], (array) $bookings->get(1));
     }
