@@ -63,7 +63,7 @@ class CalendarTest extends TestCase
     }
 
     #[Test]
-    public function it_shows_error_when_no_position_or_callsign(): void
+    public function it_shows_error_when_no_position(): void
     {
         $member = Account::factory()->withQualification()->create();
 
@@ -74,6 +74,46 @@ class CalendarTest extends TestCase
                 'ends_at' => Carbon::tomorrow()->setHour(12)->format('Y-m-d H:i:s'),
             ])
             ->assertDispatched('booking-error');
+
+        $this->assertDatabaseMissing('bookings', ['member_id' => $member->id]);
+    }
+
+    #[Test]
+    public function it_does_not_let_an_arbitrary_callsign_stand_in_for_a_position(): void
+    {
+        // Every qualification and limit check is gated behind a non-null
+        // position_id, so a booking accepted without one would skip the roster
+        // check, the advance limits, the Gatwick cap and the notice period.
+        $member = Account::factory()->withQualification()->create();
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->call('createBooking', [
+                'custom_callsign' => 'EGKK_APP',
+                'starts_at' => Carbon::tomorrow()->setHour(10)->format('Y-m-d H:i:s'),
+                'ends_at' => Carbon::tomorrow()->setHour(12)->format('Y-m-d H:i:s'),
+            ])
+            ->assertDispatched('booking-error');
+
+        $this->assertDatabaseMissing('bookings', ['member_id' => $member->id]);
+    }
+
+    #[Test]
+    public function it_shows_error_when_the_end_time_is_missing(): void
+    {
+        // Validating the times only when present would let a caller skip the
+        // past, boundary and ordering checks by omitting the field.
+        $member = Account::factory()->withQualification()->create();
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->call('createBooking', [
+                'position_id' => Position::factory()->create()->id,
+                'starts_at' => Carbon::tomorrow()->setHour(10)->format('Y-m-d H:i:s'),
+            ])
+            ->assertDispatched('booking-error');
+
+        $this->assertDatabaseMissing('bookings', ['member_id' => $member->id]);
     }
 
     #[Test]

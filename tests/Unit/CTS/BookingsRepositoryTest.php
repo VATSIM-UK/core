@@ -108,10 +108,8 @@ class BookingsRepositoryTest extends TestCase
             'position' => 'EGKK_APP',
             'type' => 'BK',
             'member' => [
-                'id' => (string) $member->id,
                 'cid' => (string) $member->id,
-                'name' => $member->name,
-                'display_name' => $member->name_first.' '.mb_substr($member->name_last, 0, 1).'.',
+                'display_name' => $member->name_preferred.' '.mb_substr($member->name_last, 0, 1).'.',
             ],
         ], (array) $bookings->get(0));
         $this->assertEquals([
@@ -178,17 +176,13 @@ class BookingsRepositoryTest extends TestCase
         $bookings = $this->subjectUnderTest->getTodaysBookings();
 
         $this->assertEquals([
-            'id' => (string) $member->id,
             'cid' => (string) $member->id,
-            'name' => $member->name,
-            'display_name' => $member->name_first.' '.mb_substr($member->name_last, 0, 1).'.',
+            'display_name' => $member->name_preferred.' '.mb_substr($member->name_last, 0, 1).'.',
         ], $bookings->get(0)->member);
 
         $this->assertEquals([
-            'id' => (string) $examinerAccount->id,
             'cid' => (string) $examinerAccount->id,
-            'name' => $examinerAccount->name,
-            'display_name' => $examinerAccount->name_first.' '.mb_substr($examinerAccount->name_last, 0, 1).'.',
+            'display_name' => $examinerAccount->name_preferred.' '.mb_substr($examinerAccount->name_last, 0, 1).'.',
         ], $bookings->get(1)->member);
     }
 

@@ -26,6 +26,15 @@ class CtsBookingsCalendarTest extends TestCase
 {
     use DatabaseTransactions;
 
+    /**
+     * The abbreviated label the calendar shows for a member: preferred first
+     * name plus a last initial. The full name is deliberately never sent.
+     */
+    private function expectedDisplayName(Account $account): string
+    {
+        return $account->name_preferred.' '.mb_substr($account->name_last, 0, 1).'.';
+    }
+
     #[Test]
     public function it_shows_cts_only_bookings_live(): void
     {
@@ -54,7 +63,7 @@ class CtsBookingsCalendarTest extends TestCase
         $this->assertSame('EGXX_FSS', $match->position);
         $this->assertNull($match->position_id);
         $this->assertSame((string) $member->id, $match->member['cid']);
-        $this->assertSame($member->name, $match->member['name']);
+        $this->assertSame($this->expectedDisplayName($member), $match->member['display_name']);
     }
 
     #[Test]
@@ -77,7 +86,7 @@ class CtsBookingsCalendarTest extends TestCase
 
         $match = $bookings->firstWhere('cts_booking_id', (int) $cts->id);
         $this->assertSame((string) $member->id, $match->member['cid']);
-        $this->assertSame($member->name_first.' '.mb_substr($member->name_last, 0, 1).'.', $match->member['display_name']);
+        $this->assertSame($this->expectedDisplayName($member), $match->member['display_name']);
     }
 
     #[Test]
@@ -172,8 +181,10 @@ class CtsBookingsCalendarTest extends TestCase
     public function owner_can_cancel_a_cts_only_standard_booking(): void
     {
         $member = Account::factory()->create();
+        // member_id is the CTS-internal member id, never the account id/CID.
+        $ctsMember = CtsMember::factory()->forAccount($member)->create();
         $cts = CtsBooking::factory()->create([
-            'member_id' => $member->id,
+            'member_id' => $ctsMember->id,
             'type' => 'BK',
             'date' => Carbon::tomorrow()->toDateString(),
             'from' => '10:00:00',
@@ -192,10 +203,11 @@ class CtsBookingsCalendarTest extends TestCase
     public function cancelling_a_mirrored_cts_booking_removes_both_rows(): void
     {
         $member = Account::factory()->create();
+        $ctsMember = CtsMember::factory()->forAccount($member)->create();
         $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
         $cts = CtsBooking::factory()->create([
             'position' => 'EGKK_APP',
-            'member_id' => $member->id,
+            'member_id' => $ctsMember->id,
             'type' => 'BK',
             'date' => Carbon::tomorrow()->toDateString(),
             'from' => '10:00:00',
@@ -225,10 +237,11 @@ class CtsBookingsCalendarTest extends TestCase
     public function cancelling_a_mirrored_booking_by_cts_id_also_removes_the_core_mirror(): void
     {
         $member = Account::factory()->create();
+        $ctsMember = CtsMember::factory()->forAccount($member)->create();
         $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
         $cts = CtsBooking::factory()->create([
             'position' => 'EGKK_APP',
-            'member_id' => $member->id,
+            'member_id' => $ctsMember->id,
             'type' => 'BK',
             'date' => Carbon::tomorrow()->toDateString(),
             'from' => '10:00:00',
@@ -259,8 +272,10 @@ class CtsBookingsCalendarTest extends TestCase
     {
         $owner = Account::factory()->create();
         $other = Account::factory()->create();
+        $ctsOwner = CtsMember::factory()->forAccount($owner)->create();
+        CtsMember::factory()->forAccount($other)->create();
         $cts = CtsBooking::factory()->create([
-            'member_id' => $owner->id,
+            'member_id' => $ctsOwner->id,
             'type' => 'BK',
             'date' => Carbon::tomorrow()->toDateString(),
             'from' => '10:00:00',
@@ -276,11 +291,71 @@ class CtsBookingsCalendarTest extends TestCase
     }
 
     #[Test]
+    public function it_rejects_cancelling_a_cts_booking_whose_internal_member_id_equals_the_callers_cid(): void
+    {
+        // CTS assigns member ids independently of the CID (see
+        // HasCTSAccount::generateCTSInternalID), so one member's account id can
+        // equal another member's CTS-internal id. Comparing the raw
+        // cts.bookings.member_id against auth()->id() would let the attacker
+        // cancel the victim's booking; the id must be resolved through cid.
+        $victim = Account::factory()->create();
+        $attacker = Account::factory()->create();
+
+        $ctsVictim = CtsMember::factory()->create([
+            'id' => $attacker->id,
+            'cid' => $victim->id,
+        ]);
+        CtsMember::factory()->forAccount($attacker)->create();
+
+        $cts = CtsBooking::factory()->create([
+            'member_id' => $ctsVictim->id,
+            'type' => 'BK',
+            'date' => Carbon::tomorrow()->toDateString(),
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        Livewire::actingAs($attacker)
+            ->test(Calendar::class)
+            ->call('cancelBooking', ['cts_booking_id' => (int) $cts->id])
+            ->assertDispatched('booking-error');
+
+        $this->assertDatabaseHas('bookings', ['id' => $cts->id], 'cts');
+    }
+
+    #[Test]
+    public function it_sends_only_a_cid_and_an_abbreviated_name_to_the_frontend(): void
+    {
+        // The calendar is public, so the payload must not carry the member's
+        // full name: display_name is always set, so a full name would never be
+        // rendered, only published in the Livewire snapshot.
+        $date = Carbon::parse('2026-08-01');
+        $member = Account::factory()->create();
+        $ctsMember = CtsMember::factory()->forAccount($member)->create();
+
+        $cts = CtsBooking::factory()->create([
+            'member_id' => $ctsMember->id,
+            'type' => 'BK',
+            'date' => $date->toDateString(),
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        $bookings = app(BookingRepository::class)->getBookings($date);
+
+        $match = $bookings->firstWhere('cts_booking_id', (int) $cts->id);
+        $this->assertNotNull($match);
+        $this->assertSame(['cid', 'display_name'], array_keys($match->member));
+        $this->assertSame($this->expectedDisplayName($member), $match->member['display_name']);
+    }
+
+    #[Test]
     public function it_rejects_cancelling_a_non_standard_cts_booking(): void
     {
         $member = Account::factory()->create();
+        $ctsMember = CtsMember::factory()->forAccount($member)->create();
         $cts = CtsBooking::factory()->create([
-            'member_id' => $member->id,
+            'member_id' => $ctsMember->id,
             'type' => 'EX',
             'date' => Carbon::tomorrow()->toDateString(),
             'from' => '10:00:00',
@@ -347,7 +422,7 @@ class CtsBookingsCalendarTest extends TestCase
         $match = $bookings->firstWhere('cts_booking_id', (int) $cts->id);
         $this->assertNotNull($match);
         $this->assertSame((string) $member->id, $match->member['cid']);
-        $this->assertSame($member->name, $match->member['name']);
+        $this->assertSame($this->expectedDisplayName($member), $match->member['display_name']);
     }
 
     #[Test]
@@ -370,7 +445,6 @@ class CtsBookingsCalendarTest extends TestCase
         $match = $bookings->firstWhere('cts_booking_id', (int) $cts->id);
         $this->assertNotNull($match);
         $this->assertSame('Unknown', $match->member['display_name']);
-        $this->assertSame('Unknown', $match->member['name']);
         $this->assertSame('', $match->member['cid']);
     }
 
@@ -445,7 +519,7 @@ class CtsBookingsCalendarTest extends TestCase
 
         $this->assertCount(1, $bookings);
         $this->assertSame((string) $examinerAccount->id, $bookings->first()->member['cid'], 'Exam booking must show the leading examiner, not the student');
-        $this->assertSame($examinerAccount->name, $bookings->first()->member['name']);
+        $this->assertSame($this->expectedDisplayName($examinerAccount), $bookings->first()->member['display_name']);
     }
 
     #[Test]
@@ -481,7 +555,7 @@ class CtsBookingsCalendarTest extends TestCase
 
         $this->assertCount(1, $bookings);
         $this->assertSame((string) $mentorAccount->id, $bookings->first()->member['cid'], 'Mentoring booking must show the mentor, not the student');
-        $this->assertSame($mentorAccount->name, $bookings->first()->member['name']);
+        $this->assertSame($this->expectedDisplayName($mentorAccount), $bookings->first()->member['display_name']);
     }
 
     #[Test]
@@ -587,7 +661,7 @@ class CtsBookingsCalendarTest extends TestCase
 
         $bookings = app(BookingRepository::class)->getBookings($date);
 
-        $this->assertSame('Unknown', $bookings->first()->member['name'], 'Exam booking must not fall back to the student');
+        $this->assertSame('Unknown', $bookings->first()->member['display_name'], 'Exam booking must not fall back to the student');
         $this->assertSame('', $bookings->first()->member['cid']);
     }
 
@@ -621,7 +695,7 @@ class CtsBookingsCalendarTest extends TestCase
 
         $bookings = app(BookingRepository::class)->getBookings($date);
 
-        $this->assertSame('Unknown', $bookings->first()->member['name'], 'Mentoring booking must not fall back to the student');
+        $this->assertSame('Unknown', $bookings->first()->member['display_name'], 'Mentoring booking must not fall back to the student');
         $this->assertSame('', $bookings->first()->member['cid']);
     }
 
@@ -649,7 +723,7 @@ class CtsBookingsCalendarTest extends TestCase
         $this->assertSame('18:00', $event->from);
         $this->assertSame('22:00', $event->to);
         $this->assertSame('Cross the Pond', $event->event_name, 'The event name must be carried through for display');
-        $this->assertSame('Unknown', $event->member['name'], 'The event author must not be shown');
+        $this->assertSame('Unknown', $event->member['display_name'], 'The event author must not be shown');
         $this->assertSame('', $event->member['cid']);
     }
 

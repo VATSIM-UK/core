@@ -261,19 +261,28 @@ class BookingRepository
         ];
     }
 
+    /**
+     * The calendar is a public page, so this carries the least a booking block
+     * needs to render: an abbreviated name and the CID it is labelled with.
+     *
+     * In particular it must not carry the member's full name. `display_name` is
+     * always populated, so a full name would never be displayed -- it would only
+     * be shipped to every visitor inside the Livewire snapshot, publishing a
+     * name-to-CID mapping the page never shows.
+     */
     private function formatMember(?Account $account): array
     {
         if (! $account) {
-            return ['id' => '', 'cid' => '', 'name' => 'Unknown', 'display_name' => 'Unknown'];
+            return ['cid' => '', 'display_name' => 'Unknown'];
         }
 
-        $firstName = $account->name_first;
+        // name_preferred rather than name_first, so a member who has set a
+        // nickname is labelled with it here too.
+        $firstName = $account->name_preferred;
         $lastInitial = mb_substr($account->name_last, 0, 1).'.';
 
         return [
-            'id' => (string) $account->id,
             'cid' => (string) $account->id,
-            'name' => $account->name,
             'display_name' => $firstName.' '.$lastInitial,
         ];
     }

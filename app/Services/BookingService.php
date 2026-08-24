@@ -22,11 +22,24 @@ class BookingService
 
     public function create(array $data): Booking
     {
-        if ($data['position_id'] !== null) {
+        $type = $data['type'] ?? Booking::TYPE_STANDARD;
+        $positionId = $data['position_id'] ?? null;
+
+        // The qualification and limit checks below are all gated behind a
+        // non-null position, so a standard booking without one would bypass the
+        // roster check, the advance limits, the Gatwick cap and the minimum
+        // notice rule. Fail closed rather than silently skipping them. Exam,
+        // mentoring and event bookings are exempt: they are created by the
+        // training system, not by a member choosing a position.
+        if ($type === Booking::TYPE_STANDARD && $positionId === null) {
+            throw new \InvalidArgumentException('A standard booking must have a position.');
+        }
+
+        if ($positionId !== null) {
             $this->validateOverlap(
                 Carbon::parse($data['starts_at']),
                 Carbon::parse($data['ends_at']),
-                $data['position_id']
+                $positionId
             );
         }
 
@@ -37,10 +50,10 @@ class BookingService
                 $data['member_id']
             );
 
-            if ($data['position_id'] !== null && ($data['type'] ?? Booking::TYPE_STANDARD) === Booking::TYPE_STANDARD) {
+            if ($positionId !== null && $type === Booking::TYPE_STANDARD) {
                 $this->validateMemberQualification(
                     $data['member_id'],
-                    $data['position_id']
+                    $positionId
                 );
 
                 $this->policy->validateAdvanceBookingLimits(
@@ -50,12 +63,12 @@ class BookingService
                 $this->policy->validateGatwickLimit($data['member_id']);
                 $this->policy->validateMinimumNotice(
                     $data['member_id'],
-                    $data['position_id'],
+                    $positionId,
                     Carbon::parse($data['starts_at'])
                 );
                 $this->policy->validateFutureQualification(
                     $data['member_id'],
-                    $data['position_id'],
+                    $positionId,
                     Carbon::parse($data['starts_at'])
                 );
             }
