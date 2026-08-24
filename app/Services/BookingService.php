@@ -25,12 +25,9 @@ class BookingService
         $type = $data['type'] ?? Booking::TYPE_STANDARD;
         $positionId = $data['position_id'] ?? null;
 
-        // The qualification and limit checks below are all gated behind a
-        // non-null position, so a standard booking without one would bypass the
-        // roster check, the advance limits, the Gatwick cap and the minimum
-        // notice rule. Fail closed rather than silently skipping them. Exam,
-        // mentoring and event bookings are exempt: they are created by the
-        // training system, not by a member choosing a position.
+        // The checks below are gated behind a non-null position, so fail closed
+        // rather than skipping them all. Exam, mentoring and event bookings are
+        // exempt: the training system creates those, not a member.
         if ($type === Booking::TYPE_STANDARD && $positionId === null) {
             throw new \InvalidArgumentException('A standard booking must have a position.');
         }

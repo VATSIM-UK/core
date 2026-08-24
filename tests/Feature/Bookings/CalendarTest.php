@@ -81,9 +81,8 @@ class CalendarTest extends TestCase
     #[Test]
     public function it_does_not_let_an_arbitrary_callsign_stand_in_for_a_position(): void
     {
-        // Every qualification and limit check is gated behind a non-null
-        // position_id, so a booking accepted without one would skip the roster
-        // check, the advance limits, the Gatwick cap and the notice period.
+        // A booking accepted without a position_id would skip every
+        // qualification and limit check in BookingService::create().
         $member = Account::factory()->withQualification()->create();
 
         Livewire::actingAs($member)
@@ -101,8 +100,6 @@ class CalendarTest extends TestCase
     #[Test]
     public function it_shows_error_when_the_end_time_is_missing(): void
     {
-        // Validating the times only when present would let a caller skip the
-        // past, boundary and ordering checks by omitting the field.
         $member = Account::factory()->withQualification()->create();
 
         Livewire::actingAs($member)

@@ -630,10 +630,8 @@ class Calendar extends Component
             return;
         }
 
-        // A position is mandatory. Every qualification and policy check in
-        // BookingService::create() is gated behind a non-null position_id, so a
-        // booking without one would skip the roster check, the advance limits,
-        // the Gatwick cap and the minimum notice rule entirely.
+        // Mandatory: every check in BookingService::create() is gated behind a
+        // non-null position_id.
         $positionId = ! empty($data['position_id']) ? (int) $data['position_id'] : null;
 
         if (! $positionId) {
@@ -642,10 +640,8 @@ class Calendar extends Component
             return;
         }
 
-        // Both times are required, and must be strings: validating them only
-        // when present would let a caller skip the checks below by omitting the
-        // field, and a non-string would reach Carbon::parse() as a TypeError
-        // rather than something this method can report back.
+        // Required, and string-typed: validating only when present would let a
+        // caller skip the checks below by omitting the field.
         $startsAtInput = $data['starts_at'] ?? null;
         $endsAtInput = $data['ends_at'] ?? null;
 
@@ -735,12 +731,9 @@ class Calendar extends Component
 
             $core = Booking::where('cts_booking_id', $ctsId)->first();
 
-            // cts.bookings.member_id is a CTS-internal member id, not an account
-            // id: CTS assigns it independently of the CID (see
-            // HasCTSAccount::generateCTSInternalID), so it has to be translated
-            // through cts.members.cid before it can be compared with auth()->id().
-            // Comparing the raw value would let a member whose CID happens to
-            // equal another member's CTS id cancel that member's bookings.
+            // member_id is a CTS-internal id, assigned independently of the CID
+            // (see HasCTSAccount::generateCTSInternalID), so it has to be
+            // translated before it can be compared with auth()->id().
             $ctsMember = CtsMember::find((int) $cts->member_id);
 
             if ($ctsMember === null) {

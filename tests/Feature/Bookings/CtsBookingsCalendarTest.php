@@ -26,10 +26,7 @@ class CtsBookingsCalendarTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /**
-     * The abbreviated label the calendar shows for a member: preferred first
-     * name plus a last initial. The full name is deliberately never sent.
-     */
+    /** The abbreviated label the calendar shows: preferred first name, last initial. */
     private function expectedDisplayName(Account $account): string
     {
         return $account->name_preferred.' '.mb_substr($account->name_last, 0, 1).'.';
@@ -181,7 +178,6 @@ class CtsBookingsCalendarTest extends TestCase
     public function owner_can_cancel_a_cts_only_standard_booking(): void
     {
         $member = Account::factory()->create();
-        // member_id is the CTS-internal member id, never the account id/CID.
         $ctsMember = CtsMember::factory()->forAccount($member)->create();
         $cts = CtsBooking::factory()->create([
             'member_id' => $ctsMember->id,
@@ -293,11 +289,8 @@ class CtsBookingsCalendarTest extends TestCase
     #[Test]
     public function it_rejects_cancelling_a_cts_booking_whose_internal_member_id_equals_the_callers_cid(): void
     {
-        // CTS assigns member ids independently of the CID (see
-        // HasCTSAccount::generateCTSInternalID), so one member's account id can
-        // equal another member's CTS-internal id. Comparing the raw
-        // cts.bookings.member_id against auth()->id() would let the attacker
-        // cancel the victim's booking; the id must be resolved through cid.
+        // CTS assigns member ids independently of the CID, so one member's
+        // account id can equal another member's CTS-internal id.
         $victim = Account::factory()->create();
         $attacker = Account::factory()->create();
 
@@ -326,9 +319,6 @@ class CtsBookingsCalendarTest extends TestCase
     #[Test]
     public function it_sends_only_a_cid_and_an_abbreviated_name_to_the_frontend(): void
     {
-        // The calendar is public, so the payload must not carry the member's
-        // full name: display_name is always set, so a full name would never be
-        // rendered, only published in the Livewire snapshot.
         $date = Carbon::parse('2026-08-01');
         $member = Account::factory()->create();
         $ctsMember = CtsMember::factory()->forAccount($member)->create();
