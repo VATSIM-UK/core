@@ -30,6 +30,7 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Blade;
 use Webbingbrasil\FilamentCopyActions\Actions\CopyAction;
 
 class FeedbackResource extends Resource
@@ -51,29 +52,36 @@ class FeedbackResource extends Resource
     {
         return $schema
             ->components([
-                TextEntry::make('ID')
-                    ->label('ID')
-                    ->state(fn ($record) => $record->id),
+                Section::make('Feedback Details')
+                    ->heading(fn ($record) => $record->form?->name.' - '.$record->id)
+                    ->columnSpanFull()
+                    ->columns(fn () => self::canSeeSubmitter() ? 3 : 2)
+                    ->schema([
+                        TextEntry::make('subject_details')
+                            ->label('Subject')
+                            ->html()
+                            ->state(function ($record) {
+                                $name = $record->account?->name;
+                                $qualification = $record->accountAtcQualification?->code ?? 'Not Found';
 
-                TextEntry::make('Form Name')
-                    ->state(fn ($record) => $record->form?->name),
+                                return Blade::render(
+                                    '{{ $name }}<x-filament::badge size="sm" color="info" class="ml-2">{{ $qualification }}</x-filament::badge>',
+                                    [
+                                        'name' => $name,
+                                        'qualification' => $qualification,
+                                    ]
+                                );
+                            }),
 
-                TextEntry::make('account.name')
-                    ->label('Subject')
-                    ->state(fn ($record) => $record->account?->name),
+                        TextEntry::make('submitter.name')
+                            ->label('Submitted by')
+                            ->visible(self::canSeeSubmitter())
+                            ->state(fn ($record) => $record->submitter?->name),
 
-                TextEntry::make('accountAtcQualification.name')
-                    ->label('Subject\'s ATC Qualification')
-                    ->state(fn ($record) => $record->accountAtcQualification?->name ?? 'Not Found'),
-
-                TextEntry::make('submitter.name')
-                    ->label('Submitted by')
-                    ->visible(self::canSeeSubmitter())
-                    ->state(fn ($record) => $record->submitter?->name),
-
-                TextEntry::make('created_at')
-                    ->label('Submitted at')
-                    ->state(fn ($record) => $record->created_at->format('d/m/Y H:i')),
+                        TextEntry::make('created_at')
+                            ->label('Submitted at')
+                            ->state(fn ($record) => $record->created_at->format('d/m/Y H:i')),
+                    ]),
 
                 Fieldset::make('Sent Information')->columnSpanFull()
                     ->schema([
