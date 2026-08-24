@@ -57,19 +57,13 @@ class MentoringSessionsServiceTest extends TestCase
         $this->service = app(MentoringSessionsService::class);
 
         $this->mentorAccount = Account::factory()->create();
-        $this->mentorMember = Member::factory()->create([
-            'id' => $this->mentorAccount->generateCTSInternalID($this->mentorAccount->id),
-            'cid' => $this->mentorAccount->id,
-        ]);
+        $this->mentorMember = Member::factory()->forAccount($this->mentorAccount)->create();
 
         $this->mentorAccount->givePermissionTo('training.beta');
         $this->mentorAccount->givePermissionTo('training.mentoring.view.*');
 
         $this->studentAccount = Account::factory()->create();
-        $this->studentMember = Member::factory()->create([
-            'id' => $this->studentAccount->generateCTSInternalID($this->studentAccount->id),
-            'cid' => $this->studentAccount->id,
-        ]);
+        $this->studentMember = Member::factory()->forAccount($this->studentAccount)->create();
     }
 
     #[Test]
@@ -152,10 +146,7 @@ class MentoringSessionsServiceTest extends TestCase
     public function accept_session_returns_false_when_session_id_does_not_belong_to_the_availabilitys_student(): void
     {
         $otherStudentAccount = Account::factory()->create();
-        $otherStudentMember = Member::factory()->create([
-            'id' => $otherStudentAccount->generateCTSInternalID($otherStudentAccount->id),
-            'cid' => $otherStudentAccount->id,
-        ]);
+        $otherStudentMember = Member::factory()->forAccount($otherStudentAccount)->create();
 
         $mismatchedSession = Session::factory()->create([
             'student_id' => $otherStudentMember->id,
@@ -265,8 +256,8 @@ class MentoringSessionsServiceTest extends TestCase
         $this->assertSame('12:00:00', substr($cts->to, 0, 8));
 
         // FK relation rule: core bookings key on the CID, CTS bookings key on the CTS
-        // internal member id. These differ (generateCTSInternalID), so the mirror must
-        // store the internal id on the CTS side and the CID on the core side.
+        // internal member id. MemberFactory::forAccount guarantees these differ, so the
+        // mirror must store the internal id on the CTS side and the CID on the core side.
         $this->assertNotSame($this->studentAccount->id, $this->studentMember->id, 'Test relies on CTS member id differing from the CID');
         $this->assertSame($this->studentMember->id, $cts->member_id, 'CTS booking member_id must be the CTS internal member id');
 
@@ -480,10 +471,7 @@ class MentoringSessionsServiceTest extends TestCase
     public function accept_session_throws_exception_when_mentor_is_not_authorized_for_the_position(): void
     {
         $unauthorizedMentorAccount = Account::factory()->create();
-        Member::factory()->create([
-            'id' => $unauthorizedMentorAccount->generateCTSInternalID($unauthorizedMentorAccount->id),
-            'cid' => $unauthorizedMentorAccount->id,
-        ]);
+        Member::factory()->forAccount($unauthorizedMentorAccount)->create();
 
         $pendingSession = Session::factory()->create([
             'student_id' => $this->studentMember->id,
@@ -968,10 +956,7 @@ class MentoringSessionsServiceTest extends TestCase
         ]);
 
         $newMentorAccount = Account::factory()->create();
-        $newMentorMember = Member::factory()->create([
-            'id' => $newMentorAccount->generateCTSInternalID($newMentorAccount->id),
-            'cid' => $newMentorAccount->id,
-        ]);
+        $newMentorMember = Member::factory()->forAccount($newMentorAccount)->create();
 
         $trainingPosition = TrainingPosition::factory()->create([
             'category' => 'S3 Training',
@@ -1016,10 +1001,7 @@ class MentoringSessionsServiceTest extends TestCase
         ]);
 
         $newMentorAccount = Account::factory()->create();
-        Member::factory()->create([
-            'id' => $newMentorAccount->generateCTSInternalID($newMentorAccount->id),
-            'cid' => $newMentorAccount->id,
-        ]);
+        Member::factory()->forAccount($newMentorAccount)->create();
 
         $trainingPosition = TrainingPosition::factory()->create([
             'category' => 'S3 Training',
@@ -1058,10 +1040,7 @@ class MentoringSessionsServiceTest extends TestCase
         ]);
         $oldMentorAccount->givePermissionTo('training.mentoring.view.*');
 
-        $oldMentorMember = Member::factory()->create([
-            'id' => $oldMentorAccount->generateCTSInternalID($oldMentorAccount->id),
-            'cid' => $oldMentorAccount->id,
-        ]);
+        $oldMentorMember = Member::factory()->forAccount($oldMentorAccount)->create();
 
         $session = Session::factory()->create([
             'student_id' => $this->studentMember->id,
@@ -1077,10 +1056,7 @@ class MentoringSessionsServiceTest extends TestCase
             'name_first' => 'Sam',
             'name_last' => 'Newmentor',
         ]);
-        Member::factory()->create([
-            'id' => $newMentorAccount->generateCTSInternalID($newMentorAccount->id),
-            'cid' => $newMentorAccount->id,
-        ]);
+        Member::factory()->forAccount($newMentorAccount)->create();
 
         $trainingPosition = TrainingPosition::factory()->create([
             'category' => 'S3 Training',
