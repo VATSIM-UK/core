@@ -55,17 +55,17 @@ class FeedbackResource extends Resource
                 Section::make('Feedback Details')
                     ->heading(fn ($record) => $record->form?->name.' - '.$record->id)
                     ->columnSpanFull()
-                    ->columns(2)
+                    ->columns(fn () => self::canSeeSubmitter() ? 3 : 2)
                     ->schema([
                         TextEntry::make('subject_details')
                             ->label('Subject')
                             ->html()
                             ->state(function ($record) {
                                 $name = $record->account?->name;
-                                $qualification = $record->accountAtcQualification?->name ?? 'Not Found';
+                                $qualification = $record->accountAtcQualification?->code ?? 'Not Found';
 
                                 return Blade::render(
-                                    '{{ $name }} <x-filament::badge size="sm" color="info" class="ml-2">{{ $qualification }}</x-filament::badge>',
+                                    '{{ $name }}<x-filament::badge size="sm" color="info" class="ml-2">{{ $qualification }}</x-filament::badge>',
                                     [
                                         'name' => $name,
                                         'qualification' => $qualification,
