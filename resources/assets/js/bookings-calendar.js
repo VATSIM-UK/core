@@ -13,11 +13,24 @@ const STACKED_LANE_HEIGHT = 1.25;
 // hidden as soon as it touches the position column rather than half over it.
 const BALL_RADIUS = 5;
 
+// Keyed by the codes in BookingRepository::TYPE_MAP; keep the two in step.
+const BOOKING_TYPE_LABELS = {
+    BK: 'Booking',
+    ME: 'Mentoring',
+    EX: 'Exam',
+    EV: 'Event',
+    GS: 'Group seminar',
+};
+
 // Registers on the Alpine instance bundled with Livewire (exposed as
 // window.Alpine). Using the `alpine:init` hook guarantees the plugin and
 // component are registered before Livewire calls Alpine.start().
 document.addEventListener('alpine:init', () => {
     window.Alpine.plugin(collapse);
+
+    // A magic rather than a method on the component: the modals are teleported to
+    // the body, so they sit outside the timeline's scope but still need this.
+    window.Alpine.magic('bookingTypeLabel', () => (type) => BOOKING_TYPE_LABELS[type] || type || 'Booking');
 
     window.Alpine.data('bookingsTimeline', (config) => ({
         selectedDate: config.selectedDate,

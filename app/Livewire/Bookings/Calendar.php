@@ -32,6 +32,22 @@ class Calendar extends Component
     public const POSITION_SEARCH_MIN_LENGTH = 3;
 
     /**
+     * Legend for the timeline's booking blocks, in render order. Keyed by the
+     * codes in BookingRepository::TYPE_MAP and must stay exhaustive over them: a
+     * type with no entry here is a colour on the timeline nothing explains.
+     *
+     * Standard bookings and events carry no icon -- standard is the vast majority,
+     * and events have their own labelled row.
+     */
+    public const TYPE_LEGEND = [
+        'BK' => ['label' => 'Booking', 'colour' => 'bg-uknavy', 'icon' => null],
+        'ME' => ['label' => 'Mentoring', 'colour' => 'bg-purple-700', 'icon' => 'heroicon-m-academic-cap'],
+        'EX' => ['label' => 'Exam', 'colour' => 'bg-amber-800', 'icon' => 'heroicon-m-clipboard-document-check'],
+        'GS' => ['label' => 'Group seminar', 'colour' => 'bg-orange-500', 'icon' => 'heroicon-m-user-group'],
+        'EV' => ['label' => 'Event', 'colour' => 'bg-red-600', 'icon' => null],
+    ];
+
+    /**
      * Upper bound on candidate positions considered for a single search, applied
      * before the per-position qualification filter.
      */
@@ -114,6 +130,7 @@ class Calendar extends Component
             'selectedDate' => $this->selectedDate,
             'timelineScale' => array_values($this->timelineScale),
             'upcomingBookings' => $this->upcomingBookings,
+            'typeLegend' => self::TYPE_LEGEND,
         ]);
     }
 
