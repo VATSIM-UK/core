@@ -18,14 +18,18 @@
 			$('.searchable-select').select2({
 				placeholder: "Select or search position...",
 				allowClear: true,
-
-
 				width: '100%'
 			});
 
 			var $pages = $('.feedback-page');
 			var total = $pages.length;
 			var idx = 0;
+
+			// To check if a member was controlling at the time
+			var isAtcForm = @json(isset($form) && $form->slug === 'atc');
+			var checkAtcSessionUrl = @json(route('mship.feedback.check-atc-session'));
+			var $cidField = $('[data-question-type="userlookup"]').find('input,select');
+			var $datetimeField = $('[data-question-type="datetime"]').find('input');
 
 			function renderPage() {
 				$pages.hide().eq(idx).show();
@@ -65,13 +69,81 @@
 				return ok;
 			}
 
+			// Does the current page contain the CID and/or datetime fields?
+			function pageHasSessionCheckFields() {
+				return $pages.eq(idx).find('[data-question-type="userlookup"], [data-question-type="datetime"]')
+					.length > 0;
+			}
+
+			function clearSessionError() {
+				$('#feedbackSessionError').remove();
+			}
+
+			function showSessionError(message) {
+				clearSessionError();
+				$pages.eq(idx).prepend(
+					'<div id="feedbackSessionError" class="alert alert-danger">' + message + '</div>'
+				);
+			}
+
+			function checkAtcSessionAjax() {
+				var cid = $cidField.val();
+				var datetime = $datetimeField.val();
+
+				if (!cid || !datetime) {
+					return $.Deferred().resolve(true).promise();
+				}
+
+				var deferred = $.Deferred();
+				var $next = $('#feedbackNext');
+				$next.prop('disabled', true).data('original-text', $next.html()).html('Checking...');
+
+				$.post(checkAtcSessionUrl, {
+						_token: '{{ csrf_token() }}',
+						cid: cid,
+						datetime: datetime
+					})
+					.done(function(res) {
+						if (res.valid) {
+							clearSessionError();
+							deferred.resolve(true);
+						} else {
+							showSessionError(res.message);
+							deferred.resolve(false);
+						}
+					})
+					.fail(function(xhr) {
+						var msg = (xhr.responseJSON && xhr.responseJSON.message) ?
+							xhr.responseJSON.message :
+							'Could not verify this at the moment. Please try again.';
+						showSessionError(msg);
+						deferred.resolve(false);
+					})
+					.always(function() {
+						$next.prop('disabled', false).html($next.data('original-text'));
+					});
+
+				return deferred.promise();
+			}
+
 			$('#feedbackNext').click(function() {
-				if (pageValid()) {
+				if (!pageValid()) return;
+
+				if (isAtcForm && pageHasSessionCheckFields()) {
+					checkAtcSessionAjax().done(function(valid) {
+						if (valid) {
+							idx++;
+							renderPage();
+						}
+					});
+				} else {
 					idx++;
 					renderPage();
 				}
 			});
+
 			$('#feedbackPrev').click(function() {
+				clearSessionError();
 				idx--;
 				renderPage();
 			});
@@ -136,7 +208,8 @@
 								<div class="feedback-page" style="{{ $loop->first ? '' : 'display:none;' }}">
 									@foreach ($pageQuestions as $question)
 										<div class="form-group{{ $errors->has($question->slug) ? ' has-error' : '' }}"
-											data-required="{{ $question->required ? 'true' : 'false' }}">
+											data-required="{{ $question->required ? 'true' : 'false' }}" data-question-type="{{ $question->type->name }}"
+											data-question-slug="{{ $question->slug }}">
 											<label for="{{ $question->slug }}">{!! $question->question . ($question->required ? '' : ' (optional)') !!}</label> </br>
 											{!! $question->form_html !!}
 										</div>
