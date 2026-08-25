@@ -43,6 +43,11 @@ class ApplicationPolicy
         return $user->can('vt.application.reject.*') && $application->can_reject;
     }
 
+    public function reopenForReview(Account $user, Application $application)
+    {
+        return $user->can('vt.application.accept.*') && $application->is_rejected;
+    }
+
     public function complete(Account $user, Application $application)
     {
         return $user->can('vt.application.complete.*') && $application->is_accepted;

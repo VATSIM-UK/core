@@ -7,9 +7,12 @@ namespace App\Livewire\Bookings;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
+use App\Models\Cts\Member as CtsMember;
+use App\Models\Roster;
 use App\Repositories\Cts\BookingRepository;
 use App\Services\BookingService;
 use Carbon\Carbon;
+use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Livewire\Attributes\Layout;
@@ -21,21 +24,82 @@ use RuntimeException;
 ])]
 class Calendar extends Component
 {
+    /**
+     * Minimum length of a position search term. Almost every UK callsign starts
+     * with "E", so anything shorter matches most of the position table and makes
+     * the qualification check (which is per-position) prohibitively expensive.
+     */
+    public const POSITION_SEARCH_MIN_LENGTH = 3;
+
+    /**
+     * Legend for the timeline's booking blocks, in render order. Keyed by the
+     * codes in BookingRepository::TYPE_MAP and must stay exhaustive over them: a
+     * type with no entry here is a colour on the timeline nothing explains.
+     *
+     * Standard bookings and events carry no icon -- standard is the vast majority,
+     * and events have their own labelled row.
+     */
+    public const TYPE_LEGEND = [
+        'BK' => ['label' => 'Booking', 'colour' => 'bg-uknavy', 'icon' => null],
+        'ME' => ['label' => 'Mentoring', 'colour' => 'bg-purple-700', 'icon' => 'heroicon-m-academic-cap'],
+        'EX' => ['label' => 'Exam', 'colour' => 'bg-amber-800', 'icon' => 'heroicon-m-clipboard-document-check'],
+        'GS' => ['label' => 'Group seminar', 'colour' => 'bg-orange-500', 'icon' => 'heroicon-m-user-group'],
+        'EV' => ['label' => 'Event', 'colour' => 'bg-red-600', 'icon' => null],
+    ];
+
+    /**
+     * Upper bound on candidate positions considered for a single search, applied
+     * before the per-position qualification filter.
+     */
+    private const POSITION_SEARCH_LIMIT = 50;
+
+    /**
+     * Narrowest the timeline track can get, in pixels: the min-w-[1708px] body
+     * less the 10rem (140px at the app's 14px root) position column. Header label
+     * widths are measured against this so nothing overlaps at any window size.
+     */
+    private const TIMELINE_TRACK_MIN_WIDTH = 1568;
+
+    /**
+     * Rendered widths, in pixels, of the header labels at text-[10px]: "00:00"
+     * for an hour tick, "00:00 - 00:00" for a gap band, and "00h" for the short
+     * form a band falls back to when the scale has squeezed it too narrow.
+     *
+     * Measured in the browser at 23px, 56px and 16px respectively, plus the
+     * hour tick's 6px pl-1.5, then rounded up by roughly a third: the app asks
+     * for Calibri first (app.scss) but clients without it fall back to Tahoma,
+     * whose digits are appreciably wider.
+     */
+    private const HOUR_LABEL_WIDTH = 40;
+
+    private const GAP_LABEL_WIDTH = 72;
+
+    private const GAP_SHORT_LABEL_WIDTH = 20;
+
     public Carbon $selectedDate;
-
-    public Collection $bookings;
-
-    public Collection $qualifiedPositions;
 
     public string $positionFilter = '';
 
     public array $timelinePositions = [];
 
-    public array $timelineScale = [];
+    public array $events = [];
+
+    public int $eventLaneCount = 1;
 
     public int $filterVersion = 0;
 
     public int $dataVersion = 0;
+
+    /**
+     * Derived render state. Deliberately not public: these are large (the scale
+     * alone is 1441 floats) and recomputing them is far cheaper than shipping
+     * them to the browser and back inside the Livewire snapshot on every request.
+     */
+    private Collection $bookings;
+
+    private array $timelineScale = [];
+
+    private Collection $upcomingBookings;
 
     public function mount(?int $year = null, ?int $month = null): void
     {
@@ -46,86 +110,133 @@ class Calendar extends Component
             $this->selectedDate = Carbon::create($year, $month ?? $this->selectedDate->month, (int) $day);
         }
 
-        $this->bookings = collect();
-        $this->qualifiedPositions = collect();
         $this->timelinePositions = [];
         $this->refreshData();
     }
 
     public function render()
     {
+        // On a hydrated request nothing may have touched the derived state yet
+        // (the private properties do not survive serialisation), so load it here.
+        if (! isset($this->bookings)) {
+            $this->loadData();
+        }
+
         return view('livewire.bookings.calendar', [
-            'bookings' => $this->bookings,
-            'qualifiedPositions' => $this->qualifiedPositions,
             'timelinePositions' => $this->timelinePositions,
+            'events' => $this->events,
+            'eventLaneCount' => $this->eventLaneCount,
             'timelineHours' => $this->getTimelineHours(),
             'selectedDate' => $this->selectedDate,
             'timelineScale' => array_values($this->timelineScale),
+            'upcomingBookings' => $this->upcomingBookings,
+            'typeLegend' => self::TYPE_LEGEND,
         ]);
     }
 
     private function refreshData(): void
     {
+        $this->loadData();
+        $this->dataVersion++;
+    }
+
+    private function loadData(): void
+    {
         $this->getBookingsForDate($this->selectedDate);
         $this->computeScale();
-        $this->getQualifiedPositions();
         $this->buildTimeline();
-        $this->dataVersion++;
+
+        $this->upcomingBookings = auth()->check() && ! auth()->user()->is_banned
+            ? app(BookingRepository::class)->getMemberUpcomingBookings(auth()->user())
+            : collect();
     }
 
     public function updatedPositionFilter(): void
     {
         $this->filterVersion++;
-        $this->buildTimeline();
+        $this->loadData();
+    }
+
+    public function jumpToDate(string $date): void
+    {
+        $this->selectedDate = Carbon::parse($date);
+        $this->refreshData();
+
+        $this->js(sprintf(
+            "history.pushState({}, '', '%s')",
+            route('site.bookings.calendar', [
+                'year' => $this->selectedDate->year,
+                'month' => $this->selectedDate->month,
+            ]).'?day='.$this->selectedDate->day
+        ));
     }
 
     public function getBookingsForDate(Carbon $date): void
     {
-        $this->bookings = app(BookingRepository::class)->getBookings($date);
+        // An EV row carrying a callsign is a controller's own booking made during
+        // an event, not the event itself. Only the cts.events rows belong on the
+        // calendar: they have the event name and never a position. Dropping the
+        // rest here rather than at render time keeps them out of the hour scale
+        // and gap collapsing too, so they cannot stretch the timeline invisibly.
+        $this->bookings = app(BookingRepository::class)
+            ->getBookings($date)
+            ->reject(fn (object $booking): bool => $booking->type === 'EV' && $booking->position !== null)
+            ->values();
     }
 
-    public function getQualifiedPositions(): void
+    /**
+     * Look up bookable positions for the current member on demand.
+     *
+     * The full qualified-position list used to be built on page load, which meant
+     * a qualification check against every position in the table before anything
+     * rendered. Searching narrows the candidate set to a handful of rows instead.
+     *
+     * @return list<array{id: string, callsign: string}>
+     */
+    public function searchPositions(string $query): array
     {
-        $rating = (int) (auth()->user()?->qualification_atc?->vatsim ?? 0);
-        $maxAllowed = $rating + 1;
+        $query = strtoupper(trim($query));
 
-        $bookableTypes = [
-            Position::TYPE_DELIVERY,
-            Position::TYPE_GROUND,
-            Position::TYPE_TOWER,
-            Position::TYPE_APPROACH,
-            Position::TYPE_ENROUTE,
-            Position::TYPE_FSS,
-        ];
-
-        $allowedTypes = array_filter($bookableTypes, function (int $type) use ($maxAllowed): bool {
-            return Position::minimumVatsimRatingForType($type) <= $maxAllowed;
-        });
-
-        $query = Position::real()->orderBy('callsign');
-
-        if (! empty($allowedTypes)) {
-            $query->whereIn('type', $allowedTypes);
+        if (mb_strlen($query) < self::POSITION_SEARCH_MIN_LENGTH) {
+            return [];
         }
 
-        $this->qualifiedPositions = $query->pluck('callsign', 'id');
+        $account = auth()->user();
+        $roster = $account !== null ? Roster::firstWhere('account_id', $account->getKey()) : null;
 
-        if ($this->qualifiedPositions->isEmpty()) {
-            $this->qualifiedPositions = Position::real()
-                ->orderBy('callsign')
-                ->pluck('callsign', 'id');
+        if ($roster === null) {
+            return [];
         }
+
+        return Position::real()
+            ->where('callsign', 'like', '%'.addcslashes($query, '%_\\').'%')
+            ->orderBy('callsign')
+            ->limit(self::POSITION_SEARCH_LIMIT)
+            ->get()
+            ->filter(fn (Position $position): bool => (bool) $roster->accountCanControl($position))
+            ->map(fn (Position $position): array => [
+                'id' => (string) $position->id,
+                'callsign' => $position->callsign,
+            ])
+            ->values()
+            ->all();
     }
 
     public function buildTimeline(): void
     {
         $groups = [];
         $singles = [];
+        $events = [];
+
+        $filter = strtoupper($this->positionFilter);
 
         foreach ($this->bookings as $booking) {
+            $isEvent = $booking->type === 'EV';
             $callsign = $booking->position ?? 'Unknown';
 
-            if ($this->positionFilter !== '' && ! str_starts_with(strtoupper($callsign), strtoupper($this->positionFilter))) {
+            // Events have no callsign, so a callsign search simply excludes them
+            // rather than matching them against the "Unknown" placeholder.
+            if ($filter !== '' && ($isEvent || ! str_starts_with(strtoupper($callsign), $filter))) {
                 continue;
             }
 
@@ -145,6 +256,15 @@ class Calendar extends Component
                 'member' => $booking->member,
                 'type' => $booking->type,
             ];
+
+            if ($isEvent) {
+                // Events carry their name rather than a callsign, and it is the only
+                // label the events row has to show. It is set by the repository as a
+                // dynamic property, so it is absent on every other booking type.
+                $events[] = $bookingData + ['event_name' => $booking->event_name ?? null];
+
+                continue;
+            }
 
             $parts = explode('_', $callsign);
             $prefix = $parts[0] ?? '';
@@ -179,7 +299,7 @@ class Calendar extends Component
         ksort($groups);
         foreach ($groups as $icao => $positions) {
             ksort($positions);
-            $posArray = array_values($positions);
+            $posArray = array_values(array_map($this->assignLanes(...), $positions));
             $clusters = $this->buildTimeClusters($posArray);
             $result[] = [
                 'type' => 'group',
@@ -194,10 +314,66 @@ class Calendar extends Component
             $result[] = ['type' => 'separator'];
         }
         foreach ($singles as $data) {
-            $result[] = array_merge(['type' => 'single'], $data);
+            $result[] = array_merge(['type' => 'single'], $this->assignLanes($data));
         }
 
+        // Events share a single row, so they need lanes for the same reason
+        // position bookings do. assignLanes also orders them by start time.
+        $eventRow = $this->assignLanes(['bookings' => $events]);
+
+        $this->events = $eventRow['bookings'];
+        $this->eventLaneCount = $eventRow['laneCount'];
         $this->timelinePositions = $result;
+    }
+
+    /**
+     * Give every booking in a row a vertical lane, so that bookings overlapping
+     * in time can be stacked rather than drawn on top of one another.
+     *
+     * Greedy first fit over bookings ordered by start time: a booking takes the
+     * lowest lane whose previous occupant has already finished, which is optimal
+     * for interval graphs -- it never uses more lanes than the busiest instant
+     * requires. Overlaps are meant to be rare, so most rows come back with one
+     * lane and render exactly as they did before.
+     *
+     * @param  array<string, mixed>  $row
+     * @return array<string, mixed>
+     */
+    private function assignLanes(array $row): array
+    {
+        $bookings = $row['bookings'];
+
+        usort($bookings, fn (array $a, array $b): int => [$a['startMin'], $this->layoutEndMinute($a)]
+            <=> [$b['startMin'], $this->layoutEndMinute($b)]);
+
+        $laneEnds = [];
+
+        foreach ($bookings as $index => $booking) {
+            $lane = 0;
+            while (isset($laneEnds[$lane]) && $laneEnds[$lane] > $booking['startMin']) {
+                $lane++;
+            }
+
+            $laneEnds[$lane] = $this->layoutEndMinute($booking);
+            $bookings[$index]['lane'] = $lane;
+        }
+
+        $row['bookings'] = $bookings;
+        $row['laneCount'] = max(1, count($laneEnds));
+
+        return $row;
+    }
+
+    /**
+     * A booking whose end is not after its start runs past midnight. Only the
+     * part inside the day being rendered can collide with anything on this row,
+     * so for layout it occupies the remainder of the day.
+     *
+     * @param  array<string, mixed>  $booking
+     */
+    private function layoutEndMinute(array $booking): int
+    {
+        return $booking['endMin'] > $booking['startMin'] ? $booking['endMin'] : 1440;
     }
 
     private function computeScale(): void
@@ -300,36 +476,11 @@ class Calendar extends Component
 
             if ($hasActivity) {
                 if ($gapStart !== null) {
-                    $gapHours = $h - $gapStart;
-                    if ($gapHours >= 3) {
-                        $gapMin = $gapStart * 60;
-                        $gapEnd = $h * 60;
-                        $hours[] = [
-                            'type' => 'gap',
-                            'label' => sprintf('%02d:00 – %02d:00', $gapStart, $h),
-                            'hour' => $gapStart,
-                            'hours' => $gapHours,
-                            'scale_left' => $this->scalePos($gapMin),
-                            'scale_width' => $this->scaleWidth($gapMin, $gapEnd),
-                        ];
-                    } else {
-                        for ($gh = $gapStart; $gh < $h; $gh++) {
-                            $hMin = $gh * 60;
-                            $hours[] = [
-                                'type' => 'hour',
-                                'hour' => $gh,
-                                'scale_left' => $this->scalePos($hMin),
-                            ];
-                        }
-                    }
+                    $hours[] = $this->gapMarker($gapStart, $h);
                     $gapStart = null;
                 }
-                $hMin = $h * 60;
-                $hours[] = [
-                    'type' => 'hour',
-                    'hour' => $h,
-                    'scale_left' => $this->scalePos($hMin),
-                ];
+
+                $hours[] = $this->hourMarker($h);
             } else {
                 if ($gapStart === null) {
                     $gapStart = $h;
@@ -338,30 +489,66 @@ class Calendar extends Component
         }
 
         if ($gapStart !== null) {
-            $gapHours = 24 - $gapStart;
-            if ($gapHours >= 3) {
-                $gapMin = $gapStart * 60;
-                $hours[] = [
-                    'type' => 'gap',
-                    'label' => sprintf('%02d:00 – 00:00', $gapStart),
-                    'hour' => $gapStart,
-                    'hours' => $gapHours,
-                    'scale_left' => $this->scalePos($gapMin),
-                    'scale_width' => $this->scaleWidth($gapMin, 1440),
-                ];
-            } else {
-                for ($gh = $gapStart; $gh < 24; $gh++) {
-                    $hMin = $gh * 60;
-                    $hours[] = [
-                        'type' => 'hour',
-                        'hour' => $gh,
-                        'scale_left' => $this->scalePos($hMin),
-                    ];
-                }
-            }
+            $hours[] = $this->gapMarker($gapStart, 24);
         }
 
         return $hours;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function hourMarker(int $hour): array
+    {
+        $minute = $hour * 60;
+
+        return [
+            'type' => 'hour',
+            'hour' => $hour,
+            'scale_left' => $this->scalePos($minute),
+            'show_label' => $this->labelFits($this->scaleWidth($minute, $minute + 60), self::HOUR_LABEL_WIDTH),
+        ];
+    }
+
+    /**
+     * A band covering an inactive stretch, however short. Every inactive hour is
+     * squeezed to a sixth of an active one, so each one gets the band treatment
+     * rather than being left as a narrow, unshaded hour tick that looks like an
+     * ordinary hour. Where the band is too narrow for the full range it falls
+     * back to the duration, so the compressed time is still stated.
+     *
+     * @return array<string, mixed>
+     */
+    private function gapMarker(int $fromHour, int $toHour): array
+    {
+        $fromMinute = $fromHour * 60;
+        $toMinute = $toHour * 60;
+        $width = $this->scaleWidth($fromMinute, $toMinute);
+        $hours = $toHour - $fromHour;
+
+        return [
+            'type' => 'gap',
+            'label' => sprintf("%02d:00 \u{2013} %02d:00", $fromHour, $toHour % 24),
+            'short_label' => sprintf('%dh', $hours),
+            'hour' => $fromHour,
+            'hours' => $hours,
+            'scale_left' => $this->scalePos($fromMinute),
+            'scale_width' => $width,
+            'show_label' => $this->labelFits($width, self::GAP_LABEL_WIDTH),
+            'show_short_label' => $this->labelFits($width, self::GAP_SHORT_LABEL_WIDTH),
+        ];
+    }
+
+    /**
+     * Header labels are placed as a percentage of the timeline track, so a
+     * column compressed by the scale can be far narrower than the text it would
+     * carry -- an inactive hour is a sixth of an active one. Drop the label when
+     * it would not fit at the track's minimum width, leaving the tick in place,
+     * rather than letting it spill over the neighbouring column.
+     */
+    private function labelFits(float $widthPct, int $labelWidth): bool
+    {
+        return $widthPct >= ($labelWidth / self::TIMELINE_TRACK_MIN_WIDTH) * 100;
     }
 
     private function buildTimeClusters(array $positions): array
@@ -441,6 +628,11 @@ class Calendar extends Component
         return (int) $parts[0] * 60 + (int) $parts[1];
     }
 
+    private function isOnFifteenMinuteBoundary(Carbon $time): bool
+    {
+        return $time->second === 0 && $time->minute % 15 === 0;
+    }
+
     public function createBooking(array $data): void
     {
         if (! auth()->check()) {
@@ -455,33 +647,52 @@ class Calendar extends Component
             return;
         }
 
+        // Mandatory: every check in BookingService::create() is gated behind a
+        // non-null position_id.
         $positionId = ! empty($data['position_id']) ? (int) $data['position_id'] : null;
-        $customCallsign = ! empty($data['custom_callsign']) ? $data['custom_callsign'] : null;
 
-        if (! $positionId && ! $customCallsign) {
-            $this->dispatch('booking-error', message: 'Please select a position or enter a custom callsign.');
+        if (! $positionId) {
+            $this->dispatch('booking-error', message: 'Please select a position.');
 
             return;
         }
 
-        if (! empty($data['starts_at'])) {
-            $startsAt = Carbon::parse($data['starts_at']);
+        // Required, and string-typed: validating only when present would let a
+        // caller skip the checks below by omitting the field.
+        $startsAtInput = $data['starts_at'] ?? null;
+        $endsAtInput = $data['ends_at'] ?? null;
 
-            if ($startsAt->isPast()) {
-                $this->dispatch('booking-error', message: 'Bookings cannot start in the past.');
+        if (! is_string($startsAtInput) || ! is_string($endsAtInput) || $startsAtInput === '' || $endsAtInput === '') {
+            $this->dispatch('booking-error', message: 'Please provide a start and end time.');
 
-                return;
-            }
+            return;
+        }
 
-            if (! empty($data['ends_at'])) {
-                $endsAt = Carbon::parse($data['ends_at']);
+        try {
+            $startsAt = Carbon::parse($startsAtInput);
+            $endsAt = Carbon::parse($endsAtInput);
+        } catch (InvalidFormatException) {
+            $this->dispatch('booking-error', message: 'Please provide a valid start and end time.');
 
-                if ($startsAt->equalTo($endsAt)) {
-                    $this->dispatch('booking-error', message: 'Booking length cannot be zero minutes.');
+            return;
+        }
 
-                    return;
-                }
-            }
+        if ($startsAt->isPast()) {
+            $this->dispatch('booking-error', message: 'Bookings cannot start in the past.');
+
+            return;
+        }
+
+        if (! $this->isOnFifteenMinuteBoundary($startsAt) || ! $this->isOnFifteenMinuteBoundary($endsAt)) {
+            $this->dispatch('booking-error', message: 'Start and end times must be on 15-minute boundaries.');
+
+            return;
+        }
+
+        if ($endsAt->lessThanOrEqualTo($startsAt)) {
+            $this->dispatch('booking-error', message: 'End time must be after start time.');
+
+            return;
         }
 
         try {
@@ -489,8 +700,8 @@ class Calendar extends Component
                 'position_id' => $positionId,
                 'member_id' => auth()->id(),
                 'type' => Booking::TYPE_STANDARD,
-                'starts_at' => Carbon::parse($data['starts_at']),
-                'ends_at' => Carbon::parse($data['ends_at']),
+                'starts_at' => $startsAt,
+                'ends_at' => $endsAt,
             ]);
             $this->refreshData();
             $this->dispatch('booking-created');
@@ -537,8 +748,19 @@ class Calendar extends Component
 
             $core = Booking::where('cts_booking_id', $ctsId)->first();
 
+            // member_id is a CTS-internal id, assigned independently of the CID
+            // (see HasCTSAccount::generateCTSInternalID), so it has to be
+            // translated before it can be compared with auth()->id().
+            $ctsMember = CtsMember::find((int) $cts->member_id);
+
+            if ($ctsMember === null) {
+                $this->dispatch('booking-error', message: 'Booking not found.');
+
+                return;
+            }
+
             $isStandard = $cts->type === 'BK';
-            $memberId = (int) $cts->member_id;
+            $memberId = (int) $ctsMember->cid;
             $endsAt = $this->ctsEndsAt($cts);
         } else {
             $this->dispatch('booking-error', message: 'Booking not found.');

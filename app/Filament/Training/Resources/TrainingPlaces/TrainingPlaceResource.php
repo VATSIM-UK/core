@@ -4,8 +4,13 @@ namespace App\Filament\Training\Resources\TrainingPlaces;
 
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
 use App\Filament\Training\Resources\TrainingPlaces\Pages\ListTrainingPlaces;
+use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
+use App\Models\Training\WaitingList;
+use App\Policies\TrainingPlacePolicy;
+use App\Services\Training\MentorPermissionService;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Resource;
@@ -35,6 +40,31 @@ class TrainingPlaceResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        /** @var Account|null $user */
+        $user = auth()->user();
+
+        $canViewAtc = self::canViewDepartment($user, WaitingList::ATC_DEPARTMENT);
+        $canViewPilot = self::canViewDepartment($user, WaitingList::PILOT_DEPARTMENT);
+
+        if ($canViewAtc && $canViewPilot) {
+            return $query;
+        }
+
+        if ($canViewAtc) {
+            return $query->where('trainable_type', TrainingPosition::class);
+        }
+
+        if ($canViewPilot) {
+            return $query->where('trainable_type', Qualification::class);
+        }
+
+        return $query->whereRaw('0 = 1');
+    }
+
     public static function table(Table $table): Table
     {
         $categoryGroup = Group::make('category')
@@ -42,37 +72,78 @@ class TrainingPlaceResource extends Resource
             ->titlePrefixedWithLabel(false)
             ->collapsible()
             ->getTitleFromRecordUsing(
-                fn (TrainingPlace $record): string => filled($record->trainingPosition?->category)
-                    ? $record->trainingPosition->category
+                fn (TrainingPlace $record): string => filled($record->category)
+                    ? $record->category
                     : 'Uncategorised'
             )
             ->getKeyFromRecordUsing(
-                fn (TrainingPlace $record): string => filled($record->trainingPosition?->category)
-                    ? $record->trainingPosition->category
+                fn (TrainingPlace $record): string => filled($record->category)
+                    ? $record->category
                     : '__uncategorised__'
             )
-            ->orderQueryUsing(fn (Builder $query, string $direction): Builder => $query
-                ->orderBy(
-                    TrainingPosition::query()
-                        ->select('category')
-                        ->whereColumn('training_positions.id', 'training_places.trainable_id')
-                        ->where('training_places.trainable_type', TrainingPosition::class),
-                    $direction,
-                )
-                ->orderByDesc('training_places.created_at')
-            )
+            ->orderQueryUsing(function (Builder $query, string $direction): Builder {
+                $direction = strtolower($direction) === 'desc' ? 'desc' : 'asc';
+
+                $qualificationCases = collect(MentorPermissionService::PILOT_CATEGORY_QUALIFICATION_MAP)
+                    ->map(fn (): string => 'WHEN ? THEN ?')
+                    ->implode(' ');
+
+                $bindings = [TrainingPosition::class];
+                foreach (MentorPermissionService::PILOT_CATEGORY_QUALIFICATION_MAP as $category => $code) {
+                    $bindings[] = $code;
+                    $bindings[] = $category;
+                }
+                $bindings[] = Qualification::class;
+
+                return $query
+                    ->orderByRaw(
+                        "COALESCE(
+                            (
+                                SELECT category FROM training_positions
+                                WHERE training_positions.id = training_places.trainable_id
+                                AND training_places.trainable_type = ?
+                            ),
+                            (
+                                SELECT CASE code {$qualificationCases} END
+                                FROM mship_qualification
+                                WHERE mship_qualification.id = training_places.trainable_id
+                                AND training_places.trainable_type = ?
+                            )
+                        ) {$direction}",
+                        $bindings
+                    )
+                    ->orderByDesc('training_places.created_at');
+            })
             ->scopeQueryByKeyUsing(function (Builder $query, string $key): Builder {
                 if ($key === '__uncategorised__') {
-                    return $query->where(function (Builder $query) {
+                    $mappedCodes = array_values(MentorPermissionService::PILOT_CATEGORY_QUALIFICATION_MAP);
+
+                    return $query->where(function (Builder $query) use ($mappedCodes) {
                         $query->whereHasMorph('trainable', [TrainingPosition::class], function (Builder $query) {
                             $query->whereNull('category')->orWhere('category', '');
                         })
-                            ->orWhere('trainable_type', '!=', TrainingPosition::class)
+                            ->orWhereHasMorph('trainable', [Qualification::class], function (Builder $query) use ($mappedCodes) {
+                                $query->whereNotIn('code', $mappedCodes);
+                            })
                             ->orWhereNull('trainable_type');
                     });
                 }
 
-                return $query->whereHasMorph('trainable', [TrainingPosition::class], fn (Builder $query) => $query->where('category', $key));
+                if (in_array($key, MentorPermissionService::pilotCategories(), true)) {
+                    $code = MentorPermissionService::PILOT_CATEGORY_QUALIFICATION_MAP[$key] ?? null;
+
+                    return $query->whereHasMorph(
+                        'trainable',
+                        [Qualification::class],
+                        fn (Builder $query) => $query->where('code', $code)
+                    );
+                }
+
+                return $query->whereHasMorph(
+                    'trainable',
+                    [TrainingPosition::class],
+                    fn (Builder $query) => $query->where('category', $key)
+                );
             });
 
         return $table
@@ -128,13 +199,24 @@ class TrainingPlaceResource extends Resource
                     ),
 
                 TextColumn::make('display_name')
-                    ->label('Position')
+                    ->label(fn (): string => self::trainableColumnLabel(auth()->user()))
                     ->state(fn (TrainingPlace $record): string => $record->display_name)
-                    ->searchable(query: fn (Builder $query, string $search): Builder => $query->whereHasMorph(
-                        'trainable',
-                        [TrainingPosition::class],
-                        fn (Builder $query) => $query->whereHas('position', fn (Builder $query) => $query->where('callsign', 'like', "%{$search}%"))
-                    )),
+                    ->searchable(query: fn (Builder $query, string $search): Builder => $query->where(function (Builder $query) use ($search) {
+                        $query->whereHasMorph(
+                            'trainable',
+                            [TrainingPosition::class],
+                            fn (Builder $query) => $query->whereHas(
+                                'position',
+                                fn (Builder $query) => $query->where('callsign', 'like', "%{$search}%")
+                            )
+                        )->orWhereHasMorph(
+                            'trainable',
+                            [Qualification::class],
+                            fn (Builder $query) => $query
+                                ->where('code', 'like', "%{$search}%")
+                                ->orWhere('name_long', 'like', "%{$search}%")
+                        );
+                    })),
 
                 TextColumn::make('status')
                     ->label('Status')
@@ -147,12 +229,32 @@ class TrainingPlaceResource extends Resource
             ->filters([
                 SelectFilter::make('category')
                     ->label('Category')
-                    ->options(TrainingPosition::all()->pluck('category', 'category')->map(fn ($category) => Str::title($category ?? 'Uncategorised')))
+                    ->options(fn (): array => self::categoryFilterOptions())
                     ->preload()
                     ->searchable()
-                    ->query(fn (Builder $query, array $data): Builder => filled($data['value'] ?? null)
-                        ? $query->whereHasMorph('trainable', [TrainingPosition::class], fn (Builder $q): Builder => $q->where('category', $data['value']))
-                        : $query),
+                    ->query(function (Builder $query, array $data): Builder {
+                        $value = $data['value'] ?? null;
+
+                        if (! filled($value)) {
+                            return $query;
+                        }
+
+                        if (in_array($value, MentorPermissionService::pilotCategories(), true)) {
+                            $code = MentorPermissionService::PILOT_CATEGORY_QUALIFICATION_MAP[$value] ?? null;
+
+                            return $query->whereHasMorph(
+                                'trainable',
+                                [Qualification::class],
+                                fn (Builder $query): Builder => $query->where('code', $code)
+                            );
+                        }
+
+                        return $query->whereHasMorph(
+                            'trainable',
+                            [TrainingPosition::class],
+                            fn (Builder $query): Builder => $query->where('category', $value)
+                        );
+                    }),
 
                 TrashedFilter::make()
                     ->label('Training Place Status')
@@ -171,6 +273,57 @@ class TrainingPlaceResource extends Resource
             ->persistColumnSearchesInSession()
             ->paginated(['25', '50', '100'])
             ->defaultPaginationPageOption(25);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected static function categoryFilterOptions(): array
+    {
+        /** @var Account|null $user */
+        $user = auth()->user();
+        $canViewAtc = self::canViewDepartment($user, WaitingList::ATC_DEPARTMENT);
+        $canViewPilot = self::canViewDepartment($user, WaitingList::PILOT_DEPARTMENT);
+
+        $positionCategories = $canViewAtc
+            ? TrainingPosition::query()
+                ->whereNotNull('category')
+                ->where('category', '!=', '')
+                ->distinct()
+                ->orderBy('category')
+                ->pluck('category', 'category')
+            : collect();
+
+        $pilotCategories = $canViewPilot
+            ? collect(MentorPermissionService::pilotCategories())
+                ->mapWithKeys(fn (string $category): array => [$category => $category])
+            : collect();
+
+        return $positionCategories
+            ->union($pilotCategories)
+            ->map(fn (string $category): string => Str::title($category))
+            ->all();
+    }
+
+    private static function canViewDepartment(?Account $user, string $department): bool
+    {
+        if (! $user) {
+            return false;
+        }
+
+        return app(TrainingPlacePolicy::class)->canViewDepartment($user, $department);
+    }
+
+    private static function trainableColumnLabel(?Account $user): string
+    {
+        $canViewAtc = self::canViewDepartment($user, WaitingList::ATC_DEPARTMENT);
+        $canViewPilot = self::canViewDepartment($user, WaitingList::PILOT_DEPARTMENT);
+
+        return match (true) {
+            $canViewAtc && $canViewPilot => 'Position / Qualification',
+            $canViewPilot => 'Qualification',
+            default => 'Position',
+        };
     }
 
     public static function getPages(): array
@@ -202,6 +355,6 @@ class TrainingPlaceResource extends Resource
 
     public static function getGlobalSearchResultDetails(Model $record): array
     {
-        return [$record->trainingPosition?->position?->name];
+        return [$record->display_name];
     }
 }

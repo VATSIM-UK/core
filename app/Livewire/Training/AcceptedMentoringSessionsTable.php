@@ -28,6 +28,7 @@ use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -93,6 +94,22 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                         ->orderBy('taken_date', $direction)
                         ->orderBy('taken_from', $direction)
                     ),
+
+                IconColumn::make('overlap_warning')
+                    ->label('')
+                    ->grow(false)
+                    ->getStateUsing(fn (Session $record) => $this->overlapForRecord($record) !== null)
+                    ->icon(fn (Session $record) => $this->overlapForRecord($record) ? 'heroicon-o-exclamation-triangle' : null)
+                    ->color('warning')
+                    ->tooltip(function (Session $record) {
+                        $overlap = $this->overlapForRecord($record);
+
+                        if (! $overlap) {
+                            return null;
+                        }
+
+                        return app(MentoringSessionsService::class)->overlapDescription($overlap);
+                    }),
             ])
             ->actions([
                 Action::make('conduct')
@@ -142,6 +159,11 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
             $takenTo,
             $session->id
         );
+    }
+
+    private function overlapForRecord(Session $record): Session|ExamBooking|null
+    {
+        return app(MentoringSessionsService::class)->findOverlappingBookingForSession($record);
     }
 
     protected function generateTimeOptions(?string $minTime = null, ?string $maxTime = null): array
@@ -393,7 +415,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                             return '';
                         }
 
-                        return $overlap instanceof Session ? 'Overlapping Session Detected' : 'Overlapping Exam Detected';
+                        return app(MentoringSessionsService::class)->overlapHeading($overlap);
                     })
                     ->description(function (Get $get) use ($record) {
                         $overlap = $this->getOverlappingBooking($get, $record);
@@ -402,11 +424,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                             return '';
                         }
 
-                        $type = $overlap instanceof Session ? 'session' : 'exam';
-                        $from = $overlap->taken_from;
-                        $to = $overlap->taken_to;
-
-                        return "There is already a {$type} booked on this position from {$from} to {$to}.";
+                        return app(MentoringSessionsService::class)->overlapDescription($overlap);
                     })
                     ->danger()
                     ->visible(function (Get $get) use ($record) {

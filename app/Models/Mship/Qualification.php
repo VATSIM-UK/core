@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship;
 
+use App\Enums\QualificationTypeEnum;
 use App\Models\Atc\Endorseable;
 use App\Models\Model;
 use App\Models\Training\WaitingList;
@@ -60,6 +61,22 @@ class Qualification extends Model implements Endorseable
     public function scopeOfType($query, $type)
     {
         return $query->whereType($type);
+    }
+
+    public function scopePilotTrainable($query)
+    {
+        return $query->whereIn('type', [
+            QualificationTypeEnum::Pilot->value,
+            QualificationTypeEnum::PilotVirtual->value,
+        ]);
+    }
+
+    public function isPilotTrainable(): bool
+    {
+        return in_array($this->type, [
+            QualificationTypeEnum::Pilot->value,
+            QualificationTypeEnum::PilotVirtual->value,
+        ], true);
     }
 
     public function scopeNetworkValue($query, $networkValue)

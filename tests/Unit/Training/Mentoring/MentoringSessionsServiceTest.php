@@ -7,6 +7,7 @@ namespace Tests\Unit\Training\Mentoring;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Availability;
+use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
@@ -30,6 +31,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\View;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -55,19 +57,13 @@ class MentoringSessionsServiceTest extends TestCase
         $this->service = app(MentoringSessionsService::class);
 
         $this->mentorAccount = Account::factory()->create();
-        $this->mentorMember = Member::factory()->create([
-            'id' => $this->mentorAccount->generateCTSInternalID($this->mentorAccount->id),
-            'cid' => $this->mentorAccount->id,
-        ]);
+        $this->mentorMember = Member::factory()->forAccount($this->mentorAccount)->create();
 
         $this->mentorAccount->givePermissionTo('training.beta');
         $this->mentorAccount->givePermissionTo('training.mentoring.view.*');
 
         $this->studentAccount = Account::factory()->create();
-        $this->studentMember = Member::factory()->create([
-            'id' => $this->studentAccount->generateCTSInternalID($this->studentAccount->id),
-            'cid' => $this->studentAccount->id,
-        ]);
+        $this->studentMember = Member::factory()->forAccount($this->studentAccount)->create();
     }
 
     #[Test]
@@ -150,10 +146,7 @@ class MentoringSessionsServiceTest extends TestCase
     public function accept_session_returns_false_when_session_id_does_not_belong_to_the_availabilitys_student(): void
     {
         $otherStudentAccount = Account::factory()->create();
-        $otherStudentMember = Member::factory()->create([
-            'id' => $otherStudentAccount->generateCTSInternalID($otherStudentAccount->id),
-            'cid' => $otherStudentAccount->id,
-        ]);
+        $otherStudentMember = Member::factory()->forAccount($otherStudentAccount)->create();
 
         $mismatchedSession = Session::factory()->create([
             'student_id' => $otherStudentMember->id,
@@ -221,6 +214,174 @@ class MentoringSessionsServiceTest extends TestCase
             'bookable_type' => Session::class,
             'bookable_id' => $pendingSession->id,
         ]);
+    }
+
+    #[Test]
+    public function accept_session_mirrors_the_booking_into_cts_bookings(): void
+    {
+        Notification::fake();
+
+        $position = Position::factory()->create(['callsign' => 'EGLL_APP']);
+
+        $pendingSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => null,
+            'taken' => 0,
+        ]);
+
+        $availability = Availability::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'date' => Carbon::tomorrow(),
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        $this->assertTrue($this->service->acceptSession(
+            $pendingSession->id,
+            $availability->id,
+            $this->mentorAccount,
+            '10:00',
+            '12:00',
+        ));
+
+        $cts = CtsBooking::where('type', 'ME')
+            ->where('member_id', $this->studentMember->id)
+            ->where('position', 'EGLL_APP')
+            ->first();
+
+        $this->assertNotNull($cts, 'A CTS booking row must be created for the accepted session');
+        $this->assertSame(Carbon::tomorrow()->format('Y-m-d'), $cts->date);
+        $this->assertSame('10:00:00', substr($cts->from, 0, 8));
+        $this->assertSame('12:00:00', substr($cts->to, 0, 8));
+
+        // FK relation rule: core bookings key on the CID, CTS bookings key on the CTS
+        // internal member id. MemberFactory::forAccount guarantees these differ, so the
+        // mirror must store the internal id on the CTS side and the CID on the core side.
+        $this->assertNotSame($this->studentAccount->id, $this->studentMember->id, 'Test relies on CTS member id differing from the CID');
+        $this->assertSame($this->studentMember->id, $cts->member_id, 'CTS booking member_id must be the CTS internal member id');
+
+        // The core booking must be FK-linked to the CTS row via cts_booking_id and
+        // reference the student by CID.
+        $this->assertDatabaseHas('bookings', [
+            'member_id' => $this->studentAccount->id,
+            'type' => Booking::TYPE_MENTORING,
+            'bookable_type' => Session::class,
+            'bookable_id' => $pendingSession->id,
+            'cts_booking_id' => $cts->id,
+        ]);
+    }
+
+    #[Test]
+    public function reschedule_session_updates_core_and_cts_bookings(): void
+    {
+        Notification::fake();
+
+        $pendingSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => null,
+            'taken' => 0,
+        ]);
+
+        $availability = Availability::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'date' => Carbon::tomorrow(),
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        $this->assertTrue($this->service->acceptSession(
+            $pendingSession->id,
+            $availability->id,
+            $this->mentorAccount,
+            '10:00',
+            '12:00',
+        ));
+
+        $cts = CtsBooking::where('type', 'ME')
+            ->where('member_id', $this->studentMember->id)
+            ->where('position', 'EGLL_APP')
+            ->firstOrFail();
+
+        $newAvailability = Availability::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'date' => Carbon::tomorrow()->addDay(),
+            'from' => '14:00:00',
+            'to' => '16:00:00',
+        ]);
+
+        $this->assertTrue($this->service->rescheduleSession(
+            $pendingSession->id,
+            $newAvailability->id,
+            '14:00',
+            '16:00',
+            $this->mentorAccount,
+        ));
+
+        $newDate = Carbon::tomorrow()->addDay()->format('Y-m-d');
+
+        $this->assertDatabaseHas('bookings', [
+            'type' => Booking::TYPE_MENTORING,
+            'bookable_type' => Session::class,
+            'bookable_id' => $pendingSession->id,
+            'starts_at' => $newDate.' 14:00:00',
+            'ends_at' => $newDate.' 16:00:00',
+        ]);
+
+        $this->assertDatabaseHas('bookings', [
+            'id' => $cts->id,
+            'date' => $newDate,
+            'from' => '14:00:00',
+            'to' => '16:00:00',
+        ], 'cts');
+    }
+
+    #[Test]
+    public function cancel_session_deletes_core_and_cts_bookings(): void
+    {
+        Notification::fake();
+
+        $pendingSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => null,
+            'taken' => 0,
+        ]);
+
+        $availability = Availability::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'date' => Carbon::tomorrow(),
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        $this->assertTrue($this->service->acceptSession(
+            $pendingSession->id,
+            $availability->id,
+            $this->mentorAccount,
+            '10:00',
+            '12:00',
+        ));
+
+        $cts = CtsBooking::where('type', 'ME')
+            ->where('member_id', $this->studentMember->id)
+            ->where('position', 'EGLL_APP')
+            ->firstOrFail();
+
+        $this->assertTrue($this->service->cancelSession(
+            $pendingSession->id,
+            'No longer available.',
+            $this->mentorAccount,
+        ));
+
+        $this->assertDatabaseMissing('bookings', [
+            'type' => Booking::TYPE_MENTORING,
+            'bookable_type' => Session::class,
+            'bookable_id' => $pendingSession->id,
+        ]);
+
+        $this->assertDatabaseMissing('bookings', ['id' => $cts->id], 'cts');
     }
 
     #[Test]
@@ -310,10 +471,7 @@ class MentoringSessionsServiceTest extends TestCase
     public function accept_session_throws_exception_when_mentor_is_not_authorized_for_the_position(): void
     {
         $unauthorizedMentorAccount = Account::factory()->create();
-        Member::factory()->create([
-            'id' => $unauthorizedMentorAccount->generateCTSInternalID($unauthorizedMentorAccount->id),
-            'cid' => $unauthorizedMentorAccount->id,
-        ]);
+        Member::factory()->forAccount($unauthorizedMentorAccount)->create();
 
         $pendingSession = Session::factory()->create([
             'student_id' => $this->studentMember->id,
@@ -798,10 +956,7 @@ class MentoringSessionsServiceTest extends TestCase
         ]);
 
         $newMentorAccount = Account::factory()->create();
-        $newMentorMember = Member::factory()->create([
-            'id' => $newMentorAccount->generateCTSInternalID($newMentorAccount->id),
-            'cid' => $newMentorAccount->id,
-        ]);
+        $newMentorMember = Member::factory()->forAccount($newMentorAccount)->create();
 
         $trainingPosition = TrainingPosition::factory()->create([
             'category' => 'S3 Training',
@@ -846,10 +1001,7 @@ class MentoringSessionsServiceTest extends TestCase
         ]);
 
         $newMentorAccount = Account::factory()->create();
-        Member::factory()->create([
-            'id' => $newMentorAccount->generateCTSInternalID($newMentorAccount->id),
-            'cid' => $newMentorAccount->id,
-        ]);
+        Member::factory()->forAccount($newMentorAccount)->create();
 
         $trainingPosition = TrainingPosition::factory()->create([
             'category' => 'S3 Training',
@@ -875,6 +1027,66 @@ class MentoringSessionsServiceTest extends TestCase
         Notification::assertSentTo($this->studentAccount, MentoringSessionReallocatedStudentNotification::class);
         Notification::assertSentTo($this->mentorAccount, MentoringSessionReallocatedOldMentorNotification::class);
         Notification::assertSentTo($newMentorAccount, MentoringSessionReallocatedNewMentorNotification::class);
+    }
+
+    #[Test]
+    public function reallocate_session_sends_student_notification_with_new_mentor_name(): void
+    {
+        Notification::fake();
+
+        $oldMentorAccount = Account::factory()->create([
+            'name_first' => 'Jamie',
+            'name_last' => 'Mentor',
+        ]);
+        $oldMentorAccount->givePermissionTo('training.mentoring.view.*');
+
+        $oldMentorMember = Member::factory()->forAccount($oldMentorAccount)->create();
+
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $oldMentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        $newMentorAccount = Account::factory()->create([
+            'name_first' => 'Sam',
+            'name_last' => 'Newmentor',
+        ]);
+        Member::factory()->forAccount($newMentorAccount)->create();
+
+        $trainingPosition = TrainingPosition::factory()->create([
+            'category' => 'S3 Training',
+            'cts_positions' => ['EGLL_APP'],
+        ]);
+
+        MentorTrainingPosition::create([
+            'account_id' => $newMentorAccount->id,
+            'mentorable_type' => TrainingPosition::class,
+            'mentorable_id' => $trainingPosition->id,
+            'created_by' => $newMentorAccount->id,
+        ]);
+
+        $this->service->reallocateSession(
+            $session->id,
+            $newMentorAccount->id,
+            $oldMentorAccount,
+            'Mentor is unavailable due to prior commitments.',
+        );
+
+        Notification::assertSentTo(
+            $this->studentAccount,
+            MentoringSessionReallocatedStudentNotification::class,
+            function (MentoringSessionReallocatedStudentNotification $notification): bool {
+                $mail = $notification->toMail($this->studentAccount);
+                $html = View::make($mail->view, $mail->data())->render();
+
+                return str_contains($html, 'Sam Newmentor') && ! str_contains($html, 'Jamie Mentor');
+            },
+        );
     }
 
     #[Test]
@@ -1006,5 +1218,81 @@ class MentoringSessionsServiceTest extends TestCase
         );
 
         $this->assertInstanceOf(Session::class, $result);
+    }
+
+    #[Test]
+    public function find_overlapping_booking_for_session_returns_null_when_no_overlap(): void
+    {
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        $result = $this->service->findOverlappingBookingForSession($session);
+
+        $this->assertNull($result);
+    }
+
+    #[Test]
+    public function find_overlapping_booking_for_session_returns_overlapping_session(): void
+    {
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '11:00:00',
+            'taken_to' => '13:00:00',
+            'cancelled_datetime' => null,
+        ]);
+
+        $result = $this->service->findOverlappingBookingForSession($session);
+
+        $this->assertInstanceOf(Session::class, $result);
+        $this->assertSame('11:00:00', $result->taken_from);
+        $this->assertSame('13:00:00', $result->taken_to);
+    }
+
+    #[Test]
+    public function find_overlapping_booking_for_session_returns_overlapping_exam(): void
+    {
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        ExamBooking::factory()->create([
+            'position_1' => 'EGLL_APP',
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '11:00:00',
+            'taken_to' => '13:00:00',
+        ]);
+
+        $result = $this->service->findOverlappingBookingForSession($session);
+
+        $this->assertInstanceOf(ExamBooking::class, $result);
     }
 }

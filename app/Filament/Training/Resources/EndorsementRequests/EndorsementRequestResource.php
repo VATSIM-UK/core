@@ -123,8 +123,26 @@ class EndorsementRequestResource extends Resource
             ])
             ->paginated([10, 25, 50, 100])
             ->recordActions([
+                Action::make('viewNotes')
+                    ->icon('heroicon-m-document-text')
+                    ->label('Notes')
+                    ->modalHeading('Request Notes')
+                    ->modalFooterActions([])
+                    ->form([
+                        Textarea::make('notes')
+                            ->hiddenLabel()
+                            ->disabled()
+                            ->columnSpanFull(),
+                    ])
+                    ->fillForm(function (EndorsementRequest $endorsementRequest) {
+                        return [
+                            'notes' => $endorsementRequest->notes,
+                        ];
+                    })
+                    ->visible(fn (EndorsementRequest $endorsementRequest) => (auth()->user()->can('approve', $endorsementRequest) || auth()->user()->can('reject', $endorsementRequest)) && $endorsementRequest->notes),
                 Action::make('approve')
-                    ->schema(static::approvalSchema())
+                    ->color('success')
+                    ->schema(fn (EndorsementRequest $endorsementRequest) => static::approvalSchema($endorsementRequest))
                     ->modalSubmitActionLabel('Approve')
                     ->action(function (EndorsementRequest $endorsementRequest, array $data) {
                         event(new EndorsementRequestApproved($endorsementRequest, $data['days'] ?? null));
@@ -135,6 +153,7 @@ class EndorsementRequestResource extends Resource
                     })->visible(fn (EndorsementRequest $endorsementRequest) => $endorsementRequest->status === 'Pending' &&
                             auth()->user()->can('approve', $endorsementRequest)),
                 Action::make('reject')
+                    ->color('danger')
                     ->requiresConfirmation()
                     ->action(function (EndorsementRequest $endorsementRequest, array $data) {
                         $endorsementRequest->markRejected();
@@ -155,9 +174,16 @@ class EndorsementRequestResource extends Resource
         ];
     }
 
-    public static function approvalSchema(): array
+    public static function approvalSchema(?EndorsementRequest $endorsementRequest = null): array
     {
         return [
+            Textarea::make('request_notes')
+                ->label('Request Notes')
+                ->default($endorsementRequest?->notes)
+                ->disabled()
+                ->columnSpanFull()
+                ->visible(fn () => filled($endorsementRequest?->notes)),
+
             Select::make('type')
                 ->options([
                     'Permanent' => 'Permanent',

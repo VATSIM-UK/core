@@ -227,9 +227,9 @@ class MentoringSessionNotificationsTest extends TestCase
     #[Test]
     public function reallocated_student_notification_uses_expected_subject_view_and_data(): void
     {
-        $oldMentorName = $this->mentorAccount->name;
+        $newMentorName = 'Sam Newmentor';
 
-        $notification = new MentoringSessionReallocatedStudentNotification($this->session, $oldMentorName);
+        $notification = new MentoringSessionReallocatedStudentNotification($this->session, $newMentorName);
         $mail = $notification->toMail($this->studentAccount);
 
         $this->assertContains('mail', $notification->via($this->studentAccount));
@@ -241,6 +241,7 @@ class MentoringSessionNotificationsTest extends TestCase
         );
         $this->assertSame($this->session->id, $mail->viewData['session']->id);
         $this->assertSame('EGLL_APP', $mail->viewData['position']);
+        $this->assertSame($newMentorName, $mail->viewData['newMentorName']);
 
         $html = View::make($mail->view, $mail->data())->render();
 
@@ -248,7 +249,7 @@ class MentoringSessionNotificationsTest extends TestCase
         $this->assertStringContainsString('re-allocated your mentoring session to another mentor', $html);
         $this->assertStringContainsString('EGLL_APP', $html);
         $this->assertStringContainsString($this->session->formattedSessionDateTime(), $html);
-        $this->assertStringContainsString('Jamie Mentor', $html);
+        $this->assertStringContainsString($newMentorName, $html);
     }
 
     #[Test]

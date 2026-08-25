@@ -8,6 +8,8 @@ use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
+use App\Models\Mship\State;
+use App\Models\Roster;
 use App\Services\BookingService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -24,6 +26,17 @@ class BookingServiceTest extends TestCase
     {
         parent::setUp();
         $this->service = app(BookingService::class);
+    }
+
+    /**
+     * Qualifying for a position goes through Roster::accountCanControl, which requires
+     * the member to be on the roster and in an eligible state.
+     */
+    private function placeOnRoster(Account $member): Roster
+    {
+        $member->addState(State::findByCode('DIVISION'));
+
+        return Roster::create(['account_id' => $member->id]);
     }
 
     #[Test]
@@ -160,6 +173,7 @@ class BookingServiceTest extends TestCase
         $qual = Qualification::factory()->atc()->create(['vatsim' => 1]);
         $member->qualifications()->sync([$qual->id]);
         $member = $member->fresh();
+        $this->placeOnRoster($member);
 
         $position = Position::factory()->create(['type' => Position::TYPE_TOWER]);
 
@@ -182,6 +196,7 @@ class BookingServiceTest extends TestCase
         $qual = Qualification::factory()->atc()->create(['vatsim' => 3]);
         $member->qualifications()->sync([$qual->id]);
         $member = $member->fresh();
+        $this->placeOnRoster($member);
 
         $position = Position::factory()->create(['type' => Position::TYPE_TOWER]);
 
@@ -203,6 +218,7 @@ class BookingServiceTest extends TestCase
         $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
         $member->qualifications()->sync([$qual->id]);
         $member = $member->fresh();
+        $this->placeOnRoster($member);
 
         $position = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
 
@@ -233,6 +249,7 @@ class BookingServiceTest extends TestCase
         $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
         $member->qualifications()->sync([$qual->id]);
         $member = $member->fresh();
+        $this->placeOnRoster($member);
 
         $position = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
 
@@ -278,6 +295,7 @@ class BookingServiceTest extends TestCase
         $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
         $member->qualifications()->sync([$qual->id]);
         $member = $member->fresh();
+        $this->placeOnRoster($member);
 
         $positionA = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
         $positionB = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
@@ -314,6 +332,7 @@ class BookingServiceTest extends TestCase
         $member = Account::factory()->withQualification()->create();
         $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
         $member->qualifications()->sync([$qual->id]);
+        $this->placeOnRoster($member);
 
         $position = Position::factory()->create(['type' => Position::TYPE_DELIVERY]);
 
@@ -336,6 +355,7 @@ class BookingServiceTest extends TestCase
         $member = Account::factory()->withQualification()->create();
         $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
         $member->qualifications()->sync([$qual->id]);
+        $this->placeOnRoster($member);
 
         $position = Position::factory()->create(['type' => Position::TYPE_DELIVERY]);
 
@@ -357,6 +377,7 @@ class BookingServiceTest extends TestCase
         $member = Account::factory()->withQualification()->create();
         $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
         $member->qualifications()->sync([$qual->id]);
+        $this->placeOnRoster($member);
 
         $position = Position::factory()->create(['type' => Position::TYPE_DELIVERY]);
 
@@ -382,6 +403,7 @@ class BookingServiceTest extends TestCase
         $member = Account::factory()->withQualification()->create();
         $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
         $member->qualifications()->sync([$qual->id]);
+        $this->placeOnRoster($member);
 
         $position = Position::factory()->create(['type' => Position::TYPE_DELIVERY]);
 
@@ -409,6 +431,7 @@ class BookingServiceTest extends TestCase
         $member = Account::factory()->withQualification()->create();
         $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
         $member->qualifications()->sync([$qual->id]);
+        $this->placeOnRoster($member);
 
         $position = Position::factory()->create(['type' => Position::TYPE_DELIVERY]);
 

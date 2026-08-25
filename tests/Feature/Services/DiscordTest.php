@@ -861,4 +861,63 @@ class DiscordTest extends TestCase
             return $request->method() === 'GET';
         });
     }
+
+    #[Test]
+    public function sync_lookup_command_creates_new_command_when_none_exists()
+    {
+        $this->configureDiscordApi();
+
+        Http::fake([
+            'discord.com/api/v10/applications/test-app/guilds/test-guild/commands' => Http::sequence()
+                ->push([], 200)
+                ->push(['id' => 'cmd-1'], 200),
+        ]);
+
+        (new Discord)->syncLookupCommand();
+
+        Http::assertSent(function ($request) {
+            return $request->method() === 'POST'
+                && str_contains($request->url(), '/commands')
+                && $request->data()['name'] === 'lookup'
+                && $request->data()['options'][0]['name'] === 'cid'
+                && $request->data()['options'][0]['type'] === 4
+                && $request->data()['options'][0]['required'] === true
+                && $request->data()['options'][0]['min_value'] === 1;
+        });
+    }
+
+    #[Test]
+    public function sync_lookup_command_updates_existing_command()
+    {
+        $this->configureDiscordApi();
+
+        Http::fake([
+            'discord.com/api/v10/applications/test-app/guilds/test-guild/commands' => Http::response([
+                ['id' => 'cmd-1', 'name' => 'lookup'],
+            ], 200),
+            'discord.com/api/v10/applications/test-app/guilds/test-guild/commands/cmd-1' => Http::response([], 200),
+        ]);
+
+        (new Discord)->syncLookupCommand();
+
+        Http::assertSent(function ($request) {
+            return $request->method() === 'PATCH'
+                && str_contains($request->url(), '/commands/cmd-1');
+        });
+    }
+
+    #[Test]
+    public function sync_lookup_command_logs_error_when_no_client_id()
+    {
+        Config::set('services.discord.token', 'test-token');
+        Config::set('services.discord.guild_id', 'test-guild');
+        Config::set('services.discord.client_id', null);
+        Config::set('services.discord.base_discord_uri', 'https://discord.com/api/v10');
+
+        Log::shouldReceive('error')
+            ->once()
+            ->with('Cannot sync lookup command: no Discord client ID configured');
+
+        (new Discord)->syncLookupCommand();
+    }
 }

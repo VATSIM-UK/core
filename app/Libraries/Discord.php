@@ -453,6 +453,33 @@ class Discord
         $this->upsertGuildCommand($commandPayload, $applicationId);
     }
 
+    public function syncLookupCommand(): void
+    {
+        $applicationId = config('services.discord.client_id');
+
+        if (! $applicationId) {
+            Log::error('Cannot sync lookup command: no Discord client ID configured');
+
+            return;
+        }
+
+        $commandPayload = [
+            'name' => 'lookup',
+            'description' => 'Look up the Discord account linked to a VATSIM CID.',
+            'options' => [
+                [
+                    'type' => 4, // INTEGER
+                    'name' => 'cid',
+                    'description' => 'The VATSIM CID to look up.',
+                    'required' => true,
+                    'min_value' => 1,
+                ],
+            ],
+        ];
+
+        $this->upsertGuildCommand($commandPayload, $applicationId);
+    }
+
     /**
      * Create or update a guild slash command.
      */

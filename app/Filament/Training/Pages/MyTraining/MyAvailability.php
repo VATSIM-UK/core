@@ -8,6 +8,7 @@ use App\Models\Cts\Member;
 use App\Models\Cts\Position;
 use App\Models\Cts\PositionValidation;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Services\Training\AvailabilityLogService;
 use App\Services\Training\AvailabilityService;
 use Carbon\Carbon;
 use CodeWithKyrian\FilamentDateRange\Forms\Components\DateRangePicker;
@@ -269,11 +270,20 @@ class MyAvailability extends Page implements HasForms, HasTable
                             return;
                         }
 
+                        $oldFrom = Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC');
+                        $oldTo = Carbon::parse($record->date->format('Y-m-d').' '.$record->to->format('H:i:s'), 'UTC');
+
                         $record->update([
                             'date' => $startUtc->toDateString(),
                             'from' => $startUtc->format('H:i:s'),
                             'to' => $endUtc->format('H:i:s'),
                         ]);
+
+                        $service = app(AvailabilityLogService::class);
+                        $service->recordEdited(
+                            $service->activeTrainingPlacesForAccount(auth()->id()),
+                            $oldFrom, $oldTo, $startUtc, $endUtc,
+                        );
 
                         Notification::make()->title('Availability updated')->success()->send();
                     }),
@@ -282,10 +292,33 @@ class MyAvailability extends Page implements HasForms, HasTable
                     ->color('danger')
                     ->iconButton()
                     ->requiresConfirmation(false)
-                    ->action(fn ($record) => $record->delete()),
+                    ->action(function (Availability $record): void {
+                        $from = Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC');
+                        $to = Carbon::parse($record->date->format('Y-m-d').' '.$record->to->format('H:i:s'), 'UTC');
+
+                        $record->delete();
+
+                        $service = app(AvailabilityLogService::class);
+                        $service->recordRemoved($service->activeTrainingPlacesForAccount(auth()->id()), $from, $to);
+                    }),
             ])
             ->bulkActions([
-                DeleteBulkAction::make(),
+                DeleteBulkAction::make()
+                    ->after(function (\Illuminate\Support\Collection $records): void {
+                        $service = app(AvailabilityLogService::class);
+                        $places = $service->activeTrainingPlacesForAccount(auth()->id());
+
+                        foreach ($records as $record) {
+                            if ($record->exists()) {
+                                continue;
+                            }
+
+                            $from = Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC');
+                            $to = Carbon::parse($record->date->format('Y-m-d').' '.$record->to->format('H:i:s'), 'UTC');
+
+                            $service->recordRemoved($places, $from, $to);
+                        }
+                    }),
             ])
             ->emptyStateHeading('No availability added yet')
             ->emptyStateDescription('Use the form to add your availability slots.')

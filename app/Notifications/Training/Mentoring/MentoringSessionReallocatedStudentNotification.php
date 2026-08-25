@@ -15,7 +15,7 @@ class MentoringSessionReallocatedStudentNotification extends Notification implem
 
     public function __construct(
         private Session $session,
-        private string $oldMentorName,
+        private string $newMentorName,
     ) {}
 
     public function getEmailType(): EmailType
@@ -40,7 +40,7 @@ class MentoringSessionReallocatedStudentNotification extends Notification implem
                 'session' => $session,
                 'position' => $session->position,
                 'sessionDateTime' => $session->formattedSessionDateTime(),
-                'newMentorName' => $session->mentor?->account?->name ?? 'TBD',
+                'newMentorName' => $this->newMentorName,
             ]);
     }
 }

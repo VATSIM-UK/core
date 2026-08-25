@@ -2,6 +2,8 @@
 
 // Dashboard
 
+use App\Http\Controllers\Mship\Feedback;
+
 Route::get('/dashboard')->uses('Mship\Management@getLanding')->name('landing');
 
 // Authentication
@@ -81,6 +83,8 @@ Route::group([
         Route::get('new/{form}')->uses('Feedback@getFeedback')->name('new.form');
         Route::post('new/{form}')->uses('Feedback@postFeedback')->name('new.form.post');
         Route::get('view')->uses('Feedback\ViewFeedbackController@show')->name('view');
+        Route::post('check-atc-session', [Feedback::class, 'checkAtcSession'])
+            ->name('check-atc-session');
     });
 
     // Waiting Lists

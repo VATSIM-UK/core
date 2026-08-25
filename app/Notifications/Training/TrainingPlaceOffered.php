@@ -3,6 +3,7 @@
 namespace App\Notifications\Training;
 
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
+use App\Models\Training\WaitingList;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -36,18 +37,30 @@ class TrainingPlaceOffered extends Notification
     {
         $offer = $this->trainingPlaceOffer;
         $account = $offer->waitingListAccount->account;
-        $position = $offer->trainingPosition?->position;
+        $isPilot = $offer->department === WaitingList::PILOT_DEPARTMENT;
+
+        $viewData = [
+            'recipient' => $notifiable,
+            'account' => $account,
+            'offer' => $offer,
+            'accept_url' => route('mship.waiting-lists.training-place-offer.accept', ['token' => $offer->token]),
+            'decline_url' => route('mship.waiting-lists.training-place-offer.decline', ['token' => $offer->token]),
+        ];
+
+        if ($isPilot) {
+            $viewData['course_name'] = $offer->display_name;
+        } else {
+            $viewData['position'] = $offer->trainingPosition?->position;
+        }
 
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
             ->subject('UK Training Place Offer')
-            ->view('emails.training.training_place_offer', [
-                'recipient' => $notifiable,
-                'account' => $account,
-                'position' => $position,
-                'offer' => $offer,
-                'accept_url' => route('mship.waiting-lists.training-place-offer.accept', ['token' => $offer->token]),
-                'decline_url' => route('mship.waiting-lists.training-place-offer.decline', ['token' => $offer->token]),
-            ]);
+            ->view(
+                $isPilot
+                    ? 'emails.training.training_place_offer_pilot'
+                    : 'emails.training.training_place_offer',
+                $viewData
+            );
     }
 }

@@ -2,7 +2,7 @@
 	@if ($session && $startsAt && $endsAt)
 		<x-filament::callout icon="heroicon-o-academic-cap" color="primary">
 			<x-slot name="heading">
-				<div class="flex items-center justify-between gap-4">
+				<div class="flex items-center justify-between gap-4 -mt-1">
 					<div>
 						Upcoming session:
 						<span class="font-bold">

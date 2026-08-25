@@ -8,6 +8,7 @@ use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Mship\Account;
+use App\Models\Roster;
 use App\Services\Bookings\BookingPolicy;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -21,11 +22,21 @@ class BookingService
 
     public function create(array $data): Booking
     {
-        if ($data['position_id'] !== null) {
+        $type = $data['type'] ?? Booking::TYPE_STANDARD;
+        $positionId = $data['position_id'] ?? null;
+
+        // The checks below are gated behind a non-null position, so fail closed
+        // rather than skipping them all. Exam, mentoring and event bookings are
+        // exempt: the training system creates those, not a member.
+        if ($type === Booking::TYPE_STANDARD && $positionId === null) {
+            throw new \InvalidArgumentException('A standard booking must have a position.');
+        }
+
+        if ($positionId !== null) {
             $this->validateOverlap(
                 Carbon::parse($data['starts_at']),
                 Carbon::parse($data['ends_at']),
-                $data['position_id']
+                $positionId
             );
         }
 
@@ -36,10 +47,10 @@ class BookingService
                 $data['member_id']
             );
 
-            if ($data['position_id'] !== null && ($data['type'] ?? Booking::TYPE_STANDARD) === Booking::TYPE_STANDARD) {
+            if ($positionId !== null && $type === Booking::TYPE_STANDARD) {
                 $this->validateMemberQualification(
                     $data['member_id'],
-                    $data['position_id']
+                    $positionId
                 );
 
                 $this->policy->validateAdvanceBookingLimits(
@@ -49,12 +60,12 @@ class BookingService
                 $this->policy->validateGatwickLimit($data['member_id']);
                 $this->policy->validateMinimumNotice(
                     $data['member_id'],
-                    $data['position_id'],
+                    $positionId,
                     Carbon::parse($data['starts_at'])
                 );
                 $this->policy->validateFutureQualification(
                     $data['member_id'],
-                    $data['position_id'],
+                    $positionId,
                     Carbon::parse($data['starts_at'])
                 );
             }
@@ -178,15 +189,12 @@ class BookingService
 
     public function validateMemberQualification(int $memberId, int $positionId): void
     {
-        $member = Account::findOrFail($memberId);
         $position = Position::findOrFail($positionId);
+        Account::findOrFail($memberId);
 
-        $rating = (int) ($member->qualification_atc?->vatsim ?? 0);
-        $maxAllowed = $rating + 1;
+        $roster = Roster::firstWhere('account_id', $memberId);
 
-        $minRating = Position::minimumVatsimRatingForType((int) $position->getRawOriginal('type'));
-
-        if ($minRating > $maxAllowed) {
+        if (! $roster?->accountCanControl($position)) {
             throw new \RuntimeException('You are not qualified to book this position.');
         }
     }

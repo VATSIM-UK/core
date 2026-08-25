@@ -237,6 +237,7 @@ class ViewMentoringReport extends Page implements HasInfolists
             ->first();
 
         $groupedSheets = $this->session->reportSheets->reject(fn ($s) => $s->field_id === 0)->groupBy(fn ($s) => $s->field?->category?->catName ?? 'Uncategorized');
+        $isPilot = $this->session->isPilot();
 
         $categorySections = [];
 
@@ -249,6 +250,70 @@ class ViewMentoringReport extends Page implements HasInfolists
                 $previousScore = MentoringReportScores::previousScore($scoreMap, $sheet->field_id, $previousSession);
                 $bestScore = MentoringReportScores::bestScore($scoreMap, $sheet->field_id);
 
+                // Pilot sessions should have the 3 column layout
+                if ($isPilot) {
+                    $bestScoreSessionId = MentoringReportScores::bestScoreSessionId($scoreMap, $sheet->field_id);
+
+                    $sheetRows[] = Grid::make(14)
+                        ->schema([
+                            Grid::make(1)
+                                ->extraAttributes(['class' => 'gap-0'])
+                                ->schema([
+                                    TextEntry::make("field_name_{$uniqueKey}")
+                                        ->state($sheet->field?->field ?? 'Unknown Field')
+                                        ->hiddenLabel()
+                                        ->size(TextSize::Large)
+                                        ->weight(FontWeight::Bold)
+                                        ->extraAttributes(['style' => 'margin-bottom:0.5px']),
+
+                                    TextEntry::make("field_notes_{$uniqueKey}")
+                                        ->label('Notes')
+                                        ->state($this->ctsPlainNotesForHtmlDisplay($sheet->notes))
+                                        ->hiddenLabel()
+                                        ->html()
+                                        ->prose()
+                                        ->extraAttributes(['style' => 'word-break:break-word'])
+                                        ->hidden(blank($sheet->notes)),
+                                ])->columnSpan(8),
+
+                            TextEntry::make("field_best_{$uniqueKey}")
+                                ->label('Best')
+                                ->state($bestScore)
+                                ->badge()
+                                ->icon('heroicon-m-trophy')
+                                ->url(function () use ($bestScoreSessionId, $bestScore, $sheet): ?string {
+                                    if (! $bestScoreSessionId || $bestScoreSessionId === $this->session->id) {
+                                        return null;
+                                    }
+
+                                    if ($sheet->field_score === $bestScore) {
+                                        return null;
+                                    }
+
+                                    return static::getUrl(['sessionId' => $bestScoreSessionId]);
+                                })
+                                ->openUrlInNewTab()
+                                ->columnSpan(2),
+
+                            TextEntry::make("field_previous_{$uniqueKey}")
+                                ->label('Previous')
+                                ->state($previousScore)
+                                ->badge()
+                                ->icon('heroicon-m-clock')
+                                ->columnSpan(2),
+
+                            TextEntry::make("field_score_{$uniqueKey}")
+                                ->label('Current')
+                                ->state($sheet->field_score)
+                                ->badge()
+                                ->columnSpan(2),
+                        ])
+                        ->extraAttributes(['class' => MentoringReportLayout::CRITERION_ROW_CLASSES]);
+
+                    continue;
+                }
+
+                // Mentoring sessions should use the progress entry
                 $sheetRows[] = Grid::make(4)
                     ->schema([
                         Grid::make(1)

@@ -38,9 +38,11 @@
 											($waitingListAccount->waitingList->feature_toggles['display_on_roster'] ?? true))
 										<td>
 											@if ($waitingListAccount->account->onRoster())
-												<img src="{{ asset('images/tick_mark_circle.png') }}" width="20" alt="Tick">
+												<img src="{{ asset('images/tick_mark_circle.png') }}" width="20" alt="Tick"
+													style="display: block; margin: 0 auto;">
 											@else
-												<img src="{{ asset('images/cross_mark_circle.png') }}" width="20" alt="Cross">
+												<img src="{{ asset('images/cross_mark_circle.png') }}" width="20" alt="Cross"
+													style="display: block; margin: 0 auto;">
 											@endif
 										</td>
 									@else
@@ -50,9 +52,11 @@
 									@endif
 									<td>
 										@if ($waitingListAccount->waitingList->should_check_cts_theory_exam && $waitingListAccount->theory_exam_passed)
-											<img src="{{ asset('images/tick_mark_circle.png') }}" width="20" alt="Tick">
+											<img src="{{ asset('images/tick_mark_circle.png') }}" width="20" alt="Tick"
+												style="display: block; margin: 0 auto;">
 										@elseif($waitingListAccount->waitingList->should_check_cts_theory_exam)
-											<img src="{{ asset('images/cross_mark_circle.png') }}" width="20" alt="Cross">
+											<img src="{{ asset('images/cross_mark_circle.png') }}" width="20" alt="Cross"
+												style="display: block; margin: 0 auto;">
 										@else
 											N/A
 										@endif

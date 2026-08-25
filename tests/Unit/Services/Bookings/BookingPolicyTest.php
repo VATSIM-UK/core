@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace Tests\Unit\Services\Bookings;
 
 use App\Models\Atc\Position;
+use App\Models\Atc\PositionGroup;
+use App\Models\Atc\PositionGroupCondition;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\Member as CtsMember;
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
+use App\Models\Mship\State;
 use App\Services\Bookings\BookingPolicy;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -496,13 +500,13 @@ class BookingPolicyTest extends TestCase
         $account = Account::factory()->create();
         $position = Position::factory()->create();
 
-        $group = \App\Models\Atc\PositionGroup::factory()->create();
+        $group = PositionGroup::factory()->create();
         $group->positions()->attach($position);
 
         Account\Endorsement::factory()->create([
             'account_id' => $account->id,
             'endorsable_id' => $group->id,
-            'endorsable_type' => \App\Models\Atc\PositionGroup::class,
+            'endorsable_type' => PositionGroup::class,
             'expires_at' => Carbon::now()->addDays(3),
         ]);
 
@@ -521,13 +525,13 @@ class BookingPolicyTest extends TestCase
         $account = Account::factory()->create();
         $position = Position::factory()->create();
 
-        $group = \App\Models\Atc\PositionGroup::factory()->create();
+        $group = PositionGroup::factory()->create();
         $group->positions()->attach($position);
 
         Account\Endorsement::factory()->create([
             'account_id' => $account->id,
             'endorsable_id' => $group->id,
-            'endorsable_type' => \App\Models\Atc\PositionGroup::class,
+            'endorsable_type' => PositionGroup::class,
             'expires_at' => Carbon::now()->addDays(30),
         ]);
 
@@ -561,7 +565,7 @@ class BookingPolicyTest extends TestCase
         $account = Account::factory()->create();
         $position = Position::factory()->create();
 
-        $group = \App\Models\Atc\PositionGroup::factory()->create();
+        $group = PositionGroup::factory()->create();
         $group->positions()->attach($position);
 
         $this->expectException(\RuntimeException::class);
@@ -572,5 +576,91 @@ class BookingPolicyTest extends TestCase
             $position->id,
             Carbon::now()->addDay(),
         );
+    }
+
+    #[Test]
+    public function it_allows_when_endorsed_even_if_hour_conditions_are_unmet(): void
+    {
+        $account = Account::factory()->create();
+        $position = Position::factory()->create();
+
+        $group = PositionGroup::factory()->create();
+        $group->positions()->attach($position);
+
+        factory(PositionGroupCondition::class)->create([
+            'position_group_id' => $group->id,
+            'positions' => ['EGKK_%'],
+            'required_hours' => 50,
+            'type' => PositionGroupCondition::TYPE_ON_SINGLE_AIRFIELD,
+            'within_months' => null,
+        ]);
+
+        Account\Endorsement::factory()->create([
+            'account_id' => $account->id,
+            'endorsable_id' => $group->id,
+            'endorsable_type' => PositionGroup::class,
+            'expires_at' => null,
+        ]);
+
+        $this->policy->validateFutureQualification(
+            $account->id,
+            $position->id,
+            Carbon::now()->addDay(),
+        );
+
+        $this->assertTrue(true);
+    }
+
+    #[Test]
+    public function it_allows_when_home_rating_is_above_group_maximum_without_endorsement(): void
+    {
+        $lowerQualification = Qualification::code('S1')->first();
+        $qualification = Qualification::code('S2')->first();
+
+        $account = Account::factory()->create();
+        $account->addQualification($qualification);
+        $account->addState(State::findByCode('DIVISION'));
+
+        $position = Position::factory()->create(['type' => Position::TYPE_TOWER]);
+
+        $group = PositionGroup::factory()->create([
+            'maximum_atc_qualification_id' => $lowerQualification->id,
+        ]);
+        $group->positions()->attach($position);
+
+        $this->policy->validateFutureQualification(
+            $account->id,
+            $position->id,
+            Carbon::now()->addDay(),
+        );
+
+        $this->assertTrue(true);
+    }
+
+    #[Test]
+    public function it_allows_when_position_is_in_multiple_groups_and_endorsed_for_one(): void
+    {
+        $account = Account::factory()->create();
+        $position = Position::factory()->create();
+
+        $group1 = PositionGroup::factory()->create();
+        $group2 = PositionGroup::factory()->create();
+        $group1->positions()->attach($position);
+        $group2->positions()->attach($position);
+
+        Account\Endorsement::factory()->create([
+            'account_id' => $account->id,
+            'endorsable_id' => $group2->id,
+            'endorsable_type' => PositionGroup::class,
+            'expires_at' => null,
+        ]);
+
+        $this->policy->validateFutureQualification(
+            $account->id,
+            $position->id,
+            Carbon::now()->addDay(),
+        );
+
+        $this->assertTrue(true);
     }
 }

@@ -6,11 +6,13 @@ use App\Filament\Training\Resources\TrainingPlaces\Pages\ListTrainingPlaces;
 use App\Models\Cts\Member;
 use App\Models\Cts\Position as CtsPosition;
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\ValidationException;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
@@ -63,7 +65,7 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
             ->test(ListTrainingPlaces::class)
             ->callAction('createAdhocTrainingPlace', data: [
                 'account_id' => $student->id,
-                'training_position_id' => $trainingPosition->id,
+                'trainable' => TrainingPosition::class.'|'.$trainingPosition->id,
                 'reason' => $reason,
             ])
             ->assertNotified();
@@ -83,6 +85,193 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function it_can_create_an_adhoc_qualification_training_place_from_the_list_page()
+    {
+        $this->panelUser->givePermissionTo('training-places.view.*');
+        $this->panelUser->givePermissionTo('training-places.create-adhoc.pilot');
+
+        $qualification = Qualification::firstWhere('code', 'PPL')
+            ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
+
+        $student = Account::factory()->create();
+        Member::factory()->create([
+            'cid' => $student->id,
+            'name' => 'Pilot Student',
+        ]);
+
+        $reason = 'This is a valid reason for creating an ad-hoc pilot training place.';
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ListTrainingPlaces::class)
+            ->callAction('createAdhocTrainingPlace', data: [
+                'account_id' => $student->id,
+                'trainable' => Qualification::class.'|'.$qualification->id,
+                'reason' => $reason,
+            ])
+            ->assertNotified();
+
+        $this->assertDatabaseHas('training_places', [
+            'account_id' => $student->id,
+            'trainable_type' => Qualification::class,
+            'trainable_id' => $qualification->id,
+            'waiting_list_account_id' => null,
+        ]);
+    }
+
+    #[Test]
+    public function it_can_create_an_adhoc_tfp_virtual_qualification_training_place()
+    {
+        $this->panelUser->givePermissionTo('training-places.view.*');
+        $this->panelUser->givePermissionTo('training-places.create-adhoc.pilot');
+
+        $qualification = Qualification::firstWhere('code', 'TFP')
+            ?? Qualification::factory()->pilotVirtual()->create(['code' => 'TFP']);
+
+        $student = Account::factory()->create();
+        Member::factory()->create([
+            'cid' => $student->id,
+            'name' => 'TFP Student',
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ListTrainingPlaces::class)
+            ->callAction('createAdhocTrainingPlace', data: [
+                'account_id' => $student->id,
+                'trainable' => Qualification::class.'|'.$qualification->id,
+                'reason' => 'This is a valid reason for creating an ad-hoc TFP training place.',
+            ])
+            ->assertNotified();
+
+        $this->assertDatabaseHas('training_places', [
+            'account_id' => $student->id,
+            'trainable_type' => Qualification::class,
+            'trainable_id' => $qualification->id,
+            'waiting_list_account_id' => null,
+        ]);
+    }
+
+    #[Test]
+    public function it_rejects_adhoc_qualification_creation_with_only_atc_permission()
+    {
+        $this->panelUser->givePermissionTo('training-places.view.*');
+        $this->panelUser->givePermissionTo('training-places.create-adhoc.atc');
+
+        $qualification = Qualification::firstWhere('code', 'PPL')
+            ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
+
+        $student = Account::factory()->create();
+        Member::factory()->create(['cid' => $student->id]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ListTrainingPlaces::class)
+            ->callAction('createAdhocTrainingPlace', data: [
+                'account_id' => $student->id,
+                'trainable' => Qualification::class.'|'.$qualification->id,
+                'reason' => 'This is a valid reason for creating an ad-hoc training place.',
+            ])
+            ->assertHasActionErrors(['trainable']);
+
+        $this->assertDatabaseMissing('training_places', [
+            'account_id' => $student->id,
+            'trainable_type' => Qualification::class,
+            'trainable_id' => $qualification->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_rejects_adhoc_creation_for_non_pilot_qualifications()
+    {
+        $this->panelUser->givePermissionTo('training-places.view.*');
+        $this->panelUser->givePermissionTo('training-places.create-adhoc');
+
+        $qualification = Qualification::factory()->atc()->create();
+
+        $student = Account::factory()->create();
+        Member::factory()->create(['cid' => $student->id]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ListTrainingPlaces::class)
+            ->callAction('createAdhocTrainingPlace', data: [
+                'account_id' => $student->id,
+                'trainable' => Qualification::class.'|'.$qualification->id,
+                'reason' => 'This is a valid reason for creating an ad-hoc training place.',
+            ])
+            ->assertHasActionErrors(['trainable']);
+
+        $this->assertDatabaseMissing('training_places', [
+            'account_id' => $student->id,
+            'trainable_type' => Qualification::class,
+            'trainable_id' => $qualification->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_rejects_non_pilot_qualifications_when_resolving_adhoc_trainable()
+    {
+        $this->panelUser->givePermissionTo('training-places.view.*');
+
+        $qualification = Qualification::factory()->atc()->create();
+
+        $component = Livewire::actingAs($this->panelUser)
+            ->test(ListTrainingPlaces::class)
+            ->instance();
+
+        $this->assertInstanceOf(ListTrainingPlaces::class, $component);
+
+        $method = new \ReflectionMethod(ListTrainingPlaces::class, 'resolveAdhocTrainable');
+
+        try {
+            $method->invoke($component, Qualification::class.'|'.$qualification->id);
+            $this->fail('Expected ValidationException was not thrown.');
+        } catch (ValidationException $exception) {
+            $this->assertArrayHasKey('trainable', $exception->errors());
+        }
+    }
+
+    #[Test]
+    public function it_groups_and_filters_qualification_places_under_p1_training()
+    {
+        $qualification = Qualification::firstWhere('code', 'PPL')
+            ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
+
+        $ctsPosition = CtsPosition::factory()->create(['callsign' => 'EGLL_APP']);
+        $trainingPosition = TrainingPosition::factory()
+            ->withCtsPositions([$ctsPosition->callsign])
+            ->create(['category' => 'approach']);
+
+        $waitingList = WaitingList::factory()->create();
+        $pilotStudent = Account::factory()->create();
+        $atcStudent = Account::factory()->create();
+        Member::factory()->create(['cid' => $pilotStudent->id]);
+        Member::factory()->create(['cid' => $atcStudent->id]);
+
+        $pilotWaitingListAccount = $waitingList->addToWaitingList($pilotStudent, $this->privacc);
+        $atcWaitingListAccount = $waitingList->addToWaitingList($atcStudent, $this->privacc);
+
+        $qualificationPlace = TrainingPlace::withoutEvents(fn () => TrainingPlace::create([
+            'waiting_list_account_id' => $pilotWaitingListAccount->id,
+            'account_id' => $pilotStudent->id,
+            'trainable_type' => Qualification::class,
+            'trainable_id' => $qualification->id,
+        ]));
+
+        $positionPlace = TrainingPlace::withoutEvents(fn () => TrainingPlace::create([
+            'waiting_list_account_id' => $atcWaitingListAccount->id,
+            'account_id' => $atcStudent->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
+        ]));
+
+        $this->assertSame('P1 Training', $qualificationPlace->fresh(['trainable'])->category);
+
+        Livewire::actingAs($this->privacc)
+            ->test(ListTrainingPlaces::class)
+            ->filterTable('category', 'P1 Training')
+            ->assertCanSeeTableRecords([$qualificationPlace])
+            ->assertCanNotSeeTableRecords([$positionPlace]);
+    }
+
+    #[Test]
     public function it_can_render_training_places_list_page_with_permission()
     {
         // Arrange
@@ -93,6 +282,102 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($user)
             ->test(ListTrainingPlaces::class)
             ->assertSuccessful();
+    }
+
+    #[Test]
+    public function it_scopes_list_records_to_department_view_permission()
+    {
+        $qualification = Qualification::firstWhere('code', 'PPL')
+            ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
+
+        $ctsPosition = CtsPosition::factory()->create(['callsign' => 'EGLL_APP']);
+        $trainingPosition = TrainingPosition::factory()
+            ->withCtsPositions([$ctsPosition->callsign])
+            ->create();
+
+        $waitingList = WaitingList::factory()->create();
+        $pilotStudent = Account::factory()->create();
+        $atcStudent = Account::factory()->create();
+        Member::factory()->create(['cid' => $pilotStudent->id]);
+        Member::factory()->create(['cid' => $atcStudent->id]);
+
+        $pilotWaitingListAccount = $waitingList->addToWaitingList($pilotStudent, $this->privacc);
+        $atcWaitingListAccount = $waitingList->addToWaitingList($atcStudent, $this->privacc);
+
+        $qualificationPlace = TrainingPlace::withoutEvents(fn () => TrainingPlace::create([
+            'waiting_list_account_id' => $pilotWaitingListAccount->id,
+            'account_id' => $pilotStudent->id,
+            'trainable_type' => Qualification::class,
+            'trainable_id' => $qualification->id,
+        ]));
+
+        $positionPlace = TrainingPlace::withoutEvents(fn () => TrainingPlace::create([
+            'waiting_list_account_id' => $atcWaitingListAccount->id,
+            'account_id' => $atcStudent->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
+        ]));
+
+        $atcUser = Account::factory()->create();
+        $atcUser->givePermissionTo('training.access');
+        $atcUser->givePermissionTo('training-places.view.atc');
+
+        Livewire::actingAs($atcUser)
+            ->test(ListTrainingPlaces::class)
+            ->assertCanSeeTableRecords([$positionPlace])
+            ->assertCanNotSeeTableRecords([$qualificationPlace]);
+
+        $pilotUser = Account::factory()->create();
+        $pilotUser->givePermissionTo('training.access');
+        $pilotUser->givePermissionTo('training-places.view.pilot');
+
+        Livewire::actingAs($pilotUser)
+            ->test(ListTrainingPlaces::class)
+            ->assertCanSeeTableRecords([$qualificationPlace])
+            ->assertCanNotSeeTableRecords([$positionPlace]);
+    }
+
+    #[Test]
+    public function it_shows_all_departments_when_user_has_wildcard_view_permission()
+    {
+        $qualification = Qualification::firstWhere('code', 'PPL')
+            ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
+
+        $ctsPosition = CtsPosition::factory()->create(['callsign' => 'EGLL_APP']);
+        $trainingPosition = TrainingPosition::factory()
+            ->withCtsPositions([$ctsPosition->callsign])
+            ->create();
+
+        $waitingList = WaitingList::factory()->create();
+        $pilotStudent = Account::factory()->create();
+        $atcStudent = Account::factory()->create();
+        Member::factory()->create(['cid' => $pilotStudent->id]);
+        Member::factory()->create(['cid' => $atcStudent->id]);
+
+        $pilotWaitingListAccount = $waitingList->addToWaitingList($pilotStudent, $this->privacc);
+        $atcWaitingListAccount = $waitingList->addToWaitingList($atcStudent, $this->privacc);
+
+        $qualificationPlace = TrainingPlace::withoutEvents(fn () => TrainingPlace::create([
+            'waiting_list_account_id' => $pilotWaitingListAccount->id,
+            'account_id' => $pilotStudent->id,
+            'trainable_type' => Qualification::class,
+            'trainable_id' => $qualification->id,
+        ]));
+
+        $positionPlace = TrainingPlace::withoutEvents(fn () => TrainingPlace::create([
+            'waiting_list_account_id' => $atcWaitingListAccount->id,
+            'account_id' => $atcStudent->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
+        ]));
+
+        $user = Account::factory()->create();
+        $user->givePermissionTo('training.access');
+        $user->givePermissionTo('training-places.view.*');
+
+        Livewire::actingAs($user)
+            ->test(ListTrainingPlaces::class)
+            ->assertCanSeeTableRecords([$qualificationPlace, $positionPlace]);
     }
 
     #[Test]
