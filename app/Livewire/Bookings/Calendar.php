@@ -94,12 +94,17 @@ class Calendar extends Component
      * Derived render state. Deliberately not public: these are large (the scale
      * alone is 1441 floats) and recomputing them is far cheaper than shipping
      * them to the browser and back inside the Livewire snapshot on every request.
+     * $upcomingBookings and $upcomingMentoringExamBookings are private for a
+     * different reason: each mentor/examiner entry carries a CID, which must
+     * never be exposed in the public Livewire snapshot.
      */
     private Collection $bookings;
 
     private array $timelineScale = [];
 
     private Collection $upcomingBookings;
+
+    private Collection $upcomingMentoringExamBookings;
 
     public function mount(?int $year = null, ?int $month = null): void
     {
@@ -130,6 +135,7 @@ class Calendar extends Component
             'selectedDate' => $this->selectedDate,
             'timelineScale' => array_values($this->timelineScale),
             'upcomingBookings' => $this->upcomingBookings,
+            'upcomingMentoringExamBookings' => $this->upcomingMentoringExamBookings,
             'typeLegend' => self::TYPE_LEGEND,
         ]);
     }
@@ -149,6 +155,8 @@ class Calendar extends Component
         $this->upcomingBookings = auth()->check() && ! auth()->user()->is_banned
             ? app(BookingRepository::class)->getMemberUpcomingBookings(auth()->user())
             : collect();
+
+        $this->upcomingMentoringExamBookings = app(BookingRepository::class)->getUpcomingMentoringAndExamBookings();
     }
 
     public function updatedPositionFilter(): void

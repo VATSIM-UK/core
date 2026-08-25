@@ -132,6 +132,22 @@ class BookingRepository
             ->values();
     }
 
+    public function getUpcomingMentoringAndExamBookings(int $limit = 10): Collection
+    {
+        $bookings = Booking::whereIn('type', [Booking::TYPE_MENTORING, Booking::TYPE_EXAM])
+            ->where('starts_at', '>=', Carbon::today())
+            ->with('position', 'ctsBooking')
+            ->with(['bookable' => fn ($morphTo) => $morphTo->morphWith([
+                Session::class => ['mentor'],
+                ExamBooking::class => ['examiners.primaryExaminer'],
+            ])])
+            ->orderBy('starts_at')
+            ->limit($limit)
+            ->get();
+
+        return $this->formatBookings($bookings)->values();
+    }
+
     private function formatBookings(Collection $bookings): Collection
     {
         return $bookings->map(function (Booking $booking) {

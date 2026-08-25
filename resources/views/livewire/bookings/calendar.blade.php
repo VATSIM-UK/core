@@ -168,13 +168,13 @@
 							@if ($item['type'] === 'group')
 								<div x-data='{ expanded: true, clusters: @json($item['clusters']), icao: @json($item['icao']) }'>
 									<div
-										class="flex border-b border-gray-200 bg-gray-50/90 cursor-pointer hover:bg-brand/5 transition-colors select-none"
+										class="flex border-b border-gray-200 bg-white cursor-pointer hover:bg-brand/5 transition-colors select-none"
 										@click="expanded = !expanded">
 										<div
-											class="w-40 shrink-0 px-3 py-2.5 -mb-px border-r border-b border-gray-200 flex items-center gap-2 sticky left-0 bg-gray-50 z-20">
+											class="w-40 shrink-0 px-3 py-2.5 -mb-px border-r border-b border-gray-200 flex items-center gap-2 sticky left-0 bg-white z-20">
 											<i class="fa fa-chevron-right text-[10px] text-gray-400 shrink-0 transition-transform duration-150"
 												:style="expanded ? 'transform: rotate(90deg)' : ''" aria-hidden="true"></i>
-											<span class="text-sm font-bold text-gray-600 uppercase tracking-wide" x-text="icao"></span>
+											<span class="text-[13px] font-semibold text-gray-700 uppercase tracking-wide" x-text="icao"></span>
 										</div>
 										<div class="flex-1 h-10 flex items-center px-3">
 											<template x-if="expanded">
@@ -283,66 +283,141 @@
 		</div>
 	</section>
 
-	@auth
-		<section class="max-w-2xl mx-auto bg-white rounded-xl shadow-sm ring-1 ring-gray-200/80 overflow-hidden">
+	<div class="flex flex-col lg:flex-row gap-4 lg:items-start max-w-5xl mx-auto">
+		@auth
+			<section class="flex-1 min-w-0 bg-white rounded-xl shadow-sm ring-1 ring-gray-200/80 overflow-hidden">
+				<div class="bg-uknavy text-white">
+					<div class="px-3 sm:px-4 py-2.5 flex items-center gap-2">
+						@svg('heroicon-m-calendar-days', 'w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 text-white')
+						<p class="text-sm sm:text-base font-semibold leading-snug text-white m-0">My future bookings</p>
+					</div>
+				</div>
+
+				@if ($upcomingBookings->isEmpty())
+					<div class="px-4 py-10 text-center text-gray-400">
+						<p class="text-sm">No upcoming bookings.</p>
+					</div>
+				@else
+					{{-- Column headers --}}
+					<div class="flex border-b border-gray-200 bg-gray-50/80">
+						<div
+							class="w-24 sm:w-32 shrink-0 px-2 sm:px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">
+							Date
+						</div>
+						<div class="flex-1 min-w-0 px-2 sm:px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+							Callsign</div>
+						<div class="w-14 shrink-0 px-2 py-2"></div>
+					</div>
+
+					@foreach ($upcomingBookings as $upcomingBooking)
+						@php $isBookingOnSelectedDate = \Carbon\Carbon::parse($upcomingBooking->date)->isSameDay($selectedDate); @endphp
+						<div class="flex border-b border-gray-100 hover:bg-blue-50/40 transition-colors">
+							<div
+								class="w-24 sm:w-32 shrink-0 px-2 sm:px-3 py-2.5 border-r border-r-gray-200 flex flex-col justify-center gap-0.5">
+								<span class="text-[13px] font-semibold text-gray-700 whitespace-nowrap">
+									<span class="sm:hidden">{{ \Carbon\Carbon::parse($upcomingBooking->date)->format('d.m.') }}</span>
+									<span class="max-sm:hidden">{{ \Carbon\Carbon::parse($upcomingBooking->date)->format('D, d. m.') }}</span>
+								</span>
+								<span class="text-[11px] text-gray-400 font-mono tabular-nums whitespace-nowrap">
+									{{ sprintf('%s - %s', $upcomingBooking->from, $upcomingBooking->to) }}
+								</span>
+							</div>
+							<div class="flex-1 min-w-0 px-2 sm:px-3 py-2.5 flex items-center">
+								<span class="text-[13px] font-semibold text-gray-700 font-mono truncate">
+									{{ $upcomingBooking->position ?? 'Unknown' }}
+								</span>
+							</div>
+							<div class="w-14 shrink-0 px-2 py-2.5 flex items-center justify-center">
+								<button type="button" @disabled($isBookingOnSelectedDate)
+									@unless ($isBookingOnSelectedDate) wire:click="jumpToDate('{{ $upcomingBooking->date }}')" @endunless
+									title="{{ $isBookingOnSelectedDate ? 'Already showing this date' : 'Jump to this date' }}"
+									class="shrink-0 flex items-center justify-center w-10 h-10 text-brand border border-brand/60 rounded-md hover:bg-brand hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-brand">
+									@svg('heroicon-m-arrow-right', 'w-3 h-3')
+								</button>
+							</div>
+						</div>
+					@endforeach
+				@endif
+			</section>
+		@endauth
+
+		<section class="flex-1 min-w-0 bg-white rounded-xl shadow-sm ring-1 ring-gray-200/80 overflow-hidden">
 			<div class="bg-uknavy text-white">
 				<div class="px-3 sm:px-4 py-2.5 flex items-center gap-2">
-					<i class="fa fa-calendar-check shrink-0 text-xs sm:text-sm text-white" aria-hidden="true"></i>
-					<p class="text-sm sm:text-base font-semibold leading-snug text-white m-0">My future bookings</p>
+					@svg('heroicon-m-academic-cap', 'w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 text-white')
+					<p class="text-sm sm:text-base font-semibold leading-snug text-white m-0">Upcoming mentoring &amp; exam
+						sessions</p>
 				</div>
 			</div>
 
-			@if ($upcomingBookings->isEmpty())
+			@if ($upcomingMentoringExamBookings->isEmpty())
 				<div class="px-4 py-10 text-center text-gray-400">
-					<p class="text-sm">No upcoming bookings.</p>
+					<p class="text-sm">No upcoming mentoring sessions or exams.</p>
 				</div>
 			@else
 				{{-- Column headers --}}
 				<div class="flex border-b border-gray-200 bg-gray-50/80">
 					<div
-						class="w-24 sm:w-40 shrink-0 px-2 sm:px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">
+						class="w-24 sm:w-32 shrink-0 px-2 sm:px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">
 						Date
 					</div>
 					<div class="flex-1 min-w-0 px-2 sm:px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">
 						Callsign</div>
-					<div class="w-32 shrink-0 px-2 sm:px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-						Time</div>
+					<div class="w-24 sm:w-32 shrink-0 px-2 sm:px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+						Mentor/Examiner</div>
+					<div class="w-9 shrink-0 px-1 py-2"></div>
 					<div class="w-14 shrink-0 px-2 py-2"></div>
 				</div>
 
-				@foreach ($upcomingBookings as $upcomingBooking)
-					@php $isBookingOnSelectedDate = \Carbon\Carbon::parse($upcomingBooking->date)->isSameDay($selectedDate); @endphp
+				@foreach ($upcomingMentoringExamBookings as $upcomingSession)
+					@php
+						$isSessionOnSelectedDate = \Carbon\Carbon::parse($upcomingSession->date)->isSameDay($selectedDate);
+						$legend = $typeLegend[$upcomingSession->type] ?? null;
+					@endphp
 					<div class="flex border-b border-gray-100 hover:bg-blue-50/40 transition-colors">
 						<div
-							class="w-24 sm:w-40 shrink-0 px-2 sm:px-3 py-2.5 border-r border-r-gray-200 bg-white flex items-center gap-2">
+							class="w-24 sm:w-32 shrink-0 px-2 sm:px-3 py-2.5 border-r border-r-gray-200 flex flex-col justify-center gap-0.5">
 							<span class="text-[13px] font-semibold text-gray-700 whitespace-nowrap">
-								<span class="sm:hidden">{{ \Carbon\Carbon::parse($upcomingBooking->date)->format('d.m.y') }}</span>
-								<span class="max-sm:hidden">{{ \Carbon\Carbon::parse($upcomingBooking->date)->format('D, d. m. Y') }}</span>
+								<span class="sm:hidden">{{ \Carbon\Carbon::parse($upcomingSession->date)->format('d.m.') }}</span>
+								<span class="max-sm:hidden">{{ \Carbon\Carbon::parse($upcomingSession->date)->format('D, d. m.') }}</span>
+							</span>
+							<span class="text-[11px] text-gray-400 font-mono tabular-nums whitespace-nowrap">
+								{{ sprintf('%s - %s', $upcomingSession->from, $upcomingSession->to) }}
 							</span>
 						</div>
 						<div class="flex-1 min-w-0 px-2 sm:px-3 py-2.5 flex items-center">
 							<span class="text-[13px] font-semibold text-gray-700 font-mono truncate">
-								{{ $upcomingBooking->position ?? 'Unknown' }}
+								{{ $upcomingSession->position ?? 'Unknown' }}
 							</span>
 						</div>
-						<div class="w-32 shrink-0 px-2 sm:px-3 py-2.5 flex items-center">
-							<span class="text-[13px] text-gray-600 font-mono tabular-nums whitespace-nowrap">
-								{{ sprintf('%s - %s', $upcomingBooking->from, $upcomingBooking->to) }}
+						<div class="w-24 sm:w-32 shrink-0 px-2 sm:px-3 py-2.5 flex items-center">
+							<span class="text-[13px] text-gray-700 truncate">
+								{{ $upcomingSession->member['display_name'] }}
 							</span>
+						</div>
+						<div class="w-9 shrink-0 flex items-center justify-center"
+							title="{{ $legend['label'] ?? $upcomingSession->type }}">
+							@if ($legend)
+								<span class="w-6 h-6 rounded shrink-0 flex items-center justify-center text-white {{ $legend['colour'] }}">
+									@if ($legend['icon'])
+										@svg($legend['icon'], 'w-3.5 h-3.5')
+									@endif
+								</span>
+							@endif
 						</div>
 						<div class="w-14 shrink-0 px-2 py-2.5 flex items-center justify-center">
-							<button type="button" @disabled($isBookingOnSelectedDate)
-								@unless ($isBookingOnSelectedDate) wire:click="jumpToDate('{{ $upcomingBooking->date }}')" @endunless
-								title="{{ $isBookingOnSelectedDate ? 'Already showing this date' : 'Jump to this date' }}"
+							<button type="button" @disabled($isSessionOnSelectedDate)
+								@unless ($isSessionOnSelectedDate) wire:click="jumpToDate('{{ $upcomingSession->date }}')" @endunless
+								title="{{ $isSessionOnSelectedDate ? 'Already showing this date' : 'Jump to this date' }}"
 								class="shrink-0 flex items-center justify-center w-10 h-10 text-brand border border-brand/60 rounded-md hover:bg-brand hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-brand">
-								<i class="fa fa-arrow-right text-xs" aria-hidden="true"></i>
+								@svg('heroicon-m-arrow-right', 'w-3 h-3')
 							</button>
 						</div>
 					</div>
 				@endforeach
 			@endif
 		</section>
-	@endauth
+	</div>
 
 	@include('livewire.bookings._create-modal')
 	@include('livewire.bookings._detail-modal')
