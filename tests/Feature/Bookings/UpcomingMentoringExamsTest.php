@@ -293,13 +293,23 @@ class UpcomingMentoringExamsTest extends TestCase
     }
 
     #[Test]
-    public function it_includes_a_session_that_already_started_earlier_today(): void
+    public function it_includes_a_session_that_started_earlier_today_but_has_not_ended(): void
     {
-        $data = $this->createMentoringBooking(Carbon::today()->setTime(0, 30));
+        $data = $this->createMentoringBooking(Carbon::now()->subHour());
 
         $results = app(BookingRepository::class)->getUpcomingMentoringAndExamBookings();
 
         $this->assertTrue($results->contains(fn (object $b) => $b->id === (string) $data['booking']->id));
+    }
+
+    #[Test]
+    public function it_excludes_a_session_that_already_ended_today(): void
+    {
+        $data = $this->createMentoringBooking(Carbon::now()->subHours(3));
+
+        $results = app(BookingRepository::class)->getUpcomingMentoringAndExamBookings();
+
+        $this->assertFalse($results->contains(fn (object $b) => $b->id === (string) $data['booking']->id));
     }
 
     #[Test]

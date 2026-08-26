@@ -44,7 +44,7 @@
 				class="absolute rounded px-2 flex items-center gap-1.5 cursor-pointer
                 text-white text-xs font-medium shadow-sm
                 hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap"
-				data-booking-block
+				data-booking-block :data-booking-key="booking.source + '-' + (booking.id || booking.cts_booking_id)"
 				:class="{
 				    'bg-uknavy': booking.type === 'BK',
 				    'bg-purple-700': booking.type === 'ME',

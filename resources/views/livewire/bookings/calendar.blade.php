@@ -147,6 +147,7 @@
 											<template x-for="booking in events" :key="booking.source + '-' + (booking.id || booking.cts_booking_id)">
 												<div
 													class="absolute rounded px-2 flex items-center gap-1.5 cursor-pointer text-white text-xs font-medium shadow-sm hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap bg-red-600"
+													:data-booking-key="booking.source + '-' + (booking.id || booking.cts_booking_id)"
 													:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%; top: ' + bookingTop(pos,
 													    booking) + '; height: ' + blockHeight(pos)"
 													:title="(booking.event_name || 'Events') + ' \u00b7 ' + booking.from + ' \u2013 ' + booking.to"
@@ -323,10 +324,12 @@
 								</span>
 							</div>
 							<div class="w-14 shrink-0 px-2 py-2.5 flex items-center justify-center">
-								<button type="button" @disabled($isBookingOnSelectedDate)
-									@unless ($isBookingOnSelectedDate) wire:click="jumpToDate('{{ $upcomingBooking->date }}')" @endunless
-									title="{{ $isBookingOnSelectedDate ? 'Already showing this date' : 'Jump to this date' }}"
-									class="shrink-0 flex items-center justify-center w-10 h-10 text-brand border border-brand/60 rounded-md hover:bg-brand hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-brand">
+								<button type="button" x-data
+									@if ($isBookingOnSelectedDate) x-on:click="window.dispatchEvent(new CustomEvent('scroll-to-booking', { detail: { source: '{{ $upcomingBooking->source }}', id: {{ $upcomingBooking->id !== null ? (int) $upcomingBooking->id : 'null' }}, ctsBookingId: {{ $upcomingBooking->cts_booking_id !== null ? (int) $upcomingBooking->cts_booking_id : 'null' }}, instant: false } }))"
+									@else
+										wire:click="jumpToBooking('{{ $upcomingBooking->date }}', '{{ $upcomingBooking->source }}', {{ $upcomingBooking->id !== null ? (int) $upcomingBooking->id : 'null' }}, {{ $upcomingBooking->cts_booking_id !== null ? (int) $upcomingBooking->cts_booking_id : 'null' }})" @endif
+									title="Jump to this booking"
+									class="shrink-0 flex items-center justify-center w-10 h-10 text-brand border border-brand/60 rounded-md hover:bg-brand hover:text-white transition-colors">
 									@svg('heroicon-m-arrow-right', 'w-3 h-3')
 								</button>
 							</div>
@@ -401,10 +404,12 @@
 							@endif
 						</div>
 						<div class="w-14 shrink-0 px-2 py-2.5 flex items-center justify-center">
-							<button type="button" @disabled($isSessionOnSelectedDate)
-								@unless ($isSessionOnSelectedDate) wire:click="jumpToDate('{{ $upcomingSession->date }}')" @endunless
-								title="{{ $isSessionOnSelectedDate ? 'Already showing this date' : 'Jump to this date' }}"
-								class="shrink-0 flex items-center justify-center w-10 h-10 text-brand border border-brand/60 rounded-md hover:bg-brand hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-brand">
+							<button type="button" x-data
+								@if ($isSessionOnSelectedDate) x-on:click="window.dispatchEvent(new CustomEvent('scroll-to-booking', { detail: { source: '{{ $upcomingSession->source }}', id: {{ $upcomingSession->id !== null ? (int) $upcomingSession->id : 'null' }}, ctsBookingId: {{ $upcomingSession->cts_booking_id !== null ? (int) $upcomingSession->cts_booking_id : 'null' }}, instant: false } }))"
+								@else
+									wire:click="jumpToBooking('{{ $upcomingSession->date }}', '{{ $upcomingSession->source }}', {{ $upcomingSession->id !== null ? (int) $upcomingSession->id : 'null' }}, {{ $upcomingSession->cts_booking_id !== null ? (int) $upcomingSession->cts_booking_id : 'null' }})" @endif
+								title="Jump to this booking"
+								class="shrink-0 flex items-center justify-center w-10 h-10 text-brand border border-brand/60 rounded-md hover:bg-brand hover:text-white transition-colors">
 								@svg('heroicon-m-arrow-right', 'w-3 h-3')
 							</button>
 						</div>
