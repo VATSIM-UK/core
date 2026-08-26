@@ -59,8 +59,31 @@ class BookingRepository
         return $this->formatBookings($core)
             ->concat($ctsOnly->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts)))
             ->concat($events->map(fn (Event $event) => $this->formatEvent($event)))
+            ->reject(fn (object $b) => $date->isToday() && $this->trainingSessionHasEnded($b))
             ->sortBy(fn (object $b) => $b->from)
             ->values();
+    }
+
+    /**
+     * Mentoring and exam sessions drop off today's timeline once their scheduled
+     * end time passes, so a finished session no longer reads as upcoming. Other
+     * booking types stay visible all day as a record of what happened, and a
+     * non-today date never needs this check: the whole day is either fully past
+     * or entirely ahead of now.
+     */
+    private function trainingSessionHasEnded(object $booking): bool
+    {
+        if (! in_array($booking->type, ['ME', 'EX'], true)) {
+            return false;
+        }
+
+        $end = Carbon::parse($booking->date.' '.$booking->to);
+
+        if ($booking->to <= $booking->from) {
+            $end->addDay();
+        }
+
+        return $end->isPast();
     }
 
     public function getTodaysBookings(): Collection
