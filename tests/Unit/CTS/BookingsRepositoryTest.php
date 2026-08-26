@@ -96,7 +96,7 @@ class BookingsRepositoryTest extends TestCase
             'bookable_id' => $exam->id,
         ]);
 
-        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
+        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today), hideEndedTrainingSessions: true);
 
         $this->assertNull(
             $bookings->firstWhere('id', (string) $endedMentoring->id),
@@ -105,6 +105,13 @@ class BookingsRepositoryTest extends TestCase
         $this->assertNull(
             $bookings->firstWhere('id', (string) $endedExam->id),
             'An exam that has already ended today must not show up'
+        );
+
+        $defaultBookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
+
+        $this->assertNotNull(
+            $defaultBookings->firstWhere('id', (string) $endedMentoring->id),
+            'Without the flag, an ended mentoring session must still be returned'
         );
     }
 
@@ -140,7 +147,7 @@ class BookingsRepositoryTest extends TestCase
             'ends_at' => $this->knownDate->copy()->subHour(),
         ]);
 
-        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
+        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today), hideEndedTrainingSessions: true);
 
         $this->assertNotNull(
             $bookings->firstWhere('id', (string) $inProgressMentoring->id),
@@ -162,27 +169,13 @@ class BookingsRepositoryTest extends TestCase
 
         $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
         $member = Account::factory()->create();
-
-        // Offsets from "now" rather than fixed clock hours: a mentoring booking
-        // must still be in progress or upcoming for it to survive the "not yet
-        // ended" filter applied to today's mentoring/exam bookings.
-        $bookingOneFrom = $this->knownDate->copy()->addHour();
-        $bookingOneTo = $this->knownDate->copy()->addHours(2);
-        $bookingOneFromStr = $bookingOneFrom->format('H:i:s');
-        $bookingOneToStr = $bookingOneTo->format('H:i:s');
-
         $bookingTodayOne = Booking::factory()->create([
             'position_id' => $position->id,
             'member_id' => $member->id,
             'type' => Booking::TYPE_STANDARD,
-            'starts_at' => $bookingOneFrom,
-            'ends_at' => $bookingOneTo,
+            'starts_at' => Carbon::parse($this->today.' 17:00:00'),
+            'ends_at' => Carbon::parse($this->today.' 19:00:00'),
         ]);
-
-        $bookingTwoFrom = $this->knownDate->copy()->addHours(3);
-        $bookingTwoTo = $this->knownDate->copy()->addHours(4);
-        $bookingTwoFromStr = $bookingTwoFrom->format('H:i:s');
-        $bookingTwoToStr = $bookingTwoTo->format('H:i:s');
 
         $mentorAccount = Account::factory()->create();
         $mentor = CtsMember::factory()->forAccount($mentorAccount)->create();
@@ -192,16 +185,16 @@ class BookingsRepositoryTest extends TestCase
             'position' => 'EGKK_APP',
             'taken' => 1,
             'taken_date' => $this->today,
-            'taken_from' => $bookingTwoFromStr,
-            'taken_to' => $bookingTwoToStr,
+            'taken_from' => '18:00:00',
+            'taken_to' => '20:00:00',
         ]);
 
         $bookingTodayTwo = Booking::factory()->create([
             'position_id' => $position->id,
             'member_id' => $member->id,
             'type' => Booking::TYPE_MENTORING,
-            'starts_at' => $bookingTwoFrom,
-            'ends_at' => $bookingTwoTo,
+            'starts_at' => Carbon::parse($this->today.' 18:00:00'),
+            'ends_at' => Carbon::parse($this->today.' 20:00:00'),
             'bookable_type' => Session::class,
             'bookable_id' => $session->id,
         ]);
@@ -217,8 +210,8 @@ class BookingsRepositoryTest extends TestCase
             'cts_booking_id' => null,
             'position_id' => $bookingTodayOne->position_id,
             'date' => $this->today,
-            'from' => $bookingOneFrom->format('H:i'),
-            'to' => $bookingOneTo->format('H:i'),
+            'from' => '17:00',
+            'to' => '19:00',
             'position' => 'EGKK_APP',
             'type' => 'BK',
             'member' => [
@@ -232,8 +225,8 @@ class BookingsRepositoryTest extends TestCase
             'cts_booking_id' => null,
             'position_id' => $bookingTodayTwo->position_id,
             'date' => $this->today,
-            'from' => $bookingTwoFrom->format('H:i'),
-            'to' => $bookingTwoTo->format('H:i'),
+            'from' => '18:00',
+            'to' => '20:00',
             'position' => 'EGKK_APP',
             'type' => 'ME',
             'member' => [
@@ -252,19 +245,13 @@ class BookingsRepositoryTest extends TestCase
         $examinerAccount = Account::factory()->create();
         $examiner = CtsMember::factory()->forAccount($examinerAccount)->create();
 
-        // Offsets from "now" rather than fixed clock hours: an exam booking must
-        // still be in progress or upcoming to survive the "not yet ended" filter
-        // applied to today's mentoring/exam bookings.
-        $examFrom = $this->knownDate->copy()->addHours(3);
-        $examTo = $this->knownDate->copy()->addHours(4);
-
         $exam = ExamBooking::factory()->create([
             'student_id' => CtsMember::factory()->create()->id,
             'position_1' => $position->callsign,
             'taken' => 1,
             'taken_date' => $this->knownDate->format('Y-m-d'),
-            'taken_from' => $examFrom->format('H:i:s'),
-            'taken_to' => $examTo->format('H:i:s'),
+            'taken_from' => '18:00:00',
+            'taken_to' => '20:00:00',
         ]);
 
         PracticalExaminers::create([
@@ -278,15 +265,15 @@ class BookingsRepositoryTest extends TestCase
             'position_id' => $position->id,
             'member_id' => $member->id,
             'type' => Booking::TYPE_STANDARD,
-            'starts_at' => $this->knownDate->copy()->addHour(),
-            'ends_at' => $this->knownDate->copy()->addHours(2),
+            'starts_at' => $this->knownDate->copy()->setHour(17),
+            'ends_at' => $this->knownDate->copy()->setHour(19),
         ]);
         Booking::factory()->create([
             'position_id' => $position->id,
             'member_id' => $member->id,
             'type' => Booking::TYPE_EXAM,
-            'starts_at' => $examFrom,
-            'ends_at' => $examTo,
+            'starts_at' => $this->knownDate->copy()->setHour(18),
+            'ends_at' => $this->knownDate->copy()->setHour(20),
             'bookable_type' => ExamBooking::class,
             'bookable_id' => $exam->id,
         ]);
