@@ -80,7 +80,7 @@ trait InteractsWithCtsRichEditorNotes
     protected function ctsRichContentNotesForCts(mixed $html): ?string
     {
         if (is_array($html)) {
-            $html = RichContentRenderer::make($html)
+            $html = RichContentRenderer::make($this->ctsWrapLooseInlineDocumentContent($html))
                 ->textColors(TrainingRichEditor::ctsTextColors())
                 ->toUnsafeHtml();
         }
@@ -150,6 +150,49 @@ trait InteractsWithCtsRichEditorNotes
 
             return '<code'.($m[1] ?? '').' style="background:none;padding:0">';
         }, $html) ?? $html;
+    }
+
+    /**
+     * A "doc" node requires block-level children; wrap any bare inline content
+     * (e.g. plain text set outside the browser editor) in a paragraph ourselves.
+     */
+    protected function ctsWrapLooseInlineDocumentContent(array $document): array
+    {
+        if (($document['type'] ?? null) !== 'doc' || empty($document['content'])) {
+            return $document;
+        }
+
+        $blockTypes = [
+            'paragraph', 'heading', 'bulletList', 'orderedList', 'blockquote',
+            'codeBlock', 'horizontalRule', 'table', 'details', 'customBlock',
+            'grid', 'image',
+        ];
+
+        $wrapped = [];
+        $pendingInline = [];
+
+        foreach ($document['content'] as $node) {
+            if (in_array($node['type'] ?? null, $blockTypes, true)) {
+                if ($pendingInline !== []) {
+                    $wrapped[] = ['type' => 'paragraph', 'content' => $pendingInline];
+                    $pendingInline = [];
+                }
+
+                $wrapped[] = $node;
+
+                continue;
+            }
+
+            $pendingInline[] = $node;
+        }
+
+        if ($pendingInline !== []) {
+            $wrapped[] = ['type' => 'paragraph', 'content' => $pendingInline];
+        }
+
+        $document['content'] = $wrapped;
+
+        return $document;
     }
 
     protected function ctsAllowedNotesHtmlTags(): string
