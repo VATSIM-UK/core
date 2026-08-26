@@ -110,13 +110,22 @@ class Calendar extends Component
     {
         $this->selectedDate = Carbon::today();
 
-        if ($year) {
+        $bookingId = request()->input('booking_id');
+        $booking = ctype_digit((string) $bookingId) ? Booking::find((int) $bookingId) : null;
+
+        if ($booking) {
+            $this->selectedDate = $booking->starts_at->copy()->startOfDay();
+        } elseif ($year) {
             $day = request()->input('day', 1);
             $this->selectedDate = Carbon::create($year, $month ?? $this->selectedDate->month, (int) $day);
         }
 
         $this->timelinePositions = [];
         $this->refreshData();
+
+        if ($booking) {
+            $this->dispatch('scroll-to-booking', source: 'core', id: $booking->id, ctsBookingId: null, instant: true);
+        }
     }
 
     public function render()
