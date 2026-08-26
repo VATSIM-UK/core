@@ -187,7 +187,7 @@ class Calendar extends Component
         // rest here rather than at render time keeps them out of the hour scale
         // and gap collapsing too, so they cannot stretch the timeline invisibly.
         $this->bookings = app(BookingRepository::class)
-            ->getBookings($date)
+            ->getBookings($date, hideEndedTrainingSessions: true)
             ->reject(fn (object $booking): bool => $booking->type === 'EV' && $booking->position !== null)
             ->values();
     }

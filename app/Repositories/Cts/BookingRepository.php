@@ -25,7 +25,7 @@ class BookingRepository
         Booking::TYPE_GROUP_SEMINAR => 'GS',
     ];
 
-    public function getBookings(Carbon $date): Collection
+    public function getBookings(Carbon $date, bool $hideEndedTrainingSessions = false): Collection
     {
         $core = Booking::whereDate('starts_at', $date->toDateString())
             ->with('member', 'position', 'ctsBooking', 'bookable')
@@ -59,8 +59,24 @@ class BookingRepository
         return $this->formatBookings($core)
             ->concat($ctsOnly->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts)))
             ->concat($events->map(fn (Event $event) => $this->formatEvent($event)))
+            ->reject(fn (object $b) => $hideEndedTrainingSessions && $date->isToday() && $this->trainingSessionHasEnded($b))
             ->sortBy(fn (object $b) => $b->from)
             ->values();
+    }
+
+    private function trainingSessionHasEnded(object $booking): bool
+    {
+        if (! in_array($booking->type, ['ME', 'EX'], true)) {
+            return false;
+        }
+
+        $end = Carbon::parse($booking->date.' '.$booking->to);
+
+        if ($booking->to <= $booking->from) {
+            $end->addDay();
+        }
+
+        return $end->isPast();
     }
 
     public function getTodaysBookings(): Collection
