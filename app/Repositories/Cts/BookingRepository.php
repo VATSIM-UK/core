@@ -64,13 +64,6 @@ class BookingRepository
             ->values();
     }
 
-    /**
-     * Mentoring and exam sessions drop off today's timeline once their scheduled
-     * end time passes, so a finished session no longer reads as upcoming. Other
-     * booking types stay visible all day as a record of what happened, and a
-     * non-today date never needs this check: the whole day is either fully past
-     * or entirely ahead of now.
-     */
     private function trainingSessionHasEnded(object $booking): bool
     {
         if (! in_array($booking->type, ['ME', 'EX'], true)) {
