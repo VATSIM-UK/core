@@ -179,6 +179,17 @@ class Calendar extends Component
         ));
     }
 
+    // Separate from jumpToDate so a booking already on the visible date can be
+    // scrolled to without the dataVersion bump that rebuilds the timeline.
+    public function jumpToBooking(string $date, string $source, ?int $id = null, ?int $ctsBookingId = null): void
+    {
+        if (! $this->selectedDate->isSameDay(Carbon::parse($date))) {
+            $this->jumpToDate($date);
+        }
+
+        $this->dispatch('scroll-to-booking', source: $source, id: $id, ctsBookingId: $ctsBookingId, instant: true);
+    }
+
     public function getBookingsForDate(Carbon $date): void
     {
         // An EV row carrying a callsign is a controller's own booking made during

@@ -151,7 +151,7 @@ class BookingRepository
     public function getUpcomingMentoringAndExamBookings(int $limit = 10): Collection
     {
         $bookings = Booking::whereIn('type', [Booking::TYPE_MENTORING, Booking::TYPE_EXAM])
-            ->where('starts_at', '>=', Carbon::today())
+            ->where('ends_at', '>=', Carbon::now())
             ->with('position', 'ctsBooking')
             ->with(['bookable' => fn ($morphTo) => $morphTo->morphWith([
                 Session::class => ['mentor'],
