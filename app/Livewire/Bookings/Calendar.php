@@ -110,13 +110,22 @@ class Calendar extends Component
     {
         $this->selectedDate = Carbon::today();
 
-        if ($year) {
+        $bookingId = request()->input('booking_id');
+        $booking = ctype_digit((string) $bookingId) ? Booking::find((int) $bookingId) : null;
+
+        if ($booking) {
+            $this->selectedDate = $booking->starts_at->copy()->startOfDay();
+        } elseif ($year) {
             $day = request()->input('day', 1);
             $this->selectedDate = Carbon::create($year, $month ?? $this->selectedDate->month, (int) $day);
         }
 
         $this->timelinePositions = [];
         $this->refreshData();
+
+        if ($booking) {
+            $this->dispatch('scroll-to-booking', source: 'core', id: $booking->id, ctsBookingId: null, instant: true);
+        }
     }
 
     public function render()
@@ -179,6 +188,17 @@ class Calendar extends Component
         ));
     }
 
+    // Separate from jumpToDate so a booking already on the visible date can be
+    // scrolled to without the dataVersion bump that rebuilds the timeline.
+    public function jumpToBooking(string $date, string $source, ?int $id = null, ?int $ctsBookingId = null): void
+    {
+        if (! $this->selectedDate->isSameDay(Carbon::parse($date))) {
+            $this->jumpToDate($date);
+        }
+
+        $this->dispatch('scroll-to-booking', source: $source, id: $id, ctsBookingId: $ctsBookingId, instant: true);
+    }
+
     public function getBookingsForDate(Carbon $date): void
     {
         // An EV row carrying a callsign is a controller's own booking made during
@@ -187,7 +207,7 @@ class Calendar extends Component
         // rest here rather than at render time keeps them out of the hour scale
         // and gap collapsing too, so they cannot stretch the timeline invisibly.
         $this->bookings = app(BookingRepository::class)
-            ->getBookings($date)
+            ->getBookings($date, hideEndedTrainingSessions: true)
             ->reject(fn (object $booking): bool => $booking->type === 'EV' && $booking->position !== null)
             ->values();
     }

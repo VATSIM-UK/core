@@ -5,7 +5,7 @@
 		it the gap shading and time marker show through the column at every row
 		boundary. The matching border-b keeps the rule looking unchanged. --}}
 	<div
-		class="w-40 shrink-0 px-3 py-2.5 -mb-px border-r border-r-gray-200 border-b border-b-gray-100 flex items-center gap-2 bg-gray-50 sticky left-0 z-20">
+		class="w-28 sm:w-40 shrink-0 px-3 py-2.5 -mb-px border-r border-r-gray-200 border-b border-b-gray-100 flex items-center gap-2 bg-gray-50 sticky left-0 z-20">
 		<span class="text-sm font-bold text-gray-600 truncate" :title="pos.callsign" x-text="pos.callsign"></span>
 	</div>
 
@@ -44,7 +44,7 @@
 				class="absolute rounded px-2 flex items-center gap-1.5 cursor-pointer
                 text-white text-xs font-medium shadow-sm
                 hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap"
-				data-booking-block
+				data-booking-block :data-booking-key="booking.source + '-' + (booking.id || booking.cts_booking_id)"
 				:class="{
 				    'bg-uknavy': booking.type === 'BK',
 				    'bg-purple-700': booking.type === 'ME',
