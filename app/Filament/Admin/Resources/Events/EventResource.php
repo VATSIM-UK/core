@@ -8,8 +8,7 @@ use App\Filament\Admin\Resources\Events\Pages\ListEvents;
 use App\Filament\Admin\Resources\Events\Pages\ViewEvent;
 use App\Models\Events\Event;
 use App\Models\Mship\Account;
-use Carbon\Carbon;
-use Closure;
+use App\Rules\QuarterHourRule;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
@@ -39,12 +38,12 @@ class EventResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->user()->can('events.view');
+        return auth()->user()->canAny(['events.view', 'events.manage']);
     }
 
     public static function canView(Model $record): bool
     {
-        return auth()->user()->can('events.view');
+        return auth()->user()->canAny(['events.view', 'events.manage']);
     }
 
     public static function canCreate(): bool
@@ -82,7 +81,7 @@ class EventResource extends Resource
                             ->native(false)
                             ->minutesStep(15)
                             ->seconds(false)
-                            ->rule(static::quarterHourRule())
+                            ->rule(new QuarterHourRule)
                             ->helperText('Times in Zulu (UTC).'),
                         DateTimePicker::make('end')
                             ->required()
@@ -90,7 +89,7 @@ class EventResource extends Resource
                             ->native(false)
                             ->minutesStep(15)
                             ->seconds(false)
-                            ->rule(static::quarterHourRule())
+                            ->rule(new QuarterHourRule)
                             ->helperText('Times in Zulu (UTC).'),
                     ]),
                     Grid::make(2)->schema([
@@ -139,17 +138,6 @@ class EventResource extends Resource
         return $schema->schema(static::getFormSchema());
     }
 
-    private static function quarterHourRule(): Closure
-    {
-        return function (string $attribute, $value, Closure $fail): void {
-            $time = Carbon::parse($value);
-
-            if ($time->minute % 15 !== 0 || $time->second !== 0) {
-                $fail("The $attribute must be at a 15-minute interval (00, 15, 30 or 45).");
-            }
-        };
-    }
-
     public static function table(Table $table): Table
     {
         return $table
@@ -167,8 +155,8 @@ class EventResource extends Resource
                 TextColumn::make('published_at')
                     ->label('Status')
                     ->badge()
-                    ->formatStateUsing(fn (?string $state): string => $state ? 'Published' : 'Draft')
-                    ->color(fn (?string $state): string => $state ? 'success' : 'gray'),
+                    ->getStateUsing(fn (Event $record): string => $record->isPublished() ? 'Published' : 'Draft')
+                    ->color(fn (Event $record): string => $record->isPublished() ? 'success' : 'gray'),
             ])
             ->filters([
                 TernaryFilter::make('published_at')
