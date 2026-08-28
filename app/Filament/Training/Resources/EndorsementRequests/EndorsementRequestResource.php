@@ -121,6 +121,12 @@ class EndorsementRequestResource extends Resource
                         'rejected' => 'Rejected',
                     ]),
             ])
+            ->emptyStateHeading(fn () => auth()->user()->can('endorsement-request.view.*')
+                ? 'No endorsement requests'
+                : 'You haven\'t created any requests yet')
+            ->emptyStateDescription(fn () => auth()->user()->can('endorsement-request.view.*')
+                ? 'No endorsement requests have been made.'
+                : 'Requests you create will appear here.')
             ->paginated([10, 25, 50, 100])
             ->recordActions([
                 Action::make('viewNotes')
@@ -217,5 +223,16 @@ class EndorsementRequestResource extends Resource
 
             Textarea::make('notes'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        if (! auth()->user()->can('endorsement-request.view.*')) {
+            $query->where('requested_by', auth()->id());
+        }
+
+        return $query;
     }
 }
