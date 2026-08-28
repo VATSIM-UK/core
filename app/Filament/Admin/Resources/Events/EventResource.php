@@ -8,6 +8,8 @@ use App\Filament\Admin\Resources\Events\Pages\ListEvents;
 use App\Filament\Admin\Resources\Events\Pages\ViewEvent;
 use App\Models\Events\Event;
 use App\Models\Mship\Account;
+use Carbon\Carbon;
+use Closure;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
@@ -80,6 +82,7 @@ class EventResource extends Resource
                             ->native(false)
                             ->minutesStep(15)
                             ->seconds(false)
+                            ->rule(static::quarterHourRule())
                             ->helperText('Times in Zulu (UTC).'),
                         DateTimePicker::make('end')
                             ->required()
@@ -87,6 +90,7 @@ class EventResource extends Resource
                             ->native(false)
                             ->minutesStep(15)
                             ->seconds(false)
+                            ->rule(static::quarterHourRule())
                             ->helperText('Times in Zulu (UTC).'),
                     ]),
                     Grid::make(2)->schema([
@@ -133,6 +137,17 @@ class EventResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->schema(static::getFormSchema());
+    }
+
+    private static function quarterHourRule(): Closure
+    {
+        return function (string $attribute, $value, Closure $fail): void {
+            $time = Carbon::parse($value);
+
+            if ($time->minute % 15 !== 0 || $time->second !== 0) {
+                $fail("The $attribute must be at a 15-minute interval (00, 15, 30 or 45).");
+            }
+        };
     }
 
     public static function table(Table $table): Table

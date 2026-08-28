@@ -54,6 +54,20 @@ class EventResourceTest extends TestCase
         $this->assertDatabaseHas('events', ['name' => 'Test event']);
     }
 
+    public function test_event_times_must_be_at_15_minute_intervals(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+
+        Livewire::test(CreateEvent::class)
+            ->fillForm([
+                'name' => 'Test event',
+                'start' => '2026-09-01 18:07:00',
+                'end' => '2026-09-01 21:00:00',
+            ])
+            ->call('create')
+            ->assertHasFormErrors(['start']);
+    }
+
     public function test_new_event_defaults_to_draft(): void
     {
         Event::factory()->create();
