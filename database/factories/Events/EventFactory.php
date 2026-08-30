@@ -2,7 +2,9 @@
 
 namespace Database\Factories\Events;
 
+use App\Enums\EventChecklistItem;
 use App\Models\Events\Event;
+use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EventFactory extends Factory
@@ -23,19 +25,29 @@ class EventFactory extends Factory
             'end' => (clone $start)->modify('+3 hours'),
             'rostered' => false,
             'published_at' => null,
+            'published_by' => null,
             'manager_id' => null,
-            'eoi_published' => false,
-            'roster_published' => false,
-            'briefing_published' => false,
-            'briefing_created' => false,
-            'banner_created' => false,
-            'ecfmp_set_up' => false,
-            'my_vatsim_published' => false,
         ];
     }
 
-    public function published(): static
+    public function published(?Account $publisher = null): static
     {
-        return $this->state(fn () => ['published_at' => now()]);
+        return $this->state(fn () => [
+            'published_at' => now(),
+            'published_by' => $publisher?->id,
+        ]);
+    }
+
+    public function withChecklistItem(EventChecklistItem $item, ?Account $completedBy = null): static
+    {
+        return $this->afterCreating(function (Event $event) use ($item, $completedBy) {
+            $event->checklistCompletions()->create([
+                'item' => $item->value,
+                'account_id' => $completedBy?->id,
+                'completed_at' => now(),
+            ]);
+
+            $event->unsetRelation('checklistCompletions');
+        });
     }
 }

@@ -18,14 +18,14 @@ class EditEvent extends EditRecord
             Action::make('publish')
                 ->label(fn (Event $record): string => $record->isPublished() ? 'Republish' : 'Publish')
                 ->requiresConfirmation()
-                ->modalHeading('Publish event')
+                ->modalHeading(fn (Event $record): string => $record->isPublished() ? 'Republish event' : 'Publish event')
                 ->modalDescription(fn (Event $record): string => $record->isPublished()
-                    ? 'This event is already published.'
+                    ? 'This will update the published date and record you as the publisher. '.$this->publishDescription($record)
                     : $this->publishDescription($record)
                 )
-                ->successNotificationTitle('Event published')
+                ->successNotificationTitle(fn (Event $record): string => $record->isPublished() ? 'Event republished' : 'Event published')
                 ->action(function (Event $record) {
-                    app(EventService::class)->publish($record);
+                    app(EventService::class)->publish($record, auth()->user());
                     $this->redirect($this->getResource()::getUrl('edit', ['record' => $record]));
                 }),
         ];

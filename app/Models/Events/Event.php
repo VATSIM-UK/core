@@ -2,6 +2,7 @@
 
 namespace App\Models\Events;
 
+use App\Enums\EventChecklistItem;
 use App\Models\Atc\Position;
 use App\Models\Model;
 use App\Models\Mship\Account;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Event extends Model
 {
@@ -23,14 +25,8 @@ class Event extends Model
         'end',
         'rostered',
         'published_at',
+        'published_by',
         'manager_id',
-        'eoi_published',
-        'roster_published',
-        'briefing_published',
-        'briefing_created',
-        'banner_created',
-        'ecfmp_set_up',
-        'my_vatsim_published',
     ];
 
     protected $casts = [
@@ -38,13 +34,6 @@ class Event extends Model
         'end' => 'datetime',
         'rostered' => 'boolean',
         'published_at' => 'datetime',
-        'eoi_published' => 'boolean',
-        'roster_published' => 'boolean',
-        'briefing_published' => 'boolean',
-        'briefing_created' => 'boolean',
-        'banner_created' => 'boolean',
-        'ecfmp_set_up' => 'boolean',
-        'my_vatsim_published' => 'boolean',
     ];
 
     public function positions(): BelongsToMany
@@ -55,6 +44,16 @@ class Event extends Model
     public function manager(): BelongsTo
     {
         return $this->belongsTo(Account::class, 'manager_id');
+    }
+
+    public function publisher(): BelongsTo
+    {
+        return $this->belongsTo(Account::class, 'published_by');
+    }
+
+    public function checklistCompletions(): HasMany
+    {
+        return $this->hasMany(EventChecklistCompletion::class);
     }
 
     public function scopePublished(Builder $query): Builder
@@ -77,18 +76,40 @@ class Event extends Model
         return $this->published_at !== null;
     }
 
+    /**
+     * @return array<int, string> the ticked items, as their enum values
+     */
+    public function completedChecklistItems(): array
+    {
+        return $this->checklistCompletions
+            ->map(fn (EventChecklistCompletion $completion): string => $completion->item->value)
+            ->all();
+    }
+
+    public function completionFor(EventChecklistItem $item): ?EventChecklistCompletion
+    {
+        return $this->checklistCompletions
+            ->first(fn (EventChecklistCompletion $completion): bool => $completion->item === $item);
+    }
+
+    public function hasCompleted(EventChecklistItem $item): bool
+    {
+        return $this->completionFor($item) !== null;
+    }
+
+    /**
+     * @return array<int, string> labels of the outstanding items, in enum order
+     */
     public function unpublishedChecklist(): array
     {
-        $flags = [
-            'EOI published' => $this->eoi_published,
-            'Roster published' => $this->roster_published,
-            'Briefing published' => $this->briefing_published,
-            'Briefing created' => $this->briefing_created,
-            'Banner created' => $this->banner_created,
-            'ECFMP set up' => $this->ecfmp_set_up,
-            'My.vatsim.net published' => $this->my_vatsim_published,
-        ];
+        $completed = $this->completedChecklistItems();
 
-        return array_keys(array_filter($flags, fn (bool $done) => ! $done));
+        return array_values(array_map(
+            fn (EventChecklistItem $item): string => $item->label(),
+            array_filter(
+                EventChecklistItem::cases(),
+                fn (EventChecklistItem $item): bool => ! in_array($item->value, $completed, true),
+            ),
+        ));
     }
 }

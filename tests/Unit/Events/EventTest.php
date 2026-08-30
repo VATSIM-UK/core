@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Events;
 
+use App\Enums\EventChecklistItem;
 use App\Models\Atc\Position;
 use App\Models\Events\Event;
 use App\Models\Mship\Account;
@@ -44,22 +45,59 @@ class EventTest extends TestCase
         $this->assertCount(1, Event::upcoming()->get());
     }
 
-    public function test_unpublished_checklist_lists_only_false_flags(): void
+    public function test_unpublished_checklist_lists_only_outstanding_items(): void
     {
-        $event = Event::factory()->create([
-            'eoi_published' => true,
-            'roster_published' => false,
-            'briefing_published' => true,
-            'briefing_created' => true,
-            'banner_created' => false,
-            'ecfmp_set_up' => true,
-            'my_vatsim_published' => false,
-        ]);
+        $event = Event::factory()
+            ->withChecklistItem(EventChecklistItem::EoiPublished)
+            ->withChecklistItem(EventChecklistItem::BriefingPublished)
+            ->withChecklistItem(EventChecklistItem::BriefingCreated)
+            ->withChecklistItem(EventChecklistItem::EcfmpSetUp)
+            ->create();
 
         $this->assertEquals(
             ['Roster published', 'Banner created', 'My.vatsim.net published'],
             $event->unpublishedChecklist()
         );
+    }
+
+    public function test_unpublished_checklist_lists_everything_when_nothing_ticked(): void
+    {
+        $event = Event::factory()->create();
+
+        $this->assertCount(count(EventChecklistItem::cases()), $event->unpublishedChecklist());
+    }
+
+    public function test_completed_checklist_items_returns_ticked_values(): void
+    {
+        $event = Event::factory()
+            ->withChecklistItem(EventChecklistItem::BannerCreated)
+            ->create();
+
+        $this->assertEquals(['banner_created'], $event->completedChecklistItems());
+        $this->assertTrue($event->hasCompleted(EventChecklistItem::BannerCreated));
+        $this->assertFalse($event->hasCompleted(EventChecklistItem::EoiPublished));
+    }
+
+    public function test_completion_for_exposes_the_account_that_ticked_it(): void
+    {
+        $account = Account::factory()->create();
+        $event = Event::factory()
+            ->withChecklistItem(EventChecklistItem::RosterPublished, $account)
+            ->create();
+
+        $completion = $event->completionFor(EventChecklistItem::RosterPublished);
+
+        $this->assertNotNull($completion);
+        $this->assertEquals($account->id, $completion->account->id);
+        $this->assertNotNull($completion->completed_at);
+    }
+
+    public function test_publisher_relation(): void
+    {
+        $publisher = Account::factory()->create();
+        $event = Event::factory()->published($publisher)->create();
+
+        $this->assertEquals($publisher->id, $event->publisher->id);
     }
 
     public function test_positions_relation(): void
