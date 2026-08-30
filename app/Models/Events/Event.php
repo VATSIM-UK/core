@@ -16,6 +16,9 @@ class Event extends Model
 {
     use HasFactory;
 
+    /** How every event timestamp is rendered across the admin panel. */
+    public const DATETIME_FORMAT = 'd. m. Y H:i';
+
     protected $fillable = [
         'name',
         'tagline',

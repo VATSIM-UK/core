@@ -58,6 +58,6 @@ class EventService
         $account = $completion->account;
         $who = $account ? "{$account->name} ({$account->id})" : 'unknown';
 
-        return "{$who} · ".$completion->completed_at->format('d. m. Y H:i');
+        return "{$who} · ".$completion->completed_at->format(Event::DATETIME_FORMAT);
     }
 }

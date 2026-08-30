@@ -93,6 +93,7 @@ class EventResource extends Resource
                             ->native(false)
                             ->minutesStep(15)
                             ->seconds(false)
+                            ->displayFormat(Event::DATETIME_FORMAT)
                             ->rule(new QuarterHourRule)
                             ->disabled(fn (?Event $record): bool => static::detailsAreLocked($record))
                             ->helperText(fn (?Event $record): string => static::lockedHelperText($record)
@@ -103,6 +104,7 @@ class EventResource extends Resource
                             ->native(false)
                             ->minutesStep(15)
                             ->seconds(false)
+                            ->displayFormat(Event::DATETIME_FORMAT)
                             ->rule(new QuarterHourRule)
                             ->disabled(fn (?Event $record): bool => static::detailsAreLocked($record))
                             ->helperText(fn (?Event $record): string => static::lockedHelperText($record)
@@ -217,7 +219,7 @@ class EventResource extends Resource
             return null;
         }
 
-        $timestamp = $record->published_at->format('d M Y H:i');
+        $timestamp = $record->published_at->format(Event::DATETIME_FORMAT);
         $publisher = $record->publisher;
 
         return $publisher
@@ -238,14 +240,15 @@ class EventResource extends Resource
             ->modifyQueryUsing(fn (Builder $query): Builder => $query->withCount('checklistCompletions'))
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
-                TextColumn::make('start')->dateTime()->sortable(),
-                TextColumn::make('end')->dateTime(),
+                TextColumn::make('start')->dateTime(Event::DATETIME_FORMAT)->sortable(),
+                TextColumn::make('end')->dateTime(Event::DATETIME_FORMAT),
                 IconColumn::make('rostered')->boolean(),
                 TextColumn::make('positions.callsign')
                     ->label('Positions')
                     ->badge()
                     ->limitList(3)
-                    ->expandableLimitedList(),
+                    ->expandableLimitedList()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('checklist_completions_count')
                     ->label('Checklist')
                     ->badge()
