@@ -156,6 +156,18 @@ Seeders use `firstOrCreate` / `updateOrCreate` with stable keys (CIDs, callsigns
 | `Database\Seeders\Testing\CtsExamSeeder` | Legacy sample CTS exam bookings (unlinked to core accounts) |
 | `Database\Seeders\WaitingListStressSeeder` | Performance testing (~201 accounts on one list) |
 
+## Sandbox accounts
+
+`Database\Seeders\LocalDevelopment\SandboxAccountsSeeder` creates the eleven
+[VATSIM Connect sandbox](https://vatsim.dev/services/connect/sandbox) accounts (`10000000`-`10000010`,
+each password the same as its CID) and grants every one the superman (`privacc`) role, so you can log
+in and go straight to `/admin` without running `grant:superman`. The dev container runs it during
+setup; run it by hand with:
+
+```shell
+php artisan db:seed --class=Database\\Seeders\\LocalDevelopment\\SandboxAccountsSeeder
+```
+
 ## Tests
 
 ```shell

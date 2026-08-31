@@ -1,35 +1,66 @@
 services:
-  vatsimuk-core:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - '80:80'
-    depends_on:
-      - mysql
+    command: ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
     volumes:
       - ..:/workspace:cached
-
-  redis:
-    image: redis:7-alpine
+      - vendor:/workspace/vendor
+      - node_modules:/workspace/node_modules
+      - composer-cache:/home/vscode/.cache/composer
+      - npm-cache:/home/vscode/.npm
+      - gh-config:/home/vscode/.config/gh
+    extra_hosts:
+      - "core.test:127.0.0.1"
+    environment:
+      SERVE_HOST: 0.0.0.0
+      DEVCONTAINER: "true"
+      COMPOSER_CACHE_DIR: /home/vscode/.cache/composer
+      APACHE_RUN_USER: vscode
+      APACHE_RUN_GROUP: vscode
+    ports:
+      - "80:80"
+      - "5173:5173"
+    depends_on:
+      mysql:
+        condition: service_healthy
 
   mysql:
     image: mysql:8.0
-    volumes:
-      - db-data:/var/lib/mysql
-      - ./mysql_init:/docker-entrypoint-initdb.d
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: core
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./mysql_init:/docker-entrypoint-initdb.d
     ports:
-      - "${MYSQL_BIND_PORT:-13306}:3306"
+      - "13306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --requirepass root
 
   pma:
     image: phpmyadmin
-    ports:
-      - 8090:80
     environment:
-      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+    ports:
+      - "8090:80"
+    depends_on:
+      - mysql
 
 volumes:
-  db-data: null
+  db-data:
+  vendor:
+  node_modules:
+  composer-cache:
+  npm-cache:
+  gh-config:
