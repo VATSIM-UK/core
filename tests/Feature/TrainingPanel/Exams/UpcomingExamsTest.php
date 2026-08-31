@@ -199,6 +199,7 @@ class UpcomingExamsTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_does_not_show_exams_today_that_have_already_started(): void
     {
+        $this->travelTo(Carbon::parse('2026-01-01 10:00:00'));
         $this->panelUser->givePermissionTo('training.exams.view-upcoming.*');
 
         $student = $this->createStudent();

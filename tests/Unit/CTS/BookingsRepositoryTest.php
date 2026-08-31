@@ -33,6 +33,11 @@ class BookingsRepositoryTest extends TestCase
     {
         parent::setUp();
 
+        // These tests offset hours either side of "now" while pinning the date separately, so a
+        // run close to midnight puts the two on different days. Midday keeps them together.
+        $this->knownDate = $this->knownDate->copy()->setTime(12, 0);
+        $this->travelTo($this->knownDate);
+
         $this->subjectUnderTest = resolve(BookingRepository::class);
         $this->today = $this->knownDate->toDateString();
         $this->tomorrow = $this->knownDate->copy()->addDay()->toDateString();
