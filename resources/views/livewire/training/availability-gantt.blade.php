@@ -25,7 +25,7 @@
 	</div>
 
 	{{-- Chart --}}
-	@if ($students->isEmpty())
+	@if ($students->isEmpty() && $mentorSessions->isEmpty())
 		<div class="p-8 text-center border-t border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400">
 			<x-filament::icon icon="heroicon-o-calendar" class="mx-auto h-8 w-8 mb-3 text-gray-400" />
 			No availability found for this date.
@@ -34,6 +34,7 @@
 		<div class="hidden lg:!block">
 			@include('livewire.training.availability-gantt-desktop', [
 				'students' => $this->pagedStudents,
+				'mentorSessions' => $mentorSessions,
 				'hours' => $hours,
 				'nowLinePercent' => $nowLinePercent,
 			])
@@ -41,6 +42,7 @@
 		<div class="block lg:!hidden">
 			@include('livewire.training.availability-gantt-mobile', [
 				'students' => $this->pagedStudents,
+				'mentorSessions' => $mentorSessions,
 				'hours' => $hours,
 				'nowLinePercent' => $nowLinePercent,
 			])

@@ -675,4 +675,199 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
 
         Carbon::setTestNow();
     }
+
+    #[Test]
+    public function availability_gantt_shows_my_sessions_lane_when_mentor_has_accepted_session(): void
+    {
+        Carbon::setTestNow(Carbon::today()->setTime(10, 0));
+
+        $busyStudent = Member::factory()->create(['name' => 'Busy Student']);
+        $pickupStudent = Member::factory()->create(['name' => 'Pickup Student']);
+
+        Session::factory()->create([
+            'student_id' => $busyStudent->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::today()->format('Y-m-d'),
+            'taken_from' => '18:00:00',
+            'taken_to' => '20:00:00',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        Session::factory()->create([
+            'student_id' => $pickupStudent->id,
+            'mentor_id' => null,
+            'position' => 'EGLL_APP',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        Availability::factory()->create([
+            'student_id' => $pickupStudent->id,
+            'date' => Carbon::today()->format('Y-m-d'),
+            'from' => '14:00:00',
+            'to' => '16:00:00',
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->assertSee('My sessions')
+            ->assertSee('Busy Student');
+
+        Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function availability_gantt_does_not_show_my_sessions_lane_when_mentor_has_no_sessions(): void
+    {
+        $pickupStudent = Member::factory()->create();
+
+        Session::factory()->create([
+            'student_id' => $pickupStudent->id,
+            'mentor_id' => null,
+            'position' => 'EGLL_APP',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        Availability::factory()->create([
+            'student_id' => $pickupStudent->id,
+            'date' => Carbon::today()->format('Y-m-d'),
+            'from' => '14:00:00',
+            'to' => '16:00:00',
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->assertDontSee('My sessions');
+    }
+
+    #[Test]
+    public function accept_session_detects_mentor_busy_overlap_for_selected_times(): void
+    {
+        Carbon::setTestNow(Carbon::today()->setTime(10, 0));
+
+        $busyStudent = Member::factory()->create(['name' => 'Already Booked Student']);
+        $pickupStudent = Member::factory()->create(['name' => 'New Pickup Student']);
+
+        Session::factory()->create([
+            'student_id' => $busyStudent->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGKK_TWR',
+            'taken' => 1,
+            'taken_date' => Carbon::today()->format('Y-m-d'),
+            'taken_from' => '18:00:00',
+            'taken_to' => '20:00:00',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        Session::factory()->create([
+            'student_id' => $pickupStudent->id,
+            'mentor_id' => null,
+            'position' => 'EGLL_APP',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        $availability = Availability::factory()->create([
+            'student_id' => $pickupStudent->id,
+            'date' => Carbon::today()->format('Y-m-d'),
+            'from' => '17:00:00',
+            'to' => '21:00:00',
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->mountAction('acceptSession', ['availability_id' => $availability->id])
+            ->setActionData([
+                'taken_from' => '18:00',
+                'taken_to' => '19:00',
+            ]);
+
+        $this->assertNotEmpty($component->instance()->mountedActions);
+
+        $overlap = $this->invokeMentorOverlappingSession(
+            $component->instance(),
+            ['taken_from' => '18:00', 'taken_to' => '19:00'],
+            $availability,
+        );
+
+        $this->assertInstanceOf(Session::class, $overlap);
+        $this->assertSame('EGKK_TWR', $overlap->position);
+        $this->assertSame('Already Booked Student', $overlap->student?->name);
+
+        Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function accept_session_does_not_detect_mentor_busy_when_times_are_clear(): void
+    {
+        Carbon::setTestNow(Carbon::today()->setTime(10, 0));
+
+        $busyStudent = Member::factory()->create(['name' => 'Already Booked Student']);
+        $pickupStudent = Member::factory()->create(['name' => 'Clear Pickup Student']);
+
+        Session::factory()->create([
+            'student_id' => $busyStudent->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGKK_TWR',
+            'taken' => 1,
+            'taken_date' => Carbon::today()->format('Y-m-d'),
+            'taken_from' => '18:00:00',
+            'taken_to' => '20:00:00',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        Session::factory()->create([
+            'student_id' => $pickupStudent->id,
+            'mentor_id' => null,
+            'position' => 'EGLL_APP',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        $availability = Availability::factory()->create([
+            'student_id' => $pickupStudent->id,
+            'date' => Carbon::today()->format('Y-m-d'),
+            'from' => '14:00:00',
+            'to' => '16:00:00',
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->mountAction('acceptSession', ['availability_id' => $availability->id])
+            ->setActionData([
+                'taken_from' => '14:00',
+                'taken_to' => '16:00',
+            ]);
+
+        $overlap = $this->invokeMentorOverlappingSession(
+            $component->instance(),
+            ['taken_from' => '14:00', 'taken_to' => '16:00'],
+            $availability,
+        );
+
+        $this->assertNull($overlap);
+
+        Carbon::setTestNow();
+    }
+
+    /**
+     * @param  array{taken_from: string, taken_to: string}  $times
+     */
+    private function invokeMentorOverlappingSession(AvailabilityGantt $instance, array $times, Availability $availability): ?Session
+    {
+        $get = \Mockery::mock(\Filament\Schemas\Components\Utilities\Get::class);
+        $get->shouldReceive('__invoke')->andReturnUsing(
+            fn (string $key = '', bool $isAbsolute = false) => $times[$key] ?? null,
+        );
+
+        $method = new \ReflectionMethod(AvailabilityGantt::class, 'getMentorOverlappingSession');
+
+        return $method->invoke($instance, $get, $availability);
+    }
 }

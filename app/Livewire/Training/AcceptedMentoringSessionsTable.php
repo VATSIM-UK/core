@@ -163,6 +163,32 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
         );
     }
 
+    protected function getMentorOverlappingSession(Get $get, Session $session): ?Session
+    {
+        $takenFrom = $get('taken_from');
+        $takenTo = $get('taken_to');
+        $availId = $get('selected_availability_id');
+        $ctsMentorId = $session->mentor_id;
+
+        if (! $takenFrom || ! $takenTo || ! $availId || ! $ctsMentorId) {
+            return null;
+        }
+
+        $availability = Availability::find($availId);
+
+        if (! $availability) {
+            return null;
+        }
+
+        return app(MentoringSessionsService::class)->checkForMentorOverlappingSession(
+            $ctsMentorId,
+            $availability->date,
+            $takenFrom,
+            $takenTo,
+            $session->id
+        );
+    }
+
     private function overlapForRecord(Session $record): Session|ExamBooking|null
     {
         return app(MentoringSessionsService::class)->findOverlappingBookingForSession($record);
@@ -431,6 +457,22 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                     ->danger()
                     ->visible(function (Get $get) use ($record) {
                         return $this->getOverlappingBooking($get, $record) !== null;
+                    }),
+
+                Callout::make('mentor_overlapping_session')
+                    ->heading(fn () => app(MentoringSessionsService::class)->mentorOverlapHeading())
+                    ->description(function (Get $get) use ($record) {
+                        $overlap = $this->getMentorOverlappingSession($get, $record);
+
+                        if (! $overlap) {
+                            return '';
+                        }
+
+                        return app(MentoringSessionsService::class)->mentorOverlapDescription($overlap);
+                    })
+                    ->danger()
+                    ->visible(function (Get $get) use ($record) {
+                        return $this->getMentorOverlappingSession($get, $record) !== null;
                     }),
             ])
             ->action(function (array $data, Session $record, MentoringSessionsService $mentoringService) {
