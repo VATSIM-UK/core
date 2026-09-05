@@ -2,9 +2,12 @@
 
 namespace Tests\Feature\Account\Auth;
 
+use App\Libraries\UKCP;
 use App\Models\Mship\Account;
+use Illuminate\Support\Collection;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 use Laravel\Fortify\Fortify;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PragmaRX\Google2FA\Google2FA;
 use Spatie\Permission\Models\Role;
@@ -21,6 +24,27 @@ class TwoFactorAuthTest extends TestCase
         $this->account = Account::factory()->create([
             'password' => 'secret-password',
         ]);
+    }
+
+    #[Test]
+    public function dashboard_offers_two_factor_setup_link_when_not_enabled(): void
+    {
+        $this->mock(UKCP::class, function (MockInterface $mock) {
+            $mock->shouldReceive('getValidTokensFor')
+                ->andReturn(Collection::make());
+        });
+
+        $this->actingAs($this->account)
+            ->get(route('mship.manage.dashboard'))
+            ->assertOk()
+            ->assertSee(route('two-factor.setup'), false)
+            ->assertSee('Click to Enable', false);
+
+        $this->actingAs($this->account)
+            ->get(route('mship.manage.dashboard.beta'))
+            ->assertOk()
+            ->assertSee(route('two-factor.setup'), false)
+            ->assertSee('Enable two-factor', false);
     }
 
     #[Test]
@@ -147,7 +171,7 @@ class TwoFactorAuthTest extends TestCase
         $this->post(route('two-factor.login.store'), [
             'recovery_code' => $recoveryCode,
         ])
-            ->assertRedirect(route('mship.manage.dashboard'));
+            ->assertRedirect(route('two-factor.setup'));
 
         $this->assertAuthenticatedAs($this->account);
         $this->assertNull(session('login.id'));
