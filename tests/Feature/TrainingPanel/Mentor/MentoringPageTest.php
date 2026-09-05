@@ -593,6 +593,161 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function last_session_date_only_uses_sessions_from_the_pending_request_category(): void
+    {
+        Carbon::setTestNow(Carbon::today()->setTime(10, 0));
+
+        $student = Member::factory()->create();
+
+        Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => null,
+            'position' => 'EGLL_APP',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        Availability::factory()->create([
+            'student_id' => $student->id,
+            'date' => Carbon::today()->format('Y-m-d'),
+            'from' => '08:00:00',
+            'to' => '18:00:00',
+        ]);
+
+        TrainingPosition::factory()->create([
+            'cts_positions' => ['EGLL_APP', 'EGKK_APP'],
+            'category' => 'S3 Training',
+        ]);
+
+        TrainingPosition::factory()->create([
+            'cts_positions' => ['P1_PPL(A)'],
+            'category' => 'P1 Training',
+        ]);
+
+        Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'P1_PPL(A)',
+            'taken_date' => Carbon::today()->format('Y-m-d'),
+            'taken_from' => '08:00:00',
+            'filed' => now(),
+            'cancelled_datetime' => null,
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->assertSee('Never');
+
+        Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function last_session_date_uses_other_positions_in_the_same_pending_request_category(): void
+    {
+        Carbon::setTestNow(Carbon::today()->setTime(10, 0));
+
+        $student = Member::factory()->create();
+
+        Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => null,
+            'position' => 'EGLL_APP',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        Availability::factory()->create([
+            'student_id' => $student->id,
+            'date' => Carbon::today()->format('Y-m-d'),
+            'from' => '08:00:00',
+            'to' => '18:00:00',
+        ]);
+
+        TrainingPosition::factory()->create([
+            'cts_positions' => ['EGLL_APP', 'EGKK_APP'],
+            'category' => 'S3 Training',
+        ]);
+
+        TrainingPosition::factory()->create([
+            'cts_positions' => ['EGKK_APP'],
+            'category' => 'S3 Training',
+        ]);
+
+        Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGKK_APP',
+            'taken_date' => Carbon::today()->format('Y-m-d'),
+            'taken_from' => '08:00:00',
+            'filed' => now(),
+            'cancelled_datetime' => null,
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class);
+
+        $studentResult = $component->instance()->students->firstWhere('id', $student->id);
+
+        $this->assertNotNull($studentResult);
+        $this->assertNotNull($studentResult->last_session_date);
+        $this->assertSame(
+            Carbon::today()->format('Y-m-d').' 08:00:00',
+            $studentResult->last_session_date
+        );
+
+        Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function last_session_date_shows_never_when_previous_session_is_not_in_pending_request_category(): void
+    {
+        Carbon::setTestNow(Carbon::today()->setTime(10, 0));
+
+        $student = Member::factory()->create();
+
+        Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => null,
+            'position' => 'EGKK_APP',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        Availability::factory()->create([
+            'student_id' => $student->id,
+            'date' => Carbon::today()->format('Y-m-d'),
+            'from' => '08:00:00',
+            'to' => '18:00:00',
+        ]);
+
+        TrainingPosition::factory()->create([
+            'cts_positions' => ['EGKK_APP'],
+            'category' => 'S3 Training',
+        ]);
+
+        TrainingPosition::factory()->create([
+            'cts_positions' => ['EGKK_TWR'],
+            'category' => 'S2 Training',
+        ]);
+
+        Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGKK_TWR',
+            'taken_date' => Carbon::today()->subDays(3)->format('Y-m-d'),
+            'taken_from' => '08:00:00',
+            'filed' => now(),
+            'cancelled_datetime' => null,
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->assertSee('Never');
+
+        Carbon::setTestNow();
+    }
+
+    #[Test]
     public function last_session_date_shows_never_when_no_session_exists(): void
     {
         $student = Member::factory()->create();
