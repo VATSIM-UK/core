@@ -185,6 +185,22 @@ class TrainingPlace extends Model
         return app(MentorPermissionService::class)->getCtsCallsignsForMentorable($this->trainable);
     }
 
+    /**
+     * Primary CTS callsign for display / default session booking.
+     */
+    public function primaryCtsPosition(): ?string
+    {
+        $primary = $this->trainingPosition?->cts_primary_position;
+
+        if (is_string($primary) && trim($primary) !== '') {
+            return trim($primary);
+        }
+
+        $first = collect($this->trainableCtsPositions())->filter()->first();
+
+        return is_string($first) ? $first : null;
+    }
+
     public function availabilityChecks(): HasMany
     {
         return $this->hasMany(AvailabilityCheck::class);
