@@ -41,6 +41,21 @@
 						<p class="text-gray-900 font-medium"
 							x-text="booking.type === 'EV' ? (booking.event_name || 'Events') : booking.position"></p>
 					</div>
+					<div>
+						<span class="text-xs font-medium uppercase tracking-wide text-gray-500">Type</span>
+						<p class="text-gray-900 flex items-center gap-1.5">
+							<template x-if="booking.type === 'ME'">
+								@svg('heroicon-m-academic-cap', 'w-4 h-4 shrink-0 text-gray-500')
+							</template>
+							<template x-if="booking.type === 'EX'">
+								@svg('heroicon-m-clipboard-document-check', 'w-4 h-4 shrink-0 text-gray-500')
+							</template>
+							<template x-if="booking.type === 'GS'">
+								@svg('heroicon-m-user-group', 'w-4 h-4 shrink-0 text-gray-500')
+							</template>
+							<span x-text="$bookingTypeLabel(booking.type)"></span>
+						</p>
+					</div>
 					<div class="grid grid-cols-2 gap-4">
 						<div>
 							<span class="text-xs font-medium uppercase tracking-wide text-gray-500">Date</span>
@@ -58,12 +73,12 @@
 							<span class="text-xs font-medium uppercase tracking-wide text-gray-500"
 								x-text="booking.type === 'EX' ? 'Examiner' : booking.type === 'ME' ? 'Mentor' : 'Member'"></span>
 							<p class="text-gray-900"
-								x-text="(booking.member?.display_name || booking.member?.name) + (booking.member?.cid ? ' (' + booking.member.cid + ')' : '')">
+								x-text="(booking.member?.display_name || 'Unknown') + (booking.member?.cid ? ' (' + booking.member.cid + ')' : '')">
 							</p>
 						</div>
 					</template>
 
-					<template x-if="booking.member?.id == '{{ auth()->id() }}' && !ended && booking.type === 'BK'">
+					<template x-if="booking.member?.cid == '{{ auth()->id() }}' && !ended && booking.type === 'BK'">
 						<div class="pt-4 border-t border-gray-200">
 							<template x-if="!confirmDelete">
 								<button type="button" x-on:click="confirmDelete = true"

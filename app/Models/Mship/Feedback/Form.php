@@ -4,6 +4,7 @@ namespace App\Models\Mship\Feedback;
 
 use App\Models\Contact;
 use App\Models\Model;
+use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -83,5 +84,33 @@ class Form extends Model
     public function contact()
     {
         return $this->belongsTo(Contact::class);
+    }
+
+    public function restrictions()
+    {
+        return $this->hasMany(FormRestriction::class);
+    }
+
+    /**
+     * Restrictions sharing a `restriction_group` are OR'd (any one satisfies the group).
+     * Ungrouped restrictions, and each distinct group, are AND'd together.
+     */
+    public function isEligibleFor(Account $account): bool
+    {
+        return $this->restrictionGroups()
+            ->every(fn ($group) => $group->contains(fn (FormRestriction $r) => $r->isSatisfiedBy($account)));
+    }
+
+    public function unmetRestrictionGroupsFor(Account $account)
+    {
+        return $this->restrictionGroups()
+            ->reject(fn ($group) => $group->contains(fn (FormRestriction $r) => $r->isSatisfiedBy($account)));
+    }
+
+    private function restrictionGroups()
+    {
+        return $this->restrictions
+            ->groupBy(fn (FormRestriction $r) => $r->restriction_group ?? 'ungrouped-'.$r->id)
+            ->values();
     }
 }

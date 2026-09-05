@@ -13,15 +13,29 @@ const STACKED_LANE_HEIGHT = 1.25;
 // hidden as soon as it touches the position column rather than half over it.
 const BALL_RADIUS = 5;
 
+// Keyed by the codes in BookingRepository::TYPE_MAP; keep the two in step.
+const BOOKING_TYPE_LABELS = {
+    BK: 'Booking',
+    ME: 'Mentoring',
+    EX: 'Exam',
+    EV: 'Event',
+    GS: 'Group seminar',
+};
+
 // Registers on the Alpine instance bundled with Livewire (exposed as
 // window.Alpine). Using the `alpine:init` hook guarantees the plugin and
 // component are registered before Livewire calls Alpine.start().
 document.addEventListener('alpine:init', () => {
     window.Alpine.plugin(collapse);
 
+    // A magic rather than a method on the component: the modals are teleported to
+    // the body, so they sit outside the timeline's scope but still need this.
+    window.Alpine.magic('bookingTypeLabel', () => (type) => BOOKING_TYPE_LABELS[type] || type || 'Booking');
+
     window.Alpine.data('bookingsTimeline', (config) => ({
         selectedDate: config.selectedDate,
         isAuthenticated: config.isAuthenticated,
+        currentMemberCid: config.currentMemberCid,
         isToday: config.isToday,
         scale: config.scale,
         dragging: null,
@@ -41,11 +55,43 @@ document.addEventListener('alpine:init', () => {
                 this.scrolledBy = this.$el.scrollLeft;
             };
             this.$el.addEventListener('scroll', this._boundScroll, { passive: true });
+            // Wait for Alpine to drop x-cloak (display:none → 0-width track) before
+            // measuring. Narrow viewports otherwise stay pinned at midnight.
+            this.$nextTick(() => this.scrollToNow());
         },
 
         destroy() {
             clearInterval(this._nowTimer);
             this.$el.removeEventListener('scroll', this._boundScroll);
+        },
+
+        // Centre today's "now" marker in the horizontal viewport. Desktop often
+        // shows it already; mobile's ~375px window only covers the early hours
+        // from scrollLeft 0, so without this the red line is off-screen.
+        scrollToNow(attempt = 0) {
+            if (!this.isToday || attempt > 10) return;
+
+            const track = this.$refs.headerTrack;
+            const scrollEl = this.$el;
+            if (!track || !track.offsetWidth || !scrollEl.clientWidth) {
+                requestAnimationFrame(() => this.scrollToNow(attempt + 1));
+                return;
+            }
+
+            const nowInTrack = (this.nowPct / 100) * track.offsetWidth;
+            const nowInContent =
+                track.getBoundingClientRect().left -
+                scrollEl.getBoundingClientRect().left +
+                scrollEl.scrollLeft +
+                nowInTrack;
+            const maxScroll = Math.max(0, scrollEl.scrollWidth - scrollEl.clientWidth);
+            const target = Math.max(
+                0,
+                Math.min(maxScroll, Math.round(nowInContent - scrollEl.clientWidth / 2)),
+            );
+
+            scrollEl.scrollLeft = target;
+            this.scrolledBy = target;
         },
 
         // The current time ball is drawn in the hour header so the header cannot
@@ -99,6 +145,12 @@ document.addEventListener('alpine:init', () => {
         // part falling inside the day being rendered can conflict with a drag.
         bookingEndMinutes(booking) {
             return booking.endMin > booking.startMin ? booking.endMin : 1440;
+        },
+
+        // True when the logged-in member owns this booking, so it can be picked
+        // out from everyone else's on the same timeline.
+        isOwnBooking(booking) {
+            return !!this.currentMemberCid && booking.member?.cid === this.currentMemberCid;
         },
 
         // Vertical layout, in rem, for rows holding overlapping bookings. A row
@@ -272,3 +324,48 @@ document.addEventListener('alpine:init', () => {
         },
     }));
 });
+
+// Registered globally: the event can arrive before the target day's timeline exists.
+window.addEventListener('scroll-to-booking', (event) => {
+    const { source, id, ctsBookingId, instant } = event.detail || {};
+    if (!source) return;
+
+    findAndHighlightBooking(source + '-' + (id ?? ctsBookingId), !!instant);
+});
+
+function findAndHighlightBooking(key, instant, attempt = 0) {
+    const el = document.querySelector(`[data-booking-key="${CSS.escape(key)}"]`);
+
+    if (!el) {
+        if (attempt < 20) {
+            requestAnimationFrame(() => findAndHighlightBooking(key, instant, attempt + 1));
+        }
+        return;
+    }
+
+    const wasCollapsed = expandAncestorGroup(el);
+
+    // Wait for x-collapse's open animation, or scrollIntoView measures the wrong position.
+    setTimeout(() => {
+        el.scrollIntoView({ behavior: instant ? 'instant' : 'smooth', block: 'center', inline: 'center' });
+        el.classList.add('booking-jump-highlight');
+        setTimeout(() => el.classList.remove('booking-jump-highlight'), 3000);
+    }, wasCollapsed ? 350 : 0);
+}
+
+// x-show only hides a collapsed group in CSS; it must be opened to scroll to its content.
+function expandAncestorGroup(el) {
+    let node = el.parentElement;
+
+    while (node) {
+        const data = window.Alpine?.$data ? window.Alpine.$data(node) : null;
+        if (data && typeof data.expanded === 'boolean') {
+            const wasCollapsed = !data.expanded;
+            data.expanded = true;
+            return wasCollapsed;
+        }
+        node = node.parentElement;
+    }
+
+    return false;
+}

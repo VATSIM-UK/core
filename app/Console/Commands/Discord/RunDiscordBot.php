@@ -7,6 +7,8 @@ namespace App\Console\Commands\Discord;
 use App\Jobs\Discord\HandleHoneypotTrigger;
 use App\Models\Discord\DiscordTag;
 use App\Models\NetworkData\Atc;
+use App\Services\Discord\CidLookupService;
+use App\Services\Discord\CidLookupStatus;
 use Discord\Builders\MessageBuilder;
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
@@ -53,6 +55,10 @@ class RunDiscordBot extends Command
             $this->honeypotStartup();
 
             $this->registerTagCommand($discord);
+
+            $this->registerLookupCommand($discord);
+
+            app(\App\Libraries\Discord::class)->syncLookupCommand();
 
             $discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) {
                 if ($message->author->bot) {
@@ -190,6 +196,27 @@ class RunDiscordBot extends Command
                             'text' => "/tag {$tag->key}",
                         ],
                     ])
+            );
+        });
+    }
+
+    private function registerLookupCommand(Discord $discord): void
+    {
+        $discord->listenCommand('lookup', function (ApplicationCommand $interaction) {
+            $cid = (int) $interaction->data->options->get('name', 'cid')?->value;
+
+            $result = app(CidLookupService::class)->lookup($cid);
+
+            $message = match ($result->status) {
+                CidLookupStatus::Invalid => 'Please provide a valid CID.',
+                CidLookupStatus::NotFound => "No account found for CID `{$cid}`.",
+                CidLookupStatus::NotLinked => "CID `{$cid}` is not linked to a Discord account.",
+                CidLookupStatus::Found => "<@{$result->discordId}>",
+            };
+
+            $interaction->respondWithMessage(
+                MessageBuilder::new()->setContent($message),
+                ephemeral: true
             );
         });
     }

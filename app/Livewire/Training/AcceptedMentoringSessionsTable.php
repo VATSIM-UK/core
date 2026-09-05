@@ -101,6 +101,8 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                     ->getStateUsing(fn (Session $record) => $this->overlapForRecord($record) !== null)
                     ->icon(fn (Session $record) => $this->overlapForRecord($record) ? 'heroicon-o-exclamation-triangle' : null)
                     ->color('warning')
+                    ->url(fn (Session $record) => $this->overlapForRecord($record) ? route('site.bookings.calendar', ['booking_id' => $this->overlapForRecord($record)->id]) : null)
+                    ->openUrlInNewTab()
                     ->tooltip(function (Session $record) {
                         $overlap = $this->overlapForRecord($record);
 

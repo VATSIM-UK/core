@@ -13,21 +13,25 @@ use App\Models\Mship\Qualification;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Blade;
+use Webbingbrasil\FilamentCopyActions\Actions\CopyAction;
 
 class FeedbackResource extends Resource
 {
@@ -48,29 +52,36 @@ class FeedbackResource extends Resource
     {
         return $schema
             ->components([
-                TextEntry::make('ID')
-                    ->label('ID')
-                    ->state(fn ($record) => $record->id),
+                Section::make('Feedback Details')
+                    ->heading(fn ($record) => $record->form?->name.' - '.$record->id)
+                    ->columnSpanFull()
+                    ->columns(fn () => self::canSeeSubmitter() ? 3 : 2)
+                    ->schema([
+                        TextEntry::make('subject_details')
+                            ->label('Subject')
+                            ->html()
+                            ->state(function ($record) {
+                                $name = $record->account?->name;
+                                $qualification = $record->accountAtcQualification?->code ?? 'Not Found';
 
-                TextEntry::make('Form Name')
-                    ->state(fn ($record) => $record->form?->name),
+                                return Blade::render(
+                                    '{{ $name }}<x-filament::badge size="sm" color="info" class="ml-2">{{ $qualification }}</x-filament::badge>',
+                                    [
+                                        'name' => $name,
+                                        'qualification' => $qualification,
+                                    ]
+                                );
+                            }),
 
-                TextEntry::make('account.name')
-                    ->label('Subject')
-                    ->state(fn ($record) => $record->account?->name),
+                        TextEntry::make('submitter.name')
+                            ->label('Submitted by')
+                            ->visible(self::canSeeSubmitter())
+                            ->state(fn ($record) => $record->submitter?->name),
 
-                TextEntry::make('accountAtcQualification.name')
-                    ->label('Subject\'s ATC Qualification')
-                    ->state(fn ($record) => $record->accountAtcQualification?->name ?? 'Not Found'),
-
-                TextEntry::make('submitter.name')
-                    ->label('Submitted by')
-                    ->visible(self::canSeeSubmitter())
-                    ->state(fn ($record) => $record->submitter?->name),
-
-                TextEntry::make('created_at')
-                    ->label('Submitted at')
-                    ->state(fn ($record) => $record->created_at->format('d/m/Y H:i')),
+                        TextEntry::make('created_at')
+                            ->label('Submitted at')
+                            ->state(fn ($record) => $record->created_at->format('d/m/Y H:i')),
+                    ]),
 
                 Fieldset::make('Sent Information')->columnSpanFull()
                     ->schema([
@@ -117,21 +128,7 @@ class FeedbackResource extends Resource
 
                 Section::make('Answers')
                     ->columnSpanFull()
-                    ->schema([
-                        Repeater::make('Answers')
-                            ->relationship('answers')
-                            ->label('')
-                            ->schema([
-                                TextEntry::make('question')
-                                    ->label('Question')
-                                    ->state(fn ($record) => $record->question?->question),
-
-                                TextEntry::make('response')
-                                    ->label('Answer')
-                                    ->extraAttributes(['style' => 'white-space: pre-line;'])
-                                    ->state(fn ($record) => $record->response),
-                            ]),
-                    ]),
+                    ->schema(fn ($record) => self::answerPageFieldsets($record)),
             ]);
     }
 
@@ -142,7 +139,10 @@ class FeedbackResource extends Resource
                 TextColumn::make('form.name')->label('Feedback Type')
                     ->sortable(),
                 NameColumn::make('account.name')->label('Subject'),
-                TextColumn::make('submitter.name')->label('Submitted By')->visible(self::canSeeSubmitter()),
+                TextColumn::make('submitter.name')
+                    ->label('Submitted By')
+                    ->visible(self::canSeeSubmitter())
+                    ->searchable(self::canSeeSubmitter() ? ['name_first', 'name_last'] : false),
                 TextColumn::make('created_at')
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
@@ -182,6 +182,21 @@ class FeedbackResource extends Resource
                     ->options(
                         Qualification::whereType('atc')->get()->mapWithKeys(fn ($qualification) => [$qualification->id => $qualification->name])
                     ),
+
+                Filter::make('position')
+                    ->label('Controller Position')
+                    ->schema([
+                        TextInput::make('position')
+                            ->label('Position')
+                            ->placeholder('Starts with, e.g. EGKK'),
+                    ])
+                    ->query(fn (Builder $query, array $data): Builder => $query->when(
+                        filled($data['position'] ?? null),
+                        fn (Builder $query) => $query->wherePositionLike(strtoupper((string) $data['position']))
+                    ))
+                    ->indicateUsing(fn (array $state): array => filled($state['position'] ?? null)
+                        ? ['Position: '.strtoupper((string) $state['position'])]
+                        : []),
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -328,5 +343,36 @@ class FeedbackResource extends Resource
             ->title("{$count} feedback record(s) {$successLabel} successfully.")
             ->success()
             ->send();
+    }
+
+    private static function answerPageFieldsets($record): array
+    {
+        $answersByPage = $record->answers()
+            ->with('question')
+            ->get()
+            ->filter(fn ($answer) => $answer->question !== null)
+            ->sortBy(fn ($answer) => $answer->question->sequence)
+            ->groupBy(fn ($answer) => $answer->question->page);
+
+        return $answersByPage
+            ->sortKeys()
+            ->map(function ($answers, $page) {
+                return Fieldset::make("Page {$page}")
+                    ->columnSpanFull()
+                    ->extraAttributes(['class' => '[&>legend]:hidden'])
+                    ->schema(
+                        $answers->map(fn ($answer) => TextEntry::make("answer_{$answer->id}")
+                            ->label($answer->question->question)
+                            ->columnSpanFull()
+                            ->state($answer->response)
+                            ->weight(FontWeight::Light)
+                            ->suffixAction(CopyAction::make()
+                                ->copyable(fn () => $answer->response)
+                                ->successNotificationMessage('Copied!'))
+                        )->all()
+                    );
+            })
+            ->values()
+            ->all();
     }
 }

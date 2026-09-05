@@ -169,6 +169,7 @@
 							<ul class="nav-dropdown-list">
 								<li><a href="{{ route('site.atc.newController') }}" class="nav-dropdown-link">Become a controller</a></li>
 								<li><a href="{{ route('site.roster.index') }}" class="nav-dropdown-link">Controller Roster</a></li>
+								<li><a href="{{ route('site.bookings.calendar') }}" class="nav-dropdown-link">ATC Bookings</a></li>
 								<li class="nav-dropdown-divider"></li>
 								<li class="nav-dropdown-header">Operations</li>
 								<li><a href="https://docs.vatsim.uk/" class="nav-dropdown-link">ATC Documentation</a></li>

@@ -10,6 +10,7 @@ use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\Member as CtsMember;
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -96,12 +97,22 @@ class BookingPolicy
 
     public function validateFutureQualification(int $memberId, int $positionId, Carbon $startsAt): void
     {
-        $member = Account::with('endorsements')->findOrFail($memberId);
-        $position = Position::with('positionGroups')->findOrFail($positionId);
+        $member = Account::with(['endorsements.endorsable', 'states', 'qualifications'])->findOrFail($memberId);
+        $position = Position::with('positionGroups.maximumAtcQualification')->findOrFail($positionId);
 
-        foreach ($position->positionGroups as $group) {
-            if (! $group->conditionsMetForUser($member)) {
-                throw new \RuntimeException('You do not meet the conditions for this position.');
+        if ($position->positionGroups->isEmpty()) {
+            return;
+        }
+
+        $hadExpiredEndorsementOnly = false;
+
+        $entitled = $position->positionGroups->some(function (PositionGroup $group) use ($member, $startsAt, &$hadExpiredEndorsementOnly): bool {
+            if ($this->isEntitledByHomeMemberRating($member, $group)) {
+                return true;
+            }
+
+            if ($this->isEntitledByVisitorRatingEndorsement($member, $group, $startsAt)) {
+                return true;
             }
 
             $groupEndorsements = $member->endorsements->filter(
@@ -109,18 +120,59 @@ class BookingPolicy
                     && (int) $endorsement->endorsable_id === (int) $group->id
             );
 
-            $activeEndorsement = $groupEndorsements->first(
+            $validAtStart = $groupEndorsements->first(
                 fn ($endorsement) => $endorsement->expires_at === null || $endorsement->expires_at->gt($startsAt)
             );
 
-            if (! $activeEndorsement) {
-                if ($groupEndorsements->isEmpty()) {
-                    throw new \RuntimeException('You do not have a valid endorsement for this position.');
-                }
-
-                throw new \RuntimeException('Your endorsement for this position will have expired by the booked time.');
+            if ($validAtStart) {
+                return true;
             }
+
+            if ($groupEndorsements->isNotEmpty()) {
+                $hadExpiredEndorsementOnly = true;
+            }
+
+            return false;
+        });
+
+        if ($entitled) {
+            return;
         }
+
+        if ($hadExpiredEndorsementOnly) {
+            throw new \RuntimeException('Your endorsement for this position will have expired by the booked time.');
+        }
+
+        throw new \RuntimeException('You do not have a valid endorsement for this position.');
+    }
+
+    private function isEntitledByHomeMemberRating(Account $member, PositionGroup $group): bool
+    {
+        return isset($group->maximumAtcQualification)
+            && $member->hasState('DIVISION')
+            && $member->qualification_atc?->vatsim > $group->maximumAtcQualification->vatsim;
+    }
+
+    private function isEntitledByVisitorRatingEndorsement(Account $member, PositionGroup $group, Carbon $startsAt): bool
+    {
+        if (! isset($group->maximumAtcQualification)) {
+            return false;
+        }
+
+        if (! $member->hasState('VISITING') && ! $member->hasState('TRANSFERRING')) {
+            return false;
+        }
+
+        $highestEndorsedRating = $member->endorsements
+            ->filter(
+                fn ($endorsement) => $endorsement->endorsable_type === Qualification::class
+                    && ($endorsement->expires_at === null || $endorsement->expires_at->gt($startsAt))
+            )
+            ->sortByDesc(fn ($endorsement) => $endorsement->endorsable?->vatsim)
+            ->first()?->endorsable?->vatsim;
+
+        return $highestEndorsedRating !== null
+            && $highestEndorsedRating > $group->maximumAtcQualification->vatsim;
     }
 
     private function countCtsAdvanceBookings(int $memberId, Carbon $cutoff, ?callable $predicate = null): int

@@ -468,6 +468,11 @@ class AccountsRelationManager extends RelationManager
         return Select::make('trainable')
             ->label(ucwords($noun))
             ->options(fn (): array => $this->trainableOptions())
+            ->default(function (): ?string {
+                $options = $this->trainableOptions();
+
+                return count($options) === 1 ? array_key_first($options) : null;
+            })
             ->required()
             ->helperText("Select the {$noun} to {$purpose}.");
     }

@@ -68,7 +68,7 @@
 								<a class="nav-link" href="https://chartfox.org/">Chartfox</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">ATC Bookings</a>
+								<a class="nav-link" href="{{ route('site.bookings.calendar') }}">ATC Bookings</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="{{ route('site.operations.sectors') }}">UK Area Sectors</a>
@@ -131,7 +131,7 @@
 						<a class="nav-link" href="#">Events <span class="arrow"></span></a>
 						<ul class="nav">
 							<li class="nav-item">
-								<a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">Calendar</a>
+								<a class="nav-link" href="{{ route('site.bookings.calendar') }}">Calendar</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="https://events.vatsim.uk/">Booking

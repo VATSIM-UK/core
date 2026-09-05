@@ -22,11 +22,21 @@ class BookingService
 
     public function create(array $data): Booking
     {
-        if ($data['position_id'] !== null) {
+        $type = $data['type'] ?? Booking::TYPE_STANDARD;
+        $positionId = $data['position_id'] ?? null;
+
+        // The checks below are gated behind a non-null position, so fail closed
+        // rather than skipping them all. Exam, mentoring and event bookings are
+        // exempt: the training system creates those, not a member.
+        if ($type === Booking::TYPE_STANDARD && $positionId === null) {
+            throw new \InvalidArgumentException('A standard booking must have a position.');
+        }
+
+        if ($positionId !== null) {
             $this->validateOverlap(
                 Carbon::parse($data['starts_at']),
                 Carbon::parse($data['ends_at']),
-                $data['position_id']
+                $positionId
             );
         }
 
@@ -37,10 +47,10 @@ class BookingService
                 $data['member_id']
             );
 
-            if ($data['position_id'] !== null && ($data['type'] ?? Booking::TYPE_STANDARD) === Booking::TYPE_STANDARD) {
+            if ($positionId !== null && $type === Booking::TYPE_STANDARD) {
                 $this->validateMemberQualification(
                     $data['member_id'],
-                    $data['position_id']
+                    $positionId
                 );
 
                 $this->policy->validateAdvanceBookingLimits(
@@ -50,12 +60,12 @@ class BookingService
                 $this->policy->validateGatwickLimit($data['member_id']);
                 $this->policy->validateMinimumNotice(
                     $data['member_id'],
-                    $data['position_id'],
+                    $positionId,
                     Carbon::parse($data['starts_at'])
                 );
                 $this->policy->validateFutureQualification(
                     $data['member_id'],
-                    $data['position_id'],
+                    $positionId,
                     Carbon::parse($data['starts_at'])
                 );
             }

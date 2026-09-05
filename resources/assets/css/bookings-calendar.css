@@ -28,6 +28,13 @@
     background: #94a3b8;
 }
 
+.legend-scroll {
+    scrollbar-width: none;
+}
+.legend-scroll::-webkit-scrollbar {
+    display: none;
+}
+
 /*
  * Timeline layer scale. The position column is sticky while the timeline body
  * scrolls underneath it, so anything drawn in the track must rank below it or
@@ -38,6 +45,7 @@
  *
  *   1  gap shading overlay
  *   5  booking blocks
+ *   6  own-booking ring / jump-to highlight
  *   8  drag preview
  *   9  current time marker (its line; the ball is drawn in the header row so
  *      that the header cannot clip it, and is unranked there so the header's
@@ -77,6 +85,13 @@
 
 .group:hover .bg-uknavy {
     filter: brightness(1.1);
+}
+
+.booking-jump-highlight {
+    z-index: 6 !important;
+    box-shadow: 0 0 0 3px var(--color-brand), 0 0 10px 2px rgb(37 173 227 / 70%);
+    /* Overrides the block's own transition-all, or this fades instead of popping. */
+    transition: none !important;
 }
 .tabular-nums {
     font-variant-numeric: tabular-nums;

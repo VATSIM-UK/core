@@ -7,10 +7,12 @@ namespace App\Livewire\Bookings;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
+use App\Models\Cts\Member as CtsMember;
 use App\Models\Roster;
 use App\Repositories\Cts\BookingRepository;
 use App\Services\BookingService;
 use Carbon\Carbon;
+use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Livewire\Attributes\Layout;
@@ -28,6 +30,22 @@ class Calendar extends Component
      * the qualification check (which is per-position) prohibitively expensive.
      */
     public const POSITION_SEARCH_MIN_LENGTH = 3;
+
+    /**
+     * Legend for the timeline's booking blocks, in render order. Keyed by the
+     * codes in BookingRepository::TYPE_MAP and must stay exhaustive over them: a
+     * type with no entry here is a colour on the timeline nothing explains.
+     *
+     * Standard bookings and events carry no icon -- standard is the vast majority,
+     * and events have their own labelled row.
+     */
+    public const TYPE_LEGEND = [
+        'BK' => ['label' => 'Booking', 'colour' => 'bg-uknavy', 'icon' => null],
+        'ME' => ['label' => 'Mentoring', 'colour' => 'bg-purple-700', 'icon' => 'heroicon-m-academic-cap'],
+        'EX' => ['label' => 'Exam', 'colour' => 'bg-amber-800', 'icon' => 'heroicon-m-clipboard-document-check'],
+        'GS' => ['label' => 'Group seminar', 'colour' => 'bg-orange-500', 'icon' => 'heroicon-m-user-group'],
+        'EV' => ['label' => 'Event', 'colour' => 'bg-red-600', 'icon' => null],
+    ];
 
     /**
      * Upper bound on candidate positions considered for a single search, applied
@@ -76,22 +94,38 @@ class Calendar extends Component
      * Derived render state. Deliberately not public: these are large (the scale
      * alone is 1441 floats) and recomputing them is far cheaper than shipping
      * them to the browser and back inside the Livewire snapshot on every request.
+     * $upcomingBookings and $upcomingMentoringExamBookings are private for a
+     * different reason: each mentor/examiner entry carries a CID, which must
+     * never be exposed in the public Livewire snapshot.
      */
     private Collection $bookings;
 
     private array $timelineScale = [];
 
+    private Collection $upcomingBookings;
+
+    private Collection $upcomingMentoringExamBookings;
+
     public function mount(?int $year = null, ?int $month = null): void
     {
         $this->selectedDate = Carbon::today();
 
-        if ($year) {
+        $bookingId = request()->input('booking_id');
+        $booking = ctype_digit((string) $bookingId) ? Booking::find((int) $bookingId) : null;
+
+        if ($booking) {
+            $this->selectedDate = $booking->starts_at->copy()->startOfDay();
+        } elseif ($year) {
             $day = request()->input('day', 1);
             $this->selectedDate = Carbon::create($year, $month ?? $this->selectedDate->month, (int) $day);
         }
 
         $this->timelinePositions = [];
         $this->refreshData();
+
+        if ($booking) {
+            $this->dispatch('scroll-to-booking', source: 'core', id: $booking->id, ctsBookingId: null, instant: true);
+        }
     }
 
     public function render()
@@ -109,6 +143,9 @@ class Calendar extends Component
             'timelineHours' => $this->getTimelineHours(),
             'selectedDate' => $this->selectedDate,
             'timelineScale' => array_values($this->timelineScale),
+            'upcomingBookings' => $this->upcomingBookings,
+            'upcomingMentoringExamBookings' => $this->upcomingMentoringExamBookings,
+            'typeLegend' => self::TYPE_LEGEND,
         ]);
     }
 
@@ -123,12 +160,43 @@ class Calendar extends Component
         $this->getBookingsForDate($this->selectedDate);
         $this->computeScale();
         $this->buildTimeline();
+
+        $this->upcomingBookings = auth()->check() && ! auth()->user()->is_banned
+            ? app(BookingRepository::class)->getMemberUpcomingBookings(auth()->user())
+            : collect();
+
+        $this->upcomingMentoringExamBookings = app(BookingRepository::class)->getUpcomingMentoringAndExamBookings();
     }
 
     public function updatedPositionFilter(): void
     {
         $this->filterVersion++;
         $this->loadData();
+    }
+
+    public function jumpToDate(string $date): void
+    {
+        $this->selectedDate = Carbon::parse($date);
+        $this->refreshData();
+
+        $this->js(sprintf(
+            "history.pushState({}, '', '%s')",
+            route('site.bookings.calendar', [
+                'year' => $this->selectedDate->year,
+                'month' => $this->selectedDate->month,
+            ]).'?day='.$this->selectedDate->day
+        ));
+    }
+
+    // Separate from jumpToDate so a booking already on the visible date can be
+    // scrolled to without the dataVersion bump that rebuilds the timeline.
+    public function jumpToBooking(string $date, string $source, ?int $id = null, ?int $ctsBookingId = null): void
+    {
+        if (! $this->selectedDate->isSameDay(Carbon::parse($date))) {
+            $this->jumpToDate($date);
+        }
+
+        $this->dispatch('scroll-to-booking', source: $source, id: $id, ctsBookingId: $ctsBookingId, instant: true);
     }
 
     public function getBookingsForDate(Carbon $date): void
@@ -139,7 +207,7 @@ class Calendar extends Component
         // rest here rather than at render time keeps them out of the hour scale
         // and gap collapsing too, so they cannot stretch the timeline invisibly.
         $this->bookings = app(BookingRepository::class)
-            ->getBookings($date)
+            ->getBookings($date, hideEndedTrainingSessions: true)
             ->reject(fn (object $booking): bool => $booking->type === 'EV' && $booking->position !== null)
             ->values();
     }
@@ -607,45 +675,52 @@ class Calendar extends Component
             return;
         }
 
+        // Mandatory: every check in BookingService::create() is gated behind a
+        // non-null position_id.
         $positionId = ! empty($data['position_id']) ? (int) $data['position_id'] : null;
-        $customCallsign = ! empty($data['custom_callsign']) ? $data['custom_callsign'] : null;
 
-        if (! $positionId && ! $customCallsign) {
-            $this->dispatch('booking-error', message: 'Please select a position or enter a custom callsign.');
+        if (! $positionId) {
+            $this->dispatch('booking-error', message: 'Please select a position.');
 
             return;
         }
 
-        if (! empty($data['starts_at'])) {
-            $startsAt = Carbon::parse($data['starts_at']);
+        // Required, and string-typed: validating only when present would let a
+        // caller skip the checks below by omitting the field.
+        $startsAtInput = $data['starts_at'] ?? null;
+        $endsAtInput = $data['ends_at'] ?? null;
 
-            if ($startsAt->isPast()) {
-                $this->dispatch('booking-error', message: 'Bookings cannot start in the past.');
+        if (! is_string($startsAtInput) || ! is_string($endsAtInput) || $startsAtInput === '' || $endsAtInput === '') {
+            $this->dispatch('booking-error', message: 'Please provide a start and end time.');
 
-                return;
-            }
+            return;
+        }
 
-            if (! $this->isOnFifteenMinuteBoundary($startsAt)) {
-                $this->dispatch('booking-error', message: 'Start and end times must be on 15-minute boundaries.');
+        try {
+            $startsAt = Carbon::parse($startsAtInput);
+            $endsAt = Carbon::parse($endsAtInput);
+        } catch (InvalidFormatException) {
+            $this->dispatch('booking-error', message: 'Please provide a valid start and end time.');
 
-                return;
-            }
+            return;
+        }
 
-            if (! empty($data['ends_at'])) {
-                $endsAt = Carbon::parse($data['ends_at']);
+        if ($startsAt->isPast()) {
+            $this->dispatch('booking-error', message: 'Bookings cannot start in the past.');
 
-                if (! $this->isOnFifteenMinuteBoundary($endsAt)) {
-                    $this->dispatch('booking-error', message: 'Start and end times must be on 15-minute boundaries.');
+            return;
+        }
 
-                    return;
-                }
+        if (! $this->isOnFifteenMinuteBoundary($startsAt) || ! $this->isOnFifteenMinuteBoundary($endsAt)) {
+            $this->dispatch('booking-error', message: 'Start and end times must be on 15-minute boundaries.');
 
-                if ($endsAt->lessThanOrEqualTo($startsAt)) {
-                    $this->dispatch('booking-error', message: 'End time must be after start time.');
+            return;
+        }
 
-                    return;
-                }
-            }
+        if ($endsAt->lessThanOrEqualTo($startsAt)) {
+            $this->dispatch('booking-error', message: 'End time must be after start time.');
+
+            return;
         }
 
         try {
@@ -653,8 +728,8 @@ class Calendar extends Component
                 'position_id' => $positionId,
                 'member_id' => auth()->id(),
                 'type' => Booking::TYPE_STANDARD,
-                'starts_at' => Carbon::parse($data['starts_at']),
-                'ends_at' => Carbon::parse($data['ends_at']),
+                'starts_at' => $startsAt,
+                'ends_at' => $endsAt,
             ]);
             $this->refreshData();
             $this->dispatch('booking-created');
@@ -701,8 +776,19 @@ class Calendar extends Component
 
             $core = Booking::where('cts_booking_id', $ctsId)->first();
 
+            // member_id is a CTS-internal id, assigned independently of the CID
+            // (see HasCTSAccount::generateCTSInternalID), so it has to be
+            // translated before it can be compared with auth()->id().
+            $ctsMember = CtsMember::find((int) $cts->member_id);
+
+            if ($ctsMember === null) {
+                $this->dispatch('booking-error', message: 'Booking not found.');
+
+                return;
+            }
+
             $isStandard = $cts->type === 'BK';
-            $memberId = (int) $cts->member_id;
+            $memberId = (int) $ctsMember->cid;
             $endsAt = $this->ctsEndsAt($cts);
         } else {
             $this->dispatch('booking-error', message: 'Booking not found.');

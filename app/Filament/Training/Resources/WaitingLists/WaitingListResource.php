@@ -2,7 +2,6 @@
 
 namespace App\Filament\Training\Resources\WaitingLists;
 
-use App\Enums\QualificationTypeEnum;
 use App\Filament\Training\Resources\WaitingLists\Pages\CreateWaitingList;
 use App\Filament\Training\Resources\WaitingLists\Pages\EditWaitingList;
 use App\Filament\Training\Resources\WaitingLists\Pages\ListWaitingLists;
@@ -65,8 +64,8 @@ class WaitingListResource extends Resource
                             ->relationship(
                                 'qualifications',
                                 modifyQueryUsing: fn (Builder $query) => $query
-                                    ->ofType(QualificationTypeEnum::Pilot->value)
-                                    ->orderBy('vatsim'),
+                                    ->pilotTrainable()
+                                    ->orderBy('code'),
                             )
                             ->multiple()
                             ->preload()

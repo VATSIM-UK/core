@@ -5,8 +5,8 @@
 		it the gap shading and time marker show through the column at every row
 		boundary. The matching border-b keeps the rule looking unchanged. --}}
 	<div
-		class="w-40 shrink-0 px-3 py-2.5 -mb-px border-r border-r-gray-200 border-b border-b-gray-100 flex items-center gap-2 bg-white sticky left-0 z-20">
-		<span class="text-[13px] font-semibold text-gray-700 truncate" :title="pos.callsign" x-text="pos.callsign"></span>
+		class="w-28 sm:w-40 shrink-0 px-3 py-2.5 -mb-px border-r border-r-gray-200 border-b border-b-gray-100 flex items-center gap-2 bg-gray-50 sticky left-0 z-20">
+		<span class="text-sm font-bold text-gray-600 truncate" :title="pos.callsign" x-text="pos.callsign"></span>
 	</div>
 
 	{{-- Timeline bar --}}
@@ -44,22 +44,39 @@
 				class="absolute rounded px-2 flex items-center gap-1.5 cursor-pointer
                 text-white text-xs font-medium shadow-sm
                 hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap"
-				data-booking-block
+				data-booking-block :data-booking-key="booking.source + '-' + (booking.id || booking.cts_booking_id)"
 				:class="{
 				    'bg-uknavy': booking.type === 'BK',
 				    'bg-purple-700': booking.type === 'ME',
 				    'bg-amber-800': booking.type === 'EX',
 				    'bg-red-600': booking.type === 'EV',
 				    'bg-orange-500': booking.type === 'GS',
+				    'ring-2 ring-yellow-300 ring-inset font-bold z-[6]': isOwnBooking(booking),
 				}"
 				:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%; top: ' + bookingTop(pos,
 				    booking) + '; height: ' + blockHeight(pos)"
-				:title="(booking.member?.display_name || booking.member?.name || 'Unknown') + (booking.member?.cid ? ' (' + booking.member
-				    .cid + ')' : '') + ' \u00b7 ' + booking.from + ' \u2013 ' + booking.to"
+				:title="$bookingTypeLabel(booking.type) + ' \u00b7 ' +
+				    (booking.member?.display_name || 'Unknown') +
+				    (booking.member?.cid ? ' (' + booking.member.cid + ')' : '') +
+				    (isOwnBooking(booking) ? ' \u00b7 your booking' : '') +
+				    ' \u00b7 ' + booking.from + ' \u2013 ' + booking.to"
 				@click.stop="openDetailModal(pos, booking)">
+				{{-- Shape cue, not colour alone. First and shrink-0, so a narrow block clips
+					the label rather than this. --}}
+				<template x-if="booking.type === 'ME'">
+					@svg('heroicon-m-academic-cap', 'w-3.5 h-3.5 shrink-0')
+				</template>
+				<template x-if="booking.type === 'EX'">
+					@svg('heroicon-m-clipboard-document-check', 'w-3.5 h-3.5 shrink-0')
+				</template>
+				<template x-if="booking.type === 'GS'">
+					@svg('heroicon-m-user-group', 'w-3.5 h-3.5 shrink-0')
+				</template>
+				{{-- The icons are aria-hidden, so the type reaches assistive tech here. --}}
+				<span class="sr-only" x-text="$bookingTypeLabel(booking.type)"></span>
 				<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]" x-text="booking.from"></span>
 				<span class="truncate"
-					x-text="(booking.member?.display_name || booking.member?.name || 'Unknown') + (booking.member?.cid ? ' (' + booking.member.cid + ')' : '')"></span>
+					x-text="(booking.member?.display_name || 'Unknown') + (booking.member?.cid ? ' (' + booking.member.cid + ')' : '')"></span>
 			</div>
 		</template>
 	</div>

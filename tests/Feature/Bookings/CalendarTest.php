@@ -44,6 +44,41 @@ class CalendarTest extends TestCase
     }
 
     #[Test]
+    public function it_jumps_to_and_scrolls_to_a_booking_id_without_needing_a_date(): void
+    {
+        $booking = Booking::factory()->create(['starts_at' => Carbon::create(2026, 9, 3, 10), 'ends_at' => Carbon::create(2026, 9, 3, 12)]);
+
+        Livewire::withQueryParams(['booking_id' => (string) $booking->id])
+            ->test(Calendar::class)
+            ->assertSet('selectedDate', Carbon::create(2026, 9, 3))
+            ->assertDispatched('scroll-to-booking', source: 'core', id: $booking->id, ctsBookingId: null, instant: true);
+    }
+
+    #[Test]
+    public function it_does_not_dispatch_scroll_to_booking_without_a_booking_id(): void
+    {
+        Livewire::test(Calendar::class)
+            ->assertNotDispatched('scroll-to-booking');
+    }
+
+    #[Test]
+    public function it_does_not_dispatch_scroll_to_booking_for_a_non_numeric_booking_id(): void
+    {
+        Livewire::withQueryParams(['booking_id' => 'abc'])
+            ->test(Calendar::class)
+            ->assertNotDispatched('scroll-to-booking');
+    }
+
+    #[Test]
+    public function it_does_not_dispatch_scroll_to_booking_for_an_unknown_booking_id(): void
+    {
+        Livewire::withQueryParams(['booking_id' => '999999999'])
+            ->test(Calendar::class)
+            ->assertSet('selectedDate', Carbon::today())
+            ->assertNotDispatched('scroll-to-booking');
+    }
+
+    #[Test]
     public function it_shows_the_weekday_before_the_selected_date(): void
     {
         Livewire::test(Calendar::class, ['year' => 2026, 'month' => 7])
@@ -63,7 +98,7 @@ class CalendarTest extends TestCase
     }
 
     #[Test]
-    public function it_shows_error_when_no_position_or_callsign(): void
+    public function it_shows_error_when_no_position(): void
     {
         $member = Account::factory()->withQualification()->create();
 
@@ -74,6 +109,43 @@ class CalendarTest extends TestCase
                 'ends_at' => Carbon::tomorrow()->setHour(12)->format('Y-m-d H:i:s'),
             ])
             ->assertDispatched('booking-error');
+
+        $this->assertDatabaseMissing('bookings', ['member_id' => $member->id]);
+    }
+
+    #[Test]
+    public function it_does_not_let_an_arbitrary_callsign_stand_in_for_a_position(): void
+    {
+        // A booking accepted without a position_id would skip every
+        // qualification and limit check in BookingService::create().
+        $member = Account::factory()->withQualification()->create();
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->call('createBooking', [
+                'custom_callsign' => 'EGKK_APP',
+                'starts_at' => Carbon::tomorrow()->setHour(10)->format('Y-m-d H:i:s'),
+                'ends_at' => Carbon::tomorrow()->setHour(12)->format('Y-m-d H:i:s'),
+            ])
+            ->assertDispatched('booking-error');
+
+        $this->assertDatabaseMissing('bookings', ['member_id' => $member->id]);
+    }
+
+    #[Test]
+    public function it_shows_error_when_the_end_time_is_missing(): void
+    {
+        $member = Account::factory()->withQualification()->create();
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->call('createBooking', [
+                'position_id' => Position::factory()->create()->id,
+                'starts_at' => Carbon::tomorrow()->setHour(10)->format('Y-m-d H:i:s'),
+            ])
+            ->assertDispatched('booking-error');
+
+        $this->assertDatabaseMissing('bookings', ['member_id' => $member->id]);
     }
 
     #[Test]
@@ -423,18 +495,18 @@ class CalendarTest extends TestCase
     }
 
     #[Test]
-    public function it_redirects_guests_to_login(): void
+    public function it_allows_guests_to_view(): void
     {
         $this->get(route('site.bookings.calendar'))
-            ->assertRedirect(route('landing'));
+            ->assertOk();
     }
 
     #[Test]
-    public function it_forbids_non_staff_members(): void
+    public function it_allows_non_staff_members_to_view(): void
     {
         $this->actingAs($this->user)
             ->get(route('site.bookings.calendar'))
-            ->assertForbidden();
+            ->assertOk();
     }
 
     #[Test]

@@ -25,7 +25,7 @@ class BookingRepository
         Booking::TYPE_GROUP_SEMINAR => 'GS',
     ];
 
-    public function getBookings(Carbon $date): Collection
+    public function getBookings(Carbon $date, bool $hideEndedTrainingSessions = false): Collection
     {
         $core = Booking::whereDate('starts_at', $date->toDateString())
             ->with('member', 'position', 'ctsBooking', 'bookable')
@@ -53,15 +53,30 @@ class BookingRepository
         // Events live in the CTS events table (not cts.bookings), so they must be
         // pulled in separately or they never appear on the calendar.
         $events = Event::whereDate('date', $date->toDateString())
-            ->where(fn ($q) => $q->where('gone', 0)->orWhereNull('gone'))
             ->orderBy('from')
             ->get();
 
         return $this->formatBookings($core)
             ->concat($ctsOnly->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts)))
             ->concat($events->map(fn (Event $event) => $this->formatEvent($event)))
+            ->reject(fn (object $b) => $hideEndedTrainingSessions && $date->isToday() && $this->trainingSessionHasEnded($b))
             ->sortBy(fn (object $b) => $b->from)
             ->values();
+    }
+
+    private function trainingSessionHasEnded(object $booking): bool
+    {
+        if (! in_array($booking->type, ['ME', 'EX'], true)) {
+            return false;
+        }
+
+        $end = Carbon::parse($booking->date.' '.$booking->to);
+
+        if ($booking->to <= $booking->from) {
+            $end->addDay();
+        }
+
+        return $end->isPast();
     }
 
     public function getTodaysBookings(): Collection
@@ -90,6 +105,63 @@ class BookingRepository
             ->get();
 
         return $this->formatBookings($bookings);
+    }
+
+    public function getMemberUpcomingBookings(Account $account): Collection
+    {
+        $today = Carbon::today();
+
+        $core = Booking::where('member_id', $account->getKey())
+            ->where('starts_at', '>=', $today)
+            ->where('type', Booking::TYPE_STANDARD)
+            ->with('member', 'position', 'ctsBooking', 'bookable')
+            ->orderBy('starts_at')
+            ->get();
+
+        $ctsMember = CtsMember::where('cid', $account->getKey())->first();
+
+        if ($ctsMember === null) {
+            return $this->formatBookings($core)->values();
+        }
+
+        $importedIds = $core->pluck('cts_booking_id')->filter()->map(fn ($id) => (int) $id)->values()->all();
+
+        $cts = CtsBooking::query()
+            ->where('member_id', $ctsMember->getKey())
+            ->whereDate('date', '>=', $today->toDateString())
+            ->where('type', 'BK')
+            ->when(! empty($importedIds), fn ($q) => $q->whereNotIn('id', $importedIds))
+            ->orderBy('date')
+            ->orderBy('from')
+            ->get();
+
+        $ctsPositions = Position::whereIn('callsign', $cts->pluck('position')->filter()->unique()->values())
+            ->get()
+            ->keyBy('callsign');
+
+        $ctsMembers = collect([$ctsMember->getKey() => $ctsMember]);
+        $ctsAccounts = Account::whereIn('id', [$account->getKey()])->get()->keyBy('id');
+
+        return $this->formatBookings($core)
+            ->concat($cts->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts)))
+            ->sortBy(fn (object $b) => $b->date.' '.$b->from)
+            ->values();
+    }
+
+    public function getUpcomingMentoringAndExamBookings(int $limit = 10): Collection
+    {
+        $bookings = Booking::whereIn('type', [Booking::TYPE_MENTORING, Booking::TYPE_EXAM])
+            ->where('ends_at', '>=', Carbon::now())
+            ->with('position', 'ctsBooking')
+            ->with(['bookable' => fn ($morphTo) => $morphTo->morphWith([
+                Session::class => ['mentor'],
+                ExamBooking::class => ['examiners.primaryExaminer'],
+            ])])
+            ->orderBy('starts_at')
+            ->limit($limit)
+            ->get();
+
+        return $this->formatBookings($bookings)->values();
     }
 
     private function formatBookings(Collection $bookings): Collection
@@ -221,19 +293,22 @@ class BookingRepository
         ];
     }
 
+    /**
+     * The calendar is public, so this carries only what a booking block renders.
+     * Never the full name: it would be shipped to every visitor in the Livewire
+     * snapshot, publishing a name-to-CID mapping the page never shows.
+     */
     private function formatMember(?Account $account): array
     {
         if (! $account) {
-            return ['id' => '', 'cid' => '', 'name' => 'Unknown', 'display_name' => 'Unknown'];
+            return ['cid' => '', 'display_name' => 'Unknown'];
         }
 
-        $firstName = $account->name_first;
+        $firstName = $account->name_preferred;
         $lastInitial = mb_substr($account->name_last, 0, 1).'.';
 
         return [
-            'id' => (string) $account->id,
             'cid' => (string) $account->id,
-            'name' => $account->name,
             'display_name' => $firstName.' '.$lastInitial,
         ];
     }
