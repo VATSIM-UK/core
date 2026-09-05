@@ -225,8 +225,8 @@
 								<div class="feedback-page" style="{{ $loop->first ? '' : 'display:none;' }}">
 									@foreach ($pageQuestions as $question)
 										<div class="form-group{{ $errors->has($question->slug) ? ' has-error' : '' }}"
-											data-required="{{ $question->required ? 'true' : 'false' }}" data-question-type="{{ $question->type->name }}"
-											data-question-slug="{{ $question->slug }}">
+											data-required="{{ $question->required ? 'true' : 'false' }}"
+											data-question-type="{{ $question->type->name }}" data-question-slug="{{ $question->slug }}">
 											<label for="{{ $question->slug }}">{!! $question->question . ($question->required ? '' : ' (optional)') !!}</label> </br>
 											{!! $question->form_html !!}
 										</div>
