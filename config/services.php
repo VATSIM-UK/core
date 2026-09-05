@@ -90,6 +90,10 @@ return [
             'secret' => env('VATSIM_OAUTH_SECRET'),
             'scopes' => explode(',', env('VATSIM_OAUTH_SCOPES', '')),
         ],
+        'bookings' => [
+            'url' => env('VATSIM_NET_BOOKINGS_URL', 'https://atc-bookings.vatsim.net/api'),
+            'key' => env('VATSIM_NET_BOOKINGS_KEY', ''),
+        ],
     ],
 
     'gander-oceanic' => [
