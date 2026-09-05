@@ -1295,4 +1295,193 @@ class MentoringSessionsServiceTest extends TestCase
 
         $this->assertInstanceOf(ExamBooking::class, $result);
     }
+
+    #[Test]
+    public function get_mentor_sessions_for_date_returns_accepted_sessions_for_that_mentor(): void
+    {
+        $date = Carbon::tomorrow()->format('Y-m-d');
+
+        Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => $date,
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'cancelled_datetime' => null,
+        ]);
+
+        Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGKK_TWR',
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => $date,
+            'taken_from' => '14:00:00',
+            'taken_to' => '16:00:00',
+            'cancelled_datetime' => null,
+        ]);
+
+        $otherMentor = Member::factory()->create();
+        Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => $otherMentor->id,
+            'taken' => 1,
+            'taken_date' => $date,
+            'taken_from' => '11:00:00',
+            'taken_to' => '13:00:00',
+            'cancelled_datetime' => null,
+        ]);
+
+        $sessions = $this->service->getMentorSessionsForDate($this->mentorMember->id, $date);
+
+        $this->assertCount(2, $sessions);
+        $this->assertTrue($sessions->every(fn (Session $session) => $session->mentor_id === $this->mentorMember->id));
+        $this->assertSame('10:00:00', $sessions->first()->taken_from);
+    }
+
+    #[Test]
+    public function get_mentor_sessions_for_date_excludes_cancelled_sessions(): void
+    {
+        $date = Carbon::tomorrow()->format('Y-m-d');
+
+        Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => $date,
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'cancelled_datetime' => now(),
+        ]);
+
+        $sessions = $this->service->getMentorSessionsForDate($this->mentorMember->id, $date);
+
+        $this->assertCount(0, $sessions);
+    }
+
+    #[Test]
+    public function check_for_mentor_overlapping_session_returns_null_when_no_overlap(): void
+    {
+        Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'cancelled_datetime' => null,
+        ]);
+
+        $result = $this->service->checkForMentorOverlappingSession(
+            $this->mentorMember->id,
+            Carbon::tomorrow()->format('Y-m-d'),
+            '14:00',
+            '16:00',
+        );
+
+        $this->assertNull($result);
+    }
+
+    #[Test]
+    public function check_for_mentor_overlapping_session_returns_session_when_overlap_exists_on_any_position(): void
+    {
+        Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGKK_TWR',
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'cancelled_datetime' => null,
+        ]);
+
+        $result = $this->service->checkForMentorOverlappingSession(
+            $this->mentorMember->id,
+            Carbon::tomorrow()->format('Y-m-d'),
+            '11:00',
+            '13:00',
+        );
+
+        $this->assertInstanceOf(Session::class, $result);
+        $this->assertSame('EGKK_TWR', $result->position);
+    }
+
+    #[Test]
+    public function check_for_mentor_overlapping_session_ignores_session_when_ignore_id_is_provided(): void
+    {
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'cancelled_datetime' => null,
+        ]);
+
+        $result = $this->service->checkForMentorOverlappingSession(
+            $this->mentorMember->id,
+            Carbon::tomorrow()->format('Y-m-d'),
+            '11:00',
+            '13:00',
+            $session->id,
+        );
+
+        $this->assertNull($result);
+    }
+
+    #[Test]
+    public function check_for_mentor_overlapping_session_ignores_other_mentors(): void
+    {
+        $otherMentor = Member::factory()->create();
+
+        Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => $otherMentor->id,
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'cancelled_datetime' => null,
+        ]);
+
+        $result = $this->service->checkForMentorOverlappingSession(
+            $this->mentorMember->id,
+            Carbon::tomorrow()->format('Y-m-d'),
+            '11:00',
+            '13:00',
+        );
+
+        $this->assertNull($result);
+    }
+
+    #[Test]
+    public function mentor_overlap_description_includes_student_position_and_times(): void
+    {
+        $session = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+        $session->load('student');
+
+        $description = $this->service->mentorOverlapDescription($session);
+
+        $this->assertStringContainsString($this->studentMember->name, $description);
+        $this->assertStringContainsString('EGLL_APP', $description);
+        $this->assertStringContainsString('10:00', $description);
+        $this->assertStringContainsString('12:00', $description);
+    }
 }

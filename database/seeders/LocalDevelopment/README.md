@@ -142,7 +142,7 @@ php artisan db:seed --class=Database\\Seeders\\LocalDevelopment\\Training\\CtsEx
 | `Concerns\CreatesLinkedAccount` | `firstOrCreate` mship `Account` + CTS `Member` + qualifications |
 | `Concerns\CreatesDevTrainingPlace` | Ad-hoc training place via `TrainingPlaceService` (CTS validations) |
 | `Concerns\SeedsCtsPosition` | `firstOrCreate` core `Position` and CTS `Position` for a callsign |
-| `Concerns\SeedsDevMentoringSessions` | Historical and pending CTS `sessions` for dev students |
+| `Concerns\SeedsDevMentoringSessions` | Historical, pending, accepted-for-date, and conduct CTS `sessions` for dev students |
 
 ## Idempotency
 
@@ -152,9 +152,31 @@ Seeders use `firstOrCreate` / `updateOrCreate` with stable keys (CIDs, callsigns
 
 | Seeder | Purpose |
 |--------|---------|
+| `Database\Seeders\LocalDevelopment\Training\DevMentorConductSeeder` | Mentoring conduct page fixtures for CID `10000005` (or existing account) |
+| `Database\Seeders\LocalDevelopment\Training\DevMentorUnavailabilitySeeder` | TECH-730 GANTT demo: mentor busy today + overlapping/clear student availability |
 | `Database\Seeders\Testing\PositionsAndEndorsementsSeeder` | Used internally by `AtcAndCtsTrainingPositionsSeeder` |
 | `Database\Seeders\Testing\CtsExamSeeder` | Legacy sample CTS exam bookings (unlinked to core accounts) |
 | `Database\Seeders\WaitingListStressSeeder` | Performance testing (~201 accounts on one list) |
+
+### `DevMentorUnavailabilitySeeder`
+
+Seeds **today’s** mentoring GANTT scenarios for stakeholder demos of mentor unavailability (TECH-730). Not run by the training orchestrator — invoke explicitly after `LocalDevelopmentTrainingSeeder`.
+
+| Role | Account | Position | Times | Purpose |
+|------|---------|----------|-------|---------|
+| Already accepted (busy) | `9000012` | `EGKK_TWR` | 18:00–20:00 | **My sessions** lane + busy bands |
+| Overlapping pickup | `9000010` | `EGLL_N_APP` | Availability 17:00–21:00 + pending request | Accept → mentor-busy callout |
+| Clear pickup | `9000011` | `EGKK_TWR` | Availability 14:00–16:00 + pending request | Conflict-free contrast |
+
+Demo mentor defaults to CID `10000005` (`DevTrainingPersonas::MENTOR_CONDUCT_CID`). Override with `DEV_MENTOR_CID=<sandbox-cid>` to attach fixtures to a real sandbox login.
+
+```shell
+php artisan db:seed --class=Database\\Seeders\\LocalDevelopmentTrainingSeeder
+php artisan db:seed --class=Database\\Seeders\\LocalDevelopment\\Training\\DevMentorUnavailabilitySeeder
+# optional: DEV_MENTOR_CID=<sandbox> php artisan db:seed --class=Database\\Seeders\\LocalDevelopment\\Training\\DevMentorUnavailabilitySeeder
+```
+
+Then: Training Panel → Mentoring → date = today → My sessions / busy bands → overlapping green slot (callout) → clear slot (no mentor-busy callout).
 
 ## Tests
 
