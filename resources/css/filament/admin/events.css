@@ -1,0 +1,10 @@
+@layer components {
+    .events-description-editor .fi-fo-rich-editor-content {
+        @apply flex flex-col;
+        min-height: 16rem;
+    }
+
+    .events-description-editor .fi-fo-rich-editor-content .tiptap {
+        @apply flex-1;
+    }
+}
