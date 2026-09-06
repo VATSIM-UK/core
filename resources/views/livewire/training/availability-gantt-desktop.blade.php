@@ -27,7 +27,59 @@
 				$firstHour = $hours[0];
 				$totalHours = count($hours);
 				$totalTimelineMinutes = $totalHours * 60;
+				$timelineStartMinutes = $firstHour * 60;
 			@endphp
+
+			@if ($mentorSessions->isNotEmpty())
+				<div class="flex bg-danger-50/60 dark:bg-danger-400/5 relative min-h-[72px]">
+					<div
+						class="w-64 flex-shrink-0 sticky left-0 z-20 bg-inherit border-r border-gray-200 dark:border-white/10 px-4 py-3 flex flex-col justify-center">
+						<div class="font-medium text-sm text-gray-950 dark:text-white">
+							My sessions
+						</div>
+						<div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+							Your accepted mentoring today
+						</div>
+					</div>
+
+					<div class="flex-1 relative">
+						@if ($nowLinePercent !== null)
+							<div class="absolute inset-y-0 z-30 pointer-events-none" data-gantt-now-line
+								style="left: calc({{ $nowLinePercent }}% - 1px); width: 2px; background-color: #ef4444;"></div>
+						@endif
+
+						<div class="absolute inset-0 flex pointer-events-none">
+							@foreach ($hours as $hour)
+								<div class="flex-1 border-r border-gray-100 dark:border-white/[0.02]"></div>
+							@endforeach
+						</div>
+
+						@foreach ($mentorSessions as $session)
+							@php
+								$start = \Carbon\Carbon::parse($session->taken_from);
+								$end = \Carbon\Carbon::parse($session->taken_to);
+
+								$startMinutesFromMidnight = $start->hour * 60 + $start->minute;
+								$relativeStartMinutes = max(0, $startMinutesFromMidnight - $timelineStartMinutes);
+								$durationMinutes = $start->diffInMinutes($end);
+
+								$leftPercent = ($relativeStartMinutes / $totalTimelineMinutes) * 100;
+								$widthPercent = ($durationMinutes / $totalTimelineMinutes) * 100;
+								$label = trim(($session->position ?? '') . ' · ' . ($session->student?->name ?? 'Student'));
+							@endphp
+
+							<div
+								class="absolute top-2 bottom-2 flex items-center justify-center px-1.5 rounded-md shadow-sm border ring-1 bg-danger-500/90 border-danger-600 dark:border-danger-400 ring-danger-500/30 overflow-hidden pointer-events-none"
+								style="left: {{ $leftPercent }}%; width: {{ $widthPercent }}%;"
+								title="{{ $label }}: {{ $start->format('H:i') }} - {{ $end->format('H:i') }}">
+								<span class="text-[10px] font-medium text-white truncate px-1">
+									{{ $label }}
+								</span>
+							</div>
+						@endforeach
+					</div>
+				</div>
+			@endif
 
 			@foreach ($students as $student)
 				<div class="flex group hover:bg-gray-50/50 dark:hover:bg-white/5 transition duration-75 relative min-h-[72px]">
@@ -100,13 +152,29 @@
 							@endforeach
 						</div>
 
+						@foreach ($mentorSessions as $session)
+							@php
+								$start = \Carbon\Carbon::parse($session->taken_from);
+								$end = \Carbon\Carbon::parse($session->taken_to);
+
+								$startMinutesFromMidnight = $start->hour * 60 + $start->minute;
+								$relativeStartMinutes = max(0, $startMinutesFromMidnight - $timelineStartMinutes);
+								$durationMinutes = $start->diffInMinutes($end);
+
+								$leftPercent = ($relativeStartMinutes / $totalTimelineMinutes) * 100;
+								$widthPercent = ($durationMinutes / $totalTimelineMinutes) * 100;
+							@endphp
+
+							<div class="absolute inset-y-0 z-10 pointer-events-none bg-danger-500/15 dark:bg-danger-400/10"
+								style="left: {{ $leftPercent }}%; width: {{ $widthPercent }}%;"></div>
+						@endforeach
+
 						@foreach ($student->availabilities as $avail)
 							@php
 								$start = \Carbon\Carbon::parse($avail->from);
 								$end = \Carbon\Carbon::parse($avail->to);
 
 								$startMinutesFromMidnight = $start->hour * 60 + $start->minute;
-								$timelineStartMinutes = $firstHour * 60;
 
 								$relativeStartMinutes = max(0, $startMinutesFromMidnight - $timelineStartMinutes);
 								$durationMinutes = $start->diffInMinutes($end);
@@ -116,7 +184,7 @@
 							@endphp
 
 							<button type="button" wire:click="mountAction('acceptSession', { availability_id: {{ $avail->id }} })"
-								class="absolute top-2 bottom-2 flex items-center justify-center px-1.5 rounded-md shadow-sm opacity-90 transition-all border group/block cursor-pointer hover:shadow-md ring-1 bg-success-500 hover:bg-success-600 border-success-600 dark:border-success-400 ring-success-500/30 overflow-hidden"
+								class="absolute top-2 bottom-2 z-20 flex items-center justify-center px-1.5 rounded-md shadow-sm opacity-90 transition-all border group/block cursor-pointer hover:shadow-md ring-1 bg-success-500 hover:bg-success-600 border-success-600 dark:border-success-400 ring-success-500/30 overflow-hidden"
 								style="left: {{ $leftPercent }}%; width: {{ $widthPercent }}%;">
 							</button>
 						@endforeach

@@ -22,6 +22,7 @@ use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
+use Illuminate\Support\Collection;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 
@@ -178,6 +179,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
     public function render()
     {
         $students = $this->students;
+        $mentorSessions = $this->mentorSessions;
 
         $minHour = 24;
         $maxHour = 0;
@@ -193,6 +195,18 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                 if ($endHour > $maxHour) {
                     $maxHour = $endHour;
                 }
+            }
+        }
+
+        foreach ($mentorSessions as $session) {
+            $startHour = (int) Carbon::parse($session->taken_from)->format('G');
+            $endHour = (int) Carbon::parse($session->taken_to)->format('G');
+
+            if ($startHour < $minHour) {
+                $minHour = $startHour;
+            }
+            if ($endHour > $maxHour) {
+                $maxHour = $endHour;
             }
         }
 
@@ -218,10 +232,25 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
         return view('livewire.training.availability-gantt', [
             'students' => $students,
+            'mentorSessions' => $mentorSessions,
             'hours' => range($startTimelineHour, $endTimelineHour),
             'displayDate' => Carbon::parse($this->date),
             'nowLinePercent' => $nowLinePercent,
         ]);
+    }
+
+    /**
+     * @return Collection<int, Session>
+     */
+    public function getMentorSessionsProperty(): Collection
+    {
+        $ctsMentorId = auth()->user()?->member?->id;
+
+        if (! $ctsMentorId) {
+            return collect();
+        }
+
+        return app(MentoringSessionsService::class)->getMentorSessionsForDate($ctsMentorId, $this->date);
     }
 
     public function acceptSessionAction(): Action
@@ -296,6 +325,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                             ->label('End')
                             ->required()
                             ->searchable()
+                            ->live()
                             ->allowHtml(false)
                             ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
                             ->after('taken_from')
@@ -372,6 +402,22 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                         ->visible(function (Get $get) use ($availability, $pendingSession) {
                             return $this->getOverlappingBooking($get, $availability, $pendingSession) !== null;
                         }),
+
+                    Callout::make('mentor_overlapping_session')
+                        ->heading(fn () => app(MentoringSessionsService::class)->mentorOverlapHeading())
+                        ->description(function (Get $get) use ($availability) {
+                            $overlap = $this->getMentorOverlappingSession($get, $availability);
+
+                            if (! $overlap) {
+                                return '';
+                            }
+
+                            return app(MentoringSessionsService::class)->mentorOverlapDescription($overlap);
+                        })
+                        ->danger()
+                        ->visible(function (Get $get) use ($availability) {
+                            return $this->getMentorOverlappingSession($get, $availability) !== null;
+                        }),
                 ];
             })
             ->action(function (array $data, array $arguments, MentoringSessionsService $mentoringService) {
@@ -445,6 +491,25 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             $takenFrom,
             $takenTo,
             $pendingSession->id
+        );
+    }
+
+    protected function getMentorOverlappingSession(Get $get, Availability $availability, ?int $ignoreSessionId = null): ?Session
+    {
+        $takenFrom = $get('taken_from');
+        $takenTo = $get('taken_to');
+        $ctsMentorId = auth()->user()?->member?->id;
+
+        if (! $takenFrom || ! $takenTo || ! $ctsMentorId) {
+            return null;
+        }
+
+        return app(MentoringSessionsService::class)->checkForMentorOverlappingSession(
+            $ctsMentorId,
+            $availability->date,
+            $takenFrom,
+            $takenTo,
+            $ignoreSessionId
         );
     }
 
