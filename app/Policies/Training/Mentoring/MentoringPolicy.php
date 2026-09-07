@@ -125,6 +125,14 @@ class MentoringPolicy
     }
 
     /**
+     * Create a mentoring session for a training-place student on a CTS position.
+     */
+    public function create(Account $user, string $position): bool
+    {
+        return $this->mentorPosition($user, $position);
+    }
+
+    /**
      * Determine if a user can reschedule a session.
      */
     public function reschedule(Account $user, Session $session): bool
