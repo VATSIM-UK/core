@@ -1,6 +1,7 @@
 name: Devcontainer
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - ".devcontainer/**"
