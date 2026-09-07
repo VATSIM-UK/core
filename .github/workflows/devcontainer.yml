@@ -21,7 +21,4 @@ jobs:
         uses: devcontainers/ci@v0.3
         with:
           push: never
-          runCmd: bash .devcontainer/scripts/ci-test.sh
-          env: |
-            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-            CI=true
+          runCmd: php artisan test --parallel --processes=4 --recreate-databases
