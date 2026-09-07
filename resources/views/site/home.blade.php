@@ -240,12 +240,12 @@
 
 			@if ($nextEvent)
 				<div class="next-event">
-					<h3 class="text-primary mb-0">{{ $nextEvent->event }}</h3>
+					<h3 class="text-primary mb-0">{{ $nextEvent->name }}</h3>
 					<p class="text-light mb-1">
-						{{ $nextEvent->date->format('l jS F Y') }} &bull;
-						{{ $nextEvent->from }} &ndash; {{ $nextEvent->to }}z
+						{{ $nextEvent->start->format('l jS F Y') }} &bull;
+						{{ $nextEvent->start->format('H:i') }} &ndash; {{ $nextEvent->end->format('H:i') }}z
 					</p>
-					<p class="text-light">{!! $nextEvent->text !!}</p>
+					<p class="text-light">{!! $nextEvent->description !!}</p>
 				</div>
 			@else
 				<p class="text-light">No upcoming events.</p>

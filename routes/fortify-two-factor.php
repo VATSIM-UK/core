@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\TwoFactorBackupCodesController;
+use App\Http\Controllers\Auth\TwoFactorRekeyController;
 use App\Http\Controllers\Auth\TwoFactorSetupController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -45,6 +46,10 @@ Route::prefix('auth/two-factor')->middleware(config('fortify.middleware', ['web'
         Route::post('enable', [TwoFactorAuthenticationController::class, 'store'])
             ->middleware($twoFactorMiddleware)
             ->name('two-factor.enable');
+
+        Route::post('rekey', [TwoFactorRekeyController::class, 'store'])
+            ->middleware($twoFactorMiddleware)
+            ->name('two-factor.rekey');
 
         Route::post('confirm', [ConfirmedTwoFactorAuthenticationController::class, 'store'])
             ->middleware($twoFactorMiddleware)

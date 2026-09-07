@@ -10,6 +10,7 @@ use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\Member as CtsMember;
 use App\Models\Roster;
 use App\Repositories\Cts\BookingRepository;
+use App\Repositories\Events\EventRepository;
 use App\Services\BookingService;
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidFormatException;
@@ -201,14 +202,16 @@ class Calendar extends Component
 
     public function getBookingsForDate(Carbon $date): void
     {
-        // An EV row carrying a callsign is a controller's own booking made during
-        // an event, not the event itself. Only the cts.events rows belong on the
-        // calendar: they have the event name and never a position. Dropping the
-        // rest here rather than at render time keeps them out of the hour scale
-        // and gap collapsing too, so they cannot stretch the timeline invisibly.
+        // Events come from the core events table via the Events repository; the
+        // cts.events rows BookingRepository still merges are dropped here. EV
+        // rows with a callsign are a controller's own booking during an event,
+        // not the event itself. Rejecting here, not at render time, keeps them
+        // out of the hour scale and gap collapsing.
         $this->bookings = app(BookingRepository::class)
             ->getBookings($date, hideEndedTrainingSessions: true)
-            ->reject(fn (object $booking): bool => $booking->type === 'EV' && $booking->position !== null)
+            ->reject(fn (object $booking): bool => $booking->type === 'EV')
+            ->concat(app(EventRepository::class)->getEventsForDate($date))
+            ->sortBy(fn (object $booking): string => $booking->from)
             ->values();
     }
 

@@ -25,6 +25,7 @@ use App\Notifications\Training\Mentoring\MentoringSessionRescheduledStudentNotif
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
@@ -309,6 +310,60 @@ class MentoringSessionsService
         $staffName = $overlap instanceof Session ? $overlap->mentor?->name : $overlap->examiners?->primaryExaminer?->name;
 
         return "{$staffName} already has a {$type} booked on this position from {$from} to {$to}.";
+    }
+
+    /**
+     * Accepted, non-cancelled mentoring sessions for a mentor on a given date.
+     *
+     * @return Collection<int, Session>
+     */
+    public function getMentorSessionsForDate(int $ctsMentorId, string $date): Collection
+    {
+        return Session::query()
+            ->with('student')
+            ->where('mentor_id', $ctsMentorId)
+            ->where('taken', 1)
+            ->whereDate('taken_date', $date)
+            ->whereNotNull('taken_from')
+            ->whereNotNull('taken_to')
+            ->whereNull('cancelled_datetime')
+            ->orderBy('taken_from')
+            ->get();
+    }
+
+    public function checkForMentorOverlappingSession(
+        int $ctsMentorId,
+        string $date,
+        string $takenFrom,
+        string $takenTo,
+        ?int $ignoreSessionId = null,
+    ): ?Session {
+        return Session::query()
+            ->with('student')
+            ->where('mentor_id', $ctsMentorId)
+            ->where('taken', 1)
+            ->whereDate('taken_date', $date)
+            ->where('taken_from', '<', $takenTo)
+            ->where('taken_to', '>', $takenFrom)
+            ->whereNull('cancelled_datetime')
+            ->when($ignoreSessionId, function ($query, $ignoreSessionId) {
+                $query->where('id', '!=', $ignoreSessionId);
+            })
+            ->first();
+    }
+
+    public function mentorOverlapHeading(): string
+    {
+        return 'You Already Have a Session Booked';
+    }
+
+    public function mentorOverlapDescription(Session $overlap): string
+    {
+        $from = Carbon::parse($overlap->taken_from)->format('H:i');
+        $to = Carbon::parse($overlap->taken_to)->format('H:i');
+        $studentName = $overlap->student?->name ?? 'another student';
+
+        return "You already have a session with {$studentName} on {$overlap->position} from {$from} to {$to}.";
     }
 
     private function validateSessionTimes(Availability $availability, string $takenFrom, string $takenTo): void

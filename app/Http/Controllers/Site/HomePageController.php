@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Site;
 
 use App\Models\Mship\State;
-use App\Repositories\Cts\EventRepository;
+use App\Repositories\Events\EventRepository;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
