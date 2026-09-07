@@ -10614,16 +10614,16 @@
         },
         {
             "name": "spatie/calendar-links",
-            "version": "2.0.1",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/calendar-links.git",
-                "reference": "a189cfa5fa20a44f02739be21efb113b2127882c"
+                "reference": "c92c9dbfeddfc65e8da83cc485efe60d88a52620"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/calendar-links/zipball/a189cfa5fa20a44f02739be21efb113b2127882c",
-                "reference": "a189cfa5fa20a44f02739be21efb113b2127882c",
+                "url": "https://api.github.com/repos/spatie/calendar-links/zipball/c92c9dbfeddfc65e8da83cc485efe60d88a52620",
+                "reference": "c92c9dbfeddfc65e8da83cc485efe60d88a52620",
                 "shasum": ""
             },
             "require": {
@@ -10632,6 +10632,7 @@
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.93",
                 "phpunit/phpunit": "^12.5 || ^13.0",
+                "psalm/plugin-phpunit": "^0.19.7",
                 "spatie/phpunit-snapshot-assertions": "^5.3",
                 "vimeo/psalm": "^6.15"
             },
@@ -10657,11 +10658,16 @@
             "homepage": "https://github.com/spatie/calendar-links",
             "keywords": [
                 "calendar-links",
-                "spatie"
+                "google-calendar",
+                "ical",
+                "ics",
+                "outlook",
+                "spatie",
+                "yahoo"
             ],
             "support": {
                 "issues": "https://github.com/spatie/calendar-links/issues",
-                "source": "https://github.com/spatie/calendar-links/tree/2.0.1"
+                "source": "https://github.com/spatie/calendar-links/tree/2.1.0"
             },
             "funding": [
                 {
@@ -10669,7 +10675,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-05-29T07:53:23+00:00"
+            "time": "2026-08-20T18:39:04+00:00"
         },
         {
             "name": "spatie/commonmark-shiki-highlighter",
