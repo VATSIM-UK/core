@@ -767,16 +767,16 @@
         },
         {
             "name": "carbonphp/carbon-doctrine-types",
-            "version": "3.2.0",
+            "version": "3.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CarbonPHP/carbon-doctrine-types.git",
-                "reference": "18ba5ddfec8976260ead6e866180bd5d2f71aa1d"
+                "reference": "5fa5eacafd9ef47c8c6ab9143fc901ba0194d3dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CarbonPHP/carbon-doctrine-types/zipball/18ba5ddfec8976260ead6e866180bd5d2f71aa1d",
-                "reference": "18ba5ddfec8976260ead6e866180bd5d2f71aa1d",
+                "url": "https://api.github.com/repos/CarbonPHP/carbon-doctrine-types/zipball/5fa5eacafd9ef47c8c6ab9143fc901ba0194d3dc",
+                "reference": "5fa5eacafd9ef47c8c6ab9143fc901ba0194d3dc",
                 "shasum": ""
             },
             "require": {
@@ -791,6 +791,11 @@
                 "phpunit/phpunit": "^10.3"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "3.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Carbon\\Doctrine\\": "src/Carbon/Doctrine/"
@@ -816,7 +821,7 @@
             ],
             "support": {
                 "issues": "https://github.com/CarbonPHP/carbon-doctrine-types/issues",
-                "source": "https://github.com/CarbonPHP/carbon-doctrine-types/tree/3.2.0"
+                "source": "https://github.com/CarbonPHP/carbon-doctrine-types/tree/3.2.1"
             },
             "funding": [
                 {
@@ -832,7 +837,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-02-09T16:56:22+00:00"
+            "time": "2026-09-06T14:11:38+00:00"
         },
         {
             "name": "chillerlan/php-qrcode",
@@ -4003,16 +4008,16 @@
         },
         {
             "name": "laravel/horizon",
-            "version": "v5.47.2",
+            "version": "v5.48.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/horizon.git",
-                "reference": "a6ac142293ad02db4d7cccb961dd32f56ef1462d"
+                "reference": "2d1045db2ecdc7842a13e96a7c21773f32c93ab3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/horizon/zipball/a6ac142293ad02db4d7cccb961dd32f56ef1462d",
-                "reference": "a6ac142293ad02db4d7cccb961dd32f56ef1462d",
+                "url": "https://api.github.com/repos/laravel/horizon/zipball/2d1045db2ecdc7842a13e96a7c21773f32c93ab3",
+                "reference": "2d1045db2ecdc7842a13e96a7c21773f32c93ab3",
                 "shasum": ""
             },
             "require": {
@@ -4077,9 +4082,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/horizon/issues",
-                "source": "https://github.com/laravel/horizon/tree/v5.47.2"
+                "source": "https://github.com/laravel/horizon/tree/v5.48.3"
             },
-            "time": "2026-06-03T15:11:37+00:00"
+            "time": "2026-08-10T13:09:54+00:00"
         },
         {
             "name": "laravel/passkeys",
@@ -4741,16 +4746,16 @@
         },
         {
             "name": "league/commonmark",
-            "version": "2.10.0",
+            "version": "2.10.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/commonmark.git",
-                "reference": "d2d1aa8b35e072966c89bc0c66cf926e56767dc4"
+                "reference": "9d489ab67a02960fd8ffe624d93f751daf95439e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/d2d1aa8b35e072966c89bc0c66cf926e56767dc4",
-                "reference": "d2d1aa8b35e072966c89bc0c66cf926e56767dc4",
+                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/9d489ab67a02960fd8ffe624d93f751daf95439e",
+                "reference": "9d489ab67a02960fd8ffe624d93f751daf95439e",
                 "shasum": ""
             },
             "require": {
@@ -4844,7 +4849,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-11T16:06:25+00:00"
+            "time": "2026-09-07T13:44:26+00:00"
         },
         {
             "name": "league/config",
