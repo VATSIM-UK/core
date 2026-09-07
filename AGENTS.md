@@ -20,6 +20,12 @@ npm run build                       # REQUIRED before tests — some Blade views
 
 ## Local setup
 
+Preferred: open the repo in the dev container (`.devcontainer/`) - PHP 8.4, Node 24, MySQL (`core`,
+`cts`, `core_testing`), Redis, `gh` and `prek`, with `.env`, migrations, seeds and `npm run build`
+done by `postCreate`. Apache serves <http://core.test> automatically; `make frontend-dev` for Vite.
+
+Manual (host PHP/Herd):
+
 ```bash
 cp .env.example .env && php artisan key:generate
 .devcontainer/load-dotenv.sh docker-compose -f .devcontainer/docker-compose.dev.yml up  # DB in Docker

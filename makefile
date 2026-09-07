@@ -2,6 +2,7 @@
 
 DOCKER_COMPOSE=.devcontainer/load-dotenv.sh docker-compose -f .devcontainer/docker-compose.dev.yml
 PORT ?= 80
+SERVE_HOST ?= core.test
 
 dev: docker npm build serve
 
@@ -29,4 +30,4 @@ frontend-dev:
 
 serve:
 	@echo "Starting Laravel development server on port $(PORT)..."
-	@php artisan serve --host core.test --port=$(PORT)
+	@php artisan serve --host $(SERVE_HOST) --port=$(PORT)
