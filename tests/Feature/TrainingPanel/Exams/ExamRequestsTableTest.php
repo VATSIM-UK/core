@@ -5,7 +5,6 @@ namespace Tests\Feature\TrainingPanel\Exams;
 use App\Livewire\Training\ExamRequestsTable;
 use App\Models\Cts\Availability;
 use App\Models\Cts\ExamBooking;
-use App\Models\Cts\ExaminerSettings;
 use App\Models\Cts\Member;
 use App\Models\Cts\PracticalExaminers;
 use App\Models\Mship\Account;
@@ -63,27 +62,28 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     }
 
     /**
-     * Secondary examiner Select options only include members with ExaminerSettings for the given column (S1=TWR, S2=APP, S3=CTR).
+     * Create a CTS member whose Core account has the examiner role matching
+     * the exam scope used by the selector (S1=TWR, S2=APP, S3=CTR).
      */
     protected function createExaminerMemberForScope(string $scopeColumn): Member
     {
         $examinerAccount = Account::factory()->create();
         $examinerMember = Member::factory()->forAccount($examinerAccount)->create(['examiner' => true]);
 
-        ExaminerSettings::create([
-            'memberID' => $examinerMember->id,
-            'OBS' => 0,
-            'S1' => $scopeColumn === 'S1' ? 1 : 0,
-            'S2' => $scopeColumn === 'S2' ? 1 : 0,
-            'S3' => $scopeColumn === 'S3' ? 1 : 0,
-            'P1' => 0,
-            'P2' => 0,
-            'P3' => 0,
-            'P4' => 0,
-            'P5' => 0,
-            'lastUpdated' => now(),
-            'updatedBy' => 0,
-        ]);
+        $roleName = [
+            'OBS' => 'ATC Examiner (OBS)',
+            'S1' => 'ATC Examiner (TWR)',
+            'S2' => 'ATC Examiner (APP)',
+            'S3' => 'ATC Examiner (CTR)',
+            'P1' => 'Pilot Examiner (P1)',
+            'P2' => 'Pilot Examiner (P2)',
+            'P3' => 'Pilot Examiner (P3)',
+        ][$scopeColumn] ?? throw new \InvalidArgumentException("Unknown test scope '{$scopeColumn}'.");
+
+        // The selector reads examiner eligibility from Core roles. The CTS
+        // member is still created because the saved option value must be its
+        // internal ID, not the Core account's VATSIM CID.
+        $examinerAccount->assignRole($roleName);
 
         return $examinerMember;
     }
