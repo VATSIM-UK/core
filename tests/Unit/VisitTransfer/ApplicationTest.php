@@ -264,7 +264,7 @@ class ApplicationTest extends TestCase
     #[Test]
     public function it_reports_statistics_correctly()
     {
-        DB::table('vt_application')->truncate();
+        DB::table('vt_application')->delete();
 
         $openNotInProgressApplications = collect(Application::$APPLICATION_IS_CONSIDERED_OPEN)->search(function ($status) {
             return $status == Application::STATUS_IN_PROGRESS;
