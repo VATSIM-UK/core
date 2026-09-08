@@ -34,6 +34,7 @@ jobs:
           llm_auth_token: ${{ secrets.OPENCODE_API_KEY }}
           llm_model: "deepseek-v4-pro"
           llm_use_anthropic: "false"
+          llm_extra_headers: "x-opencode-session=ocr-pr${{ github.event.pull_request.number }}-${{ github.event.pull_request.head.sha }}"
           llm_extra_body: '{"thinking": {"type": "enabled"}, "reasoning_effort": "high"}'
           background: "Ignore all code-style, formatting, or indentation issues (Laravel Pint will catch these)."
 
