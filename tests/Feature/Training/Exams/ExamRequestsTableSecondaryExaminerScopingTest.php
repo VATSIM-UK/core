@@ -102,9 +102,6 @@ class ExamRequestsTableSecondaryExaminerScopingTest extends TestCase
             'P3' => 'Pilot Examiner (P3)',
         ][$scopeColumn] ?? throw new \InvalidArgumentException("Unknown test scope '{$scopeColumn}'.");
 
-        // Examiner eligibility is managed in Core through roles. The CTS
-        // member remains necessary because the selector stores its internal
-        // member ID in practical_examiners.other.
         $examinerAccount->assignRole($roleName);
 
         return $examinerMember;

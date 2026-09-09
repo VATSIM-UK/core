@@ -80,9 +80,6 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
             'P3' => 'Pilot Examiner (P3)',
         ][$scopeColumn] ?? throw new \InvalidArgumentException("Unknown test scope '{$scopeColumn}'.");
 
-        // The selector reads examiner eligibility from Core roles. The CTS
-        // member is still created because the saved option value must be its
-        // internal ID, not the Core account's VATSIM CID.
         $examinerAccount->assignRole($roleName);
 
         return $examinerMember;
