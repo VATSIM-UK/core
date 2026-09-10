@@ -9,7 +9,6 @@ use InvalidArgumentException;
 
 class ExaminerRepository
 {
-
     private const EXAMINER_ROLE_MAP = [
         'obs' => ['ATC Examiner (OBS)'],
         'twr' => ['ATC Examiner (TWR)'],
