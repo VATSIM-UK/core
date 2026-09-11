@@ -2,75 +2,117 @@
 
 namespace App\Repositories\Cts;
 
-use App\Models\Cts\ExaminerSettings;
+use App\Models\Cts\Member;
+use App\Models\Mship\Account;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 
 class ExaminerRepository
 {
-    /**
-     * Core reusable fetcher.
-     */
-    private function _getExaminersByScope(string $scope): Collection
+    private const EXAMINER_ROLE_MAP = [
+        'obs' => ['ATC Examiner (OBS)'],
+        'twr' => ['ATC Examiner (TWR)'],
+        'app' => ['ATC Examiner (APP)'],
+        'ctr' => ['ATC Examiner (CTR)'],
+        'p1' => ['Pilot Examiner (P1)'],
+        'p2' => ['Pilot Examiner (P2)'],
+        'p3' => ['Pilot Examiner (P3)'],
+        'atc' => [
+            'ATC Examiner (OBS)',
+            'ATC Examiner (TWR)',
+            'ATC Examiner (APP)',
+            'ATC Examiner (CTR)',
+        ],
+        'pilot' => [
+            'Pilot Examiner (P1)',
+            'Pilot Examiner (P2)',
+            'Pilot Examiner (P3)',
+        ],
+    ];
+
+    /* Core reusable fetcher. */
+    private function getExaminersByScope(string $scope): Collection
     {
-        // We capitalize here so that the scope methods are readable.
-        $scopeMethod = 'scope'.ucfirst($scope);
-        if (! method_exists(ExaminerSettings::class, $scopeMethod)) {
+
+        $roleNames = self::EXAMINER_ROLE_MAP[$scope] ?? null;
+
+        if ($roleNames === null) {
             throw new InvalidArgumentException("Unknown scope '{$scope}'.");
         }
 
-        return ExaminerSettings::with('member')
-            ->{$scope}()
-            ->whereHas('member', fn ($q) => $q->where('examiner', true))
+        return Account::query()
+            ->role($roleNames)
             ->get()
-            ->pluck('member.cid')
-            ->sort()
+            ->unique('id')
+            ->sortBy('name')
             ->values();
     }
 
     public function getExaminerDetailsByScope(string $scope): Collection
     {
-        return ExaminerSettings::with('member')
-            ->{$scope}()
-            ->whereHas('member', fn ($q) => $q->where('examiner', true))
+
+        $accounts = $this->getExaminersByScope($scope);
+
+        if ($accounts->isEmpty()) {
+            return collect();
+        }
+
+        $members = Member::query()
+            ->whereIn('cid', $accounts->pluck('id'))
             ->get()
-            ->sortBy('member.cid')
-            ->map(function ($examiner) {
-                return [
-                    'cid' => $examiner->member->cid,
-                    'name' => $examiner->member->name,
-                    'id' => $examiner->member->id,
-                ];
-            });
+            ->keyBy('cid');
+
+        return $accounts
+
+            ->map(
+
+                function (Account $account) use ($members) {
+
+                    $member = $members->get($account->id);
+
+                    if (! $member) {
+                        return null;
+                    }
+
+                    return [
+                        'cid' => $account->id,
+                        'name' => $account->name,
+                        'id' => $member->id,
+                    ];
+                }
+            )
+            ->filter()
+            ->sortBy('name')
+            ->values();
     }
 
     public function getObsExaminers(): Collection
     {
-        return $this->_getExaminersByScope('obs');
+        return $this->getExaminersByScope('obs')->pluck('id')->values();
     }
 
     public function getTwrExaminers(): Collection
     {
-        return $this->_getExaminersByScope('twr');
+        return $this->getExaminersByScope('twr')->pluck('id')->values();
     }
 
     public function getAppExaminers(): Collection
     {
-        return $this->_getExaminersByScope('app');
+        return $this->getExaminersByScope('app')->pluck('id')->values();
     }
 
     public function getCtrExaminers(): Collection
     {
-        return $this->_getExaminersByScope('ctr');
+        return $this->getExaminersByScope('ctr')->pluck('id')->values();
     }
 
     public function getAtcExaminers(): Collection
     {
-        return $this->_getExaminersByScope('atc');
+        return $this->getExaminersByScope('atc')->pluck('id')->values();
     }
 
     public function getPilotExaminers(): Collection
     {
-        return $this->_getExaminersByScope('pilot');
+        return $this->getExaminersByScope('pilot')->pluck('id')->values();
     }
 }
