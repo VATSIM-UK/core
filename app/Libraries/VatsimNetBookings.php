@@ -59,7 +59,9 @@ class VatsimNetBookings
         return Http::baseUrl($this->url)
             ->withToken($this->key)
             ->acceptJson()
-            ->asJson();
+            ->asJson()
+            ->timeout(15)
+            ->connectTimeout(15);
     }
 
     private function logFailure(string $method, int $status, string $body): void

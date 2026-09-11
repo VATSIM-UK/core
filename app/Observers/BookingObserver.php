@@ -6,8 +6,9 @@ namespace App\Observers;
 
 use App\Jobs\Booking\SyncToVatsimNet;
 use App\Models\Booking;
+use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 
-class BookingObserver
+class BookingObserver implements ShouldHandleEventsAfterCommit
 {
     private const RELEVANT_FIELDS = [
         'position_id',
