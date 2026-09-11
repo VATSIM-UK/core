@@ -9,6 +9,7 @@ use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Models\Training\Mentoring\MentoringScope;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Services\Training\MentoringReportAccessService;
 use App\Services\Training\MentorPermissionService;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -23,7 +24,9 @@ class MentoringPolicy
      */
     public function viewAny(Account $user): bool
     {
-        if ($this->viewAll($user)) {
+        $accessService = app(MentoringReportAccessService::class);
+
+        if ($accessService->canViewAll($user)) {
             return true;
         }
 
@@ -35,7 +38,7 @@ class MentoringPolicy
      */
     public function viewAll(Account $user): bool
     {
-        return $user->can('training.mentoring.view.*');
+        return app(MentoringReportAccessService::class)->canViewAll($user);
     }
 
     /**
@@ -68,26 +71,7 @@ class MentoringPolicy
      */
     public function view(Account $user, Session $session): bool
     {
-        if ($session->filed === null) {
-            return false;
-        }
-
-        // Students should always be able to view their own reports
-        $member = Member::where('cid', $user->id)->first();
-        if ($member && $session->student_id === $member->id) {
-            return true;
-        }
-
-        // Mentors should always be able to view their own reports
-        if ($this->isAssignedMentor($user, $session)) {
-            return true;
-        }
-
-        if ($this->viewAll($user)) {
-            return true;
-        }
-
-        return $this->mentorPosition($user, $session->position);
+        return app(MentoringReportAccessService::class)->canViewReport($user, $session);
     }
 
     /**

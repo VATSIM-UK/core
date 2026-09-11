@@ -9,9 +9,8 @@ use App\Filament\Training\Pages\Mentor\Concerns\RemembersTrainingGroupCategory;
 use App\Filament\Training\Support\MentoringTrainingGroupBadgeColor;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
-use App\Models\Training\Mentoring\MentoringScope;
-use App\Policies\Training\Mentoring\MentoringPolicy;
 use App\Repositories\Cts\SessionRepository;
+use App\Services\Training\MentoringReportAccessService;
 use App\Services\Training\MentorPermissionService;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -117,33 +116,16 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     protected function getSessionQuery(): Builder
     {
-        $sessionRepository = new SessionRepository;
+        $accessService = app(MentoringReportAccessService::class);
 
-        $member = Member::where('cid', auth()->id())->first();
-
-        $ctsPositions = $this->getVisibleCtsPositions();
-
-        $sessionsUserMentored = $sessionRepository
-            ->getSessionsForMentor($member->id);
-
-        if (empty($ctsPositions)) {
-            return $sessionsUserMentored
-                ->where('taken_date', '<', now())
-                ->orderByDesc('taken_date')
-                ->orderByDesc('taken_from')
-                ->orderByDesc('id');
-        }
-
-        $sessionsWithPermissions = $sessionRepository
-            ->getAllAcceptedSessionsForPositionsQuery($ctsPositions)
+        $query = $accessService->visibleSessionsQueryFor(auth()->user())
             ->where('taken_date', '<', now());
 
-        $sessionsUserMentoredFiltered = $sessionsUserMentored->whereIn('position', $ctsPositions);
+        if ($this->category !== MentorPermissionService::ALL_CATEGORIES && filled($this->category)) {
+            $query->whereIn('position', app(MentorPermissionService::class)->getAllCtsCallsignsForCategory($this->category));
+        }
 
-        $union = $sessionsWithPermissions->union($sessionsUserMentoredFiltered);
-
-        return Session::query()
-            ->fromSub($union, 'sessions')
+        return $query
             ->orderByDesc('taken_date')
             ->orderByDesc('taken_from')
             ->orderByDesc('id');
@@ -151,19 +133,16 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     protected function getPositionFilterOptions(): array
     {
-        $positions = $this->getVisibleCtsPositions();
-
-        return array_combine($positions, $positions);
+        return $this->getVisibleCtsPositions();
     }
 
     private function getVisibleCtsPositions(): array
     {
         $user = auth()->user();
-        $policy = app(MentoringPolicy::class);
-        $scope = new MentoringScope;
+        $accessService = app(MentoringReportAccessService::class);
 
         if ($this->category === MentorPermissionService::ALL_CATEGORIES) {
-            if ($policy->viewAll($user)) {
+            if ($accessService->canViewAll($user)) {
                 return app(MentorPermissionService::class)
                     ->getAllCtsCallsignsForCategories($this->getVisibleCategories());
             }
@@ -175,7 +154,7 @@ class MentoringHistory extends BaseMentoringHistoryPage
             return [];
         }
 
-        return $policy->visibleCtsPositionsForCategory($user, $scope, $this->category);
+        return app(MentorPermissionService::class)->getAllCtsCallsignsForCategory($this->category);
     }
 
     private function trainingGroupLabel(): string
@@ -192,7 +171,13 @@ class MentoringHistory extends BaseMentoringHistoryPage
      */
     private function getVisibleCategories(): array
     {
-        return auth()->user()?->getAvailableMentoringCategories() ?? [];
+        $user = auth()->user();
+
+        if ($user === null) {
+            return [];
+        }
+
+        return app(MentoringReportAccessService::class)->visibleCategoriesFor($user);
     }
 
     private function hasMultipleVisibleCategories(): bool
@@ -211,7 +196,7 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     private function canViewCategory(string $category): bool
     {
-        return auth()->user()?->can('viewCategory', [new MentoringScope, $category]) ?? false;
+        return in_array($category, $this->getVisibleCategories(), true);
     }
 
     private function firstVisibleCategory(): ?string
