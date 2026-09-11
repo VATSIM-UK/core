@@ -1,7 +1,7 @@
 @extends('emails.messages.post')
 
 @section('body')
-    <p>{{ $mentorName }} has accepted your mentoring session request. The details are as follows:</p>
+    <p>{{ $mentorName }} has booked a mentoring session with you. The details are as follows:</p>
 
     <ul>
         <li><strong>Position</strong>: {{ $position }}</li>

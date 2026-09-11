@@ -50,7 +50,13 @@ class AppServiceProvider extends ServiceProvider
         });
 
         if ($this->app->runningInConsole()) {
-            URL::forceRootUrl(env('APP_PROTOCOL', 'https').'://'.Config::get('app.url'));
+            $url = Config::get('app.url');
+
+            if (! str_starts_with($url, 'http://') && ! str_starts_with($url, 'https://')) {
+                $url = env('APP_PROTOCOL', 'https').'://'.$url;
+            }
+
+            URL::forceRootUrl($url);
         }
 
         $this->registerValidatorExtensions();

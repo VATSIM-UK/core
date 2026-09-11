@@ -188,3 +188,15 @@ php artisan test --filter=LocalDevelopmentTrainingSeederTest
 
 - Local CTS uses the mock schema from `php artisan cts:migrate:fresh` (see `.github/setup.md`).
 - Personas are **not** synced via `Account::syncToCTS()` (requires an OAuth client named `CT System`). CTS `Member` rows are inserted directly, matching the pattern used in feature tests.
+
+## Sandbox accounts
+
+`Database\Seeders\LocalDevelopment\SandboxAccountsSeeder` creates the eleven
+[VATSIM Connect sandbox](https://vatsim.dev/services/connect/sandbox) accounts (`10000000`-`10000010`,
+each password the same as its CID) and grants every one the superman (`privacc`) role, so you can log
+in and go straight to `/admin` without running `grant:superman`. The dev container runs it during
+setup; run it by hand with:
+
+```shell
+php artisan db:seed --class=Database\\Seeders\\LocalDevelopment\\SandboxAccountsSeeder
+```

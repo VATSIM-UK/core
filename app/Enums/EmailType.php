@@ -67,7 +67,7 @@ enum EmailType: string
     {
         return match ($this) {
             // Student - Sessions
-            self::SessionAcceptedByMentor => 'Sent when a mentor accepts your session request',
+            self::SessionAcceptedByMentor => 'Sent when a mentor books a mentoring session with you',
             self::SessionCancelledByMentor => 'Sent when a mentor cancels your session',
             self::SessionRescheduledByMentor => 'Sent when a mentor reschedules your session',
             self::SessionCancelledByStudent => 'Sent when you cancel your own session',
