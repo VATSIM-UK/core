@@ -7,6 +7,7 @@ import sys
 VALID_TYPES = {"feature", "fix", "chore", "docs", "refactor", "test"}
 VALID_AREAS = {"membership", "admin", "training", "auth", "site", "atc", "roster", "api", "integrations", "infrastructure"}
 VALID_MISSING = {"tests", "copy", "docs", "migration"}
+MAX_AREAS = 3
 
 output_file = os.environ.get("OPENCODE_OUTPUT")
 pr_number = os.environ.get("PR_NUMBER")
@@ -48,6 +49,10 @@ def extract_json(text: str) -> str:
     return text
 
 
+def dedupe(items: list) -> list:
+    return list(dict.fromkeys(items))
+
+
 def validate(classification: dict) -> dict:
     t = classification.get("type", "")
     if t not in VALID_TYPES:
@@ -61,6 +66,11 @@ def validate(classification: dict) -> dict:
         if item not in VALID_AREAS:
             raise ValueError(f'Invalid area: "{item}". Must be one of: {", ".join(sorted(VALID_AREAS))}')
 
+    areas = dedupe(areas)
+    if len(areas) > MAX_AREAS:
+        print(f"Capping areas to {MAX_AREAS}; dropping: {areas[MAX_AREAS:]}")
+        areas = areas[:MAX_AREAS]
+
     missing = classification.get("missing", [])
     if not isinstance(missing, list):
         raise ValueError("'missing' must be an array")
@@ -71,8 +81,8 @@ def validate(classification: dict) -> dict:
 
     return {
         "type": t,
-        "area": list(set(areas)),
-        "missing": list(set(missing)),
+        "area": areas,
+        "missing": dedupe(missing),
         "reasoning": classification.get("reasoning"),
     }
 

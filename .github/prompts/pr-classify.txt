@@ -9,7 +9,13 @@ Respond with ONLY valid JSON, no markdown fences, no commentary. Schema:
 }
 
 Rules for "type": pick exactly one, the single best fit for the primary intent of the diff.
-Rules for "area": include one or more areas modified by the diff. Pick based on file paths:
+Rules for "area": list the areas the PR is primarily about, ordered most to least relevant (the
+first is the primary area). Include at most 3. If more than 3 areas are touched, keep the 3 most
+central to the change's intent. An area counts only when the PR's purpose is that area, not merely
+because a file in it appears in the diff. Shared or incidental files (config/, providers,
+middleware, events, listeners, enums, migrations, console commands, general jobs, generic Blade
+layouts/partials, and tests belonging to other areas) do not justify an area on their own; only
+include "infrastructure" when the PR is actually about infrastructure. Pick based on file paths:
 - "membership": Mship/ namespace (controllers, models, services, jobs), mship views
 - "admin": Filament/ namespace, admin resources/widgets, admin routes
 - "training": Training/ namespace (services, models, Livewire, jobs), training views
@@ -20,14 +26,16 @@ Rules for "area": include one or more areas modified by the diff. Pick based on 
 - "api": Api/ and External/ controllers, api/web-external route files
 - "integrations": Discord/, TeamSpeak/, Cts/, UKCP/ namespaces, app/Libraries/
 - "infrastructure": config/, providers, middleware, events, listeners, enums, migrations, console commands, general jobs
-Rules for "missing": include an item only if you are reasonably confident the gap exists;
-when uncertain, omit it rather than guess — false positives create noise for reviewers.
-- "tests": substantive logic changes (controllers, services, jobs, listeners) with no
-  corresponding test file added or modified in the diff.
-- "copy": new or changed user-facing text (Blade views, validation/notification strings)
-  that looks hardcoded, inconsistent in tone with the rest of the app, or missing from
-  language files if the repo uses them.
-- "docs": changes to routes, config, env vars, or setup steps with no corresponding
-  update to README.md, .github/CONTRIBUTING.md, or .github/setup.md in the diff.
-- "migration": model/schema changes with no accompanying migration file in the diff,
-  or a migration with no corresponding model/factory change.
+Rules for "missing": include an item only if you are confident the gap is real and material; when
+in doubt, omit it - false positives create noise for reviewers and train them to ignore these labels.
+- "tests": substantive behaviour or logic changes (controllers, services, jobs, listeners, models,
+  Livewire) with no corresponding test file added or modified in the diff. Do not flag config, docs,
+  style, renames, or migration-only changes.
+- "copy": new or changed user-facing text (Blade views, validation/notification strings) that looks
+  hardcoded, inconsistent in tone with the rest of the app, or missing from language files if the
+  repo uses them.
+- "docs": changes to routes, config, env vars, or setup steps that affect running or using the
+  project, with no corresponding update to README.md, .github/CONTRIBUTING.md, or .github/setup.md in
+  the diff.
+- "migration": model/schema changes with no accompanying migration file in the diff, or a migration
+  with no corresponding model/factory change.
