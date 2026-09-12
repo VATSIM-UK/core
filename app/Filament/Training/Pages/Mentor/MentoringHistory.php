@@ -143,18 +143,27 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
         if ($this->category === MentorPermissionService::ALL_CATEGORIES) {
             if ($accessService->canViewAll($user)) {
-                return app(MentorPermissionService::class)
-                    ->getAllCtsCallsignsForCategories($this->getVisibleCategories());
+                return $this->asCallsignOptions(app(MentorPermissionService::class)
+                    ->getAllCtsCallsignsForCategories($this->getVisibleCategories()));
             }
 
-            return $user->getAllAssignedCallsigns();
+            return $this->asCallsignOptions($user->getAllAssignedCallsigns());
         }
 
         if (empty($this->category)) {
             return [];
         }
 
-        return app(MentorPermissionService::class)->getAllCtsCallsignsForCategory($this->category);
+        return $this->asCallsignOptions(
+            app(MentorPermissionService::class)->getAllCtsCallsignsForCategory($this->category)
+        );
+    }
+
+    private function asCallsignOptions(array $callsigns): array
+    {
+        return collect($callsigns)
+            ->mapWithKeys(fn (string $callsign) => [$callsign => $callsign])
+            ->all();
     }
 
     private function trainingGroupLabel(): string

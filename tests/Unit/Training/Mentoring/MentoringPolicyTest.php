@@ -59,6 +59,17 @@ class MentoringPolicyTest extends TestCase
     }
 
     #[Test]
+    public function view_any_allows_role_only_tgis(): void
+    {
+        Role::firstOrCreate(['name' => 'ATC APP Instructor', 'guard_name' => 'web']);
+
+        $tgi = Account::factory()->create();
+        $tgi->assignRole('ATC APP Instructor');
+
+        $this->assertTrue($this->policy->viewAny($tgi));
+    }
+
+    #[Test]
     public function view_any_denies_users_without_mentoring_access(): void
     {
         $account = Account::factory()->create();

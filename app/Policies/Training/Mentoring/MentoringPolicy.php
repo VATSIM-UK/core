@@ -24,9 +24,17 @@ class MentoringPolicy
      */
     public function viewAny(Account $user): bool
     {
+        if ($this->viewAll($user)) {
+            return true;
+        }
+
         $accessService = app(MentoringReportAccessService::class);
 
         if ($accessService->canViewAll($user)) {
+            return true;
+        }
+
+        if ($accessService->tgiCategoriesFor($user) !== []) {
             return true;
         }
 
@@ -38,7 +46,7 @@ class MentoringPolicy
      */
     public function viewAll(Account $user): bool
     {
-        return app(MentoringReportAccessService::class)->canViewAll($user);
+        return $user->can('training.mentoring.view.*');
     }
 
     /**

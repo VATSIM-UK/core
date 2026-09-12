@@ -283,7 +283,7 @@ class MentoringReportAccessService
             ->unique()
             ->values();
 
-        $placeGroups = $this->activePlaceGroups($mentoringCategories);
+        $placeGroups = $this->activePlaceGroups();
 
         if ($ladderCallsigns->isEmpty() || $placeGroups->isEmpty()) {
             return null;
@@ -320,16 +320,13 @@ class MentoringReportAccessService
      * CTS member IDs of the place holders and the callsigns covered by that place
      * category's ladder.
      */
-    private function activePlaceGroups(?Collection $mentoringCategories = null): Collection
+    private function activePlaceGroups(): Collection
     {
         return TrainingPlace::query()
             ->whereNull('deleted_at')
             ->with('trainable')
             ->get()
-            ->filter(fn (TrainingPlace $place) => $place->category !== null
-                && ($mentoringCategories === null || $mentoringCategories->contains(
-                    fn (string $category) => $this->categoryIsWithinLadder($category, $place->category)
-                )))
+            ->filter(fn (TrainingPlace $place) => $place->category !== null)
             ->groupBy(fn (TrainingPlace $place) => $place->category)
             ->map(fn (Collection $places, string $category) => [
                 'memberIds' => Member::query()
