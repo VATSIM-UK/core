@@ -343,7 +343,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                         ->orderBy('from')
                         ->get()
                         ->mapWithKeys(function ($avail) {
-                            $date = Carbon::parse($avail->date)->toPanelDate();
+                            $date = Carbon::parse($avail->date)->toPanelDateWithWeekday();
                             $start = Carbon::parse($avail->from)->toPanelTime();
                             $end = Carbon::parse($avail->to)->toPanelTime();
 

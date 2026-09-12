@@ -34,8 +34,16 @@ class CarbonDateMacrosTest extends TestCase
     }
 
     #[Test]
+    public function to_panel_date_with_weekday_formats_with_the_day_of_week(): void
+    {
+        $this->assertSame('Sat, 12. 09. 2026', Carbon::parse('2026-09-12 14:30:00')->toPanelDateWithWeekday());
+    }
+
+    #[Test]
     public function the_macros_are_null_safe_via_the_nullsafe_operator(): void
     {
-        $this->assertNull(optional(null)->toPanelDateTime());
+        $nullable = null;
+
+        $this->assertNull($nullable?->toPanelDateTime());
     }
 }

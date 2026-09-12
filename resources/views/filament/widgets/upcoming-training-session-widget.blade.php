@@ -26,7 +26,7 @@
 
 			<x-slot name="description">
 				<time datetime="{{ $startsAt->toIso8601String() }}">
-					{{ $startsAt->toPanelDate() }}
+					{{ $startsAt->toPanelDateWithWeekday() }}
 				</time>
 
 				<span class="text-gray-500 dark:text-gray-400">&bull;</span>
@@ -58,7 +58,7 @@
 
 			<x-slot name="description">
 				<time datetime="{{ $examStartsAt->toIso8601String() }}">
-					{{ $examStartsAt->toPanelDate() }}
+					{{ $examStartsAt->toPanelDateWithWeekday() }}
 				</time>
 
 				<span class="text-gray-500 dark:text-gray-400">&bull;</span>

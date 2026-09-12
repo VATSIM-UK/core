@@ -16,6 +16,7 @@ use App\Models\Training\Mentoring\MentorTrainingPosition;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\MentorPermissionService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Carbon;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
@@ -542,8 +543,8 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
         $sections = $component->instance()->getSessionsBySessionTab();
         $headings = array_map(fn ($s) => $s->getHeading(), $sections);
 
-        $this->assertContains('15/03/2025', $headings);
-        $this->assertContains('05/01/2025', $headings);
+        $this->assertContains(Carbon::parse('2025-03-15')->toPanelDate(), $headings);
+        $this->assertContains(Carbon::parse('2025-01-05')->toPanelDate(), $headings);
     }
 
     #[Test]

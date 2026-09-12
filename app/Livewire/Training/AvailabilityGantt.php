@@ -346,7 +346,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             })
             ->modalDescription(function (array $arguments) {
                 $availability = Availability::findOrFail($arguments['availability_id']);
-                $date = Carbon::parse($availability->date)->toPanelDate();
+                $date = Carbon::parse($availability->date)->toPanelDateWithWeekday();
 
                 return "You are creating a mentoring session for {$date}. Please choose a position and confirm the exact start and end times below.";
             })

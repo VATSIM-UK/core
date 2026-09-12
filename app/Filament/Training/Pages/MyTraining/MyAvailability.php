@@ -209,7 +209,7 @@ class MyAvailability extends Page implements HasForms, HasTable
                     ->label('Date')
                     ->state(function (Availability $record) {
                         return Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC')
-                            ->toPanelDate();
+                            ->toPanelDateWithWeekday();
                     }),
 
                 TextColumn::make('time_window')

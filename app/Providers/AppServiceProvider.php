@@ -138,6 +138,11 @@ class AppServiceProvider extends ServiceProvider
             return $this->format(DateFormat::DATE);
         });
 
+        Carbon::macro('toPanelDateWithWeekday', function (): string {
+            /** @var Carbon $this */
+            return $this->format(DateFormat::DATE_WITH_WEEKDAY);
+        });
+
         Carbon::macro('toPanelTime', function (): string {
             /** @var Carbon $this */
             return $this->format(DateFormat::TIME);
