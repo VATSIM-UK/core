@@ -69,7 +69,7 @@ class MyPendingExamsTable extends Component implements HasActions, HasForms, Has
                             return null;
                         }
 
-                        return Carbon::parse($record->start_date)->format('H:i').'Z – '.Carbon::parse($record->end_date)->format('H:i').'Z';
+                        return Carbon::parse($record->start_date)->toPanelTime().'Z – '.Carbon::parse($record->end_date)->toPanelTime().'Z';
                     })
                     ->placeholder('Not yet scheduled'),
             ])
@@ -85,7 +85,7 @@ class MyPendingExamsTable extends Component implements HasActions, HasForms, Has
                         ->requiresConfirmation()
                         ->modalHeading(fn (ExamBooking $record) => "Cancel {$record->exam} Exam")
                         ->modalDescription(fn (ExamBooking $record) => implode(' ', [
-                            'You are about to cancel your', $record->exam, 'exam scheduled for', Carbon::parse($record->taken_date)->format('l jS M Y'), 'at', Carbon::parse($record->taken_from)->format('H:i').'Z –', Carbon::parse($record->taken_to)->format('H:i').'Z.', 'Your examiner will be notified.']))
+                            'You are about to cancel your', $record->exam, 'exam scheduled for', Carbon::parse($record->taken_date)->toPanelDateWithWeekday(), 'at', Carbon::parse($record->taken_from)->format('H:i').'Z –', Carbon::parse($record->taken_to)->format('H:i').'Z.', 'Your examiner will be notified.']))
                         ->form([
                             Textarea::make('reason')
                                 ->label('Reason for cancellation')

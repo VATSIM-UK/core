@@ -10,6 +10,7 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Policies\TrainingPlacePolicy;
 use App\Services\Training\TrainingPlaceOfferService;
+use App\Support\DateFormat;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
@@ -75,17 +76,17 @@ class TrainingPlaceOffersOverview extends BaseWidget
 
                 TextColumn::make('created_at')
                     ->label('Offered At')
-                    ->dateTime('d/m/Y H:i')
+                    ->dateTime()
                     ->sortable(),
 
                 TextColumn::make('expires_at')
                     ->label('Expires At')
-                    ->dateTime('d/m/Y H:i')
+                    ->dateTime()
                     ->sortable(),
 
                 TextColumn::make('response_at')
                     ->label('Responded At')
-                    ->dateTime('d/m/Y H:i')
+                    ->dateTime()
                     ->sortable()
                     ->placeholder('-'),
             ])
@@ -172,12 +173,12 @@ class TrainingPlaceOffersOverview extends BaseWidget
                         $indicators = [];
 
                         if ($data['from'] ?? null) {
-                            $indicators[] = Indicator::make('Offered from '.date('d/m/Y', strtotime($data['from'])))
+                            $indicators[] = Indicator::make('Offered from '.date(DateFormat::DATE, strtotime($data['from'])))
                                 ->removeField('from');
                         }
 
                         if ($data['until'] ?? null) {
-                            $indicators[] = Indicator::make('Offered until '.date('d/m/Y', strtotime($data['until'])))
+                            $indicators[] = Indicator::make('Offered until '.date(DateFormat::DATE, strtotime($data['until'])))
                                 ->removeField('until');
                         }
 

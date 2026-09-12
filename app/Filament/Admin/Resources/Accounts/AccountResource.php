@@ -129,7 +129,7 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                             ->color(fn (string $state): string => $state === 'Active' ? 'success' : 'danger'),
                         TextEntry::make('last_seen_controlling_uk')
                             ->label('Last UK Controlling Session')
-                            ->getStateUsing(fn (Account $record) => $record->lastSeenControllingUK()?->format('d M Y, H:i') ?? 'Never Controlled'),
+                            ->getStateUsing(fn (Account $record) => $record->lastSeenControllingUK()?->toPanelDateTime() ?? 'Never Controlled'),
                     ]),
 
                 Grid::make(2)

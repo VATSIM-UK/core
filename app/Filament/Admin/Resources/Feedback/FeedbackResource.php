@@ -80,14 +80,14 @@ class FeedbackResource extends Resource
 
                         TextEntry::make('created_at')
                             ->label('Submitted at')
-                            ->state(fn ($record) => $record->created_at->format('d/m/Y H:i')),
+                            ->state(fn ($record) => $record->created_at->toPanelDateTime()),
                     ]),
 
                 Fieldset::make('Sent Information')->columnSpanFull()
                     ->schema([
                         TextEntry::make('sent_at')
                             ->label('Sent At')
-                            ->state(fn ($record) => $record->sent_at ? $record->sent_at->format('d/m/Y H:i') : null),
+                            ->state(fn ($record) => $record->sent_at ? $record->sent_at->toPanelDateTime() : null),
 
                         TextEntry::make('sent_by')
                             ->label('Sent By')
@@ -103,7 +103,7 @@ class FeedbackResource extends Resource
                     ->schema([
                         TextEntry::make('actioned_at')
                             ->label('Actioned At')
-                            ->state(fn ($record) => $record->actioned_at ? $record->actioned_at->format('d/m/Y H:i') : null),
+                            ->state(fn ($record) => $record->actioned_at ? $record->actioned_at->toPanelDateTime() : null),
 
                         TextEntry::make('actioned_by')
                             ->label('Actioned By')
@@ -144,7 +144,7 @@ class FeedbackResource extends Resource
                     ->visible(self::canSeeSubmitter())
                     ->searchable(self::canSeeSubmitter() ? ['name_first', 'name_last'] : false),
                 TextColumn::make('created_at')
-                    ->dateTime('d/m/Y H:i')
+                    ->dateTime()
                     ->sortable(),
                 IconColumn::make('actioned_at')
                     ->timestampBoolean()

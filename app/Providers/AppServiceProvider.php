@@ -8,8 +8,10 @@ use App\Http\Controllers\BaseController;
 use App\Http\Responses\LogoutResponse;
 use App\Libraries\Discord;
 use App\Libraries\UKCP;
+use App\Support\DateFormat;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -36,6 +38,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+
+        $this->registerCarbonDateMacros();
 
         Bugsnag::registerCallback(function ($report) {
             if (Auth::check()) {
@@ -125,6 +129,29 @@ class AppServiceProvider extends ServiceProvider
                 Artisan::call('db:seed', ['--force' => true]);
                 $this->app->make(PermissionRegistrar::class)->forgetCachedPermissions();
             });
+    }
+
+    private function registerCarbonDateMacros(): void
+    {
+        Carbon::macro('toPanelDate', function (): string {
+            /** @var Carbon $this */
+            return $this->format(DateFormat::DATE);
+        });
+
+        Carbon::macro('toPanelDateWithWeekday', function (): string {
+            /** @var Carbon $this */
+            return $this->format(DateFormat::DATE_WITH_WEEKDAY);
+        });
+
+        Carbon::macro('toPanelTime', function (): string {
+            /** @var Carbon $this */
+            return $this->format(DateFormat::TIME);
+        });
+
+        Carbon::macro('toPanelDateTime', function (): string {
+            /** @var Carbon $this */
+            return $this->format(DateFormat::DATETIME);
+        });
     }
 
     public function registerValidatorExtensions()

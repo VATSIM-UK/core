@@ -58,9 +58,9 @@ class MyAcceptedMentoringSessionsTable extends Component implements HasActions, 
                 TextColumn::make('taken_date')
                     ->label('Date & Time')
                     ->getStateUsing(function (Session $record) {
-                        $date = Carbon::parse($record->taken_date)->format('d/m/Y');
-                        $start = Carbon::parse($record->taken_from)->format('H:i');
-                        $end = Carbon::parse($record->taken_to)->format('H:i');
+                        $date = Carbon::parse($record->taken_date)->toPanelDate();
+                        $start = Carbon::parse($record->taken_from)->toPanelTime();
+                        $end = Carbon::parse($record->taken_to)->toPanelTime();
 
                         return trim("{$date} {$start} - {$end}");
                     })

@@ -96,7 +96,7 @@ class EndorsementRequestResource extends Resource
                     default => 'warning',
                 }),
                 TextColumn::make('requester.name')->label('Requested By'),
-                TextColumn::make('created_at')->label('Requested')->isoDateTimeFormat('lll'),
+                TextColumn::make('created_at')->label('Requested')->dateTime(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([

@@ -62,7 +62,7 @@ class TheoryExamHistory extends Page implements HasTable
                 'Failed' => 'danger',
                 default => 'gray',
             })->label('Result'),
-            TextColumn::make('submitted_time')->label('Submitted')->isoDateTimeFormat('lll'),
+            TextColumn::make('submitted_time')->label('Submitted')->dateTime(),
         ])->defaultSort('submitted_time', 'desc')
             ->recordActions([
                 ViewAction::make()

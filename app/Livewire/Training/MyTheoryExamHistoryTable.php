@@ -43,7 +43,7 @@ class MyTheoryExamHistoryTable extends Component implements HasActions, HasForms
                     'Failed' => 'danger',
                     default => 'gray',
                 })->label('Result'),
-                TextColumn::make('submitted_time')->label('Exam date')->isoDateTimeFormat('lll'),
+                TextColumn::make('submitted_time')->label('Exam date')->dateTime(),
             ])
             ->defaultSort('submitted_time', 'desc')
             ->recordActions([

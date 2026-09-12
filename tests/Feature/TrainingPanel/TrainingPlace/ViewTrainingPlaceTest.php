@@ -146,8 +146,8 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
     {
         $trainingPlace = $this->createTrainingPlace();
 
-        $formattedTrainingStart = $trainingPlace->created_at->format('d/m/Y');
-        $formattedWaitingListJoin = $trainingPlace->waitingListAccount->created_at->format('d/m/Y');
+        $formattedTrainingStart = $trainingPlace->created_at->toPanelDate();
+        $formattedWaitingListJoin = $trainingPlace->waitingListAccount->created_at->toPanelDate();
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertStatus(200)
@@ -171,7 +171,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertStatus(200)
             ->assertSee($session->position)
-            ->assertSee($session->taken_date->format('d/m/Y'));
+            ->assertSee($session->taken_date->toPanelDate());
     }
 
     public function test_table_does_not_display_sessions_for_other_positions()
@@ -709,7 +709,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
     {
         $trainingPlace = $this->createTrainingPlace();
         $trainingPlace->forceFill(['created_at' => now()])->saveQuietly();
-        $endsAt = $trainingPlace->fresh()->availabilityCheckGracePeriodEndsAt()->format('d/m/Y, H:i');
+        $endsAt = $trainingPlace->fresh()->availabilityCheckGracePeriodEndsAt()->toPanelDateTime();
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertStatus(200)
