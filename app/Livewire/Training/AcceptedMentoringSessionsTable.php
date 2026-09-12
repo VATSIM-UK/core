@@ -85,8 +85,8 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                 TextColumn::make('taken_date')
                     ->label('Date & Time')
                     ->getStateUsing(function (Session $record) {
-                        $date = Carbon::parse($record->taken_date)->format('d/m/Y');
-                        $time = Carbon::parse($record->taken_from)->format('H:i');
+                        $date = Carbon::parse($record->taken_date)->toPanelDate();
+                        $time = Carbon::parse($record->taken_from)->toPanelTime();
 
                         return trim("{$date} {$time}");
                     })
@@ -343,9 +343,9 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                         ->orderBy('from')
                         ->get()
                         ->mapWithKeys(function ($avail) {
-                            $date = Carbon::parse($avail->date)->format('D, d M Y');
-                            $start = Carbon::parse($avail->from)->format('H:i');
-                            $end = Carbon::parse($avail->to)->format('H:i');
+                            $date = Carbon::parse($avail->date)->toPanelDate();
+                            $start = Carbon::parse($avail->from)->toPanelTime();
+                            $end = Carbon::parse($avail->to)->toPanelTime();
 
                             return [$avail->id => "{$date} ({$start} to {$end})"];
                         })
@@ -508,7 +508,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                 );
 
                 if ($success) {
-                    $dateFormatted = Carbon::parse($availability->date)->format('d/m/Y');
+                    $dateFormatted = Carbon::parse($availability->date)->toPanelDate();
 
                     Notification::make()
                         ->title('Session Rescheduled')

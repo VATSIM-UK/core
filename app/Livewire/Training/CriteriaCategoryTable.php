@@ -67,7 +67,7 @@ class CriteriaCategoryTable extends Component implements HasActions, HasForms, H
             $sessionId = $session->id;
 
             $columns[] = TextColumn::make("score_{$sessionId}")
-                ->label(Carbon::parse($session->taken_date)->format('d/m/Y'))
+                ->label(Carbon::parse($session->taken_date)->toPanelDate())
                 ->badge()
                 ->url($isCurrentSession ? null : ViewMentoringReport::getUrl(['sessionId' => $sessionId]))
                 ->state(fn (ProgSheetField $record) => $scores[$record->field_id][$sessionId] ?? null)

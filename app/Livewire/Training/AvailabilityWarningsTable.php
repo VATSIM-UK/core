@@ -48,7 +48,7 @@ class AvailabilityWarningsTable extends Component implements HasActions, HasForm
             ->columns([
                 TextColumn::make('created_at')
                     ->label('Raised')
-                    ->date('d/m/Y'),
+                    ->date(),
 
                 TextColumn::make('status')
                     ->label('Status')
@@ -68,11 +68,11 @@ class AvailabilityWarningsTable extends Component implements HasActions, HasForm
 
                 TextColumn::make('expires_at')
                     ->label('Expires')
-                    ->date('d/m/Y'),
+                    ->date(),
 
                 TextColumn::make('resolved_at')
                     ->label('Resolved')
-                    ->date('d/m/Y')
+                    ->date()
                     ->placeholder('—'),
             ])
             ->recordActions([

@@ -30,8 +30,8 @@ class StatesRelationManager extends RelationManager
                 TextColumn::make('name'),
                 TextColumn::make('pivot.region')->label('Region'),
                 TextColumn::make('pivot.division')->label('Divison'),
-                TextColumn::make('start_at')->label('Start')->dateTime()->since()->description(fn ($record) => $record->start_at)->sortable(),
-                TextColumn::make('end_at')->label('End')->dateTime()->since()->description(fn ($record) => $record->end_at),
+                TextColumn::make('start_at')->label('Start')->since()->description(fn ($record) => $record->start_at?->toPanelDateTime())->sortable(),
+                TextColumn::make('end_at')->label('End')->since()->description(fn ($record) => $record->end_at?->toPanelDateTime()),
             ])->defaultSort('start_at', 'asc');
     }
 }

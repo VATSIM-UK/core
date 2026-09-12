@@ -144,7 +144,7 @@ class ViewMentoringReport extends Page implements HasInfolists
 
                     TextEntry::make('position')
                         ->label('Position & Time')
-                        ->helperText(fn (Session $record) => Carbon::parse($record->taken_date)->format('d/m/Y').' | '.Carbon::parse($record->taken_from)->format('H:i').' - '.Carbon::parse($record->taken_to)->format('H:i')),
+                        ->helperText(fn (Session $record) => Carbon::parse($record->taken_date)->toPanelDate().' | '.Carbon::parse($record->taken_from)->toPanelTime().' - '.Carbon::parse($record->taken_to)->toPanelTime()),
 
                     Callout::make('adjacent_atc')
                         ->visible(fn (Session $record) => NetworkdataAtc::adjacentPositionsForMentoringSession($record)->isNotEmpty())
@@ -440,7 +440,7 @@ class ViewMentoringReport extends Page implements HasInfolists
             ->map(function (Session $session): Section {
                 $isCurrentSession = $session->id === $this->session->id;
 
-                return Section::make(Carbon::parse($session->taken_date)->format('d/m/Y'))
+                return Section::make(Carbon::parse($session->taken_date)->toPanelDate())
                     ->description($session->mentor?->account?->name)
                     ->headerActions([
                         Action::make("viewReport{$session->id}")

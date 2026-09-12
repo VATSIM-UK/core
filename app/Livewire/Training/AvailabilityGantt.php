@@ -346,7 +346,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             })
             ->modalDescription(function (array $arguments) {
                 $availability = Availability::findOrFail($arguments['availability_id']);
-                $date = Carbon::parse($availability->date)->format('l, jS F Y');
+                $date = Carbon::parse($availability->date)->toPanelDate();
 
                 return "You are creating a mentoring session for {$date}. Please choose a position and confirm the exact start and end times below.";
             })
@@ -362,8 +362,8 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                     $defaultPosition = array_key_first($positionOptions);
                 }
 
-                $minTime = Carbon::parse($availability->from)->format('H:i');
-                $maxTime = Carbon::parse($availability->to)->format('H:i');
+                $minTime = Carbon::parse($availability->from)->toPanelTime();
+                $maxTime = Carbon::parse($availability->to)->toPanelTime();
                 $timeOptions = $this->generateTimeOptions($minTime, $maxTime);
 
                 if (Carbon::parse($availability->date)->isToday()) {
@@ -504,7 +504,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             ->action(function (array $data, array $arguments, MentoringSessionsService $mentoringService) {
                 $availability = Availability::findOrFail($arguments['availability_id']);
                 $student = Member::findOrFail($availability->student_id);
-                $formattedDate = Carbon::parse($availability->date)->format('d/m/Y');
+                $formattedDate = Carbon::parse($availability->date)->toPanelDate();
                 $place = $this->trainingPlaceForStudentCid((int) $student->cid);
 
                 if (! $place) {

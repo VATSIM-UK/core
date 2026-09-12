@@ -6,6 +6,7 @@ use App\Enums\EventChecklistItem;
 use App\Models\Atc\Position;
 use App\Models\Model;
 use App\Models\Mship\Account;
+use App\Support\DateFormat;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +18,7 @@ class Event extends Model
     use HasFactory;
 
     /** How every event timestamp is rendered across the admin panel. */
-    public const DATETIME_FORMAT = 'd. m. Y H:i';
+    public const DATETIME_FORMAT = DateFormat::DATETIME;
 
     protected $fillable = [
         'name',

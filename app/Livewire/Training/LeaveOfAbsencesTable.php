@@ -42,11 +42,11 @@ class LeaveOfAbsencesTable extends Component implements HasActions, HasForms, Ha
             ->columns([
                 TextColumn::make('begins_at')
                     ->label('Start')
-                    ->date('d/m/Y'),
+                    ->date(),
 
                 TextColumn::make('ends_at')
                     ->label('End')
-                    ->date('d/m/Y'),
+                    ->date(),
 
                 TextColumn::make('duration')
                     ->label('Duration')
@@ -82,7 +82,6 @@ class LeaveOfAbsencesTable extends Component implements HasActions, HasForms, Ha
                                 ->label('Start Date')
                                 ->required()
                                 ->native(false)
-                                ->displayFormat('d/m/Y')
                                 ->live()
                                 ->minDate(Carbon::now()->startOfDay())
                                 ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
@@ -96,7 +95,6 @@ class LeaveOfAbsencesTable extends Component implements HasActions, HasForms, Ha
                                 ->label('End Date')
                                 ->required()
                                 ->native(false)
-                                ->displayFormat('d/m/Y')
                                 ->minDate(fn (Get $get) => $get('begins_at')),
                         ]),
                         Textarea::make('reason')

@@ -44,7 +44,7 @@ class MyPracticalExamHistoryTable extends Component implements HasActions, HasFo
                     ->color(fn ($state) => $examHistoryService->getResultBadgeColor($state))
                     ->label('Result'),
 
-                TextColumn::make('examBooking.start_date')->label('Exam date')->formatStateUsing(fn ($state) => Carbon::parse($state)->isoFormat('lll')),
+                TextColumn::make('examBooking.start_date')->label('Exam date')->formatStateUsing(fn ($state) => Carbon::parse($state)->toPanelDateTime()),
             ])
             ->defaultSort('date', 'desc')
             ->recordActions([

@@ -65,8 +65,8 @@ class PendingMentoringReportsTable extends Component implements HasActions, HasF
                 TextColumn::make('taken_date')
                     ->label('Date & Time')
                     ->getStateUsing(function (Session $record) {
-                        $date = Carbon::parse($record->taken_date)->format('d/m/Y');
-                        $time = Carbon::parse($record->taken_from)->format('H:i');
+                        $date = Carbon::parse($record->taken_date)->toPanelDate();
+                        $time = Carbon::parse($record->taken_from)->toPanelTime();
 
                         return trim("{$date} {$time}");
                     })

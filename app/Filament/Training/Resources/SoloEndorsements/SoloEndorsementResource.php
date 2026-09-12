@@ -49,8 +49,8 @@ class SoloEndorsementResource extends Resource
                 TextColumn::make('account.name')->label('Account')->searchable(['name_first', 'name_last']),
                 TextColumn::make('endorsable.description')->label('Position'),
                 TextColumn::make('duration')->getStateUsing(fn ($record) => floor($record->created_at->diffInDays($record->expires_at)).' days')->label('Duration'),
-                TextColumn::make('created_at')->label('Started At')->isoDateTimeFormat('lll')->sortable(),
-                TextColumn::make('expires_at')->label('Expires At')->isoDateTimeFormat('lll')->sortable(),
+                TextColumn::make('created_at')->label('Started At')->dateTime()->sortable(),
+                TextColumn::make('expires_at')->label('Expires At')->dateTime()->sortable(),
                 TextColumn::make('status')->label('Status')->badge()
                     ->getStateUsing(fn ($record) => $record->expires_at->isPast() ? 'Expired' : 'Active')
                     ->color(

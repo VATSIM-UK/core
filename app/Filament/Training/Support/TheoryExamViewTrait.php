@@ -69,8 +69,8 @@ trait TheoryExamViewTrait
             Fieldset::make('Details')
                 ->columnSpanFull()
                 ->schema([
-                    TextEntry::make('started')->label('Started')->getStateUsing(fn ($record) => Carbon::parse($record->started)->isoFormat('lll')),
-                    TextEntry::make('submitted_time')->label('Submitted Time')->getStateUsing(fn ($record) => $record->submitted_time ? Carbon::parse($record->submitted_time)->isoFormat('lll') : 'N/A'), // Some exams will not be submitted if they run out of time etc
+                    TextEntry::make('started')->label('Started')->getStateUsing(fn ($record) => Carbon::parse($record->started)->toPanelDateTime()),
+                    TextEntry::make('submitted_time')->label('Submitted Time')->getStateUsing(fn ($record) => $record->submitted_time ? Carbon::parse($record->submitted_time)->toPanelDateTime() : 'N/A'), // Some exams will not be submitted if they run out of time etc
                     TextEntry::make('score')->label('Score')->getStateUsing(fn ($record) => "{$record->correct} / {$record->questions} (Passmark: {$record->passmark})"),
                     TextEntry::make('time_mins')->label('Time Limit')->getStateUsing(fn ($record) => "{$record->time_mins} Mins"),
                 ]),

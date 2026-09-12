@@ -40,7 +40,7 @@ class QualificationsRelationManager extends RelationManager
                 TextColumn::make('type')
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => QualificationTypeEnum::tryFrom($state)?->human() ?? $state),
-                TextColumn::make('created_at')->since()->description(fn ($record) => $record->created_at)->label('Awarded')->sortable(),
+                TextColumn::make('created_at')->since()->description(fn ($record) => $record->created_at?->toPanelDateTime())->label('Awarded')->sortable(),
             ])
             ->filters([
                 SelectFilter::make('type')->options(collect(QualificationTypeEnum::cases())->mapWithKeys(fn ($enum) => [$enum->value => $enum->human()]))->multiple(),
