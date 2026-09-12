@@ -56,8 +56,8 @@ class FilamentServiceProvider extends ServiceProvider
                 ->defaultDateDisplayFormat($date)
                 ->defaultTimeDisplayFormat($time)
                 ->defaultDateTimeDisplayFormat($dateTime)
-                ->defaultDateTimeWithSecondsDisplayFormat($dateTime.':s')
-                ->defaultTimeWithSecondsDisplayFormat($time.':s'));
+                ->defaultDateTimeWithSecondsDisplayFormat($dateTime)
+                ->defaultTimeWithSecondsDisplayFormat($time));
         };
 
         $configure(DateFormat::DATE, DateFormat::TIME, DateFormat::DATETIME);
