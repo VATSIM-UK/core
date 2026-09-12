@@ -99,6 +99,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.mentoring.view.*',
             'training.mentoring.sessions.*',
             'training.mentoring.sessions.reallocate.*',
+            'training.mentoring.reports.view-all',
 
             'training.statistics.view.*',
             'training.statistics.view.atc',
