@@ -32,7 +32,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           llm_url: "https://opencode.ai/zen/go/v1"
           llm_auth_token: ${{ secrets.OPENCODE_API_KEY }}
-          llm_model: "deepseek-v4-pro"
+          llm_model: "deepseek-v4.1-flash"
           llm_use_anthropic: "false"
           llm_extra_headers: "x-opencode-session=ocr-pr${{ github.event.pull_request.number }}-${{ github.event.pull_request.head.sha }}"
           llm_extra_body: '{"thinking": {"type": "enabled"}, "reasoning_effort": "high"}'
