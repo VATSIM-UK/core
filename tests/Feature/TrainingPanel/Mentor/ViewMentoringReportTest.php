@@ -20,6 +20,7 @@ use App\Services\Training\MentorPermissionService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\Permission\Models\Role;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
 class ViewMentoringReportTest extends BaseTrainingPanelTestCase
@@ -145,6 +146,8 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_loads_for_a_tgi_for_their_training_group_even_without_a_student_training_place(): void
     {
+        Role::firstOrCreate(['name' => 'ATC APP Instructor', 'guard_name' => 'web']);
+
         $tgi = Account::factory()->create();
         $tgi->assignRole('ATC APP Instructor');
 
@@ -220,6 +223,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
         $this->mock(MentorPermissionService::class, fn ($mock) => $mock
             ->shouldReceive('getCtsCallsignsForMentorable')->andReturn([])
             ->shouldReceive('getAssignedCtsCallsigns')->andReturn([])
+            ->shouldReceive('resolveCategoryForCtsCallsign')->andReturn(null)
         );
 
         Livewire::actingAs($unrelatedUser)
@@ -236,6 +240,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
         $this->mock(MentorPermissionService::class, fn ($mock) => $mock
             ->shouldReceive('getCtsCallsignsForMentorable')->andReturn([])
             ->shouldReceive('getAssignedCtsCallsigns')->andReturn([])
+            ->shouldReceive('resolveCategoryForCtsCallsign')->andReturn(null)
         );
 
         Livewire::actingAs($otherStudent)
@@ -252,6 +257,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
         $this->mock(MentorPermissionService::class, fn ($mock) => $mock
             ->shouldReceive('getCtsCallsignsForMentorable')->andReturn([])
             ->shouldReceive('getAssignedCtsCallsigns')->andReturn([])
+            ->shouldReceive('resolveCategoryForCtsCallsign')->andReturn(null)
         );
 
         Livewire::actingAs($otherMentor)

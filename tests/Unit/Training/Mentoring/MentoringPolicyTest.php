@@ -16,6 +16,7 @@ use App\Services\Training\MentoringReportAccessService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Gate;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class MentoringPolicyTest extends TestCase
@@ -93,19 +94,18 @@ class MentoringPolicyTest extends TestCase
     #[Test]
     public function view_allows_the_mentor_who_conducted_the_session_when_the_student_holds_a_place(): void
     {
+        $student = Account::factory()->create();
+        $studentMember = Member::factory()->forAccount($student)->create();
+
         $mentor = Account::factory()->create();
         $mentorMember = Member::factory()->forAccount($mentor)->create();
         $session = Session::factory()->create([
+            'student_id' => $studentMember->id,
             'mentor_id' => $mentorMember->id,
             'filed' => now(),
         ]);
 
-        TrainingPlace::factory()
-            ->forTrainingPosition(TrainingPosition::factory()->create([
-                'category' => 'S3 Training',
-                'cts_positions' => ['EGLL_APP'],
-            ]))
-            ->createQuietly(['account_id' => $session->studentAccount()->id]);
+        $this->createTrainingPlaceFor($student, 'S3 Training');
 
         $this->assertTrue($this->policy->view($mentor, $session));
     }
@@ -126,18 +126,17 @@ class MentoringPolicyTest extends TestCase
     #[Test]
     public function view_allows_a_mentor_with_permission_for_the_session_position_when_the_student_holds_a_place(): void
     {
+        $student = Account::factory()->create();
+        $studentMember = Member::factory()->forAccount($student)->create();
+
         $mentor = $this->createMentorWithPosition('EGLL_APP');
         $session = Session::factory()->create([
+            'student_id' => $studentMember->id,
             'position' => 'EGLL_APP',
             'filed' => now(),
         ]);
 
-        TrainingPlace::factory()
-            ->forTrainingPosition(TrainingPosition::factory()->create([
-                'category' => 'S3 Training',
-                'cts_positions' => ['EGLL_APP'],
-            ]))
-            ->createQuietly(['account_id' => $session->studentAccount()->id]);
+        $this->createTrainingPlaceFor($student, 'S3 Training');
 
         $this->assertTrue($this->policy->view($mentor, $session));
     }
@@ -157,6 +156,14 @@ class MentoringPolicyTest extends TestCase
     #[Test]
     public function view_allows_a_tgi_for_their_training_group_and_below(): void
     {
+        Role::firstOrCreate(['name' => 'ATC APP Instructor', 'guard_name' => 'web']);
+
+        // The callsign-to-category mapping is derived from TrainingPosition rows.
+        TrainingPosition::factory()->create([
+            'category' => 'S2 Training',
+            'cts_positions' => ['EGLL_TWR'],
+        ]);
+
         $tgi = Account::factory()->create();
         $tgi->assignRole('ATC APP Instructor');
 
@@ -185,18 +192,17 @@ class MentoringPolicyTest extends TestCase
     #[Test]
     public function gate_allows_a_mentor_with_permission_for_the_session_position_when_the_student_holds_a_place(): void
     {
+        $student = Account::factory()->create();
+        $studentMember = Member::factory()->forAccount($student)->create();
+
         $mentor = $this->createMentorWithPosition('EGLL_APP');
         $session = Session::factory()->create([
+            'student_id' => $studentMember->id,
             'position' => 'EGLL_APP',
             'filed' => now(),
         ]);
 
-        TrainingPlace::factory()
-            ->forTrainingPosition(TrainingPosition::factory()->create([
-                'category' => 'S3 Training',
-                'cts_positions' => ['EGLL_APP'],
-            ]))
-            ->createQuietly(['account_id' => $session->studentAccount()->id]);
+        $this->createTrainingPlaceFor($student, 'S3 Training');
 
         $this->assertTrue(Gate::forUser($mentor)->allows('view', $session));
     }
@@ -323,6 +329,16 @@ class MentoringPolicyTest extends TestCase
         ]);
 
         return $account;
+    }
+
+    private function createTrainingPlaceFor(Account $student, string $category): TrainingPlace
+    {
+        return TrainingPlace::factory()
+            ->forTrainingPosition(TrainingPosition::factory()->create([
+                'category' => $category,
+                'cts_positions' => ['EGLL_APP'],
+            ]))
+            ->createQuietly(['account_id' => $student->id]);
     }
 
     private function createSessionForStudent(Account $student, ?\DateTimeInterface $filed = null): Session

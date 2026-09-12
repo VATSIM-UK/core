@@ -14,19 +14,16 @@ use App\Services\Training\MentoringReportAccessService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class MentoringReportAccessServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private MentoringReportAccessService $service;
-
-    protected function setUp(): void
+    private function service(): MentoringReportAccessService
     {
-        parent::setUp();
-
-        $this->service = app(MentoringReportAccessService::class);
+        return app(MentoringReportAccessService::class);
     }
 
     public static function mentorLadderProvider(): array
@@ -38,9 +35,11 @@ class MentoringReportAccessServiceTest extends TestCase
             'S3 mentor does not see C1' => ['S3 Training', 'C1 Training', false],
             'S2 mentor sees S2' => ['S2 Training', 'S2 Training', true],
             'S2 mentor does not see S3' => ['S2 Training', 'S3 Training', false],
-            'Heathrow mentor sees Heathrow GMC' => ['Heathrow AIR', 'Heathrow GMC', true],
-            'Heathrow mentor sees S2' => ['Heathrow GMC', 'S2 Training', true],
-            'Heathrow mentor does not see S3' => ['Heathrow GMC', 'S3 Training', false],
+            'Heathrow AIR mentor sees Heathrow GMC' => ['Heathrow AIR', 'Heathrow GMC', true],
+            'Heathrow AIR mentor sees S2' => ['Heathrow AIR', 'S2 Training', true],
+            'Heathrow AIR mentor does not see S3' => ['Heathrow AIR', 'S3 Training', false],
+            'Heathrow GMC mentor sees OBS to S1' => ['Heathrow GMC', 'OBS to S1 Training', true],
+            'Heathrow GMC mentor does not see S2' => ['Heathrow GMC', 'S2 Training', false],
         ];
     }
 
@@ -51,8 +50,9 @@ class MentoringReportAccessServiceTest extends TestCase
         $mentor = $this->createMentor($mentorCategory);
 
         $session = $this->createFiledSession($sessionCategory);
+        $this->createActiveTrainingPlace($session->studentAccount(), $sessionCategory);
 
-        $this->assertSame($expected, $this->service->canViewReport($mentor, $session));
+        $this->assertSame($expected, $this->service()->canViewReport($mentor, $session));
     }
 
     #[Test]
@@ -62,7 +62,7 @@ class MentoringReportAccessServiceTest extends TestCase
 
         $session = $this->createFiledSession('S3 Training');
 
-        $this->assertFalse($this->service->canViewReport($mentor, $session));
+        $this->assertFalse($this->service()->canViewReport($mentor, $session));
     }
 
     #[Test]
@@ -73,7 +73,7 @@ class MentoringReportAccessServiceTest extends TestCase
         $session = $this->createFiledSession('S3 Training');
         $this->createActiveTrainingPlace($session->studentAccount(), 'S3 Training');
 
-        $this->assertTrue($this->service->canViewReport($mentor, $session));
+        $this->assertTrue($this->service()->canViewReport($mentor, $session));
     }
 
     #[Test]
@@ -85,7 +85,7 @@ class MentoringReportAccessServiceTest extends TestCase
         $place = $this->createActiveTrainingPlace($session->studentAccount(), 'S3 Training');
         $place->delete();
 
-        $this->assertFalse($this->service->canViewReport($mentor, $session));
+        $this->assertFalse($this->service()->canViewReport($mentor, $session));
     }
 
     #[Test]
@@ -96,42 +96,43 @@ class MentoringReportAccessServiceTest extends TestCase
         $s3StudentSession = $this->createFiledSession('S2 Training');
         $this->createActiveTrainingPlace($s3StudentSession->studentAccount(), 'S3 Training');
 
-        $this->assertTrue($this->service->canViewReport($twrMentor, $s3StudentSession));
+        $this->assertTrue($this->service()->canViewReport($twrMentor, $s3StudentSession));
     }
 
     #[Test]
     public function heathrow_mentor_sees_heathrow_and_s2_history_for_a_heathrow_student(): void
     {
-        $mentor = $this->createMentor('Heathrow GMC');
+        $mentor = $this->createMentor('Heathrow AIR');
 
-        $heathrowSession = $this->createFiledSession('Heathrow AIR');
-        $this->createActiveTrainingPlace($heathrowSession->studentAccount(), 'Heathrow AIR');
+        $gmcSession = $this->createFiledSession('Heathrow GMC');
+        $this->createActiveTrainingPlace($gmcSession->studentAccount(), 'Heathrow AIR');
 
-        $this->assertTrue($this->service->canViewReport($mentor, $heathrowSession));
+        $this->assertTrue($this->service()->canViewReport($mentor, $gmcSession));
 
         $s2Session = $this->createFiledSession('S2 Training');
-        $this->createActiveTrainingPlace($s2Session->studentAccount(), 'Heathrow APC');
+        $this->createActiveTrainingPlace($s2Session->studentAccount(), 'Heathrow AIR');
 
-        $this->assertTrue($this->service->canViewReport($mentor, $s2Session));
+        $this->assertTrue($this->service()->canViewReport($mentor, $s2Session));
+
+        $apcSession = $this->createFiledSession('Heathrow APC');
+        $this->createActiveTrainingPlace($apcSession->studentAccount(), 'Heathrow APC');
+
+        $this->assertFalse($this->service()->canViewReport($mentor, $apcSession));
     }
 
     #[Test]
     public function conducting_mentor_access_is_also_revoked_when_the_student_holds_no_training_place(): void
     {
         $mentorAccount = Account::factory()->create();
-        Member::factory()->forAccount($mentorAccount)->create();
+        $mentorMember = Member::factory()->forAccount($mentorAccount)->create();
 
-        $session = Session::factory()->create([
-            'mentor_id' => Member::where('cid', $mentorAccount->id)->first()->id,
-            'position' => $this->callsignFor('S3 Training'),
-            'filed' => now(),
-        ]);
+        $session = $this->createFiledSession('S3 Training', $mentorMember);
 
-        $this->assertFalse($this->service->canViewReport($mentorAccount, $session));
+        $this->assertFalse($this->service()->canViewReport($mentorAccount, $session));
 
         $this->createActiveTrainingPlace($session->studentAccount(), 'S3 Training');
 
-        $this->assertTrue($this->service->canViewReport($mentorAccount, $session));
+        $this->assertTrue($this->service()->canViewReport($mentorAccount, $session));
     }
 
     #[Test]
@@ -142,45 +143,48 @@ class MentoringReportAccessServiceTest extends TestCase
 
         $session = $this->createFiledSession('S3 Training');
 
-        $this->assertTrue($this->service->canViewReport($user, $session));
+        $this->assertTrue($this->service()->canViewReport($user, $session));
     }
 
     #[Test]
     public function tgi_can_see_reports_for_their_training_group_and_below_without_a_training_place(): void
     {
-        $tgi = Account::factory()->create();
-        $tgi->assignRole('ATC APP Instructor');
+        $tgi = $this->createTgi('ATC APP Instructor');
 
         $s3Session = $this->createFiledSession('S3 Training');
         $s2Session = $this->createFiledSession('S2 Training');
         $c1Session = $this->createFiledSession('C1 Training');
 
-        $this->assertTrue($this->service->canViewReport($tgi, $s3Session));
-        $this->assertTrue($this->service->canViewReport($tgi, $s2Session));
-        $this->assertFalse($this->service->canViewReport($tgi, $c1Session));
+        $this->assertTrue($this->service()->canViewReport($tgi, $s3Session));
+        $this->assertTrue($this->service()->canViewReport($tgi, $s2Session));
+        $this->assertFalse($this->service()->canViewReport($tgi, $c1Session));
     }
 
     #[Test]
-    public function tgi_who_also_mentors_c1_does_not_gain_c1_visibility_for_their_tg(): void
+    public function tgi_who_also_mentors_a_higher_category_only_gains_that_category_with_a_student_place(): void
     {
-        $tgi = Account::factory()->create();
-        $tgi->assignRole('ATC NC Instructor');
+        $tgi = $this->createTgi('ATC NC Instructor');
         $this->createMentorForAccount($tgi, 'C1 Training');
 
         $c1Session = $this->createFiledSession('C1 Training');
 
-        $this->assertFalse($this->service->canViewReport($tgi, $c1Session));
+        // The TGI role alone must not reach above the NC training group.
+        $this->assertFalse($this->service()->canViewReport($tgi, $c1Session));
+
+        // Mentoring C1 grants access once the student holds an active C1 place.
+        $this->createActiveTrainingPlace($c1Session->studentAccount(), 'C1 Training');
+
+        $this->assertTrue($this->service()->canViewReport($tgi, $c1Session));
     }
 
     #[Test]
     public function tgi_ladder_access_applies_even_when_the_student_holds_no_training_place(): void
     {
-        $tgi = Account::factory()->create();
-        $tgi->assignRole('ATC Enroute Instructor');
+        $tgi = $this->createTgi('ATC Enroute Instructor');
 
         $session = $this->createFiledSession('S2 Training');
 
-        $this->assertTrue($this->service->canViewReport($tgi, $session));
+        $this->assertTrue($this->service()->canViewReport($tgi, $session));
     }
 
     #[Test]
@@ -188,7 +192,7 @@ class MentoringReportAccessServiceTest extends TestCase
     {
         $session = $this->createFiledSession('S3 Training');
 
-        $this->assertTrue($this->service->canViewReport($session->studentAccount(), $session));
+        $this->assertTrue($this->service()->canViewReport($session->studentAccount(), $session));
     }
 
     #[Test]
@@ -200,38 +204,48 @@ class MentoringReportAccessServiceTest extends TestCase
 
         $student = $session->studentAccount();
 
-        $this->assertFalse($this->service->canViewReport($student, $session));
+        $this->assertFalse($this->service()->canViewReport($student, $session));
 
         $viewAllUser = Account::factory()->create();
         $viewAllUser->givePermissionTo(MentoringReportAccessService::VIEW_ALL_PERMISSION);
-        $this->assertFalse($this->service->canViewReport($viewAllUser, $session));
+        $this->assertFalse($this->service()->canViewReport($viewAllUser, $session));
     }
 
     #[Test]
-    public function sessions_at_unrecognised_positions_are_hidden(): void
+    public function sessions_at_unrecognised_positions_are_hidden_from_mentors_but_visible_to_view_all_users(): void
     {
-        $user = Account::factory()->create();
-        $user->givePermissionTo(MentoringReportAccessService::VIEW_ALL_PERMISSION);
+        $student = Account::factory()->create();
+        $studentMember = Member::factory()->forAccount($student)->create();
 
-        $session = $this->createFiledSession('ZZZZ_UNKNOWN');
+        $session = Session::factory()->create([
+            'student_id' => $studentMember->id,
+            'position' => 'XX_UNMAPPED_POSITION',
+            'filed' => now(),
+        ]);
 
-        $this->assertFalse($this->service->canViewReport($user, $session));
+        $mentor = $this->createMentor('S3 Training');
+        $this->createActiveTrainingPlace($student, 'S3 Training');
+
+        $this->assertFalse($this->service()->canViewReport($mentor, $session));
+
+        $viewAllUser = Account::factory()->create();
+        $viewAllUser->givePermissionTo(MentoringReportAccessService::VIEW_ALL_PERMISSION);
+
+        $this->assertTrue($this->service()->canViewReport($viewAllUser, $session));
     }
 
     #[Test]
     public function tgi_categories_are_derived_from_their_roles(): void
     {
-        $tgi = Account::factory()->create();
-        $tgi->assignRole('ATC TWR Instructor');
+        $tgi = $this->createTgi('ATC TWR Instructor');
 
-        $this->assertSame(['S2 Training'], $this->service->tgiCategoriesFor($tgi));
+        $this->assertSame(['S2 Training'], $this->service()->tgiCategoriesFor($tgi));
 
-        $heathrowTgi = Account::factory()->create();
-        $heathrowTgi->assignRole('ATC Heathrow Instructor');
+        $heathrowTgi = $this->createTgi('ATC Heathrow Instructor');
 
         $this->assertSame(
             ['Heathrow GMC', 'Heathrow AIR', 'Heathrow APC'],
-            $this->service->tgiCategoriesFor($heathrowTgi)
+            $this->service()->tgiCategoriesFor($heathrowTgi)
         );
     }
 
@@ -244,7 +258,7 @@ class MentoringReportAccessServiceTest extends TestCase
         $deleted = $this->createActiveTrainingPlace($account, 'S2 Training');
         $deleted->delete();
 
-        $this->assertSame(['S3 Training'], $this->service->activeTrainingPlaceCategoriesFor($account));
+        $this->assertSame(['S3 Training'], $this->service()->activeTrainingPlaceCategoriesFor($account));
 
         $this->assertNull($active->fresh()->deleted_at);
     }
@@ -254,7 +268,7 @@ class MentoringReportAccessServiceTest extends TestCase
     {
         $mentor = $this->createMentor('S3 Training');
 
-        $categories = $this->service->visibleCategoriesFor($mentor);
+        $categories = $this->service()->visibleCategoriesFor($mentor);
 
         $this->assertContains('S3 Training', $categories);
         $this->assertContains('S2 Training', $categories);
@@ -268,7 +282,7 @@ class MentoringReportAccessServiceTest extends TestCase
         $user = Account::factory()->create();
         $user->givePermissionTo(MentoringReportAccessService::VIEW_ALL_PERMISSION);
 
-        $categories = $this->service->visibleCategoriesFor($user);
+        $categories = $this->service()->visibleCategoriesFor($user);
 
         $this->assertContains('C1 Training', $categories);
         $this->assertContains('OBS to S1 Training', $categories);
@@ -290,7 +304,7 @@ class MentoringReportAccessServiceTest extends TestCase
         $visibleSession = $this->createFiledSessionFor('S3 Training', $placedStudentMember);
         $hiddenSession = $this->createFiledSessionFor('S3 Training', $placelessStudentMember);
 
-        $ids = $this->service->visibleSessionsQueryFor($mentor)->pluck('id')->all();
+        $ids = $this->service()->visibleSessionsQueryFor($mentor)->pluck('id')->all();
 
         $this->assertContains($visibleSession->id, $ids);
         $this->assertNotContains($hiddenSession->id, $ids);
@@ -308,7 +322,7 @@ class MentoringReportAccessServiceTest extends TestCase
         $historicS2 = $this->createFiledSessionFor('S2 Training', $studentMember);
         $placelessHistoricS3 = $this->createFiledSessionFor('S3 Training', $studentMember);
 
-        $ids = $this->service->visibleSessionsQueryFor($mentor)->pluck('id')->all();
+        $ids = $this->service()->visibleSessionsQueryFor($mentor)->pluck('id')->all();
 
         $this->assertNotContains($historicS2->id, $ids);
         $this->assertNotContains($placelessHistoricS3->id, $ids);
@@ -330,7 +344,7 @@ class MentoringReportAccessServiceTest extends TestCase
         $s3Session = $this->createFiledSessionFor('S3 Training', $placedStudentMember);
         $s2Session = $this->createFiledSessionFor('S2 Training', $otherPlacedStudentMember);
 
-        $ids = $this->service->visibleSessionsQueryFor($mentor)->pluck('id')->all();
+        $ids = $this->service()->visibleSessionsQueryFor($mentor)->pluck('id')->all();
 
         $this->assertContains($s3Session->id, $ids);
         $this->assertContains($s2Session->id, $ids);
@@ -341,7 +355,7 @@ class MentoringReportAccessServiceTest extends TestCase
             ->get()
             ->each(fn (TrainingPlace $place) => $place->delete());
 
-        $ids = $this->service->visibleSessionsQueryFor($mentor)->pluck('id')->all();
+        $ids = $this->service()->visibleSessionsQueryFor($mentor)->pluck('id')->all();
 
         $this->assertNotContains($s3Session->id, $ids);
         $this->assertContains($s2Session->id, $ids);
@@ -359,6 +373,8 @@ class MentoringReportAccessServiceTest extends TestCase
         $placelessStudent = Account::factory()->create();
         $placelessStudentMember = Member::factory()->forAccount($placelessStudent)->create();
 
+        $this->createTrainingPositionFor('S3 Training');
+
         $pendingVisible = Session::factory()->create([
             'student_id' => $placedStudentMember->id,
             'position' => $this->callsignFor('S3 Training'),
@@ -371,7 +387,7 @@ class MentoringReportAccessServiceTest extends TestCase
             'filed' => null,
         ]);
 
-        $ids = $this->service->visibleSessionsQueryFor($mentor)->pluck('id')->all();
+        $ids = $this->service()->visibleSessionsQueryFor($mentor)->pluck('id')->all();
 
         $this->assertContains($pendingVisible->id, $ids);
         $this->assertNotContains($pendingHidden->id, $ids);
@@ -381,6 +397,11 @@ class MentoringReportAccessServiceTest extends TestCase
     public function visible_sessions_query_applies_the_category_ladder_to_pending_sessions(): void
     {
         $mentor = $this->createMentor('S2 Training');
+
+        // Mapping rows for both categories so the mentor's ladder genuinely
+        // includes the S2 callsign and the place constraint is what excludes it.
+        $this->createTrainingPositionFor('S2 Training');
+        $this->createTrainingPositionFor('OBS to S1 Training');
 
         $student = Account::factory()->create();
         $studentMember = Member::factory()->forAccount($student)->create();
@@ -398,7 +419,7 @@ class MentoringReportAccessServiceTest extends TestCase
             'filed' => null,
         ]);
 
-        $ids = $this->service->visibleSessionsQueryFor($mentor)->pluck('id')->all();
+        $ids = $this->service()->visibleSessionsQueryFor($mentor)->pluck('id')->all();
 
         $this->assertNotContains($pendingS2->id, $ids);
         $this->assertContains($pendingS1->id, $ids);
@@ -407,8 +428,7 @@ class MentoringReportAccessServiceTest extends TestCase
     #[Test]
     public function visible_sessions_query_scopes_tgi_rows_to_their_ladder(): void
     {
-        $tgi = Account::factory()->create();
-        $tgi->assignRole('ATC APP Instructor');
+        $tgi = $this->createTgi('ATC APP Instructor');
 
         $student = Account::factory()->create();
         $studentMember = Member::factory()->forAccount($student)->create();
@@ -417,7 +437,7 @@ class MentoringReportAccessServiceTest extends TestCase
         $s2Session = $this->createFiledSessionFor('S2 Training', $studentMember);
         $c1Session = $this->createFiledSessionFor('C1 Training', $studentMember);
 
-        $ids = $this->service->visibleSessionsQueryFor($tgi)->pluck('id')->all();
+        $ids = $this->service()->visibleSessionsQueryFor($tgi)->pluck('id')->all();
 
         $this->assertContains($s3Session->id, $ids);
         $this->assertContains($s2Session->id, $ids);
@@ -430,7 +450,7 @@ class MentoringReportAccessServiceTest extends TestCase
         $account = Account::factory()->create();
         Member::factory()->forAccount($account)->create();
 
-        $query = $this->service->visibleSessionsQueryFor($account);
+        $query = $this->service()->visibleSessionsQueryFor($account);
 
         $this->assertSame(0, $query->count());
     }
@@ -441,9 +461,9 @@ class MentoringReportAccessServiceTest extends TestCase
         $user = Account::factory()->create();
         $user->givePermissionTo(MentoringReportAccessService::VIEW_ALL_PERMISSION);
 
-        $total = Session::query()->count();
+        $this->createFiledSession('S3 Training');
 
-        $this->assertSame($total, $this->service->visibleSessionsQueryFor($user)->count());
+        $this->assertSame(Session::query()->count(), $this->service()->visibleSessionsQueryFor($user)->count());
     }
 
     #[Test]
@@ -455,6 +475,8 @@ class MentoringReportAccessServiceTest extends TestCase
         $student = Account::factory()->create();
         $studentMember = Member::factory()->forAccount($student)->create();
         $this->createActiveTrainingPlace($student, 'S3 Training');
+
+        $this->createTrainingPositionFor('S3 Training');
 
         $conductedVisible = Session::factory()->create([
             'mentor_id' => $mentorMember->id,
@@ -473,7 +495,7 @@ class MentoringReportAccessServiceTest extends TestCase
             'filed' => now(),
         ]);
 
-        $ids = $this->service->visibleSessionsQueryFor($mentorAccount)->pluck('id')->all();
+        $ids = $this->service()->visibleSessionsQueryFor($mentorAccount)->pluck('id')->all();
 
         $this->assertContains($conductedVisible->id, $ids);
         $this->assertNotContains($conductedHidden->id, $ids);
@@ -488,6 +510,8 @@ class MentoringReportAccessServiceTest extends TestCase
         $student = Account::factory()->create();
         $studentMember = Member::factory()->forAccount($student)->create();
 
+        $this->createTrainingPositionFor('S3 Training');
+
         $conducted = Session::factory()->create([
             'mentor_id' => $mentorMember->id,
             'student_id' => $studentMember->id,
@@ -495,25 +519,41 @@ class MentoringReportAccessServiceTest extends TestCase
             'filed' => now(),
         ]);
 
-        $this->assertNotContains($conducted->id, $this->service->visibleSessionsQueryFor($mentorAccount)->pluck('id')->all());
+        $this->assertNotContains($conducted->id, $this->service()->visibleSessionsQueryFor($mentorAccount)->pluck('id')->all());
 
         $this->createActiveTrainingPlace($student, 'S3 Training');
 
-        $this->assertContains($conducted->id, $this->service->visibleSessionsQueryFor($mentorAccount)->pluck('id')->all());
+        $this->assertContains($conducted->id, $this->service()->visibleSessionsQueryFor($mentorAccount)->pluck('id')->all());
     }
 
+    /**
+     * A distinct callsign per category so tests never collide with each other or
+     * with any locally seeded CTS position data.
+     */
     private function callsignFor(string $category): string
     {
         return match ($category) {
-            'C1 Training' => 'EGTT_CTR',
-            'S3 Training' => 'EGLL_APP',
-            'S2 Training' => 'EGLL_TWR',
-            'OBS to S1 Training' => 'EGLL_GND',
-            'Heathrow GMC' => 'EGLL_TWR',
-            'Heathrow AIR' => 'EGLL_APP',
-            'Heathrow APC' => 'EGKK_APP',
-            default => 'EGLL_APP',
+            'C1 Training' => 'XX_C1_CTR',
+            'S3 Training' => 'XX_S3_APP',
+            'S2 Training' => 'XX_S2_TWR',
+            'OBS to S1 Training' => 'XX_S1_GND',
+            'Heathrow GMC' => 'XX_HR_GMC',
+            'Heathrow AIR' => 'XX_HR_AIR',
+            'Heathrow APC' => 'XX_HR_APC',
+            default => 'XX_UNMAPPED',
         };
+    }
+
+    /**
+     * The callsign-to-category mapping is derived from TrainingPosition rows, so a
+     * session's position only resolves once its mapping row exists.
+     */
+    private function createTrainingPositionFor(string $category): TrainingPosition
+    {
+        return TrainingPosition::factory()->create([
+            'category' => $category,
+            'cts_positions' => [$this->callsignFor($category)],
+        ]);
     }
 
     private function createMentor(string $category): Account
@@ -523,10 +563,7 @@ class MentoringReportAccessServiceTest extends TestCase
 
     private function createMentorForAccount(Account $account, string $category): Account
     {
-        $trainingPosition = TrainingPosition::factory()->create([
-            'category' => $category,
-            'cts_positions' => [$this->callsignFor($category)],
-        ]);
+        $trainingPosition = $this->createTrainingPositionFor($category);
 
         MentorTrainingPosition::create([
             'account_id' => $account->id,
@@ -538,18 +575,31 @@ class MentoringReportAccessServiceTest extends TestCase
         return $account;
     }
 
-    private function createFiledSession(string $category): Session
+    private function createTgi(string $roleName): Account
+    {
+        Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
+
+        $account = Account::factory()->create();
+        $account->assignRole($roleName);
+
+        return $account;
+    }
+
+    private function createFiledSession(string $category, ?Member $mentorMember = null): Session
     {
         $account = Account::factory()->create();
         $member = Member::factory()->forAccount($account)->create();
 
-        return $this->createFiledSessionFor($category, $member);
+        return $this->createFiledSessionFor($category, $member, $mentorMember);
     }
 
-    private function createFiledSessionFor(string $category, Member $studentMember): Session
+    private function createFiledSessionFor(string $category, Member $studentMember, ?Member $mentorMember = null): Session
     {
+        $this->createTrainingPositionFor($category);
+
         return Session::factory()->create([
             'student_id' => $studentMember->id,
+            'mentor_id' => $mentorMember?->id,
             'position' => $this->callsignFor($category),
             'filed' => now(),
         ]);
@@ -557,10 +607,7 @@ class MentoringReportAccessServiceTest extends TestCase
 
     private function createActiveTrainingPlace(Account $account, string $category): TrainingPlace
     {
-        $position = TrainingPosition::factory()->create([
-            'category' => $category,
-            'cts_positions' => [$this->callsignFor($category)],
-        ]);
+        $position = $this->createTrainingPositionFor($category);
 
         $place = TrainingPlace::factory()
             ->forTrainingPosition($position)

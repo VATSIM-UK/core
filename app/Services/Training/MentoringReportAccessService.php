@@ -10,6 +10,7 @@ use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Exceptions\RoleDoesNotExist;
 
 /**
@@ -110,15 +111,13 @@ class MentoringReportAccessService
      */
     public function tgiCategoriesFor(Account $account): array
     {
-        $categoriesByRole = collect(array_merge(
+        return collect(array_merge(
             MentorPermissionService::ATC_TGI_CATEGORY_ROLE_MAP,
             MentorPermissionService::PILOT_TGI_CATEGORY_ROLE_MAP,
-        ));
-
-        return $categoriesByRole
-            ->unique()
+        ))
             ->filter(fn (string $roleName) => $this->accountHasRole($account, $roleName))
             ->keys()
+            ->unique()
             ->values()
             ->all();
     }
@@ -179,20 +178,9 @@ class MentoringReportAccessService
             return false;
         }
 
-        $category = $this->mentorPermissionService->resolveCategoryForCtsCallsign($session->position);
-
-        if ($category === null) {
-            return false;
-        }
-
         $studentAccount = $session->studentAccount();
 
-        if ($studentAccount === null) {
-            return false;
-        }
-
-        // Students should always be able to see their own reports
-        if ($studentAccount->id === $user->id) {
+        if ($studentAccount !== null && $studentAccount->id === $user->id) {
             return true;
         }
 
@@ -200,12 +188,22 @@ class MentoringReportAccessService
             return true;
         }
 
-        // TGI check
+        $category = $this->mentorPermissionService->resolveCategoryForCtsCallsign($session->position);
+
+        if ($category === null) {
+            Log::debug('Mentoring report access denied: category could not be resolved for position', [
+                'session_id' => $session->id,
+                'position' => $session->position,
+            ]);
+
+            return false;
+        }
+
         if (collect($this->tgiCategoriesFor($user))->contains(fn (string $tgiCategory) => $this->categoryIsWithinLadder($tgiCategory, $category))) {
             return true;
         }
 
-        if (! $this->studentHasQualifyingActiveTrainingPlace($studentAccount, $category)) {
+        if ($studentAccount === null || ! $this->studentHasQualifyingActiveTrainingPlace($studentAccount, $category)) {
             return false;
         }
 
