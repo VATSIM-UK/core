@@ -70,27 +70,22 @@ class AvailabilityLogReviewTest extends BaseTrainingPanelTestCase
         $component = Livewire::actingAs($this->panelUser)
             ->test(AvailabilityLogReview::class, ['trainingPlace' => $this->place]);
 
-        // Before the edit: the original slot is the active version and still upcoming.
         $component->set('data.asOf', '2026-05-10 12:00');
         $records = $component->instance()->getTable()->getRecords();
         $this->assertCount(1, $records);
         $this->assertSame('2026-05-15 21:00:00', $records->first()->slot_to->format('Y-m-d H:i:s'));
 
-        // After the edit: the successor is the active version and still upcoming.
         $component->set('data.asOf', '2026-05-12 12:00');
         $records = $component->instance()->getTable()->getRecords();
         $this->assertCount(1, $records);
         $this->assertSame('2026-05-15 22:00:00', $records->first()->slot_to->format('Y-m-d H:i:s'));
 
-        // During the slot: the active version is still visible.
         $component->set('data.asOf', '2026-05-15 19:00');
         $this->assertCount(1, $component->instance()->getTable()->getRecords());
 
-        // After the slot has ended: hidden even though the entry is still the active version.
         $component->set('data.asOf', '2026-05-15 23:00');
         $this->assertCount(0, $component->instance()->getTable()->getRecords());
 
-        // After the entry is superseded: hidden.
         $component->set('data.asOf', '2026-05-19 12:00');
         $this->assertCount(0, $component->instance()->getTable()->getRecords());
     }
