@@ -88,6 +88,7 @@ class AvailabilityLogReview extends Component implements HasActions, HasForms, H
                 return AvailabilityLogEntry::query()
                     ->where('training_place_id', $this->trainingPlace->id)
                     ->where('created_at', '<=', $asOf)
+                    ->where('slot_to', '>', $asOf)
                     ->where(function (Builder $query) use ($asOf) {
                         $query->whereNull('superseded_at')
                             ->orWhere('superseded_at', '>', $asOf);
