@@ -35,7 +35,7 @@ class AvailabilityLogReviewTest extends BaseTrainingPanelTestCase
             'event' => 'added',
             'slot_from' => '2026-05-15 18:00:00',
             'slot_to' => '2026-05-15 21:00:00',
-            'created_at' => '2026-05-14 09:00:00',
+            'created_at' => '2026-05-10 09:00:00',
             'superseded_at' => null,
         ]);
 
@@ -44,11 +44,11 @@ class AvailabilityLogReviewTest extends BaseTrainingPanelTestCase
             'event' => 'edited',
             'slot_from' => '2026-05-15 18:00:00',
             'slot_to' => '2026-05-15 22:00:00',
-            'created_at' => '2026-05-16 10:00:00',
+            'created_at' => '2026-05-11 10:00:00',
             'superseded_at' => null,
         ]);
 
-        $added->update(['superseded_at' => '2026-05-16 10:00:00']);
+        $added->update(['superseded_at' => '2026-05-11 10:00:00']);
         $edited->update(['superseded_at' => '2026-05-18 12:00:00']);
     }
 
@@ -70,15 +70,21 @@ class AvailabilityLogReviewTest extends BaseTrainingPanelTestCase
         $component = Livewire::actingAs($this->panelUser)
             ->test(AvailabilityLogReview::class, ['trainingPlace' => $this->place]);
 
-        $component->set('data.asOf', '2026-05-15 12:00');
+        $component->set('data.asOf', '2026-05-10 12:00');
         $records = $component->instance()->getTable()->getRecords();
         $this->assertCount(1, $records);
         $this->assertSame('2026-05-15 21:00:00', $records->first()->slot_to->format('Y-m-d H:i:s'));
 
-        $component->set('data.asOf', '2026-05-17 12:00');
+        $component->set('data.asOf', '2026-05-12 12:00');
         $records = $component->instance()->getTable()->getRecords();
         $this->assertCount(1, $records);
         $this->assertSame('2026-05-15 22:00:00', $records->first()->slot_to->format('Y-m-d H:i:s'));
+
+        $component->set('data.asOf', '2026-05-15 19:00');
+        $this->assertCount(1, $component->instance()->getTable()->getRecords());
+
+        $component->set('data.asOf', '2026-05-15 23:00');
+        $this->assertCount(0, $component->instance()->getTable()->getRecords());
 
         $component->set('data.asOf', '2026-05-19 12:00');
         $this->assertCount(0, $component->instance()->getTable()->getRecords());
@@ -91,7 +97,7 @@ class AvailabilityLogReviewTest extends BaseTrainingPanelTestCase
 
         $component = Livewire::actingAs($this->panelUser)
             ->test(AvailabilityLogReview::class, ['trainingPlace' => $this->place])
-            ->set('data.asOf', '2026-05-16 10:00');
+            ->set('data.asOf', '2026-05-11 10:00');
 
         $records = $component->instance()->getTable()->getRecords();
 
@@ -133,6 +139,34 @@ class AvailabilityLogReviewTest extends BaseTrainingPanelTestCase
         $events = $this->tableRecords($component)->pluck('event.value');
 
         $this->assertSame(['edited', 'added'], $events->all());
+    }
+
+    #[Test]
+    public function snapshot_hides_slots_that_have_already_ended_at_the_as_of_time(): void
+    {
+        AvailabilityLogEntry::factory()->create([
+            'training_place_id' => $this->place->id,
+            'event' => 'added',
+            'slot_from' => '2026-05-15 18:00:00',
+            'slot_to' => '2026-05-15 21:00:00',
+            'created_at' => '2026-05-14 09:00:00',
+            'superseded_at' => null,
+        ]);
+
+        $component = Livewire::actingAs($this->panelUser)
+            ->test(AvailabilityLogReview::class, ['trainingPlace' => $this->place]);
+
+        $component->set('data.asOf', '2026-05-15 12:00');
+        $this->assertCount(1, $component->instance()->getTable()->getRecords(), 'An upcoming slot should be visible.');
+
+        $component->set('data.asOf', '2026-05-15 19:00');
+        $this->assertCount(1, $component->instance()->getTable()->getRecords(), 'A slot in progress should be visible.');
+
+        $component->set('data.asOf', '2026-05-15 21:00');
+        $this->assertCount(0, $component->instance()->getTable()->getRecords(), 'A slot that has ended should be hidden.');
+
+        $component->set('data.asOf', '2026-05-15 22:00');
+        $this->assertCount(0, $component->instance()->getTable()->getRecords(), 'A slot that has ended should be hidden.');
     }
 
     private function tableRecords($component): \Illuminate\Support\Collection
