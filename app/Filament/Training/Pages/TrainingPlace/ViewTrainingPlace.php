@@ -255,7 +255,7 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
             Callout::make('This training place is inactive')
                 ->icon('heroicon-o-exclamation-triangle')
                 ->danger()
-                ->description(fn () => 'This training place has been removed and it is now inactive. Removed on '.$this->trainingPlace->deleted_at?->format('d/m/Y \a\t H:i').'.')
+                ->description(fn () => 'This training place has been removed and it is now inactive. Removed on '.$this->trainingPlace->deleted_at?->toPanelDateTime().'.')
                 ->visible(fn (): bool => (bool) $this->trainingPlace->deleted_at)
                 ->columnSpanFull(),
             Section::make('Training Place Details')->columnSpanFull()->schema([
@@ -264,10 +264,10 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
                 TextEntry::make('display_name')
                     ->label(fn (): string => $this->trainingPlace->trainable_type_label)
                     ->state(fn (): string => $this->trainingPlace->trainingPosition?->position?->name ?? $this->trainingPlace->display_name),
-                TextEntry::make('created_at')->label('Training Start')->date('d/m/Y'),
+                TextEntry::make('created_at')->label('Training Start')->date(),
                 TextEntry::make('waitingListAccount.created_at')
                     ->label('Waiting List Join Date')
-                    ->date('d/m/Y')
+                    ->date()
                     ->visible(fn (): bool => (bool) $this->trainingPlace->waiting_list_account_id),
                 IconEntry::make('has_pending_exam')
                     ->label('Has Pending Exam Booking')

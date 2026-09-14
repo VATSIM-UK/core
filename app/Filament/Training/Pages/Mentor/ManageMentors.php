@@ -12,6 +12,7 @@ use App\Models\Mship\Account;
 use App\Models\Training\Mentoring\ManageMentorsScope;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\MentorPermissionService;
+use App\Support\DateFormat;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -115,8 +116,8 @@ class ManageMentors extends Page implements HasTable
                     ->wrap(),
                 TextColumn::make('last_mentored')
                     ->label('Last Mentored')
-                    ->state(fn (Account $record) => app(MentorPermissionService::class)->getLastMentoredDate($record, $this->category)?->format('d/m/Y') ?? 'Never')
-                    ->description(fn (string $state) => $state !== 'Never' ? Carbon::createFromFormat('d/m/Y', $state)->diffForHumans() : null)
+                    ->state(fn (Account $record) => app(MentorPermissionService::class)->getLastMentoredDate($record, $this->category)?->toPanelDate() ?? 'Never')
+                    ->description(fn (string $state) => $state !== 'Never' ? Carbon::createFromFormat(DateFormat::DATE, $state)->diffForHumans() : null)
                     ->sortable(query: function (Builder $query, string $direction): Builder {
                         $ids = $query->get()->sortBy(
                             fn (Account $account) => app(MentorPermissionService::class)->getLastMentoredDate($account, $this->category)?->timestamp ?? 0,

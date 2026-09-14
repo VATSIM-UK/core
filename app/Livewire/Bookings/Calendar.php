@@ -10,6 +10,7 @@ use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\Member as CtsMember;
 use App\Models\Roster;
 use App\Repositories\Cts\BookingRepository;
+use App\Repositories\Events\EventRepository;
 use App\Services\BookingService;
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidFormatException;
@@ -94,6 +95,9 @@ class Calendar extends Component
      * Derived render state. Deliberately not public: these are large (the scale
      * alone is 1441 floats) and recomputing them is far cheaper than shipping
      * them to the browser and back inside the Livewire snapshot on every request.
+     * $upcomingBookings and $upcomingMentoringExamBookings are private for a
+     * different reason: each mentor/examiner entry carries a CID, which must
+     * never be exposed in the public Livewire snapshot.
      */
     private Collection $bookings;
 
@@ -101,17 +105,28 @@ class Calendar extends Component
 
     private Collection $upcomingBookings;
 
+    private Collection $upcomingMentoringExamBookings;
+
     public function mount(?int $year = null, ?int $month = null): void
     {
         $this->selectedDate = Carbon::today();
 
-        if ($year) {
+        $bookingId = request()->input('booking_id');
+        $booking = ctype_digit((string) $bookingId) ? Booking::find((int) $bookingId) : null;
+
+        if ($booking) {
+            $this->selectedDate = $booking->starts_at->copy()->startOfDay();
+        } elseif ($year) {
             $day = request()->input('day', 1);
             $this->selectedDate = Carbon::create($year, $month ?? $this->selectedDate->month, (int) $day);
         }
 
         $this->timelinePositions = [];
         $this->refreshData();
+
+        if ($booking) {
+            $this->dispatch('scroll-to-booking', source: 'core', id: $booking->id, ctsBookingId: null, instant: true);
+        }
     }
 
     public function render()
@@ -130,6 +145,7 @@ class Calendar extends Component
             'selectedDate' => $this->selectedDate,
             'timelineScale' => array_values($this->timelineScale),
             'upcomingBookings' => $this->upcomingBookings,
+            'upcomingMentoringExamBookings' => $this->upcomingMentoringExamBookings,
             'typeLegend' => self::TYPE_LEGEND,
         ]);
     }
@@ -149,6 +165,8 @@ class Calendar extends Component
         $this->upcomingBookings = auth()->check() && ! auth()->user()->is_banned
             ? app(BookingRepository::class)->getMemberUpcomingBookings(auth()->user())
             : collect();
+
+        $this->upcomingMentoringExamBookings = app(BookingRepository::class)->getUpcomingMentoringAndExamBookings();
     }
 
     public function updatedPositionFilter(): void
@@ -171,16 +189,29 @@ class Calendar extends Component
         ));
     }
 
+    // Separate from jumpToDate so a booking already on the visible date can be
+    // scrolled to without the dataVersion bump that rebuilds the timeline.
+    public function jumpToBooking(string $date, string $source, ?int $id = null, ?int $ctsBookingId = null): void
+    {
+        if (! $this->selectedDate->isSameDay(Carbon::parse($date))) {
+            $this->jumpToDate($date);
+        }
+
+        $this->dispatch('scroll-to-booking', source: $source, id: $id, ctsBookingId: $ctsBookingId, instant: true);
+    }
+
     public function getBookingsForDate(Carbon $date): void
     {
-        // An EV row carrying a callsign is a controller's own booking made during
-        // an event, not the event itself. Only the cts.events rows belong on the
-        // calendar: they have the event name and never a position. Dropping the
-        // rest here rather than at render time keeps them out of the hour scale
-        // and gap collapsing too, so they cannot stretch the timeline invisibly.
+        // Events come from the core events table via the Events repository; the
+        // cts.events rows BookingRepository still merges are dropped here. EV
+        // rows with a callsign are a controller's own booking during an event,
+        // not the event itself. Rejecting here, not at render time, keeps them
+        // out of the hour scale and gap collapsing.
         $this->bookings = app(BookingRepository::class)
-            ->getBookings($date)
-            ->reject(fn (object $booking): bool => $booking->type === 'EV' && $booking->position !== null)
+            ->getBookings($date, hideEndedTrainingSessions: true)
+            ->reject(fn (object $booking): bool => $booking->type === 'EV')
+            ->concat(app(EventRepository::class)->getEventsForDate($date))
+            ->sortBy(fn (object $booking): string => $booking->from)
             ->values();
     }
 

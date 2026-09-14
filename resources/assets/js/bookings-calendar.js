@@ -324,3 +324,48 @@ document.addEventListener('alpine:init', () => {
         },
     }));
 });
+
+// Registered globally: the event can arrive before the target day's timeline exists.
+window.addEventListener('scroll-to-booking', (event) => {
+    const { source, id, ctsBookingId, instant } = event.detail || {};
+    if (!source) return;
+
+    findAndHighlightBooking(source + '-' + (id ?? ctsBookingId), !!instant);
+});
+
+function findAndHighlightBooking(key, instant, attempt = 0) {
+    const el = document.querySelector(`[data-booking-key="${CSS.escape(key)}"]`);
+
+    if (!el) {
+        if (attempt < 20) {
+            requestAnimationFrame(() => findAndHighlightBooking(key, instant, attempt + 1));
+        }
+        return;
+    }
+
+    const wasCollapsed = expandAncestorGroup(el);
+
+    // Wait for x-collapse's open animation, or scrollIntoView measures the wrong position.
+    setTimeout(() => {
+        el.scrollIntoView({ behavior: instant ? 'instant' : 'smooth', block: 'center', inline: 'center' });
+        el.classList.add('booking-jump-highlight');
+        setTimeout(() => el.classList.remove('booking-jump-highlight'), 3000);
+    }, wasCollapsed ? 350 : 0);
+}
+
+// x-show only hides a collapsed group in CSS; it must be opened to scroll to its content.
+function expandAncestorGroup(el) {
+    let node = el.parentElement;
+
+    while (node) {
+        const data = window.Alpine?.$data ? window.Alpine.$data(node) : null;
+        if (data && typeof data.expanded === 'boolean') {
+            const wasCollapsed = !data.expanded;
+            data.expanded = true;
+            return wasCollapsed;
+        }
+        node = node.parentElement;
+    }
+
+    return false;
+}

@@ -13,6 +13,7 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Services\Training\WaitingListSelfEnrolment;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class WaitingListSelfEnrolmentServiceTest extends TestCase
@@ -24,7 +25,7 @@ class WaitingListSelfEnrolmentServiceTest extends TestCase
         parent::setUp();
 
         // reset roster between tests.
-        Roster::truncate();
+        DB::table('roster')->delete();
     }
 
     public function test_returns_empty_collection_when_no_lists_marked_as_enrollable()

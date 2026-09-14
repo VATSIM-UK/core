@@ -49,7 +49,6 @@ class AvailabilityLogReview extends Component implements HasActions, HasForms, H
                 ->timezone('UTC')
                 ->seconds(false)
                 ->native(false)
-                ->displayFormat('d.m.Y H:i')
                 ->live()
                 ->maxDate(now()),
         ])->statePath('data');
@@ -89,6 +88,7 @@ class AvailabilityLogReview extends Component implements HasActions, HasForms, H
                 return AvailabilityLogEntry::query()
                     ->where('training_place_id', $this->trainingPlace->id)
                     ->where('created_at', '<=', $asOf)
+                    ->where('slot_to', '>', $asOf)
                     ->where(function (Builder $query) use ($asOf) {
                         $query->whereNull('superseded_at')
                             ->orWhere('superseded_at', '>', $asOf);
@@ -99,12 +99,12 @@ class AvailabilityLogReview extends Component implements HasActions, HasForms, H
             ->columns([
                 TextColumn::make('day')
                     ->label('Day')
-                    ->state(fn (AvailabilityLogEntry $record) => $record->slot_from->format('d.m.Y')),
+                    ->state(fn (AvailabilityLogEntry $record) => $record->slot_from->toPanelDate()),
 
                 TextColumn::make('time')
                     ->label('Time (Zulu)')
                     ->fontFamily('mono')
-                    ->state(fn (AvailabilityLogEntry $record) => $record->slot_from->format('H:i').' - '.$record->slot_to->format('H:i')),
+                    ->state(fn (AvailabilityLogEntry $record) => $record->slot_from->toPanelTime().' - '.$record->slot_to->toPanelTime()),
 
                 TextColumn::make('duration')
                     ->label('Duration')

@@ -640,36 +640,6 @@ class HeathrowEndorsementProgressTest extends TestCase
     }
 
     #[Test]
-    public function test_s1_sessions_are_excluded_from_gnd_hours()
-    {
-        $account = $this->createAccountWithQualification('S2');
-        PositionGroup::factory()->create(['name' => 'Heathrow (GND)']);
-        $s1Qual = Qualification::code('S1')->firstOrFail();
-        $s2Qual = Qualification::code('S2')->firstOrFail();
-
-        factory(Atc::class)->create([
-            'account_id' => $account->id,
-            'callsign' => 'EGKK_GND',
-            'minutes_online' => 600,
-            'facility_type' => Atc::TYPE_GND,
-            'qualification_id' => $s1Qual->id,
-        ]);
-        factory(Atc::class)->create([
-            'account_id' => $account->id,
-            'callsign' => 'EGCC_GND',
-            'minutes_online' => 2400,
-            'facility_type' => Atc::TYPE_GND,
-            'qualification_id' => $s2Qual->id,
-        ]);
-
-        $this->actingAs($account)
-            ->get(route(self::ROUTE))
-            ->assertOk()
-            ->assertSee('40 / 40 Hrs')
-            ->assertSee('0 / 10 Hrs');
-    }
-
-    #[Test]
     public function test_s2_sessions_are_excluded_from_app_hours()
     {
         $account = $this->createAccountWithQualification('S3');

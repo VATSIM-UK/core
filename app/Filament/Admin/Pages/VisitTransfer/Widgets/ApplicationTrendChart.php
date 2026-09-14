@@ -24,7 +24,7 @@ class ApplicationTrendChart extends ChartWidget
 
     public function getDescription(): ?string
     {
-        return $this->start && $this->end ? $this->start->format('d M Y').' to '.$this->end->format('d M Y') : '';
+        return $this->start && $this->end ? $this->start->toPanelDate().' to '.$this->end->toPanelDate() : '';
     }
 
     protected function getData(): array
@@ -42,7 +42,7 @@ class ApplicationTrendChart extends ChartWidget
                 'fill' => true,
             ]],
             'labels' => array_map(
-                fn ($row) => Carbon::parse($row['day'])->format('d M'),
+                fn ($row) => Carbon::parse($row['day'])->format('d. m.'),
                 $trend
             ),
         ];

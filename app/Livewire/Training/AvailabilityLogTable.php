@@ -49,7 +49,7 @@ class AvailabilityLogTable extends Component implements HasActions, HasSchemas, 
             ->columns([
                 TextColumn::make('created_at')
                     ->label('When')
-                    ->dateTime('d.m.Y H:i'),
+                    ->dateTime(),
 
                 TextColumn::make('event')
                     ->label('Event')
@@ -64,7 +64,7 @@ class AvailabilityLogTable extends Component implements HasActions, HasSchemas, 
 
                 TextColumn::make('slot')
                     ->label('Slot')
-                    ->state(fn (AvailabilityLogEntry $record) => $record->slot_from->format('d.m.Y H:i').' - '.$record->slot_to->format('H:i')),
+                    ->state(fn (AvailabilityLogEntry $record) => $record->slot_from->toPanelDateTime().' - '.$record->slot_to->toPanelTime()),
 
                 TextColumn::make('status')
                     ->label('Status')
