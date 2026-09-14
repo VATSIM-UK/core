@@ -21,6 +21,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Devletes\FilamentProgressBar\Infolists\Components\ProgressBarEntry;
 
 class TheoryExamQuestions extends Page implements HasTable
 {
@@ -283,15 +284,15 @@ class TheoryExamQuestions extends Page implements HasTable
                 TextEntry::make('total')->label('Times Used')->color('info')->badge()->state($total),
                 TextEntry::make('correct')->label('Correct')->color('success')->badge()->state($correct),
                 TextEntry::make('incorrect')->label('Incorrect')->color('danger')->badge()->state($incorrect),
-                TextEntry::make('success_rate')->label('Success Rate')->html()->state($this->renderProgressBar($percentage($correct)))->columnSpanFull(),
+                ProgressBarEntry::make('success_rate')->label('Success Rate')->state(['progress' => $correct, 'total' => $total])->textPosition('outside')->thresholds([50 => 'success', 0=> 'danger'])->showProgressValue(false)->columnSpanFull()->size('xs'),
 
             ]),
 
             Section::make('Distribution')->columns(2)->schema([
-                TextEntry::make('option_1')->label(fn () => $this->optionLabel($question, 1))->html()->state($this->renderProgressBar($optionStats[1]['percentage'], $optionStats[1]['count'])),
-                TextEntry::make('option_2')->label(fn () => $this->optionLabel($question, 2))->html()->state($this->renderProgressBar($optionStats[2]['percentage'], $optionStats[2]['count'])),
-                TextEntry::make('option_3')->label(fn () => $this->optionLabel($question, 3))->html()->state($this->renderProgressBar($optionStats[3]['percentage'], $optionStats[3]['count'])),
-                TextEntry::make('option_4')->label(fn () => $this->optionLabel($question, 4))->html()->state($this->renderProgressBar($optionStats[4]['percentage'], $optionStats[4]['count'])),
+                ProgressBarEntry::make('option_1')->label(fn () => $this->optionLabel($question, 1))->state(['progress' => $optionStats[1]['count'], 'total' => $total])->textPosition('outside')->thresholds([50 => 'success', 0=> 'danger'])->size('xs'),
+                ProgressBarEntry::make('option_2')->label(fn () => $this->optionLabel($question, 2))->state(['progress' => $optionStats[2]['count'], 'total' => $total])->textPosition('outside')->thresholds([50 => 'success', 0=> 'danger'])->size('xs'),
+                ProgressBarEntry::make('option_3')->label(fn () => $this->optionLabel($question, 3))->state(['progress' => $optionStats[3]['count'], 'total' => $total])->textPosition('outside')->thresholds([50 => 'success', 0=> 'danger'])->size('xs'),
+                ProgressBarEntry::make('option_4')->label(fn () => $this->optionLabel($question, 4))->state(['progress' => $optionStats[4]['count'], 'total' => $total])->textPosition('outside')->thresholds([50 => 'success', 0=> 'danger'])->size('xs'),
             ]),
         ];
     }
@@ -301,16 +302,4 @@ class TheoryExamQuestions extends Page implements HasTable
         return $question->answer == $option ? "Option {$option} (Correct)" : "Option {$option}";
     }
 
-    protected function renderProgressBar(float $percentage, ?int $count = null): string
-    {
-        $percentage = max(0, min(100, $percentage));
-        $color = $percentage >= 50 ? '#22c55e' : '#ef4444';
-
-        $countText = $count !== null ? " ({$count})" : '';
-
-        return "<div style='background:#ffffff; height: 10px; border-radius: 7px; width: 100%;'>
-                    <div style='background:{$color}; width: {$percentage}%; height: 100%; border-radius: 7px;'></div>
-                </div>
-                <div style='margin-top: 6px;'>{$percentage}%{$countText}</div>";
-    }
 }
