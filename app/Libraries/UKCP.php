@@ -6,6 +6,7 @@ use App\Models\Mship\Account;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -54,7 +55,11 @@ class UKCP
                 'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {
-            Log::info("UKCP Client Exception $e when getting user account {$account->id}");
+            Log::error('UKCP client exception while deleting token.', [
+                'exception' => $e,
+                'account_id' => $account->id,
+                'token_id' => $tokenId,
+            ]);
 
             return false;
         }
@@ -69,7 +74,10 @@ class UKCP
                 'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {
-            Log::info("UKCP Client Exception {$e->getMessage()} when getting user account {$account->id}");
+            Log::warning('Failed to fetch UKCP account for user.', [
+                'exception' => $e,
+                'account_id' => $account->id,
+            ]);
 
             return;
         }
@@ -119,7 +127,10 @@ class UKCP
                 return [];
             }
 
-            Log::warning("UKCP Client Error {$e->getMessage()} when getting stand status for {$airfield}");
+            Log::error('Failed to fetch UKCP stand status.', [
+                'exception' => $e,
+                'airfield' => $airfield,
+            ]);
 
             return [];
         }
@@ -137,7 +148,10 @@ class UKCP
 
             return json_decode($result->getBody()->getContents(), true);
         } catch (ClientException $e) {
-            Log::info("UKCP Client Exception {$e->getMessage()} when getting notifications");
+            Log::warning('Failed to fetch UKCP notifications for user.', [
+                'exception' => $e,
+                'account_id' => $account->id,
+            ]);
 
             return [];
         }
@@ -155,10 +169,75 @@ class UKCP
 
             return true;
         } catch (ClientException $e) {
-            dd($e);
-            Log::info("UKCP Client Exception {$e->getMessage()} when marking notification read");
+            Log::error('Failed to mark UKCP notification as read.', [
+                'exception' => $e,
+                'account_id' => $account->id,
+                'notification_id' => $notificationId,
+            ]);
 
             return [];
+        }
+    }
+
+    /**
+     * Fetch all controller positions from the UKCP API.
+     *
+     * Returns a collection of objects with: id (int), callsign (string),
+     * frequency (float), description (string|null).
+     *
+     * @return Collection<object{id: int, callsign: string, frequency: float, description: string|null}>
+     */
+    public function getAllControllerPositions(): Collection
+    {
+        try {
+            $response = $this->client->get(
+                config('services.ukcp.url').'/api/controller',
+                [
+                    'headers' => [
+                        'Authorization' => 'Bearer '.$this->apiKey,
+                    ],
+                    'timeout' => 15,
+                ]
+            );
+
+            return collect(json_decode($response->getBody()->getContents()));
+        } catch (ClientException|GuzzleException $e) {
+            Log::error('Failed to fetch UKCP controller positions.', [
+                'exception' => $e,
+            ]);
+
+            return collect();
+        }
+    }
+
+    /**
+     * Fetch all controller positions from the UKCP API v2 dependency endpoint.
+     *
+     * Returns a collection of objects with: id (int), callsign (string),
+     * frequency (float), and top_down (array of ICAO codes this position covers).
+     *
+     * @return Collection<object{id: int, callsign: string, frequency: float, top_down: string[]}>
+     */
+    public function getControllerPositionsV2Dependency(): Collection
+    {
+        try {
+            $response = $this->client->get(
+                config('services.ukcp.url').'/api/controller-positions-v2',
+                [
+                    'headers' => [
+                        'Authorization' => 'Bearer '.$this->apiKey,
+                    ],
+                    'timeout' => 15,
+                ]
+            );
+
+            return collect(json_decode($response->getBody()->getContents()));
+        } catch (ClientException|GuzzleException $e) {
+            Log::error('Failed to fetch UKCP controller positions (v2 dependency).', [
+                'exception' => $e,
+            ]);
+
+            return collect();
         }
     }
 

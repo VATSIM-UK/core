@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\TrainingPanel\MyTraining;
 
-use App\Filament\Training\Pages\MyTraining\MyPendingExams;
+use App\Livewire\Training\MyPendingExamsTable;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamSetup;
 use App\Models\Cts\Member;
@@ -64,7 +64,7 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
     public function it_loads_for_member_with_training_access(): void
     {
         Livewire::actingAs($this->studentAccount)
-            ->test(MyPendingExams::class)
+            ->test(MyPendingExamsTable::class)
             ->assertSuccessful();
     }
 
@@ -75,7 +75,7 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
         Member::factory()->recycle($noAccessAccount)->create(['cid' => $noAccessAccount->id]);
 
         $this->actingAs($noAccessAccount)
-            ->get('/training/my-training/pending-exams')
+            ->get('/training/my-training/exams')
             ->assertNotFound();
     }
 
@@ -100,7 +100,7 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
         ]);
 
         $component = Livewire::actingAs($this->studentAccount)
-            ->test(MyPendingExams::class)
+            ->test(MyPendingExamsTable::class)
             ->assertSuccessful();
 
         $records = $component->instance()->getTable()->getRecords();
@@ -115,7 +115,7 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
         $this->examBooking->update(['finished' => ExamBooking::FINISHED_FLAG]);
 
         $component = Livewire::actingAs($this->studentAccount)
-            ->test(MyPendingExams::class)
+            ->test(MyPendingExamsTable::class)
             ->assertSuccessful();
 
         $this->assertCount(0, $component->instance()->getTable()->getRecords());
@@ -140,7 +140,7 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
         ]);
 
         $component = Livewire::actingAs($this->studentAccount)
-            ->test(MyPendingExams::class)
+            ->test(MyPendingExamsTable::class)
             ->assertSuccessful();
 
         $this->assertCount(2, $component->instance()->getTable()->getRecords());
@@ -154,7 +154,7 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
         $emptyAccount->givePermissionTo('training.access');
 
         $component = Livewire::actingAs($emptyAccount)
-            ->test(MyPendingExams::class)
+            ->test(MyPendingExamsTable::class)
             ->assertSuccessful();
 
         $this->assertCount(0, $component->instance()->getTable()->getRecords());
@@ -166,31 +166,27 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
         Notification::fake();
 
         $examinerAccount = Account::factory()->create();
-        Member::factory()->create([
-            'id' => $examinerAccount->id,
-            'cid' => $examinerAccount->id,
-            'examiner' => true,
-        ]);
+        $examinerMember = Member::factory()->forAccount($examinerAccount)->create(['examiner' => true]);
 
         $this->examBooking->update([
             'taken' => 1,
             'taken_date' => now()->addDays(3)->format('Y-m-d'),
             'taken_from' => '14:00:00',
             'taken_to' => '16:00:00',
-            'exmr_id' => $examinerAccount->id,
+            'exmr_id' => $examinerMember->id,
         ]);
 
         $this->examSetup->update(['booked' => 1]);
 
         PracticalExaminers::create([
             'examid' => $this->examBooking->id,
-            'senior' => $examinerAccount->id,
+            'senior' => $examinerMember->id,
         ]);
 
         $reason = 'I can no longer make the scheduled time.';
 
         Livewire::actingAs($this->studentAccount)
-            ->test(MyPendingExams::class)
+            ->test(MyPendingExamsTable::class)
             ->assertTableActionVisible('cancelExamRequest', $this->examBooking)
             ->callTableAction('cancelExamRequest', $this->examBooking, [
                 'reason' => $reason,
@@ -208,7 +204,7 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
             'sesh_id' => $this->examBooking->id,
             'sesh_type' => 'EX',
             'reason' => $reason,
-            'reason_by' => $this->studentAccount->id,
+            'reason_by' => $this->studentMember->id,
         ], 'cts');
 
         Notification::assertSentTo(
@@ -242,8 +238,8 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
             'taken_to' => '16:00:00',
         ]);
 
-        $method = new \ReflectionMethod(MyPendingExams::class, 'buildCalendarLinkObject');
-        $page = new MyPendingExams;
+        $method = new \ReflectionMethod(MyPendingExamsTable::class, 'buildCalendarLinkObject');
+        $page = new MyPendingExamsTable;
         $link = $method->invoke($page, $this->examBooking);
 
         $this->assertInstanceOf(Link::class, $link);

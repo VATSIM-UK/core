@@ -8,4 +8,9 @@ use Filament\Resources\Pages\ListRecords;
 class ListPositionGroups extends ListRecords
 {
     protected static string $resource = PositionGroupResource::class;
+
+    public static function canAccess(array $parameters = []): bool
+    {
+        return false;
+    }
 }

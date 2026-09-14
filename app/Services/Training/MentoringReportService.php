@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Services\Training;
 
 use App\Enums\FieldScore;
+use App\Models\Booking;
+use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\CancelReason;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
@@ -169,6 +171,25 @@ class MentoringReportService
                 'taken_time' => null,
             ]);
         });
+
+        $this->deleteCoreBooking($session);
+    }
+
+    private function deleteCoreBooking(Session $session): void
+    {
+        $booking = Booking::where('bookable_type', Session::class)
+            ->where('bookable_id', $session->id)
+            ->first();
+
+        if (! $booking) {
+            return;
+        }
+
+        if ($booking->cts_booking_id) {
+            CtsBooking::where('id', $booking->cts_booking_id)->delete();
+        }
+
+        $booking->delete();
     }
 
     /**
@@ -219,7 +240,8 @@ class MentoringReportService
         try {
             $recipients = Account::role($tgiRoleName)->get();
         } catch (RoleDoesNotExist $e) {
-            Log::warning("TGI notification skipped: role '{$tgiRoleName}' does not exist.", [
+            Log::warning('TGI notification skipped: role does not exist', [
+                'role' => $tgiRoleName,
                 'session_id' => $session->id,
                 'category' => $category,
             ]);

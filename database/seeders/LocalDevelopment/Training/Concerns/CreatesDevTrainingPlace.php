@@ -6,6 +6,7 @@ namespace Database\Seeders\LocalDevelopment\Training\Concerns;
 
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\TrainingPlaceService;
 use Database\Seeders\LocalDevelopment\Training\DevTrainingFoundation;
 use RuntimeException;
@@ -35,7 +36,8 @@ trait CreatesDevTrainingPlace
 
         $existing = TrainingPlace::query()
             ->where('account_id', $account->id)
-            ->where('training_position_id', $trainingPosition->id)
+            ->where('trainable_type', TrainingPosition::class)
+            ->where('trainable_id', $trainingPosition->id)
             ->whereNull('deleted_at')
             ->first();
 

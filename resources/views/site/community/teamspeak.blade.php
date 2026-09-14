@@ -123,7 +123,7 @@
 							Should you have a question for a member of staff using these channels - you should
 							not disturb them (either by entering the channel or via PM/poke), please wait for
 							them to finish and change rooms first. &nbsp;If you&rsquo;re unable to locate the
-							answer to your question on either the website or the forum - you are always able to
+							answer to your question on either the website or the Discord - you are always able to
 							<a href="https://helpdesk.vatsim.uk/" rel="external nofollow">raise a ticket using
 								the helpdesk</a>.
 						</p>

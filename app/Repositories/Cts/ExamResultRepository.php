@@ -5,6 +5,7 @@ namespace App\Repositories\Cts;
 use App\Events\Training\Exams\PracticalExamCompleted;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\PracticalResult;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -18,10 +19,11 @@ class ExamResultRepository
             ->get();
     }
 
-    public function getPassedExamsOfType(string $type): Collection
+    public function getPassedExamsOfType(string $type, ?Carbon $since = null): Collection
     {
         return PracticalResult::where('result', PracticalResult::PASSED)
             ->where('exam', $type)
+            ->when($since, fn ($query) => $query->where('date', '>=', $since))
             ->get();
     }
 

@@ -43,7 +43,6 @@ class PositionResourceTest extends BaseAdminResourceTestCase
                 'name' => 'London Tower',
                 'frequency' => 118.500,
                 'type' => Position::TYPE_TOWER,
-                'sub_station' => false,
                 'temporarily_endorsable' => false,
                 'virtual' => false,
             ])

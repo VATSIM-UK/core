@@ -27,13 +27,13 @@ class ActionExpiredAvailabilityWarningRemoval implements ShouldQueue
         $this->availabilityWarning->refresh();
 
         if ($this->availabilityWarning->status !== 'pending') {
-            Log::info("Availability warning {$this->availabilityWarning->id} is no longer pending, skipping.");
+            Log::info('Availability warning is no longer pending, skipping', ['availability_warning_id' => $this->availabilityWarning->id]);
 
             return;
         }
 
         if ($this->availabilityWarning->expires_at->isFuture()) {
-            Log::info("Availability warning {$this->availabilityWarning->id} has not yet expired, skipping.");
+            Log::info('Availability warning has not yet expired, skipping', ['availability_warning_id' => $this->availabilityWarning->id]);
 
             return;
         }
@@ -41,7 +41,7 @@ class ActionExpiredAvailabilityWarningRemoval implements ShouldQueue
         $trainingPlace = $this->availabilityWarning->trainingPlace;
 
         if (! $trainingPlace) {
-            Log::warning("Training place not found for availability warning {$this->availabilityWarning->id}. Cannot process removal.");
+            Log::warning('Training place not found for availability warning. Cannot process removal', ['availability_warning_id' => $this->availabilityWarning->id]);
 
             return;
         }
@@ -55,12 +55,19 @@ class ActionExpiredAvailabilityWarningRemoval implements ShouldQueue
                 $account->notify(new TrainingPlaceRemovedDueToExpiredAvailability($this->availabilityWarning));
             });
         } catch (Exception $e) {
-            Log::error("Failed to process expired availability warning {$this->availabilityWarning->id}: {$e->getMessage()}. Will be retried on the next run.");
+            Log::error('Failed to process expired availability warning. Will be retried on the next run', [
+                'availability_warning_id' => $this->availabilityWarning->id,
+                'exception' => $e,
+            ]);
             $this->fail($e);
 
             return;
         }
 
-        Log::info("Training place {$trainingPlace->id} removed due to expired availability warning {$this->availabilityWarning->id}. Account {$account->id} notified.");
+        Log::info('Training place removed due to expired availability warning, account notified', [
+            'training_place_id' => $trainingPlace->id,
+            'availability_warning_id' => $this->availabilityWarning->id,
+            'account_id' => $account->id,
+        ]);
     }
 }

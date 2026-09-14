@@ -74,7 +74,8 @@ class TrainingPlaceOfferServiceTest extends TestCase
 
         $this->assertDatabaseHas('training_place_offers', [
             'waiting_list_account_id' => $waitingListAccount->id,
-            'training_position_id' => $trainingPosition->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
             'status' => TrainingPlaceOfferStatus::Pending->value,
         ]);
     }
@@ -132,7 +133,8 @@ class TrainingPlaceOfferServiceTest extends TestCase
 
         $this->assertDatabaseHas('training_places', [
             'waiting_list_account_id' => $offer->waiting_list_account_id,
-            'training_position_id' => $offer->training_position_id,
+            'trainable_type' => $offer->trainable_type,
+            'trainable_id' => $offer->trainable_id,
         ]);
     }
 

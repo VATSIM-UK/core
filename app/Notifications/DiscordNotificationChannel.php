@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Libraries\Discord;
+use Illuminate\Support\Facades\Log;
 
 class DiscordNotificationChannel
 {
@@ -11,6 +12,8 @@ class DiscordNotificationChannel
         $messageContents = $notification->toDiscord($notifiable);
 
         $discordClient = new Discord;
+
+        Log::info('Sending Discord notification', ['channel_id' => $notification->getChannel()]);
         $discordClient->sendMessageToChannel($notification->getChannel(), $messageContents);
     }
 }

@@ -21,6 +21,38 @@ trait AddToCalendar
     abstract protected function getCalendarIcsFilename(mixed $record): string;
 
     /**
+     * Helper to build ExamBooking calendar links
+     */
+    protected function buildExamBookingLink(mixed $record, string $title, ?string $position, ?string $description = null): Link
+    {
+        $sessionDate = \Carbon\Carbon::parse($record->taken_date)->format('Y-m-d');
+        $start = \Carbon\Carbon::parse("{$sessionDate} {$record->taken_from}");
+        $end = \Carbon\Carbon::parse("{$sessionDate} {$record->taken_to}");
+
+        return Link::create($title, $start, $end)
+            ->description($description ?? "Position: {$position}")
+            ->address($position ?? '');
+    }
+
+    /**
+     * Helper to build Session (mentoring) calendar links
+     */
+    protected function buildSessionLink(mixed $record, string $title, ?string $position, ?string $description = null): Link
+    {
+        $sessionDate = \Carbon\Carbon::parse($record->taken_date)->format('Y-m-d');
+        $start = \Carbon\Carbon::parse("{$sessionDate} {$record->taken_from}");
+        $end = \Carbon\Carbon::parse("{$sessionDate} {$record->taken_to}");
+
+        if ($end->lte($start)) {
+            $end->addDay();
+        }
+
+        return Link::create($title, $start, $end)
+            ->description($description ?? "Position: {$position}")
+            ->address($position ?? '');
+    }
+
+    /**
      * Build a calendar link URL for the given record and provider.
      *
      * @param  mixed  $record  The table record

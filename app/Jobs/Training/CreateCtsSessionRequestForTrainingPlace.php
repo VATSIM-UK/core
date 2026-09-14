@@ -24,7 +24,7 @@ class CreateCtsSessionRequestForTrainingPlace implements ShouldQueue
     public function handle(): void
     {
         $this->trainingPlace->loadMissing([
-            'trainingPosition',
+            'trainable',
             'account',
         ]);
 
@@ -38,7 +38,8 @@ class CreateCtsSessionRequestForTrainingPlace implements ShouldQueue
             return;
         }
 
-        $callsign = $this->trainingPlace->trainingPosition?->cts_primary_position;
+        $callsign = $this->trainingPlace->trainingPosition?->cts_primary_position
+            ?? collect($this->trainingPlace->trainableCtsPositions())->first();
 
         if (! is_string($callsign) || trim($callsign) === '') {
             return;

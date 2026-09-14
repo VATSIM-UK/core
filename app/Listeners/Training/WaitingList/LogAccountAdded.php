@@ -3,7 +3,6 @@
 namespace App\Listeners\Training\WaitingList;
 
 use App\Events\Training\AccountAddedToWaitingList;
-use Illuminate\Support\Facades\Log;
 
 class LogAccountAdded
 {
@@ -24,7 +23,10 @@ class LogAccountAdded
      */
     public function handle(AccountAddedToWaitingList $event)
     {
-        Log::channel('training')
-            ->info("Account {$event->account} ({$event->account->id}) was added to {$event->waitingList} by {$event->staffAccount} ({$event->staffAccount->id})");
+        audit('Account added to waiting list', [
+            'account_id' => $event->account->id,
+            'waiting_list_id' => $event->waitingList->id,
+            'staff_id' => $event->staffAccount->id,
+        ]);
     }
 }

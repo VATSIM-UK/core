@@ -37,7 +37,7 @@ class RosterRestrictionResource extends Resource
                     ->label('Created By'),
                 TextColumn::make('restrictionNote.created_at')
                     ->label('Created At')
-                    ->isoDateTimeFormat('lll'),
+                    ->dateTime(),
             ]);
     }
 

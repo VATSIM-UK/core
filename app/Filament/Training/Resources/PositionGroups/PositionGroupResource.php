@@ -23,6 +23,11 @@ class PositionGroupResource extends Resource
 
     protected static string|\UnitEnum|null $navigationGroup = 'Endorsements';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     public static function infolist(Schema $schema): Schema
     {
         return $schema
@@ -44,7 +49,8 @@ class PositionGroupResource extends Resource
             ])
             ->defaultSort('name')
             ->recordActions([
-                ViewAction::make(),
+                ViewAction::make()
+                    ->url(fn (PositionGroup $record): string => static::getUrl('view', ['record' => $record])),
             ])
             ->defaultSort('name', 'desc');
     }

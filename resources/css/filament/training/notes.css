@@ -16,16 +16,39 @@
         @apply text-xl;
     }
 
-    .cts-notes-content h3 {
-        @apply text-lg;
+    .cts-notes-content table {
+        @apply w-full border-collapse mb-4;
+        table-layout: fixed;
+        box-sizing: border-box;
+        width: 100% !important;
     }
 
-    .cts-notes-content h4 {
-        @apply text-base;
+    .cts-notes-content table col {
+        width: auto !important;
     }
 
-    .cts-notes-content h5,
-    .cts-notes-content h6 {
-        @apply text-sm;
+    .cts-notes-content th,
+    .cts-notes-content td {
+        @apply border border-gray-300 align-top text-left;
+        padding: 0.5rem 0.75rem !important;
+        box-sizing: border-box;
+        overflow-wrap: break-word;
+        word-break: normal;
+        white-space: normal;
+        min-width: 60px;
     }
+
+    .cts-notes-content th {
+        @apply bg-gray-50 font-semibold;
+    }
+
+    .dark .cts-notes-content th,
+    .dark .cts-notes-content td {
+        @apply border-gray-600;
+    }
+
+    .dark .cts-notes-content th {
+        @apply bg-gray-800;
+    }
+
 }

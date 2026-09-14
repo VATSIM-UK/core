@@ -7,6 +7,7 @@ use App\Models\Mship\Account;
 use App\Notifications\Mship\WelcomeMember;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class ImportDivisionMembers extends Command
@@ -30,6 +31,12 @@ class ImportDivisionMembers extends Command
         while ($response = $this->getMembersFromVatsim()) {
             if ($response->collect('items')->isEmpty()) {
                 $this->info('No more users to process.');
+
+                Log::info('import:division-members completed', [
+                    'created' => $this->countNewlyCreated,
+                    'updated' => $this->countUpdated,
+                    'skipped' => $this->countSkipped,
+                ]);
 
                 return;
             }
@@ -90,12 +97,20 @@ class ImportDivisionMembers extends Command
     {
         $token = config('services.vatsim-net.api.key');
 
-        return Http::withHeaders([
+        $response = Http::withHeaders([
             'Authorization' => "Token $token",
-        ])->withUserAgent('VATSIMUK')
+        ])->withUserAgent('VATSIM-UK')
             ->get(config('services.vatsim-net.api.base').'orgs/division/GBR', [
                 'limit' => $this->limit,
                 'offset' => $this->offset,
             ]);
+
+        if ($response->failed()) {
+            Log::error('VATSIM division members fetch failed', ['status' => $response->status()]);
+
+            return false;
+        }
+
+        return $response;
     }
 }

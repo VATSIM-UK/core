@@ -21,7 +21,7 @@ abstract class BaseTrainingPanelTestCase extends TestCase
 
         $this->panelUser = Account::factory()->create();
 
-        Member::factory()->create(['id' => $this->panelUser->id, 'cid' => $this->panelUser->id]);
+        Member::factory()->forAccount($this->panelUser)->create();
 
         $this->panelUser->givePermissionTo('training.access');
     }

@@ -102,7 +102,9 @@ trait HasDiscordAccount
 
             // Only call the API if roles actually changed
             if ($this->rolesNeedUpdate($currentRoles, $targetRoles)) {
-                Log::info("Updating Discord roles for {$this->full_name} ({$this->getKey()})", [
+                Log::info('Updating Discord roles for account', [
+                    'name' => $this->full_name,
+                    'account_id' => $this->getKey(),
                     'current' => $currentRoles->toArray(),
                     'target' => $targetRoles->toArray(),
                 ]);

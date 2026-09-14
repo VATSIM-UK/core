@@ -7,6 +7,8 @@ namespace Tests\Feature\TrainingPanel\Mentor;
 use App\Enums\FieldScore;
 use App\Filament\Training\Pages\Mentor\ConductMentoringSession;
 use App\Livewire\Training\AcceptedMentoringSessionsTable;
+use App\Models\Booking;
+use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\ProgSheet;
 use App\Models\Cts\ProgSheetCategory;
@@ -48,16 +50,10 @@ class ConductMentoringSessionTest extends BaseTrainingPanelTestCase
         parent::setUp();
 
         $this->mentor = Account::factory()->create();
-        $this->mentorMember = Member::factory()->create([
-            'id' => $this->mentor->id,
-            'cid' => $this->mentor->id,
-        ]);
+        $this->mentorMember = Member::factory()->forAccount($this->mentor)->create();
 
         $this->student = Account::factory()->create();
-        $this->studentMember = Member::factory()->create([
-            'id' => $this->student->id,
-            'cid' => $this->student->id,
-        ]);
+        $this->studentMember = Member::factory()->forAccount($this->student)->create();
 
         $trainingPosition = TrainingPosition::factory()->create([
             'cts_positions' => ['EGLL_APP'],
@@ -108,7 +104,7 @@ class ConductMentoringSessionTest extends BaseTrainingPanelTestCase
     public function non_assigned_mentor_cannot_access_conduct_page(): void
     {
         $otherMentor = Account::factory()->create();
-        Member::factory()->create(['id' => $otherMentor->id, 'cid' => $otherMentor->id]);
+        Member::factory()->forAccount($otherMentor)->create();
 
         Livewire::actingAs($otherMentor)
             ->test(ConductMentoringSession::class, ['sessionId' => $this->session->id])
@@ -231,6 +227,50 @@ class ConductMentoringSessionTest extends BaseTrainingPanelTestCase
         $this->assertSame(0, (int) $this->session->taken);
         $this->assertNull($this->session->mentor_id);
         $this->assertSame(0, (int) $this->session->noShow);
+
+        Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function short_notice_no_show_without_discord_confirmation_deletes_calendar_bookings(): void
+    {
+        $this->session->update([
+            'taken_time' => now()->subHours(12),
+            'taken_date' => now()->addHours(6)->format('Y-m-d'),
+            'taken_from' => now()->addHours(6)->format('H:i:s'),
+            'taken_to' => now()->addHours(8)->format('H:i:s'),
+        ]);
+
+        $ctsBooking = CtsBooking::factory()->create([
+            'date' => $this->session->taken_date,
+            'from' => $this->session->taken_from,
+            'to' => $this->session->taken_to,
+            'position' => $this->session->position,
+            'member_id' => $this->session->student_id,
+            'type' => 'ME',
+        ]);
+
+        Booking::create([
+            'position_id' => null,
+            'member_id' => $this->student->id,
+            'type' => Booking::TYPE_MENTORING,
+            'starts_at' => $this->session->taken_date.' '.substr($this->session->taken_from, 0, 5),
+            'ends_at' => $this->session->taken_date.' '.substr($this->session->taken_to, 0, 5),
+            'bookable_type' => Session::class,
+            'bookable_id' => $this->session->id,
+            'cts_booking_id' => $ctsBooking->id,
+        ]);
+
+        Carbon::setTestNow(now()->addHours(6)->addMinutes(6));
+
+        app(MentoringReportService::class)->markNoShow($this->session->fresh(), false);
+
+        $this->assertDatabaseMissing('bookings', [
+            'bookable_type' => Session::class,
+            'bookable_id' => $this->session->id,
+        ]);
+
+        $this->assertDatabaseMissing('bookings', ['id' => $ctsBooking->id], 'cts');
 
         Carbon::setTestNow();
     }

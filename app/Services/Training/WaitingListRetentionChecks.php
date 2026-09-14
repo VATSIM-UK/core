@@ -18,7 +18,7 @@ class WaitingListRetentionChecks
 
     public static function createRetentionCheckRecord(WaitingListAccount $waitingListAccount): WaitingListRetentionCheckModel
     {
-        Log::info('Creating retention check record for account: '.$waitingListAccount->account->id);
+        Log::info('Creating retention check record for account', ['account_id' => $waitingListAccount->account->id]);
 
         return $waitingListAccount->retentionChecks()->create([
             'waiting_list_account_id' => $waitingListAccount->id,

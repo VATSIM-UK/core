@@ -36,10 +36,7 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
         foreach ($examLevels as $level) {
             // Create a student account and member
             $student = Account::factory()->create();
-            $studentMember = Member::factory()->create([
-                'id' => $student->id,
-                'cid' => $student->id,
-            ]);
+            $studentMember = Member::factory()->forAccount($student)->create();
 
             // Create an exam booking
             $examBooking = ExamBooking::factory()->create([
@@ -54,7 +51,7 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
             // Create examiners
             $examBooking->examiners()->create([
                 'examid' => $examBooking->id,
-                'senior' => $this->panelUser->id,
+                'senior' => $this->panelUser->member->id,
             ]);
 
             // Create a practical result
@@ -308,10 +305,7 @@ class ExamHistoryTest extends BaseTrainingPanelTestCase
     {
         // Create a practical result without an exam booking
         $orphanStudent = Account::factory()->create();
-        $orphanStudentMember = Member::factory()->create([
-            'id' => $orphanStudent->id,
-            'cid' => $orphanStudent->id,
-        ]);
+        $orphanStudentMember = Member::factory()->forAccount($orphanStudent)->create();
 
         // Use a smaller examid that fits in the database column
         PracticalResult::factory()->create([

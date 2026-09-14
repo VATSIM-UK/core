@@ -22,7 +22,7 @@ class TrainingLinkAction
             ->fillForm(fn (array $arguments): array => [
                 'text' => $arguments['text'] ?? null,
                 'url' => $arguments['url'] ?? null,
-                'shouldOpenInNewTab' => $arguments['shouldOpenInNewTab'] ?? false,
+                'shouldOpenInNewTab' => $arguments['shouldOpenInNewTab'] ?? true,
             ])
             ->schema([
                 TextInput::make('text')
@@ -32,7 +32,8 @@ class TrainingLinkAction
                     ->label(__('filament-forms::components.rich_editor.actions.link.modal.form.url.label'))
                     ->inputMode('url'),
                 Checkbox::make('shouldOpenInNewTab')
-                    ->label(__('filament-forms::components.rich_editor.actions.link.modal.form.should_open_in_new_tab.label')),
+                    ->label(__('filament-forms::components.rich_editor.actions.link.modal.form.should_open_in_new_tab.label'))
+                    ->default(true),
             ])
             ->action(function (array $arguments, array $data, RichEditor $component): void {
                 $isSingleCharacterSelection = ($arguments['editorSelection']['head'] ?? null) === ($arguments['editorSelection']['anchor'] ?? null);

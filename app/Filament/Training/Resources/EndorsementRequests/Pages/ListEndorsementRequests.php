@@ -3,17 +3,14 @@
 namespace App\Filament\Training\Resources\EndorsementRequests\Pages;
 
 use App\Filament\Training\Resources\EndorsementRequests\EndorsementRequestResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListEndorsementRequests extends ListRecords
 {
     protected static string $resource = EndorsementRequestResource::class;
 
-    protected function getHeaderActions(): array
+    public static function canAccess(array $parameters = []): bool
     {
-        return [
-            CreateAction::make(),
-        ];
+        return false;
     }
 }

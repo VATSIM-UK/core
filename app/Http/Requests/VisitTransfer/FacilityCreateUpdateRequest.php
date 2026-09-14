@@ -26,7 +26,6 @@ class FacilityCreateUpdateRequest extends FormRequest
             'stage_checks' => 'required|boolean',
             'auto_acceptance' => 'required|boolean',
             'public' => 'required|boolean',
-            'acceptance_emails.*' => 'nullable|email',
         ];
     }
 
@@ -58,7 +57,6 @@ class FacilityCreateUpdateRequest extends FormRequest
             'stage_checks.boolean' => 'You must specify if the automated checks are to be performed.',
             'auto_acceptance.required' => 'You must specify if applications are to be automatically accepted.',
             'auto_acceptance.boolean' => 'You must specify if applications are to be automatically accepted.',
-            'acceptance_emails.*.email' => 'Application acceptance notification emails must be valid email addresses.',
         ];
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Log;
 
 class CheckAdminPermissions
 {
@@ -36,6 +37,8 @@ class CheckAdminPermissions
         if ($hasRoutePermission) {
             return $next($request);
         }
+
+        Log::warning('Access denied: missing admin permission', ['account_id' => optional(auth()->user())->id, 'path' => $request->path(), 'ip' => $request->ip()]);
 
         abort(403);
     }

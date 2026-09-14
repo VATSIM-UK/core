@@ -47,6 +47,14 @@ return [
             'days' => 14,
         ],
 
+        'audit' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/audit.log'),
+            'level' => env('AUDIT_LOG_LEVEL', 'info'),
+            'days' => (int) env('AUDIT_LOG_DAYS', 365),
+            'processors' => [PsrLogMessageProcessor::class],
+        ],
+
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
@@ -113,6 +121,7 @@ return [
 
         'bugsnag' => [
             'driver' => 'bugsnag',
+            'level' => env('BUGSNAG_LOG_LEVEL', 'error'),
         ],
 
         'betterstack' => [

@@ -29,7 +29,7 @@ class ExamForwardingServiceTest extends TestCase
     {
         $account = Account::factory()->withQualification()->create();
 
-        return Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+        return Member::factory()->forAccount($account)->create();
     }
 
     private function createTestPosition(): TrainingPosition

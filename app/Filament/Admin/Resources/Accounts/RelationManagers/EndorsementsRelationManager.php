@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Accounts\RelationManagers;
 
+use App\Filament\Admin\Helpers\Pages\LogRelationAccess;
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account\Endorsement;
@@ -23,11 +24,18 @@ use Illuminate\Database\Eloquent\Builder;
 
 class EndorsementsRelationManager extends RelationManager
 {
+    use LogRelationAccess;
+
     protected static string $relationship = 'endorsements';
 
     protected static ?string $inverseRelationship = 'account';
 
     protected static ?string $recordTitleAttribute = 'endorsable.name';
+
+    protected function getLogActionName(): string
+    {
+        return 'ViewEndorsements';
+    }
 
     public function form(Schema $schema): Schema
     {

@@ -2,16 +2,18 @@
 
 namespace App\Jobs\Mship;
 
+use App\Jobs\Concerns\LogsJobFailure;
 use App\Jobs\Job;
 use App\Models\Mship\Account;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class SyncToHelpdesk extends Job implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, SerializesModels;
+    use Dispatchable, InteractsWithQueue, LogsJobFailure, SerializesModels;
 
     private $account;
 
@@ -23,5 +25,12 @@ class SyncToHelpdesk extends Job implements ShouldQueue
     public function handle()
     {
         $this->account->syncToHelpdesk();
+
+        Log::info('Member sync completed', ['service' => 'helpdesk', 'account_id' => $this->account->id]);
+    }
+
+    protected function logJobContext(): array
+    {
+        return ['account_id' => $this->account->id];
     }
 }

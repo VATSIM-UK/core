@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Middleware;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 use Predis\PredisException;
 
@@ -43,6 +44,7 @@ class RateLimited
                 });
         } catch (PredisException $exception) {
             // Redis probably not installed. We will send the job anyway
+            Log::warning('Rate limiter unavailable; job proceeding without throttling', ['job' => get_class($job), 'exception' => $exception]);
             $next($job);
         }
     }

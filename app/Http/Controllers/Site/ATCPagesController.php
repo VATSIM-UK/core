@@ -60,19 +60,55 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
                 ->pluck('endorsable_id')
                 ->toArray();
 
+            $atcQualificationLevel = $this->account->qualification_atc?->vatsim ?? 0;
+
+            $gndPgId = $heathrowPositionGroups->get('Heathrow (GND)')?->id;
+            $twrPgId = $heathrowPositionGroups->get('Heathrow (TWR)')?->id;
+            $appPgId = $heathrowPositionGroups->get('Heathrow (APP)')?->id;
+
+            $holdsGnd = $gndPgId && in_array($gndPgId, $existingEndorsements);
+            $holdsTwr = $twrPgId && in_array($twrPgId, $existingEndorsements);
+            $holdsApp = $appPgId && in_array($appPgId, $existingEndorsements);
+
+            $hasGndEndorsement = $holdsGnd || $holdsTwr || $holdsApp;
+            $hasTwrEndorsement = $holdsTwr || $holdsApp;
+
             $endorsementProgress = [];
             $endorsementChain = ['Heathrow (GND)', 'Heathrow (TWR)', 'Heathrow (APP)'];
 
             foreach ($endorsementChain as $pgName) {
                 $pg = $heathrowPositionGroups->get($pgName);
-                if (! $pg || in_array($pg->id, $existingEndorsements)) {
+                if (! $pg) {
+                    continue;
+                }
+
+                $alreadyHeldOrSuperseded = match ($pgName) {
+                    'Heathrow (GND)' => $holdsGnd || $holdsTwr || $holdsApp,
+                    'Heathrow (TWR)' => $holdsTwr || $holdsApp,
+                    'Heathrow (APP)' => $holdsApp,
+                };
+
+                if ($alreadyHeldOrSuperseded) {
+                    continue;
+                }
+
+                $eligible = match ($pgName) {
+                    'Heathrow (GND)' => $atcQualificationLevel >= 3,
+                    'Heathrow (TWR)' => $atcQualificationLevel >= 3 && $hasGndEndorsement,
+                    'Heathrow (APP)' => $atcQualificationLevel >= 4 && $hasTwrEndorsement,
+                };
+
+                if (! $eligible) {
                     continue;
                 }
 
                 switch ($pgName) {
                     case 'Heathrow (GND)':
-                        $delGndTwr = fn () => $this->account->networkDataAtc()
+                        $delGndTwrBase = $this->account->networkDataAtc()
                             ->isUK()
+                            ->withoutAfis()
+                            ->withoutMilitary()
+                            ->atMinimumQualification(2)
                             ->where(function (Builder $b) {
                                 $b->where('facility_type', Atc::TYPE_DEL)
                                     ->orWhere('facility_type', Atc::TYPE_GND)
@@ -82,9 +118,9 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
                         $endorsementProgress[] = [
                             'name' => 'Heathrow DEL/GND (S2+)',
                             'bars' => [
-                                ['label' => 'Total UK DEL/GND/TWR', 'hours' => $delGndTwr()->sum('minutes_online') / 60, 'required' => 40],
-                                ['label' => 'Gatwick DEL/GND/TWR', 'hours' => (clone $delGndTwr())->where('callsign', 'like', 'EGKK%')->sum('minutes_online') / 60, 'required' => 10],
-                                ['label' => 'Manchester DEL/GND/TWR', 'hours' => (clone $delGndTwr())->where('callsign', 'like', 'EGCC%')->sum('minutes_online') / 60, 'required' => 10],
+                                ['label' => 'Total UK DEL/GND/TWR', 'hours' => (clone $delGndTwrBase)->sum('minutes_online') / 60, 'required' => 40],
+                                ['label' => 'Gatwick DEL/GND/TWR', 'hours' => (clone $delGndTwrBase)->where('callsign', 'like', 'EGKK%')->sum('minutes_online') / 60, 'required' => 10],
+                                ['label' => 'Manchester DEL/GND/TWR', 'hours' => (clone $delGndTwrBase)->where('callsign', 'like', 'EGCC%')->sum('minutes_online') / 60, 'required' => 10],
                             ],
                         ];
                         break;
@@ -96,20 +132,24 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
                                 $b->where('facility_type', Atc::TYPE_GND)
                                     ->orWhere('facility_type', Atc::TYPE_DEL);
                             })
+                            ->atMinimumQualification(3)
                             ->whereBetween('connected_at', [Carbon::now()->subMonths(3), Carbon::now()])
                             ->sum('minutes_online') / 60;
 
-                        $ukTwr = fn () => $this->account->networkDataAtc()
+                        $ukTwrBase = $this->account->networkDataAtc()
                             ->isUK()
+                            ->withoutAfis()
+                            ->withoutMilitary()
+                            ->atMinimumQualification(3)
                             ->where('facility_type', Atc::TYPE_TWR);
 
                         $endorsementProgress[] = [
                             'name' => 'Heathrow TWR (S2+)',
                             'bars' => [
                                 ['label' => 'Heathrow GND/DEL (last 3 months)', 'hours' => $heathrowGndRecent, 'required' => 10],
-                                ['label' => 'Total UK TWR', 'hours' => $ukTwr()->sum('minutes_online') / 60, 'required' => 100],
-                                ['label' => 'Manchester TWR', 'hours' => (clone $ukTwr())->where('callsign', 'like', 'EGCC%')->sum('minutes_online') / 60, 'required' => 30],
-                                ['label' => 'Gatwick TWR', 'hours' => (clone $ukTwr())->where('callsign', 'like', 'EGKK%')->sum('minutes_online') / 60, 'required' => 30],
+                                ['label' => 'Total UK TWR', 'hours' => (clone $ukTwrBase)->sum('minutes_online') / 60, 'required' => 100],
+                                ['label' => 'Manchester TWR', 'hours' => (clone $ukTwrBase)->where('callsign', 'like', 'EGCC%')->sum('minutes_online') / 60, 'required' => 30],
+                                ['label' => 'Gatwick TWR', 'hours' => (clone $ukTwrBase)->where('callsign', 'like', 'EGKK%')->sum('minutes_online') / 60, 'required' => 30],
                             ],
                         ];
                         break;
@@ -118,20 +158,23 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
                         $heathrowTwrRecent = $this->account->networkDataAtc()
                             ->where('callsign', 'like', 'EGLL%')
                             ->where('facility_type', Atc::TYPE_TWR)
+                            ->atMinimumQualification(4)
                             ->whereBetween('connected_at', [Carbon::now()->subMonths(3), Carbon::now()])
                             ->sum('minutes_online') / 60;
 
-                        $ukApp = fn () => $this->account->networkDataAtc()
+                        $ukAppBase = $this->account->networkDataAtc()
                             ->isUK()
+                            ->withoutMilitary()
+                            ->atMinimumQualification(4)
                             ->where('facility_type', Atc::TYPE_APP);
 
                         $endorsementProgress[] = [
                             'name' => 'Heathrow APP (S3+)',
                             'bars' => [
                                 ['label' => 'Heathrow TWR (last 3 months)', 'hours' => $heathrowTwrRecent, 'required' => 10],
-                                ['label' => 'Total UK APP', 'hours' => $ukApp()->sum('minutes_online') / 60, 'required' => 120],
-                                ['label' => 'Manchester APP', 'hours' => (clone $ukApp())->where('callsign', 'like', 'EGCC%')->sum('minutes_online') / 60, 'required' => 30],
-                                ['label' => 'Gatwick APP', 'hours' => (clone $ukApp())->where('callsign', 'like', 'EGKK%')->sum('minutes_online') / 60, 'required' => 30],
+                                ['label' => 'Total UK APP', 'hours' => (clone $ukAppBase)->sum('minutes_online') / 60, 'required' => 120],
+                                ['label' => 'Manchester APP', 'hours' => (clone $ukAppBase)->where('callsign', 'like', 'EGCC%')->sum('minutes_online') / 60, 'required' => 30],
+                                ['label' => 'Gatwick APP', 'hours' => (clone $ukAppBase)->where('callsign', 'like', 'EGKK%')->sum('minutes_online') / 60, 'required' => 30],
                             ],
                         ];
                         break;

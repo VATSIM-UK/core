@@ -3,18 +3,22 @@
 namespace App\Filament\Training\Pages\Exam;
 
 use App\Enums\ExamResultEnum;
+use App\Filament\Forms\Components\TrainingRichEditor;
 use App\Filament\Training\Concerns\InteractsWithCtsRichEditorNotes;
 use App\Filament\Training\Concerns\InteractsWithTrainingConductAutosave;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamCriteria;
 use App\Models\Cts\ExamCriteriaAssessment;
 use App\Models\Cts\PracticalResult;
+use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Repositories\Cts\ExamAssessmentRepository;
 use App\Repositories\Cts\ExamResultRepository;
 use App\Services\Training\ExamResubmissionService;
+use App\Services\Training\MentorPermissionService;
 use Filament\Actions\Action;
-use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -29,6 +33,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Session;
@@ -170,7 +175,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
                     ->columnSpanFull()
                     ->schema([
                         $this->conductSessionRichEditor(
-                            RichEditor::make("form.{$criteria->id}.comments")
+                            TrainingRichEditor::make("form.{$criteria->id}.comments")
                                 ->label('Comments')
                                 ->default('<p></p>')
                                 ->columnSpan(9)
@@ -205,7 +210,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
             ->columnSpanFull()
             ->schema([
                 $this->conductSessionRichEditor(
-                    RichEditor::make('additional_comments')
+                    TrainingRichEditor::make('additional_comments')
                         ->label('Additional Comments')
                         ->disableToolbarButtons(['attachFiles', 'blockquote'])
                         ->columnSpan(9)
@@ -213,6 +218,9 @@ class ConductExam extends Page implements HasForms, HasInfolists
                             'style' => 'min-height: 200px;',
                         ]),
                     function ($state): void {
+                        if (is_array($state)) {
+                            $state = RichContentRenderer::make($state)->toUnsafeHtml();
+                        }
                         $this->additionalComments = $state;
                         $this->markDirty();
                     },
@@ -373,15 +381,25 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
         $examCallsign = $this->examBooking->position_1;
 
+        $qualificationCodes = app(MentorPermissionService::class)->qualificationCodesForCtsCallsign($examCallsign);
+
         TrainingPlace::query()
             ->whereBelongsTo($studentAccount, 'account')
-            ->whereHas('trainingPosition', function ($query) use ($examCallsign) {
-                $query->where('exam_callsign', $examCallsign)
-                    ->orWhere(function ($query) use ($examCallsign) {
-                        $query->whereNull('exam_callsign')
-                            ->whereHas('position', fn ($positionQuery) => $positionQuery->where('callsign', $examCallsign));
-                    });
-            })->get()->each->delete();
+            ->where(function (Builder $query) use ($examCallsign, $qualificationCodes) {
+                $query->whereHasMorph('trainable', [TrainingPosition::class], function ($query) use ($examCallsign) {
+                    $query->where('exam_callsign', $examCallsign)
+                        ->orWhere(function ($query) use ($examCallsign) {
+                            $query->whereNull('exam_callsign')
+                                ->whereHas('position', fn ($positionQuery) => $positionQuery->where('callsign', $examCallsign));
+                        });
+                });
+
+                if ($qualificationCodes !== []) {
+                    $query->orWhereHasMorph('trainable', [Qualification::class], fn ($query) => $query->whereIn('code', $qualificationCodes));
+                }
+            })
+            ->get()
+            ->each->delete();
     }
 
     private function richContentNotesForCts(mixed $html): string

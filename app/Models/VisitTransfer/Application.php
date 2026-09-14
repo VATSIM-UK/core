@@ -16,6 +16,7 @@ use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeExpiredException
 use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeWithdrawnException;
 use App\Exceptions\VisitTransfer\Application\ApplicationNotAcceptedException;
 use App\Exceptions\VisitTransfer\Application\ApplicationNotRejectableException;
+use App\Exceptions\VisitTransfer\Application\ApplicationNotReopenableException;
 use App\Exceptions\VisitTransfer\Application\ApplicationNotUnderReviewException;
 use App\Exceptions\VisitTransfer\Application\AttemptingToTransferToNonTrainingFacilityException;
 use App\Exceptions\VisitTransfer\Application\CheckOutcomeAlreadySetException;
@@ -547,14 +548,16 @@ class Application extends Model
     }
 
     /** Business logic. */
-    public function setFacility(Facility $facility)
+    public function setFacility(Facility $facility, bool $overrideRestrictions = false)
     {
-        $this->guardAgainstTransferringToANonTrainingFacility($facility);
+        if (! $overrideRestrictions) {
+            $this->guardAgainstTransferringToANonTrainingFacility($facility);
 
-        $this->guardAgainstApplyingToAFacilityWithNoCapacity($facility);
+            $this->guardAgainstApplyingToAFacilityWithNoCapacity($facility);
 
-        if (! $this->meetsRatingRequirements($facility)) {
-            throw new RatingRequirementNotMetException($facility);
+            if (! $this->meetsRatingRequirements($facility)) {
+                throw new RatingRequirementNotMetException($facility);
+            }
         }
 
         $this->training_required = $facility->training_required;
@@ -651,6 +654,13 @@ class Application extends Model
         }
 
         event(new ApplicationUnderReview($this));
+    }
+
+    public function reopenForReview(?Account $actor = null, ?string $staffReason = 'Application reopened for manual review.')
+    {
+        $this->guardAgainstNonReopenableApplication();
+
+        $this->markAsUnderReview($staffReason, $actor);
     }
 
     public function reject($publicReason = 'No reason was provided.', $staffReason = null, ?Account $actor = null)
@@ -897,6 +907,15 @@ class Application extends Model
         }
 
         throw new ApplicationNotRejectableException($this);
+    }
+
+    private function guardAgainstNonReopenableApplication()
+    {
+        if ($this->is_rejected) {
+            return true;
+        }
+
+        throw new ApplicationNotReopenableException($this);
     }
 
     private function guardAgainstUnAcceptableApplication()

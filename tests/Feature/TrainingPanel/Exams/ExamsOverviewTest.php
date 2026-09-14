@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\View;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\CalendarLinks\Link;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
 class ExamsOverviewTest extends BaseTrainingPanelTestCase
@@ -47,12 +48,12 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('training.exams.access');
 
         $student = Account::factory()->create();
-        Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
+        $studentMember = Member::factory()->forAccount($student)->create();
 
-        $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'student_id' => $student->id]);
+        $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'student_id' => $studentMember->id]);
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         Livewire::actingAs($this->panelUser)
@@ -69,12 +70,12 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('training.exams.access');
 
         $student = Account::factory()->create();
-        Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
+        $studentMember = Member::factory()->forAccount($student)->create();
 
-        $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'student_id' => $student->id]);
+        $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'student_id' => $studentMember->id]);
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'other' => $this->panelUser->id,
+            'other' => $this->panelUser->member->id,
         ]);
 
         Livewire::actingAs($this->panelUser)
@@ -91,12 +92,12 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('training.exams.access');
 
         $student = Account::factory()->create();
-        Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
+        $studentMember = Member::factory()->forAccount($student)->create();
 
-        $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'student_id' => $student->id]);
+        $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'student_id' => $studentMember->id]);
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'trainee' => $this->panelUser->id,
+            'trainee' => $this->panelUser->member->id,
         ]);
 
         Livewire::actingAs($this->panelUser)
@@ -113,12 +114,12 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo('training.exams.access');
 
         $student = Account::factory()->create();
-        Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
+        $studentMember = Member::factory()->forAccount($student)->create();
 
-        $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'student_id' => $student->id]);
+        $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'student_id' => $studentMember->id]);
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         Livewire::actingAs($this->panelUser)
@@ -137,23 +138,23 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
             'name_first' => 'Alex',
             'name_last' => 'Student',
         ]);
-        Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
+        $studentMember = Member::factory()->forAccount($student)->create();
 
         $exam = ExamBooking::factory()->create([
             'taken' => 1,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
-            'student_id' => $student->id,
+            'student_id' => $studentMember->id,
             'exam' => 'TWR',
             'position_1' => 'EGKK_TWR',
             'taken_date' => now()->addDays(3)->format('Y-m-d'),
             'taken_from' => '14:00:00',
             'taken_to' => '16:00:00',
-            'exmr_id' => $this->panelUser->id,
+            'exmr_id' => $this->panelUser->member->id,
         ]);
 
         $examSetup = ExamSetup::create([
             'rts_id' => 1,
-            'student_id' => $student->id,
+            'student_id' => $studentMember->id,
             'position_1' => 'EGKK_TWR',
             'exam' => 'TWR',
             'bookid' => $exam->id,
@@ -162,7 +163,7 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
 
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         $reason = 'Unforeseen circumstances.';
@@ -186,7 +187,7 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
             'sesh_id' => $exam->id,
             'sesh_type' => 'EX',
             'reason' => $reason,
-            'reason_by' => $this->panelUser->id,
+            'reason_by' => $this->panelUser->member->id,
         ], 'cts');
 
         Notification::assertSentTo(
@@ -212,21 +213,21 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         $this->panelUser->givePermissionTo(['training.exams.access', 'training.exams.conduct.twr']);
 
         $coExaminer = Account::factory()->create();
-        Member::factory()->create(['id' => $coExaminer->id, 'cid' => $coExaminer->id]);
+        Member::factory()->forAccount($coExaminer)->create();
 
         $student = Account::factory()->create();
-        Member::factory()->create(['id' => $student->id, 'cid' => $student->id]);
+        $studentMember = Member::factory()->forAccount($student)->create();
 
         $exam = ExamBooking::factory()->create([
             'taken' => 1,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
-            'student_id' => $student->id,
+            'student_id' => $studentMember->id,
             'exam' => 'TWR',
         ]);
 
         ExamSetup::create([
             'rts_id' => 1,
-            'student_id' => $student->id,
+            'student_id' => $studentMember->id,
             'position_1' => 'EGKK_TWR',
             'exam' => 'TWR',
             'bookid' => $exam->id,
@@ -235,8 +236,8 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
 
         PracticalExaminers::create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
-            'other' => $coExaminer->id,
+            'senior' => $this->panelUser->member->id,
+            'other' => $coExaminer->member->id,
         ]);
 
         Livewire::actingAs($this->panelUser)
@@ -249,5 +250,26 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         Notification::assertSentTo($student, ExamCancelledByExaminerStudentNotification::class);
         Notification::assertSentTo($coExaminer, ExamSessionCancelledForCoExaminerNotification::class);
         Notification::assertNotSentTo($this->panelUser, ExamSessionCancelledForCoExaminerNotification::class);
+    }
+
+    #[Test]
+    public function test_accepted_exams_table_builds_calendar_link_object()
+    {
+        $examBooking = ExamBooking::factory()->create([
+            'taken_date' => '2026-07-15',
+            'taken_from' => '14:00:00',
+            'taken_to' => '16:00:00',
+        ]);
+
+        $method = new \ReflectionMethod(AcceptedExamsTable::class, 'buildCalendarLinkObject');
+        $component = new AcceptedExamsTable;
+        $link = $method->invoke($component, $examBooking);
+
+        $this->assertInstanceOf(Link::class, $link);
+        $this->assertSame("Practical Exam - {$examBooking->exam}", $link->title);
+        $this->assertSame('2026-07-15 14:00:00', $link->from->format('Y-m-d H:i:s'));
+        $this->assertSame('2026-07-15 16:00:00', $link->to->format('Y-m-d H:i:s'));
+        $this->assertStringContainsString("Exam Type: {$examBooking->exam}", $link->description);
+        $this->assertStringContainsString($examBooking->position_1, $link->address);
     }
 }

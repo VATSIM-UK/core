@@ -14,7 +14,15 @@ class AvailabilityWarning extends Model
 
     use HasUlids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'training_place_id',
+        'availability_check_id',
+        'resolved_availability_check_id',
+        'status',
+        'expires_at',
+        'resolved_at',
+        'removal_actioned_at',
+    ];
 
     protected $casts = [
         'expires_at' => 'datetime',

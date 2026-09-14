@@ -5,10 +5,13 @@ namespace Tests\Feature\TrainingPanel\Mentor;
 use App\Livewire\Training\AcceptedMentoringSessionsTable;
 use App\Livewire\Training\AvailabilityGantt;
 use App\Models\Cts\Availability;
+use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Models\Training\Mentoring\MentorTrainingPosition;
+use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Models\Training\TrainingPlace\TrainingPlaceLeaveOfAbsence;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -31,13 +34,11 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
         parent::setUp();
 
         $this->mentor = Account::factory()->create();
-        $this->mentorMember = Member::factory()->create([
-            'id' => $this->mentor->id,
-            'cid' => $this->mentor->id,
-        ]);
+        $this->mentorMember = Member::factory()->forAccount($this->mentor)->create();
 
         $this->trainingPosition = TrainingPosition::factory()->create([
             'cts_positions' => ['EGLL_APP'],
+            'cts_primary_position' => 'EGLL_APP',
             'category' => 'S3 Training',
         ]);
 
@@ -47,6 +48,34 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
             'mentorable_id' => $this->trainingPosition->id,
             'created_by' => $this->mentor->id,
         ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $availabilityOverrides
+     */
+    protected function createBookableStudent(
+        array $availabilityOverrides = [],
+        ?TrainingPosition $trainingPosition = null,
+    ): Member {
+        $trainingPosition ??= $this->trainingPosition;
+        $student = Member::factory()->create();
+        Account::factory()->create(['id' => $student->cid]);
+
+        TrainingPlace::withoutEvents(function () use ($student, $trainingPosition) {
+            TrainingPlace::factory()->create([
+                'account_id' => $student->cid,
+                'training_position_id' => $trainingPosition->id,
+            ]);
+        });
+
+        Availability::factory()->create(array_merge([
+            'student_id' => $student->id,
+            'date' => Carbon::today()->format('Y-m-d'),
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ], $availabilityOverrides));
+
+        return $student;
     }
 
     #[Test]
@@ -184,6 +213,66 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function accepted_sessions_table_shows_warning_when_an_overlapping_booking_exists(): void
+    {
+        $student = Member::factory()->create();
+        $otherMentor = Member::factory()->create();
+
+        Session::factory()->create([
+            'mentor_id' => $this->mentorMember->id,
+            'student_id' => $student->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'filed' => null,
+            'cancelled_datetime' => null,
+            'noShow' => 0,
+        ]);
+
+        Session::factory()->create([
+            'mentor_id' => $otherMentor->id,
+            'student_id' => $student->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '11:00:00',
+            'taken_to' => '13:00:00',
+            'filed' => null,
+            'cancelled_datetime' => null,
+            'noShow' => 0,
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AcceptedMentoringSessionsTable::class)
+            ->assertSee('already has a session booked on this position');
+    }
+
+    #[Test]
+    public function accepted_sessions_table_does_not_show_warning_when_no_overlapping_booking_exists(): void
+    {
+        $student = Member::factory()->create();
+
+        Session::factory()->create([
+            'mentor_id' => $this->mentorMember->id,
+            'student_id' => $student->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'filed' => null,
+            'cancelled_datetime' => null,
+            'noShow' => 0,
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AcceptedMentoringSessionsTable::class)
+            ->assertDontSee('already has a session booked on this position');
+    }
+
+    #[Test]
     public function availability_gantt_renders_successfully(): void
     {
         Livewire::actingAs($this->mentor)
@@ -271,10 +360,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     public function students_property_returns_empty_collection_when_mentor_has_no_callsigns(): void
     {
         $noCallsignMentor = Account::factory()->create();
-        Member::factory()->create([
-            'id' => $noCallsignMentor->id,
-            'cid' => $noCallsignMentor->id,
-        ]);
+        Member::factory()->forAccount($noCallsignMentor)->create();
 
         $emptyPosition = TrainingPosition::factory()->create([
             'cts_positions' => [],
@@ -294,26 +380,9 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function students_property_only_includes_students_with_pending_sessions_in_allowed_positions(): void
+    public function students_property_only_includes_students_with_training_place_and_availability(): void
     {
-        $targetDate = Carbon::today();
-
-        $student = Member::factory()->create();
-
-        Session::factory()->create([
-            'student_id' => $student->id,
-            'mentor_id' => null,
-            'position' => 'EGLL_APP',
-            'filed' => null,
-            'cancelled_datetime' => null,
-        ]);
-
-        Availability::factory()->create([
-            'student_id' => $student->id,
-            'date' => $targetDate->format('Y-m-d'),
-            'from' => '10:00:00',
-            'to' => '12:00:00',
-        ]);
+        $student = $this->createBookableStudent();
 
         $component = Livewire::actingAs($this->mentor)
             ->test(AvailabilityGantt::class);
@@ -321,22 +390,14 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
         $studentIds = $component->instance()->students->pluck('id');
 
         $this->assertTrue($studentIds->contains($student->id));
+        $this->assertSame('EGLL_APP', $component->instance()->students->firstWhere('id', $student->id)->primary_position);
     }
 
     #[Test]
-    public function students_property_excludes_students_with_sessions_already_assigned_to_a_mentor(): void
+    public function students_property_excludes_students_without_a_training_place(): void
     {
         $targetDate = Carbon::today();
-        $otherMentor = Member::factory()->create();
         $student = Member::factory()->create();
-
-        Session::factory()->create([
-            'student_id' => $student->id,
-            'mentor_id' => $otherMentor->id,
-            'position' => 'EGLL_APP',
-            'filed' => null,
-            'cancelled_datetime' => null,
-        ]);
 
         Availability::factory()->create([
             'student_id' => $student->id,
@@ -351,26 +412,73 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
         $studentIds = $component->instance()->students->pluck('id');
 
         $this->assertFalse($studentIds->contains($student->id));
+    }
+
+    #[Test]
+    public function students_property_excludes_students_on_leave_of_absence(): void
+    {
+        $student = $this->createBookableStudent();
+        $place = TrainingPlace::query()->where('account_id', $student->cid)->firstOrFail();
+
+        TrainingPlaceLeaveOfAbsence::create([
+            'training_place_id' => $place->id,
+            'begins_at' => now()->subDay(),
+            'ends_at' => now()->addDays(7),
+            'reason' => 'Annual leave',
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class);
+
+        $this->assertFalse($component->instance()->students->pluck('id')->contains($student->id));
+    }
+
+    #[Test]
+    public function students_property_excludes_students_with_a_future_booked_session(): void
+    {
+        $student = $this->createBookableStudent();
+
+        Session::factory()->accepted()->create([
+            'student_id' => $student->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'session_done' => 0,
+            'cancelled_datetime' => null,
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class);
+
+        $this->assertFalse($component->instance()->students->pluck('id')->contains($student->id));
+    }
+
+    #[Test]
+    public function students_property_excludes_exam_forwarded_students(): void
+    {
+        $this->trainingPosition->update(['exam_callsign' => 'EGLL_APP']);
+
+        $student = $this->createBookableStudent();
+
+        ExamBooking::factory()->create([
+            'student_id' => $student->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'position_1' => 'EGLL_APP',
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class);
+
+        $this->assertFalse($component->instance()->students->pluck('id')->contains($student->id));
     }
 
     #[Test]
     public function students_property_excludes_students_with_no_availability_on_the_selected_date(): void
     {
-        $student = Member::factory()->create();
-
-        Session::factory()->create([
-            'student_id' => $student->id,
-            'mentor_id' => null,
-            'position' => 'EGLL_APP',
-            'filed' => null,
-            'cancelled_datetime' => null,
-        ]);
-
-        Availability::factory()->create([
-            'student_id' => $student->id,
+        $student = $this->createBookableStudent([
             'date' => Carbon::tomorrow()->format('Y-m-d'),
-            'from' => '10:00:00',
-            'to' => '12:00:00',
         ]);
 
         $component = Livewire::actingAs($this->mentor)
@@ -382,25 +490,15 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function students_property_excludes_students_pending_in_positions_outside_mentor_callsigns(): void
+    public function students_property_excludes_students_on_positions_outside_mentor_callsigns(): void
     {
-        $targetDate = Carbon::today();
-        $student = Member::factory()->create();
-
-        Session::factory()->create([
-            'student_id' => $student->id,
-            'mentor_id' => null,
-            'position' => 'EGLL_TWR',
-            'filed' => null,
-            'cancelled_datetime' => null,
+        $otherPosition = TrainingPosition::factory()->create([
+            'cts_positions' => ['EGLL_TWR'],
+            'cts_primary_position' => 'EGLL_TWR',
+            'category' => 'S2 Training',
         ]);
 
-        Availability::factory()->create([
-            'student_id' => $student->id,
-            'date' => $targetDate->format('Y-m-d'),
-            'from' => '10:00:00',
-            'to' => '12:00:00',
-        ]);
+        $student = $this->createBookableStudent(trainingPosition: $otherPosition);
 
         $component = Livewire::actingAs($this->mentor)
             ->test(AvailabilityGantt::class);
@@ -413,33 +511,15 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     #[Test]
     public function students_are_ordered_by_last_session_date_ascending(): void
     {
-        $targetDate = Carbon::today();
-
-        $recentStudent = Member::factory()->create();
-        $olderStudent = Member::factory()->create();
-
-        foreach ([$recentStudent, $olderStudent] as $student) {
-            Session::factory()->create([
-                'student_id' => $student->id,
-                'mentor_id' => null,
-                'position' => 'EGLL_APP',
-                'filed' => null,
-                'cancelled_datetime' => null,
-            ]);
-
-            Availability::factory()->create([
-                'student_id' => $student->id,
-                'date' => $targetDate->format('Y-m-d'),
-                'from' => '10:00:00',
-                'to' => '12:00:00',
-            ]);
-        }
+        $recentStudent = $this->createBookableStudent();
+        $olderStudent = $this->createBookableStudent();
 
         Session::factory()->create([
             'student_id' => $recentStudent->id,
             'mentor_id' => $this->mentorMember->id,
             'position' => 'EGLL_APP',
             'taken_date' => Carbon::yesterday()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
             'filed' => now(),
         ]);
 
@@ -448,6 +528,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
             'mentor_id' => $this->mentorMember->id,
             'position' => 'EGLL_APP',
             'taken_date' => Carbon::now()->subMonths(3)->format('Y-m-d'),
+            'taken_from' => '10:00:00',
             'filed' => now(),
         ]);
 
@@ -461,23 +542,51 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function last_session_date_shows_last_session_for_past_session(): void
+    {
+        Carbon::setTestNow(Carbon::today()->setTime(10, 0));
+
+        $student = $this->createBookableStudent([
+            'from' => '08:00:00',
+            'to' => '18:00:00',
+        ]);
+
+        Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken_date' => Carbon::yesterday()->format('Y-m-d'),
+            'taken_from' => '08:00:00',
+            'session_done' => 1,
+            'filed' => now(),
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->assertSee('Last Session');
+
+        Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function last_session_date_shows_never_when_no_session_exists(): void
+    {
+        $this->createBookableStudent([
+            'from' => '08:00:00',
+            'to' => '18:00:00',
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->assertSee('Never');
+    }
+
+    #[Test]
     public function availability_gantt_shows_now_line_when_viewing_today(): void
     {
         Carbon::setTestNow(Carbon::today()->setTime(14, 30));
 
-        $student = Member::factory()->create();
-
-        Session::factory()->create([
-            'student_id' => $student->id,
-            'mentor_id' => null,
-            'position' => 'EGLL_APP',
-            'filed' => null,
-            'cancelled_datetime' => null,
-        ]);
-
-        Availability::factory()->create([
-            'student_id' => $student->id,
-            'date' => Carbon::today()->format('Y-m-d'),
+        $this->createBookableStudent([
             'from' => '10:00:00',
             'to' => '18:00:00',
         ]);
@@ -494,18 +603,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     {
         Carbon::setTestNow(Carbon::today()->setTime(14, 30));
 
-        $student = Member::factory()->create();
-
-        Session::factory()->create([
-            'student_id' => $student->id,
-            'mentor_id' => null,
-            'position' => 'EGLL_APP',
-            'filed' => null,
-            'cancelled_datetime' => null,
-        ]);
-
-        Availability::factory()->create([
-            'student_id' => $student->id,
+        $this->createBookableStudent([
             'date' => Carbon::tomorrow()->format('Y-m-d'),
             'from' => '10:00:00',
             'to' => '18:00:00',
@@ -517,5 +615,200 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
             ->assertDontSeeHtml('data-gantt-now-line');
 
         Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function availability_gantt_shows_my_sessions_lane_when_mentor_has_accepted_session(): void
+    {
+        Carbon::setTestNow(Carbon::today()->setTime(10, 0));
+
+        $busyStudent = Member::factory()->create(['name' => 'Busy Student']);
+        $pickupStudent = Member::factory()->create(['name' => 'Pickup Student']);
+
+        Session::factory()->create([
+            'student_id' => $busyStudent->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::today()->format('Y-m-d'),
+            'taken_from' => '18:00:00',
+            'taken_to' => '20:00:00',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        Session::factory()->create([
+            'student_id' => $pickupStudent->id,
+            'mentor_id' => null,
+            'position' => 'EGLL_APP',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        Availability::factory()->create([
+            'student_id' => $pickupStudent->id,
+            'date' => Carbon::today()->format('Y-m-d'),
+            'from' => '14:00:00',
+            'to' => '16:00:00',
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->assertSee('My sessions')
+            ->assertSee('Busy Student');
+
+        Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function availability_gantt_does_not_show_my_sessions_lane_when_mentor_has_no_sessions(): void
+    {
+        $pickupStudent = Member::factory()->create();
+
+        Session::factory()->create([
+            'student_id' => $pickupStudent->id,
+            'mentor_id' => null,
+            'position' => 'EGLL_APP',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        Availability::factory()->create([
+            'student_id' => $pickupStudent->id,
+            'date' => Carbon::today()->format('Y-m-d'),
+            'from' => '14:00:00',
+            'to' => '16:00:00',
+        ]);
+
+        Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->assertDontSee('My sessions');
+    }
+
+    #[Test]
+    public function accept_session_detects_mentor_busy_overlap_for_selected_times(): void
+    {
+        Carbon::setTestNow(Carbon::today()->setTime(10, 0));
+
+        $busyStudent = Member::factory()->create(['name' => 'Already Booked Student']);
+        $pickupStudent = Member::factory()->create(['name' => 'New Pickup Student']);
+
+        Session::factory()->create([
+            'student_id' => $busyStudent->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGKK_TWR',
+            'taken' => 1,
+            'taken_date' => Carbon::today()->format('Y-m-d'),
+            'taken_from' => '18:00:00',
+            'taken_to' => '20:00:00',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        Session::factory()->create([
+            'student_id' => $pickupStudent->id,
+            'mentor_id' => null,
+            'position' => 'EGLL_APP',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        $availability = Availability::factory()->create([
+            'student_id' => $pickupStudent->id,
+            'date' => Carbon::today()->format('Y-m-d'),
+            'from' => '17:00:00',
+            'to' => '21:00:00',
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->mountAction('acceptSession', ['availability_id' => $availability->id])
+            ->setActionData([
+                'taken_from' => '18:00',
+                'taken_to' => '19:00',
+            ]);
+
+        $this->assertNotEmpty($component->instance()->mountedActions);
+
+        $overlap = $this->invokeMentorOverlappingSession(
+            $component->instance(),
+            ['taken_from' => '18:00', 'taken_to' => '19:00'],
+            $availability,
+        );
+
+        $this->assertInstanceOf(Session::class, $overlap);
+        $this->assertSame('EGKK_TWR', $overlap->position);
+        $this->assertSame('Already Booked Student', $overlap->student?->name);
+
+        Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function accept_session_does_not_detect_mentor_busy_when_times_are_clear(): void
+    {
+        Carbon::setTestNow(Carbon::today()->setTime(10, 0));
+
+        $busyStudent = Member::factory()->create(['name' => 'Already Booked Student']);
+        $pickupStudent = Member::factory()->create(['name' => 'Clear Pickup Student']);
+
+        Session::factory()->create([
+            'student_id' => $busyStudent->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGKK_TWR',
+            'taken' => 1,
+            'taken_date' => Carbon::today()->format('Y-m-d'),
+            'taken_from' => '18:00:00',
+            'taken_to' => '20:00:00',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        Session::factory()->create([
+            'student_id' => $pickupStudent->id,
+            'mentor_id' => null,
+            'position' => 'EGLL_APP',
+            'filed' => null,
+            'cancelled_datetime' => null,
+        ]);
+
+        $availability = Availability::factory()->create([
+            'student_id' => $pickupStudent->id,
+            'date' => Carbon::today()->format('Y-m-d'),
+            'from' => '14:00:00',
+            'to' => '16:00:00',
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->mountAction('acceptSession', ['availability_id' => $availability->id])
+            ->setActionData([
+                'taken_from' => '14:00',
+                'taken_to' => '16:00',
+            ]);
+
+        $overlap = $this->invokeMentorOverlappingSession(
+            $component->instance(),
+            ['taken_from' => '14:00', 'taken_to' => '16:00'],
+            $availability,
+        );
+
+        $this->assertNull($overlap);
+
+        Carbon::setTestNow();
+    }
+
+    /**
+     * @param  array{taken_from: string, taken_to: string}  $times
+     */
+    private function invokeMentorOverlappingSession(AvailabilityGantt $instance, array $times, Availability $availability): ?Session
+    {
+        $get = \Mockery::mock(\Filament\Schemas\Components\Utilities\Get::class);
+        $get->shouldReceive('__invoke')->andReturnUsing(
+            fn (string $key = '', bool $isAbsolute = false) => $times[$key] ?? null,
+        );
+
+        $method = new \ReflectionMethod(AvailabilityGantt::class, 'getMentorOverlappingSession');
+
+        return $method->invoke($instance, $get, $availability);
     }
 }

@@ -57,9 +57,9 @@ class RosterUpdateResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('created_at')->label('Ran'),
-                TextColumn::make('period_start'),
-                TextColumn::make('period_end'),
+                TextColumn::make('created_at')->label('Ran')->dateTime(),
+                TextColumn::make('period_start')->date(),
+                TextColumn::make('period_end')->date(),
             ])
             ->recordActions([
                 ViewAction::make(),

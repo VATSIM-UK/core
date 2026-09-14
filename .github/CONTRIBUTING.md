@@ -2,13 +2,13 @@
 
 Welcome to the VATSIM UK Core repository. VATSIM UK has a dedicated team who are members of the VATSIM UK staff team who are ultimately responsible for the upkeep and development of VATSIM UK systems. The team maintains a backlog of work outside of this repository, but issues of which open-source contributions are welcomed will be added under 'Issues' in this repository.
 
-If you don't see any interesting issues open but still want to contribute, please [reach out](https://github.com/VATSIM-UK/core/blob/main/.github/SUPPORT.md).
+If you don't see any interesting issues open but still want to contribute, please [reach out](SUPPORT.md).
 
 Some issues simply can't be delegated to outside contributors as they may require elevated access.
 
 ## Contributor license agreement
 
-By submitting code as an individual you agree that VATSIM UK can use your amendments, fixes, patches, changes, modifications, submissions and creations in the production of the UK Core and that the ownership of your submissions transfers to VATSIM UK in their entirety. More info on the licensing can be found in [LINCENSE](https://github.com/VATSIM-UK/core/blob/consolidate-dev-docs/LICENSE.md)
+By submitting code as an individual you agree that VATSIM UK can use your amendments, fixes, patches, changes, modifications, submissions and creations in the production of the UK Core and that the ownership of your submissions transfers to VATSIM UK in their entirety. More info on the licensing can be found in [LICENSE](../LICENSE.md)
 
 ## Contributing to the codebase
 
@@ -18,11 +18,11 @@ If you're comfortable with contributing to Open Source projects on GitHub please
 
 ## Running Core locally
 
-To run core locally, please read our [setup guide](https://github.com/VATSIM-UK/core/blob/main/.github/setup.md)
+To run core locally, please read our [setup guide](setup.md)
 
 ## Issue Tracking
 
-If you require **support** with the Core Project, please read the [support page](https://github.com/VATSIM-UK/core/blob/main/.github/SUPPORT.md).
+If you require **support** with the Core Project, please read the [support page](SUPPORT.md).
 When submitting an issue, there are a few guidelines we'd ask you to respect to make it easier to manage (and for others to understand):
 
 * **Search the issue tracker** before you submit your issue - it may already be present.
@@ -35,7 +35,7 @@ When submitting an issue, there are a few guidelines we'd ask you to respect to 
 
 We welcome pull requests with fixes and improvements to the Core project. The features we really would like public support on are marked with "up-for-grabs" or "good first issue" but other improvements are also welcome - please ensure you read over the pull workflow below.
 
-If you wish to add a new feature or you spot a bug that you wish to fix, **please open an issue for it first** on the [UK Core issue tracker](https://github.com/VATSIM-UK/core/issues).
+If you wish to add a new feature or you spot a bug that you wish to fix, **please open an issue for it first** on the [UK Core issue tracker](../../issues).
 
 The workflow for submitting a new pull request is designed to be simple, but also to ensure consistency from **all** contributors:
 
@@ -53,6 +53,19 @@ The workflow for submitting a new pull request is designed to be simple, but als
 * Be prepared to answer any questions about your PR when it is reviewed for acceptance.
 
 **Please** keep your changes in a single PR as small as possible (relating to one issue) as this makes it easier to review and accept. Large PRs with a small error will prevent the entire PR from being accepted.
+
+## Marking PR dependencies
+
+If your PR depends on another open PR being merged first, include a line in your PR description such as `Depends on #123` or `Blocked by #123`. A "Check Dependencies" status check will flag the PR until the dependency is resolved.
+
+## Automatic PR labeling
+
+An automated workflow classifies internal pull requests and applies labels to help reviewers:
+
+- **`type:*`** - the primary intent of the PR (feature, fix, chore, docs, refactor, test)
+- **`needs-*`** - potential gaps flagged for reviewer attention (tests, copy, docs, migration)
+
+Labels update on each push. They are advisory only and do not block merging. If a label is incorrect, you can remove it manually - the workflow will not re-apply it unless the diff changes.
 
 # Expectations
 

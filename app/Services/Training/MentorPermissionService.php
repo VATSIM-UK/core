@@ -40,6 +40,7 @@ class MentorPermissionService
         'P1 Training' => 'Pilot Mentor',
         'P2 Training' => 'Pilot Mentor',
         'P3 Training' => 'Pilot Mentor',
+        'TFP Training' => 'Pilot Mentor',
     ];
 
     public const ATC_TGI_CATEGORY_ROLE_MAP = [
@@ -56,18 +57,26 @@ class MentorPermissionService
         'P1 Training' => 'Pilot Instructor',
         'P2 Training' => 'Pilot Instructor',
         'P3 Training' => 'Pilot Instructor',
+        'TFP Training' => 'Pilot Instructor',
     ];
 
     public const PILOT_CATEGORY_QUALIFICATION_MAP = [
         'P1 Training' => 'PPL',
         'P2 Training' => 'IR',
         'P3 Training' => 'CMEL',
+        'TFP Training' => 'TFP',
     ];
 
     public const QUALIFICATION_CTS_POSITION_MAP = [
         'PPL' => 'P1_PPL(A)',
         'IR' => 'P2_SEIR(A)',
         'CMEL' => 'P3_CMEL(A)',
+        'TFP' => 'TFP_FLIGHT',
+    ];
+
+    /** Mentor CTS validations when they differ from the student/place callsign. */
+    public const QUALIFICATION_CTS_MENTOR_POSITION_MAP = [
+        'TFP' => 'TFP',
     ];
 
     public static function atcCategories(): array
@@ -88,6 +97,16 @@ class MentorPermissionService
     public static function pilotCategories(): array
     {
         return array_keys(self::PILOT_CATEGORY_ROLE_MAP);
+    }
+
+    public static function categoryForQualificationCode(string $code): ?string
+    {
+        return array_flip(self::PILOT_CATEGORY_QUALIFICATION_MAP)[$code] ?? null;
+    }
+
+    public function qualificationCodesForCtsCallsign(string $callsign): array
+    {
+        return array_keys(self::QUALIFICATION_CTS_POSITION_MAP, $callsign, true);
     }
 
     public static function categoryType(string $category): string
@@ -219,10 +238,22 @@ class MentorPermissionService
         if ($hasMentorPermissionsForRole) {
             if (! $account->hasRole($roleName)) {
                 $account->assignRole($roleName);
+
+                Log::info('Mentor role assigned', [
+                    'account_id' => $account->id,
+                    'role' => $roleName,
+                    'category' => $category,
+                ]);
             }
         } else {
             if ($account->hasRole($roleName)) {
                 $account->removeRole($roleName);
+
+                Log::info('Mentor role removed', [
+                    'account_id' => $account->id,
+                    'role' => $roleName,
+                    'category' => $category,
+                ]);
             }
         }
     }
@@ -230,7 +261,9 @@ class MentorPermissionService
     private function resolveMember(Account $account): ?Member
     {
         if (! $account->member) {
-            Log::error("MentorPermissionService: account {$account->id} has no CTS member model");
+            Log::error('MentorPermissionService: account has no CTS member model', [
+                'account_id' => $account->id,
+            ]);
 
             return null;
         }
@@ -253,22 +286,46 @@ class MentorPermissionService
         return [];
     }
 
+    public function getCtsMentorCallsignsForMentorable($mentorable): array
+    {
+        if ($mentorable instanceof TrainingPosition) {
+            return $mentorable->cts_positions ?? [];
+        }
+
+        if ($mentorable instanceof Qualification) {
+            $callsign = self::QUALIFICATION_CTS_MENTOR_POSITION_MAP[$mentorable->code]
+                ?? self::QUALIFICATION_CTS_POSITION_MAP[$mentorable->code]
+                ?? null;
+
+            return $callsign ? [$callsign] : [];
+        }
+
+        return [];
+    }
+
     private function syncCtsAssign(Account $account, $mentorable, Account $actor): void
     {
         if (($member = $this->resolveMember($account)) === null) {
+            Log::info('Mentor permission sync skipped: member not resolved', [
+                'account_id' => $account->id,
+            ]);
+
             return;
         }
 
         $actorMember = $this->resolveMember($actor);
         $changedBy = $actorMember ? $actorMember->id : $member->id;
 
-        $callsigns = $this->getCtsCallsignsForMentorable($mentorable);
+        $callsigns = $this->getCtsMentorCallsignsForMentorable($mentorable);
 
         foreach ($callsigns as $callsign) {
             $ctsPosition = Position::where('callsign', $callsign)->first();
 
             if (! $ctsPosition) {
-                Log::error("MentorPermissionService: CTS position {$callsign} not found");
+                Log::error('MentorPermissionService: CTS position not found', [
+                    'callsign' => $callsign,
+                    'account_id' => $account->id,
+                ]);
 
                 continue;
             }
@@ -289,30 +346,54 @@ class MentorPermissionService
                 'changed_by' => $changedBy,
                 'date_changed' => now(),
             ]);
+
+            Log::info('Mentor CTS position validation granted', [
+                'account_id' => $account->id,
+                'member_id' => $member->id,
+                'position_id' => $ctsPosition->id,
+                'callsign' => $callsign,
+                'changed_by' => $changedBy,
+            ]);
         }
     }
 
     private function syncCtsRevoke(Account $account, $mentorable): void
     {
         if (($member = $this->resolveMember($account)) === null) {
+            Log::info('Mentor permission sync skipped: member not resolved', [
+                'account_id' => $account->id,
+            ]);
+
             return;
         }
 
-        $callsigns = $this->getCtsCallsignsForMentorable($mentorable);
+        $callsigns = $this->getCtsMentorCallsignsForMentorable($mentorable);
 
         foreach ($callsigns as $callsign) {
             $ctsPosition = Position::where('callsign', $callsign)->first();
 
             if (! $ctsPosition) {
-                Log::error("MentorPermissionService: CTS position {$callsign} not found");
+                Log::error('MentorPermissionService: CTS position not found', [
+                    'callsign' => $callsign,
+                    'account_id' => $account->id,
+                ]);
 
                 continue;
             }
 
-            PositionValidation::where('member_id', $member->id)
+            $deleted = PositionValidation::where('member_id', $member->id)
                 ->where('position_id', $ctsPosition->id)
                 ->where('status', PositionValidationStatusEnum::Mentor->value)
                 ->delete();
+
+            if ($deleted > 0) {
+                Log::info('Mentor CTS position validation revoked', [
+                    'account_id' => $account->id,
+                    'member_id' => $member->id,
+                    'position_id' => $ctsPosition->id,
+                    'callsign' => $callsign,
+                ]);
+            }
         }
     }
 
@@ -370,6 +451,12 @@ class MentorPermissionService
 
             if ($callsign !== null) {
                 $map[$callsign] = $category;
+            }
+
+            $mentorCallsign = self::QUALIFICATION_CTS_MENTOR_POSITION_MAP[$qualificationCode] ?? null;
+
+            if ($mentorCallsign !== null) {
+                $map[$mentorCallsign] = $category;
             }
         }
 

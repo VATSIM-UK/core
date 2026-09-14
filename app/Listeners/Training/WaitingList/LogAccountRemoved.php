@@ -3,7 +3,6 @@
 namespace App\Listeners\Training\WaitingList;
 
 use App\Events\Training\AccountRemovedFromWaitingList;
-use Illuminate\Support\Facades\Log;
 
 class LogAccountRemoved
 {
@@ -24,7 +23,10 @@ class LogAccountRemoved
      */
     public function handle(AccountRemovedFromWaitingList $event)
     {
-        Log::channel('training')
-            ->info("Account {$event->account} ({$event->account->id}) was removed from {$event->waitingList} by {$event->staffAccount} ({$event->staffAccount->id})");
+        audit('Account removed from waiting list', [
+            'account_id' => $event->account->id,
+            'waiting_list_id' => $event->waitingList->id,
+            'staff_id' => $event->staffAccount->id,
+        ]);
     }
 }

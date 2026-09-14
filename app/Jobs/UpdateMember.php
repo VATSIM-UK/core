@@ -58,7 +58,7 @@ class UpdateMember extends Job implements ShouldQueue
         try {
             $member = Account::findOrFail(['id' => $this->accountID])->first();
         } catch (ModelNotFoundException $e) {
-            Log::debug("Member {$this->accountID} not found in database. Auth needed to fetch data.");
+            Log::debug('Member not found in database. Auth needed to fetch data', ['account_id' => $this->accountID]);
 
             return;
         }
@@ -69,10 +69,10 @@ class UpdateMember extends Job implements ShouldQueue
         try {
             $response = Http::withHeaders([
                 'Authorization' => $token,
-            ])->withUserAgent('VATSIMUK')->get($url);
+            ])->withUserAgent('VATSIM-UK')->get($url);
 
             if ($response->status() === 404) {
-                Log::info("Member {$this->accountID} not found in VATSIM API. Deleting.");
+                Log::info('Member not found in VATSIM API. Deleting', ['account_id' => $this->accountID]);
                 $member->delete();
 
                 return;
@@ -102,6 +102,7 @@ class UpdateMember extends Job implements ShouldQueue
                 'cid' => $response['id'],
             ];
         } catch (\Exception $e) {
+            Log::error('Member update failed', ['account_id' => $this->accountID, 'exception' => $e]);
             Bugsnag::notifyException($e, function ($report) {
                 $report->setSeverity('error');
                 $report->setMetaData([
@@ -231,7 +232,7 @@ class UpdateMember extends Job implements ShouldQueue
         foreach ($pilotRatings as $pr) {
             if (! $member->hasQualification($pr)) {
                 $member->addQualification($pr);
-                Log::debug("Added rating {$pr->code} to member {$member->id}");
+                Log::debug('Added rating to member', ['rating_code' => $pr->code, 'account_id' => $member->id]);
             }
         }
 
@@ -244,7 +245,7 @@ class UpdateMember extends Job implements ShouldQueue
 
         $pilotRatingsCollection = collect($pilotRatings);
         foreach ($memberPilotRatings as $mpr) {
-            Log::debug("Checking pilot rating {$mpr->code} for member {$member->id}");
+            Log::debug('Checking pilot rating for member', ['rating_code' => $mpr->code, 'account_id' => $member->id]);
 
             if (! $pilotRatingsCollection->contains($mpr->code) && $mpr->code != 'P0') {
                 $member->removeQualification($mpr);
@@ -255,7 +256,7 @@ class UpdateMember extends Job implements ShouldQueue
         foreach ($militaryRatings as $militaryRating) {
             if (! $member->hasQualification($militaryRating)) {
                 $member->addQualification($militaryRating);
-                Log::debug("Added military rating {$militaryRating->code} to member {$member->id}");
+                Log::debug('Added military rating to member', ['rating_code' => $militaryRating->code, 'account_id' => $member->id]);
             }
         }
 

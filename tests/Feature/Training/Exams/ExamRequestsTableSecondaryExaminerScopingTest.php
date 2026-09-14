@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Training\Exams;
 
-use App\Models\Cts\ExaminerSettings;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
 use App\Repositories\Cts\ExaminerRepository;
@@ -90,26 +89,20 @@ class ExamRequestsTableSecondaryExaminerScopingTest extends TestCase
     private function createExaminerWithSettings(array $settings): Member
     {
         $examinerAccount = Account::factory()->create();
-        $examinerMember = Member::factory()->create([
-            'id' => $examinerAccount->id,
-            'cid' => $examinerAccount->id,
-            'examiner' => true,
-        ]);
+        $examinerMember = Member::factory()->forAccount($examinerAccount)->create(['examiner' => true]);
 
-        ExaminerSettings::create(array_merge([
-            'memberID' => $examinerMember->id,
-            'OBS' => 0,
-            'S1' => 0,
-            'S2' => 0,
-            'S3' => 0,
-            'P1' => 0,
-            'P2' => 0,
-            'P3' => 0,
-            'P4' => 0,
-            'P5' => 0,
-            'lastUpdated' => now(),
-            'updatedBy' => 0,
-        ], $settings));
+        $scopeColumn = array_key_first($settings);
+        $roleName = [
+            'OBS' => 'ATC Examiner (OBS)',
+            'S1' => 'ATC Examiner (TWR)',
+            'S2' => 'ATC Examiner (APP)',
+            'S3' => 'ATC Examiner (CTR)',
+            'P1' => 'Pilot Examiner (P1)',
+            'P2' => 'Pilot Examiner (P2)',
+            'P3' => 'Pilot Examiner (P3)',
+        ][$scopeColumn] ?? throw new \InvalidArgumentException("Unknown test scope '{$scopeColumn}'.");
+
+        $examinerAccount->assignRole($roleName);
 
         return $examinerMember;
     }

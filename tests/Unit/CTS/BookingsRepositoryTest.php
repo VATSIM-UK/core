@@ -1,9 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\CTS;
 
-use App\Models\Cts\Booking;
-use App\Models\Cts\Member;
+use App\Models\Atc\Position;
+use App\Models\Booking;
+use App\Models\Cts\Booking as CtsBooking;
+use App\Models\Cts\ExamBooking;
+use App\Models\Cts\Member as CtsMember;
+use App\Models\Cts\PracticalExaminers;
+use App\Models\Cts\Session;
+use App\Models\Mship\Account;
 use App\Repositories\Cts\BookingRepository;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -15,18 +23,18 @@ class BookingsRepositoryTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /* @var BookingRepository */
-    protected $subjectUnderTest;
+    protected BookingRepository $subjectUnderTest;
 
-    /* @var Carbon */
-    protected $today;
+    protected string $today;
 
-    /* @var Carbon */
-    protected $tomorrow;
+    protected string $tomorrow;
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->knownDate = $this->knownDate->copy()->setTime(12, 0);
+        $this->travelTo($this->knownDate);
 
         $this->subjectUnderTest = resolve(BookingRepository::class);
         $this->today = $this->knownDate->toDateString();
@@ -34,36 +42,164 @@ class BookingsRepositoryTest extends TestCase
     }
 
     #[Test]
-    public function it_can_return_a_list_of_bookings_for_today()
+    public function it_can_return_a_list_of_bookings_for_today(): void
     {
-        Booking::factory()->count(10)->create(['date' => Carbon::now()]);
+        Booking::factory()->count(10)->create([
+            'starts_at' => $this->knownDate->copy()->setHour(10),
+            'ends_at' => $this->knownDate->copy()->setHour(12),
+        ]);
 
         $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
 
         $this->assertInstanceOf(Collection::class, $bookings);
         $this->assertCount(10, $bookings);
-        $this->assertInstanceOf(Booking::class, $bookings->first());
     }
 
     #[Test]
-    public function it_can_return_a_list_of_todays_bookings_with_owner_and_type()
+    public function it_excludes_mentoring_and_exam_bookings_that_have_already_ended_today(): void
     {
-        Booking::factory()->count(2)->create(['date' => $this->knownDate->copy()->addDays(5)->toDateString()]);
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
+        $mentor = CtsMember::factory()->forAccount(Account::factory()->create())->create();
 
-        $bookingTodayOne = Booking::Factory()->create([
-            'id' => '96155',
-            'date' => $this->today,
-            'from' => '17:00',
-            'member_id' => Member::Factory()->create()->id,
-            'type' => 'BK',
+        $endedFrom = $this->knownDate->copy()->subHours(3)->format('H:i:s');
+        $endedTo = $this->knownDate->copy()->subHour()->format('H:i:s');
+
+        $session = Session::factory()->create([
+            'student_id' => CtsMember::factory()->create()->id,
+            'mentor_id' => $mentor->id,
+            'position' => 'EGKK_APP',
+            'taken' => 1,
+            'taken_date' => $this->today,
+            'taken_from' => $endedFrom,
+            'taken_to' => $endedTo,
+        ]);
+        $endedMentoring = Booking::factory()->create([
+            'position_id' => $position->id,
+            'type' => Booking::TYPE_MENTORING,
+            'starts_at' => $this->knownDate->copy()->subHours(3),
+            'ends_at' => $this->knownDate->copy()->subHour(),
+            'bookable_type' => Session::class,
+            'bookable_id' => $session->id,
         ]);
 
-        $bookingTodayTwo = Booking::Factory()->create([
-            'id' => '96156',
-            'date' => $this->today,
-            'from' => '18:00',
-            'member_id' => Member::Factory()->create()->id,
-            'type' => 'ME',
+        $exam = ExamBooking::factory()->create([
+            'student_id' => CtsMember::factory()->create()->id,
+            'position_1' => $position->callsign,
+            'taken' => 1,
+            'taken_date' => $this->today,
+            'taken_from' => $endedFrom,
+            'taken_to' => $endedTo,
+        ]);
+        $endedExam = Booking::factory()->create([
+            'position_id' => $position->id,
+            'type' => Booking::TYPE_EXAM,
+            'starts_at' => $this->knownDate->copy()->subHours(3),
+            'ends_at' => $this->knownDate->copy()->subHour(),
+            'bookable_type' => ExamBooking::class,
+            'bookable_id' => $exam->id,
+        ]);
+
+        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today), hideEndedTrainingSessions: true);
+
+        $this->assertNull(
+            $bookings->firstWhere('id', (string) $endedMentoring->id),
+            'A mentoring session that has already ended today must not show up'
+        );
+        $this->assertNull(
+            $bookings->firstWhere('id', (string) $endedExam->id),
+            'An exam that has already ended today must not show up'
+        );
+
+        $defaultBookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
+
+        $this->assertNotNull(
+            $defaultBookings->firstWhere('id', (string) $endedMentoring->id),
+            'Without the flag, an ended mentoring session must still be returned'
+        );
+    }
+
+    #[Test]
+    public function it_still_shows_bookings_that_have_not_ended_today(): void
+    {
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
+        $mentor = CtsMember::factory()->forAccount(Account::factory()->create())->create();
+
+        $session = Session::factory()->create([
+            'student_id' => CtsMember::factory()->create()->id,
+            'mentor_id' => $mentor->id,
+            'position' => 'EGKK_APP',
+            'taken' => 1,
+            'taken_date' => $this->today,
+            'taken_from' => $this->knownDate->copy()->subHour()->format('H:i:s'),
+            'taken_to' => $this->knownDate->copy()->addHour()->format('H:i:s'),
+        ]);
+        $inProgressMentoring = Booking::factory()->create([
+            'position_id' => $position->id,
+            'type' => Booking::TYPE_MENTORING,
+            'starts_at' => $this->knownDate->copy()->subHour(),
+            'ends_at' => $this->knownDate->copy()->addHour(),
+            'bookable_type' => Session::class,
+            'bookable_id' => $session->id,
+        ]);
+
+        // Already ended, but not a mentoring/exam type: the filter must not touch it.
+        $endedStandard = Booking::factory()->create([
+            'position_id' => $position->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => $this->knownDate->copy()->subHours(3),
+            'ends_at' => $this->knownDate->copy()->subHour(),
+        ]);
+
+        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today), hideEndedTrainingSessions: true);
+
+        $this->assertNotNull(
+            $bookings->firstWhere('id', (string) $inProgressMentoring->id),
+            'A mentoring session that has started but not yet ended must still show up'
+        );
+        $this->assertNotNull(
+            $bookings->firstWhere('id', (string) $endedStandard->id),
+            'The end-time filter only applies to mentoring/exam bookings, not standard ones'
+        );
+    }
+
+    #[Test]
+    public function it_can_return_a_list_of_todays_bookings_with_owner_and_type(): void
+    {
+        Booking::factory()->count(2)->create([
+            'starts_at' => $this->knownDate->copy()->addDays(5)->setHour(10),
+            'ends_at' => $this->knownDate->copy()->addDays(5)->setHour(12),
+        ]);
+
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
+        $member = Account::factory()->create();
+        $bookingTodayOne = Booking::factory()->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::parse($this->today.' 17:00:00'),
+            'ends_at' => Carbon::parse($this->today.' 19:00:00'),
+        ]);
+
+        $mentorAccount = Account::factory()->create();
+        $mentor = CtsMember::factory()->forAccount($mentorAccount)->create();
+        $session = Session::factory()->create([
+            'student_id' => CtsMember::factory()->create()->id,
+            'mentor_id' => $mentor->id,
+            'position' => 'EGKK_APP',
+            'taken' => 1,
+            'taken_date' => $this->today,
+            'taken_from' => '18:00:00',
+            'taken_to' => '20:00:00',
+        ]);
+
+        $bookingTodayTwo = Booking::factory()->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_MENTORING,
+            'starts_at' => Carbon::parse($this->today.' 18:00:00'),
+            'ends_at' => Carbon::parse($this->today.' 20:00:00'),
+            'bookable_type' => Session::class,
+            'bookable_id' => $session->id,
         ]);
 
         $bookings = $this->subjectUnderTest->getTodaysBookings();
@@ -72,58 +208,113 @@ class BookingsRepositoryTest extends TestCase
         $this->assertCount(2, $bookings);
 
         $this->assertEquals([
-            'id' => $bookingTodayOne->id,
+            'id' => (string) $bookingTodayOne->id,
+            'source' => 'core',
+            'cts_booking_id' => null,
+            'position_id' => $bookingTodayOne->position_id,
             'date' => $this->today,
-            'from' => Carbon::parse($bookingTodayOne->from)->format('H:i'),
-            'to' => Carbon::parse($bookingTodayOne->to)->format('H:i'),
-            'position' => $bookingTodayOne->position,
-            'type' => $bookingTodayOne->type,
+            'from' => '17:00',
+            'to' => '19:00',
+            'position' => 'EGKK_APP',
+            'type' => 'BK',
             'member' => [
-                'id' => $bookingTodayOne['member']['cid'],
-                'name' => $bookingTodayOne['member']['name'],
+                'cid' => (string) $member->id,
+                'display_name' => $member->name_preferred.' '.mb_substr($member->name_last, 0, 1).'.',
             ],
-        ], $bookings->get(0)->toArray());
+        ], (array) $bookings->get(0));
         $this->assertEquals([
-            'id' => $bookingTodayTwo->id,
+            'id' => (string) $bookingTodayTwo->id,
+            'source' => 'core',
+            'cts_booking_id' => null,
+            'position_id' => $bookingTodayTwo->position_id,
             'date' => $this->today,
-            'from' => Carbon::parse($bookingTodayTwo->from)->format('H:i'),
-            'to' => Carbon::parse($bookingTodayTwo->to)->format('H:i'),
-            'position' => $bookingTodayTwo->position,
-            'type' => $bookingTodayTwo->type,
+            'from' => '18:00',
+            'to' => '20:00',
+            'position' => 'EGKK_APP',
+            'type' => 'ME',
             'member' => [
-                'id' => $bookingTodayTwo['member']['cid'],
-                'name' => $bookingTodayTwo['member']['name'],
+                'cid' => (string) $mentorAccount->id,
+                'display_name' => $mentorAccount->name_preferred.' '.mb_substr($mentorAccount->name_last, 0, 1).'.',
             ],
-        ], $bookings->get(1)->toArray());
+        ], (array) $bookings->get(1));
     }
 
     #[Test]
-    public function it_hides_member_details_on_exam_booking()
+    public function it_shows_the_examiner_on_exam_bookings(): void
     {
-        $normalBooking = Booking::Factory()->create(['date' => $this->today, 'from' => '17:00', 'type' => 'BK']);
-        Booking::Factory()->create(['date' => $this->today, 'from' => '18:00', 'type' => 'EX']);
+        $member = Account::factory()->create();
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
+
+        $examinerAccount = Account::factory()->create();
+        $examiner = CtsMember::factory()->forAccount($examinerAccount)->create();
+
+        $exam = ExamBooking::factory()->create([
+            'student_id' => CtsMember::factory()->create()->id,
+            'position_1' => $position->callsign,
+            'taken' => 1,
+            'taken_date' => $this->knownDate->format('Y-m-d'),
+            'taken_from' => '18:00:00',
+            'taken_to' => '20:00:00',
+        ]);
+
+        PracticalExaminers::create([
+            'examid' => $exam->id,
+            'senior' => $examiner->id,
+            'other' => null,
+            'trainee' => null,
+        ]);
+
+        Booking::factory()->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => $this->knownDate->copy()->setHour(17),
+            'ends_at' => $this->knownDate->copy()->setHour(19),
+        ]);
+        Booking::factory()->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_EXAM,
+            'starts_at' => $this->knownDate->copy()->setHour(18),
+            'ends_at' => $this->knownDate->copy()->setHour(20),
+            'bookable_type' => ExamBooking::class,
+            'bookable_id' => $exam->id,
+        ]);
 
         $bookings = $this->subjectUnderTest->getTodaysBookings();
 
         $this->assertEquals([
-            'id' => $normalBooking->member->cid,
-            'name' => $normalBooking->member->name,
-        ], $bookings->get(0)['member']);
+            'cid' => (string) $member->id,
+            'display_name' => $member->name_preferred.' '.mb_substr($member->name_last, 0, 1).'.',
+        ], $bookings->get(0)->member);
 
         $this->assertEquals([
-            'id' => '',
-            'name' => 'Hidden',
-        ], $bookings->get(1)['member']);
+            'cid' => (string) $examinerAccount->id,
+            'display_name' => $examinerAccount->name_preferred.' '.mb_substr($examinerAccount->name_last, 0, 1).'.',
+        ], $bookings->get(1)->member);
     }
 
     #[Test]
-    public function it_can_return_a_list_of_todays_live_atc_bookings()
+    public function it_can_return_a_list_of_todays_live_atc_bookings(): void
     {
-        Booking::Factory()->create(['date' => $this->today, 'position' => 'EGKK_APP']); // Live ATC booking today
-        Booking::Factory()->create(['date' => $this->today, 'position' => 'EGKK_SBAT']); // Sweatbox ATC booking today
-        Booking::Factory()->create(['date' => $this->today, 'position' => 'P1_VATSIM']); // Pilot booking today
-        Booking::Factory()->create(['date' => $this->tomorrow, 'position' => 'EGKK_APP']); // ATC booking tomorrow
-        Booking::Factory()->create(['date' => $this->tomorrow, 'position' => 'P1_VATSIM']); // Pilot booking tomorrw
+        $atcPosition = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+        $nonAtcPosition = Position::factory()->create(['callsign' => 'EGXX_ATIS', 'type' => Position::TYPE_ATIS]);
+
+        Booking::factory()->create([
+            'position_id' => $atcPosition->id,
+            'starts_at' => $this->knownDate->copy()->setHour(10),
+            'ends_at' => $this->knownDate->copy()->setHour(12),
+        ]);
+        Booking::factory()->create([
+            'position_id' => $nonAtcPosition->id,
+            'starts_at' => $this->knownDate->copy()->setHour(10),
+            'ends_at' => $this->knownDate->copy()->setHour(12),
+        ]);
+        Booking::factory()->create([
+            'position_id' => $atcPosition->id,
+            'starts_at' => $this->knownDate->copy()->addDay()->setHour(10),
+            'ends_at' => $this->knownDate->copy()->addDay()->setHour(12),
+        ]);
 
         $atcBookings = $this->subjectUnderTest->getTodaysLiveAtcBookings();
 
@@ -132,9 +323,17 @@ class BookingsRepositoryTest extends TestCase
     }
 
     #[Test]
-    public function it_can_return_a_booking_without_a_known_member()
+    public function it_can_return_a_booking_without_a_known_member(): void
     {
-        Booking::Factory()->create(['date' => $this->today, 'member_id' => 0, 'type' => 'BK']);
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        Booking::factory()->create([
+            'position_id' => $position->id,
+            'member_id' => null,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => $this->knownDate->copy()->setHour(10),
+            'ends_at' => $this->knownDate->copy()->setHour(12),
+        ]);
 
         $this->subjectUnderTest->getTodaysLiveAtcBookings();
 
@@ -142,18 +341,143 @@ class BookingsRepositoryTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_bookings_in_start_time_order()
+    public function it_returns_bookings_in_start_time_order(): void
     {
-        $afternoon = Booking::Factory()->create(['date' => $this->today, 'from' => '16:00', 'to' => '17:00', 'type' => 'BK']);
-        $morning = Booking::Factory()->create(['date' => $this->today, 'from' => '09:00', 'to' => '11:00', 'type' => 'BK']);
-        $night = Booking::Factory()->create(['date' => $this->today, 'from' => '22:00', 'to' => '23:00', 'type' => 'BK']);
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+        $member = Account::factory()->create();
+
+        $afternoon = Booking::factory()->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => $this->knownDate->copy()->setHour(16),
+            'ends_at' => $this->knownDate->copy()->setHour(17),
+        ]);
+        $morning = Booking::factory()->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => $this->knownDate->copy()->setHour(9),
+            'ends_at' => $this->knownDate->copy()->setHour(11),
+        ]);
+        $night = Booking::factory()->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => $this->knownDate->copy()->setHour(22),
+            'ends_at' => $this->knownDate->copy()->setHour(23),
+        ]);
 
         $todaysBookings = $this->subjectUnderTest->getTodaysBookings();
         $todaysAtcBookings = $this->subjectUnderTest->getTodaysLiveAtcBookings();
 
-        $this->assertEquals($todaysBookings, $todaysAtcBookings);
-        $this->assertEquals($morning->id, $todaysBookings[0]['id']);
-        $this->assertEquals($afternoon->id, $todaysBookings[1]['id']);
-        $this->assertEquals($night->id, $todaysBookings[2]['id']);
+        $this->assertEquals($todaysBookings->toArray(), $todaysAtcBookings->toArray());
+        $this->assertEquals($morning->id, (int) $todaysBookings->get(0)->id);
+        $this->assertEquals($afternoon->id, (int) $todaysBookings->get(1)->id);
+        $this->assertEquals($night->id, (int) $todaysBookings->get(2)->id);
+    }
+
+    #[Test]
+    public function it_merges_core_and_cts_bookings_ordered_by_start_time(): void
+    {
+        $member = Account::factory()->create();
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        // Core booking at 11:00
+        Booking::create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::parse($this->today.' 11:00:00'),
+            'ends_at' => Carbon::parse($this->today.' 13:00:00'),
+        ]);
+
+        // CTS booking at 09:00 — earlier than the core booking
+        $ctsMember = CtsMember::factory()->forAccount($member)->create();
+        CtsBooking::factory()->create([
+            'position' => 'EGKK_APP',
+            'member_id' => $ctsMember->id,
+            'type' => 'BK',
+            'date' => $this->today,
+            'from' => '09:00:00',
+            'to' => '10:30:00',
+        ]);
+
+        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
+
+        $this->assertCount(2, $bookings, 'Must return both core and CTS bookings');
+        $this->assertEquals('09:00', $bookings->get(0)->from, 'CTS booking at 09:00 must come first');
+        $this->assertEquals('11:00', $bookings->get(1)->from, 'Core booking at 11:00 must come second');
+    }
+
+    #[Test]
+    public function it_renders_the_cts_callsign_for_core_bookings_without_a_core_position(): void
+    {
+        $member = Account::factory()->create();
+        $ctsMember = CtsMember::factory()->forAccount($member)->create();
+
+        // CTS booking on a training position NOT present in the core positions table.
+        $cts = CtsBooking::factory()->create([
+            'position' => 'EGSS_APP',
+            'member_id' => $ctsMember->id,
+            'type' => 'EX',
+            'date' => $this->today,
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        // Core mirror with no position_id (training position is not in core).
+        Booking::create([
+            'position_id' => null,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_EXAM,
+            'starts_at' => Carbon::parse($this->today.' 10:00:00'),
+            'ends_at' => Carbon::parse($this->today.' 12:00:00'),
+            'cts_booking_id' => $cts->id,
+            'bookable_type' => CtsBooking::class,
+            'bookable_id' => $cts->id,
+        ]);
+
+        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
+
+        $this->assertCount(1, $bookings, 'Core mirror and CTS row must deduplicate to one booking');
+        $this->assertSame('EGSS_APP', $bookings->first()->position, 'Must render the CTS callsign (cts-first)');
+    }
+
+    #[Test]
+    public function it_prefers_the_cts_callsign_over_the_core_position_callsign(): void
+    {
+        $member = Account::factory()->create();
+        $ctsMember = CtsMember::factory()->forAccount($member)->create();
+
+        // A core position exists, but the CTS booking is authoritative for the callsign,
+        // so a divergent CTS callsign must win over the core position's callsign.
+        $position = Position::factory()->create(['callsign' => 'EGLL_APP', 'type' => Position::TYPE_APPROACH]);
+
+        $cts = CtsBooking::factory()->create([
+            'position' => 'EGSS_APP',
+            'member_id' => $ctsMember->id,
+            'type' => 'EX',
+            'date' => $this->today,
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        Booking::create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_EXAM,
+            'starts_at' => Carbon::parse($this->today.' 10:00:00'),
+            'ends_at' => Carbon::parse($this->today.' 12:00:00'),
+            'cts_booking_id' => $cts->id,
+            'bookable_type' => CtsBooking::class,
+            'bookable_id' => $cts->id,
+        ]);
+
+        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
+
+        $this->assertCount(1, $bookings);
+        $this->assertSame('EGSS_APP', $bookings->first()->position, 'The CTS callsign must win over the core position callsign');
+        $this->assertSame($position->id, $bookings->first()->position_id);
     }
 }

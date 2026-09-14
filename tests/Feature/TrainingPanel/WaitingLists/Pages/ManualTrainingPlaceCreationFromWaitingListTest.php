@@ -51,14 +51,15 @@ class ManualTrainingPlaceCreationFromWaitingListTest extends BaseTrainingPanelTe
                 'pageClass' => ViewRecord::class,
             ])
             ->callTableAction('manualSetupTrainingPlace', $waitingListAccount, [
-                'training_position_id' => $trainingPosition->id,
+                'trainable' => TrainingPosition::class.'|'.$trainingPosition->id,
             ])
             ->assertHasNoTableActionErrors();
 
         // Assert: Training place should be created
         $this->assertDatabaseHas('training_places', [
             'waiting_list_account_id' => $waitingListAccount->id,
-            'training_position_id' => $trainingPosition->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $trainingPosition->id,
         ]);
 
         // Assert: User should be removed from waiting list (soft deleted)
@@ -92,7 +93,7 @@ class ManualTrainingPlaceCreationFromWaitingListTest extends BaseTrainingPanelTe
                 'pageClass' => ViewRecord::class,
             ])
             ->callTableAction('manualSetupTrainingPlace', $waitingListAccount1, [
-                'training_position_id' => $position1->id,
+                'trainable' => TrainingPosition::class.'|'.$position1->id,
             ])
             ->assertHasNoTableActionErrors();
 
@@ -103,24 +104,26 @@ class ManualTrainingPlaceCreationFromWaitingListTest extends BaseTrainingPanelTe
                 'pageClass' => ViewRecord::class,
             ])
             ->callTableAction('manualSetupTrainingPlace', $waitingListAccount2, [
-                'training_position_id' => $position2->id,
+                'trainable' => TrainingPosition::class.'|'.$position2->id,
             ])
             ->assertHasNoTableActionErrors();
 
         // Assert: Both training places should be created with correct positions
         $this->assertDatabaseHas('training_places', [
             'waiting_list_account_id' => $waitingListAccount1->id,
-            'training_position_id' => $position1->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $position1->id,
         ]);
 
         $this->assertDatabaseHas('training_places', [
             'waiting_list_account_id' => $waitingListAccount2->id,
-            'training_position_id' => $position2->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $position2->id,
         ]);
     }
 
     #[Test]
-    public function it_requires_training_position_to_be_selected()
+    public function it_requires_trainable_to_be_selected()
     {
         // Arrange
         $trainingPosition = TrainingPosition::factory()->create();
@@ -139,9 +142,9 @@ class ManualTrainingPlaceCreationFromWaitingListTest extends BaseTrainingPanelTe
                 'pageClass' => ViewRecord::class,
             ])
             ->callTableAction('manualSetupTrainingPlace', $waitingListAccount, [
-                'training_position_id' => null,
+                'trainable' => null,
             ])
-            ->assertHasTableActionErrors(['training_position_id' => 'required']);
+            ->assertHasTableActionErrors(['trainable' => 'required']);
     }
 
     #[Test]
@@ -194,7 +197,7 @@ class ManualTrainingPlaceCreationFromWaitingListTest extends BaseTrainingPanelTe
                 'pageClass' => ViewRecord::class,
             ])
             ->callTableAction('manualSetupTrainingPlace', $waitingListAccount, [
-                'training_position_id' => $trainingPosition->id,
+                'trainable' => TrainingPosition::class.'|'.$trainingPosition->id,
             ])
             ->assertNotified();
     }

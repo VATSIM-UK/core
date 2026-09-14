@@ -19,6 +19,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @property WaitingList $record
@@ -63,6 +64,8 @@ class ViewWaitingList extends ViewRecord
                                         $fail('The specified member is not a home UK member.');
                                     }
                                 } catch (ModelNotFoundException $e) {
+                                    Log::debug('Waiting list home member check failed', ['exception' => $e, 'account_id' => $value]);
+
                                     $fail('The specified member was not found.');
                                 }
                             }
@@ -75,6 +78,8 @@ class ViewWaitingList extends ViewRecord
                                     $fail('The specified member does not have the required endorsement to join this waiting list.');
                                 }
                             } catch (ModelNotFoundException $e) {
+                                Log::debug('Waiting list endorsement check failed', ['exception' => $e, 'account_id' => $value]);
+
                                 $fail('The specified member was not found.');
                             }
                         })

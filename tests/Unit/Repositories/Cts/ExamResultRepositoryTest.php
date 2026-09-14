@@ -30,7 +30,7 @@ class ExamResultRepositoryTest extends TestCase
 
         $this->repository = app(ExamResultRepository::class);
         $this->user = Account::factory()->create(['id' => 9000000]);
-        Member::factory()->create(['id' => $this->user->id, 'cid' => $this->user->id]);
+        Member::factory()->forAccount($this->user)->create();
 
         // Create exam data for all levels
         $this->createExamData();
@@ -43,10 +43,7 @@ class ExamResultRepositoryTest extends TestCase
         foreach ($examLevels as $level) {
             // Create a student account and member
             $student = Account::factory()->create();
-            $studentMember = Member::factory()->create([
-                'id' => $student->id,
-                'cid' => $student->id,
-            ]);
+            $studentMember = Member::factory()->forAccount($student)->create();
 
             // Create an exam booking
             $examBooking = ExamBooking::factory()->create([
@@ -61,7 +58,7 @@ class ExamResultRepositoryTest extends TestCase
             // Create examiners
             $examBooking->examiners()->create([
                 'examid' => $examBooking->id,
-                'senior' => $this->user->id,
+                'senior' => $this->user->member->id,
             ]);
 
             // Create a practical result

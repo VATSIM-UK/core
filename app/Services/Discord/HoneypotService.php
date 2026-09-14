@@ -27,7 +27,10 @@ class HoneypotService
         $account = Account::where('discord_id', $discordUserId)->first();
 
         if (! $account) {
-            Log::warning("Honeypot message from unlinked Discord user {$discordUsername} ({$discordUserId}), skipping");
+            Log::warning('Honeypot message from unlinked Discord user, skipping', [
+                'discord_username' => $discordUsername,
+                'discord_id' => $discordUserId,
+            ]);
 
             $this->discord->deleteMessage(
                 channelId: config('services.discord.honeypot_channel_id'),
@@ -41,12 +44,22 @@ class HoneypotService
             'account_id' => $account->id,
         ]);
 
-        Log::info("Honeypot triggered by {$discordUsername} ({$discordUserId}) linked to account {$account->id}");
+        Log::info('Honeypot triggered by Discord user linked to account', [
+            'discord_username' => $discordUsername,
+            'discord_id' => $discordUserId,
+            'account_id' => $account->id,
+        ]);
 
         $this->discord->softBan($account, 7, 'Honeypot');
 
         $noteType = NoteType::isShortCode('discipline')->first();
         $account->addNote($noteType, 'User sent a message in the honeypot channel, recent messages have been deleted and user has been timed out for 7 days', null);
+
+        Log::info('Honeypot soft-ban applied', [
+            'account_id' => $account->id,
+            'discord_id' => $discordUserId,
+            'action' => 'soft_ban',
+        ]);
 
         $this->discord->sendMessageToChannel(
             channelId: config('services.discord.moderators_chat_channel_id'),
@@ -58,7 +71,7 @@ class HoneypotService
         $honeypotMessageData = Cache::get('discord:honeypot:bot_message');
 
         if (! $honeypotMessageData) {
-            \Log::warning('Cached honeypoot bot message not found');
+            Log::warning('Cached honeypot bot message not found');
 
             return;
         }

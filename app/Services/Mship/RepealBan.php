@@ -20,5 +20,10 @@ class RepealBan implements BaseService
         $this->ban->repeal();
 
         $this->ban->account->notify(new BanRepealed($this->ban));
+
+        audit('Ban repealed', [
+            'account_id' => $this->ban->account_id,
+            'ban_id' => $this->ban->id,
+        ]);
     }
 }

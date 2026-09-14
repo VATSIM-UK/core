@@ -41,6 +41,13 @@ class BanAccount implements BaseService
         );
 
         $this->account->notify(new BanCreated($this->ban));
+
+        audit('Account banned', [
+            'account_id' => $this->account->id,
+            'ban_id' => $this->ban->id,
+            'ban_type' => $this->ban->type->name,
+            'reason' => $this->reason->name,
+        ]);
     }
 
     public function getBanIdentifier()

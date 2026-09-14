@@ -3,6 +3,7 @@
 namespace App\Services\Training;
 
 use App\Enums\TrainingPlaceOfferStatus;
+use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList\Removal;
@@ -17,12 +18,13 @@ use Illuminate\Support\Str;
 
 class TrainingPlaceOfferService
 {
-    public function offerTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition)
+    public function offerTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition|Qualification $trainable)
     {
-        DB::transaction(function () use ($waitingListAccount, $trainingPosition): void {
+        DB::transaction(function () use ($waitingListAccount, $trainable): void {
             $trainingPlaceOffer = TrainingPlaceOffer::create([
                 'waiting_list_account_id' => $waitingListAccount->id,
-                'training_position_id' => $trainingPosition->id,
+                'trainable_type' => $trainable->getMorphClass(),
+                'trainable_id' => $trainable->getKey(),
                 'status' => TrainingPlaceOfferStatus::Pending->value,
                 'token' => self::generateToken(),
                 'expires_at' => now()->addHours(84)->endOfHour(), // 3.5 days
@@ -39,11 +41,11 @@ class TrainingPlaceOfferService
                 'response_at' => now(),
             ]);
 
-            $this->createTrainingPlace($trainingPlaceOffer->waitingListAccount, $trainingPlaceOffer->trainingPosition);
+            $this->createTrainingPlace($trainingPlaceOffer->waitingListAccount, $trainingPlaceOffer->trainable);
 
             $trainingPlaceOffer->waitingListAccount->account->addNote(
                 'training',
-                "The member accepted a training place offer for {$trainingPlaceOffer->trainingPosition->position->callsign}."
+                "The member accepted a training place offer for {$trainingPlaceOffer->display_name}."
             );
         });
 
@@ -62,7 +64,7 @@ class TrainingPlaceOfferService
 
             $trainingPlaceOffer->waitingListAccount->account->addNote(
                 'training',
-                "The member declined a training place offer for {$trainingPlaceOffer->trainingPosition->position->callsign}. Member removed from waiting list."
+                "The member declined a training place offer for {$trainingPlaceOffer->display_name}. Member removed from waiting list."
             );
 
             $trainingPlaceOffer->waitingListAccount->account->notify(new TrainingPlaceOfferDeclined($trainingPlaceOffer));
@@ -79,7 +81,7 @@ class TrainingPlaceOfferService
 
         $trainingPlaceOffer->waitingListAccount->account->addNote(
             'training',
-            "Training place offer for {$trainingPlaceOffer->trainingPosition->position->callsign} was rescinded by staff. Reason: {$reason}",
+            "Training place offer for {$trainingPlaceOffer->display_name} was rescinded by staff. Reason: {$reason}",
             auth()->id()
         );
     }
@@ -97,7 +99,7 @@ class TrainingPlaceOfferService
 
         $trainingPlaceOffer->waitingListAccount->account->addNote(
             'training',
-            "Training place offer for {$trainingPlaceOffer->trainingPosition->position->callsign} was rescinded by staff and member removed from waiting list. Reason: {$reason}",
+            "Training place offer for {$trainingPlaceOffer->display_name} was rescinded by staff and member removed from waiting list. Reason: {$reason}",
             auth()->id()
         );
     }
@@ -117,9 +119,9 @@ class TrainingPlaceOfferService
         $trainingPlaceOffer->waitingListAccount->waitingList->removeFromWaitingList($trainingPlaceOffer->waitingListAccount->account, $removal);
     }
 
-    public function createTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition $trainingPosition)
+    public function createTrainingPlace(WaitingListAccount $waitingListAccount, TrainingPosition|Qualification $trainable)
     {
-        return app(TrainingPlaceService::class)->createManualTrainingPlace($waitingListAccount, $trainingPosition);
+        return app(TrainingPlaceService::class)->createManualTrainingPlace($waitingListAccount, $trainable);
     }
 
     private static function generateToken(): string

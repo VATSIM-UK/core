@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@theme {
+    --color-brand: #25ade3;
+    --color-uknavy: #17375e;
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+.timeline-scroll {
+    overflow-x: auto;
+    overflow-y: visible;
+}
+.timeline-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+.timeline-scroll::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+}
+.timeline-scroll::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+.timeline-scroll::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.legend-scroll {
+    scrollbar-width: none;
+}
+.legend-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/*
+ * Timeline layer scale. The position column is sticky while the timeline body
+ * scrolls underneath it, so anything drawn in the track must rank below it or
+ * it will paint over the callsigns once scrolled. The overlays that span the
+ * full track (gap shading, current time) start with a plain, non-sticky w-32
+ * spacer, which scrolls away -- their z-index is what keeps them out of the
+ * column, not their position.
+ *
+ *   1  gap shading overlay
+ *   5  booking blocks
+ *   6  own-booking ring / jump-to highlight
+ *   8  drag preview
+ *   9  current time marker (its line; the ball is drawn in the header row so
+ *      that the header cannot clip it, and is unranked there so the header's
+ *      own Position cell still covers it)
+ *  20  sticky position column (rows, group headers, events row)
+ *  30  hour header row (sticky vertically, so above the column)
+ *
+ * Ranking below the column is necessary but not sufficient: the column must
+ * also leave no vertical gap. A row's border-b belongs to the row box, which
+ * paints below any positioned overlay, so each sticky cell carries -mb-px and
+ * its own matching border to cover that 1px strip -- otherwise the overlays
+ * show through at every row boundary as a dashed line across the column. For
+ * the same reason the separator row has a sticky cell of its own.
+ */
+.sticky.left-0 {
+    position: sticky;
+    left: 0;
+}
+.rotate-90 {
+    transform: rotate(90deg);
+}
+
+@keyframes pulse-dot {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.3);
+    }
+}
+.animate-pulse-dot {
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.group:hover .bg-uknavy {
+    filter: brightness(1.1);
+}
+
+.booking-jump-highlight {
+    z-index: 6 !important;
+    box-shadow: 0 0 0 3px var(--color-brand), 0 0 10px 2px rgb(37 173 227 / 70%);
+    /* Overrides the block's own transition-all, or this fades instead of popping. */
+    transition: none !important;
+}
+.tabular-nums {
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 640px) {
+    .min-w-\[1680px\] {
+        min-width: 1680px !important;
+    }
+}

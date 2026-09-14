@@ -11,7 +11,11 @@ class WaitingListFlag extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'position_group_id',
+        'display_in_table',
+    ];
 
     protected $table = 'training_waiting_list_flags';
 

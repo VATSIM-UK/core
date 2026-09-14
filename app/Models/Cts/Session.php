@@ -3,6 +3,7 @@
 namespace App\Models\Cts;
 
 use App\Models\Mship\Account;
+use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -73,5 +74,10 @@ class Session extends Model
     public function cancelReason(): HasOne
     {
         return $this->hasOne(CancelReason::class, 'sesh_id', 'id')->where('sesh_type', 'ME');
+    }
+
+    public function isPilot(): bool
+    {
+        return in_array($this->position, MentorPermissionService::QUALIFICATION_CTS_POSITION_MAP, true);
     }
 }

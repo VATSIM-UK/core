@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Log;
 
 class TheoryResult extends Model
 {
@@ -43,7 +44,7 @@ class TheoryResult extends Model
         try {
             $memberId = Member::where('cid', $account_id)->firstOrFail()->id;
         } catch (ModelNotFoundException) {
-            Log::warning("No member found for account_id {$account_id}. Likely sync problems.");
+            Log::warning('No member found for account_id. Likely sync problems', ['account_id' => $account_id]);
 
             return null;
         }

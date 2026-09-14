@@ -55,7 +55,15 @@ class Registration extends Model
 
     protected $primaryKey = 'id';
 
-    protected $fillable = ['*'];
+    protected $fillable = [
+        'account_id',
+        'registration_ip',
+        'last_ip',
+        'last_login',
+        'last_os',
+        'uid',
+        'dbid',
+    ];
 
     protected $attributes = ['registration_ip' => '0.0.0.0', 'last_ip' => '0.0.0.0'];
 

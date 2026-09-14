@@ -23,9 +23,7 @@ class ExamBookingFactory extends Factory
     public function definition(): array
     {
         $account = Account::factory()->create();
-        $studentMember = Member::factory()->create(
-            ['id' => $account->id, 'cid' => $account->id]
-        );
+        $studentMember = Member::factory()->forAccount($account)->create();
 
         return [
             'position_1' => 'EGKK_TWR',

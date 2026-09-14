@@ -121,14 +121,26 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
         $member = Member::where('cid', auth()->id())->first();
 
-        $sessionsWithPermissions = $sessionRepository
-            ->getAllAcceptedSessionsForPositionsQuery($this->getVisibleCtsPositions())
-            ->where('taken_date', '<', now());
+        $ctsPositions = $this->getVisibleCtsPositions();
 
         $sessionsUserMentored = $sessionRepository
             ->getSessionsForMentor($member->id);
 
-        $union = $sessionsWithPermissions->union($sessionsUserMentored);
+        if (empty($ctsPositions)) {
+            return $sessionsUserMentored
+                ->where('taken_date', '<', now())
+                ->orderByDesc('taken_date')
+                ->orderByDesc('taken_from')
+                ->orderByDesc('id');
+        }
+
+        $sessionsWithPermissions = $sessionRepository
+            ->getAllAcceptedSessionsForPositionsQuery($ctsPositions)
+            ->where('taken_date', '<', now());
+
+        $sessionsUserMentoredFiltered = $sessionsUserMentored->whereIn('position', $ctsPositions);
+
+        $union = $sessionsWithPermissions->union($sessionsUserMentoredFiltered);
 
         return Session::query()
             ->fromSub($union, 'sessions')

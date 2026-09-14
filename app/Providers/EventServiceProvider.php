@@ -32,7 +32,6 @@ class EventServiceProvider extends ServiceProvider
 
         \App\Events\VisitTransfer\ApplicationUnderReview::class => [
             \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
-            \App\Listeners\VisitTransfer\NotifyCommunityOfUnderReviewApplication::class,
         ],
 
         \App\Events\VisitTransfer\ApplicationRejected::class => [
@@ -41,7 +40,6 @@ class EventServiceProvider extends ServiceProvider
 
         \App\Events\VisitTransfer\ApplicationAccepted::class => [
             \App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange::class,
-            \App\Listeners\VisitTransfer\NotifyTrainingDepartmentOfAcceptedApplication::class,
             \App\Listeners\VisitTransfer\SyncVisitingControllerToCts::class,
         ],
 
@@ -86,6 +84,10 @@ class EventServiceProvider extends ServiceProvider
 
         \App\Events\NetworkData\AtcSessionEnded::class => [
             \App\Listeners\TeamSpeak\RemoveAtcServerGroup::class,
+        ],
+
+        \Laravel\Fortify\Events\RecoveryCodeReplaced::class => [
+            \App\Listeners\Mship\NotifyOfRecoveryCodeUse::class,
         ],
     ];
 

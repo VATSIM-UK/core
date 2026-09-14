@@ -37,6 +37,7 @@ use Filament\Support\Enums\IconSize;
 use Filament\Support\Enums\TextSize;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class ConductMentoringSession extends Page implements HasForms, HasInfolists
@@ -326,6 +327,8 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
         try {
             app(MentoringReportService::class)->submit($this->session->fresh());
         } catch (ValidationException $exception) {
+            Log::debug('Submit mentoring report failed', ['exception' => $exception, 'session_id' => $this->session->id]);
+
             Notification::make()
                 ->title('Cannot submit mentoring report')
                 ->body(collect($exception->errors())->flatten()->first())
@@ -351,6 +354,8 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
         try {
             app(MentoringReportService::class)->markNoShow($this->session->fresh(), $confirmed);
         } catch (ValidationException $exception) {
+            Log::debug('Mark mentoring session no-show failed', ['exception' => $exception, 'session_id' => $this->session->id]);
+
             Notification::make()
                 ->title('Unable to mark no-show')
                 ->body(collect($exception->errors())->flatten()->first())

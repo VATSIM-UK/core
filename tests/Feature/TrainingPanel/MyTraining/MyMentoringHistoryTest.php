@@ -31,16 +31,10 @@ class MyMentoringHistoryTest extends BaseTrainingPanelTestCase
         parent::setUp();
 
         $this->studentAccount = Account::factory()->create();
-        $this->studentMember = Member::factory()->create([
-            'id' => $this->studentAccount->id,
-            'cid' => $this->studentAccount->id,
-        ]);
+        $this->studentMember = Member::factory()->forAccount($this->studentAccount)->create();
 
         $mentorAccount = Account::factory()->create();
-        $this->mentorMember = Member::factory()->create([
-            'id' => $mentorAccount->id,
-            'cid' => $mentorAccount->id,
-        ]);
+        $this->mentorMember = Member::factory()->forAccount($mentorAccount)->create();
 
         $this->filedSession = Session::factory()->create([
             'student_id' => $this->studentMember->id,
@@ -89,10 +83,7 @@ class MyMentoringHistoryTest extends BaseTrainingPanelTestCase
         ]);
 
         $otherAccount = Account::factory()->create();
-        $otherMember = Member::factory()->create([
-            'id' => $otherAccount->id,
-            'cid' => $otherAccount->id,
-        ]);
+        $otherMember = Member::factory()->forAccount($otherAccount)->create();
 
         Session::factory()->create([
             'student_id' => $otherMember->id,
@@ -154,10 +145,7 @@ class MyMentoringHistoryTest extends BaseTrainingPanelTestCase
     public function it_shows_an_empty_table_when_member_has_no_past_mentoring_sessions(): void
     {
         $emptyAccount = Account::factory()->create();
-        Member::factory()->create([
-            'id' => $emptyAccount->id,
-            'cid' => $emptyAccount->id,
-        ]);
+        Member::factory()->forAccount($emptyAccount)->create();
         $emptyAccount->givePermissionTo('training.access');
 
         Livewire::actingAs($emptyAccount)

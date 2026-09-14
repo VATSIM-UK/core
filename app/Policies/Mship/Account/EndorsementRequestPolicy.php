@@ -68,6 +68,11 @@ class EndorsementRequestPolicy
         return $account->hasAnyPermission("endorsement-request.approve.{$endorsementRequest->type}");
     }
 
+    public function approveAny(Account $account): bool
+    {
+        return $account->hasAnyPermission('endorsement-request.approve.*');
+    }
+
     public function reject(Account $account, EndorsementRequest $endorsementRequest): bool
     {
         return $account->hasAnyPermission("endorsement-request.reject.{$endorsementRequest->type}");

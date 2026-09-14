@@ -68,6 +68,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.exams.conduct.p3',
             'training.exams.override-result',
             'training.exams.request.remove',
+            'training.exams.view-upcoming.*',
+            'training.exams.view-upcoming.atc',
+            'training.exams.view-upcoming.pilot',
             'training.theory.access',
             'training.theory.view.*',
             'training.theory.view.obs',
@@ -141,7 +144,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'vt.status.revoke',
             'vt.status.grant.manual',
             'vt.removal.view.*',
-            // 'vt.application.check.modify.*',
+            'vt.application.modify.*',
 
             // Waiting List System Permissions,
             'waiting-lists.access',
@@ -178,8 +181,14 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Training Places Permissions
             'training-places.view.*',
+            'training-places.view.atc',
+            'training-places.view.pilot',
             'training-places.manual-setup',
+            'training-places.manual-setup.atc',
+            'training-places.manual-setup.pilot',
             'training-places.create-adhoc',
+            'training-places.create-adhoc.atc',
+            'training-places.create-adhoc.pilot',
             'training-places.revoke.*',
             'training-places.restore.*',
             'training-places.loas.create.*',
@@ -206,6 +215,10 @@ class RolesAndPermissionsSeeder extends Seeder
             // Operations System Permissions
             'operations.access',
             'operations.positions',
+
+            // Event System Permissions
+            'events.view',
+            'events.manage',
 
             // Pilot System Permissions
             'pilot.access',

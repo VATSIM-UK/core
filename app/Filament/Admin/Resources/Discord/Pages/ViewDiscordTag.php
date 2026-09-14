@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Discord\Pages;
 
 use App\Filament\Admin\Helpers\Pages\BaseViewRecordPage;
+use App\Filament\Admin\Helpers\Pages\LogPageAccess;
 use App\Filament\Admin\Resources\Discord\DiscordTagResource;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
@@ -10,7 +11,14 @@ use Filament\Schemas\Schema;
 
 class ViewDiscordTag extends BaseViewRecordPage
 {
+    use LogPageAccess;
+
     protected static string $resource = DiscordTagResource::class;
+
+    protected function getLogActionName(): string
+    {
+        return 'ViewDiscordTag';
+    }
 
     public function form(Schema $schema): Schema
     {

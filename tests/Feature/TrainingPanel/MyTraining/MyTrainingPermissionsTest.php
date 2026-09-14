@@ -4,7 +4,7 @@ namespace Tests\Feature\TrainingPanel\MyTraining;
 
 use App\Filament\Training\Pages\Exam\ExamHistory;
 use App\Filament\Training\Pages\Exam\ViewExamReport;
-use App\Filament\Training\Pages\MyTraining\MyExamHistory;
+use App\Filament\Training\Pages\MyTraining\MyExams;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\PracticalResult;
@@ -41,10 +41,7 @@ class MyTrainingPermissionsTest extends BaseTrainingPanelTestCase
 
         // Primary student
         $this->studentAccount = Account::factory()->create();
-        $this->studentMember = Member::factory()->create([
-            'id' => $this->studentAccount->id,
-            'cid' => $this->studentAccount->id,
-        ]);
+        $this->studentMember = Member::factory()->forAccount($this->studentAccount)->create();
         $this->studentExamBooking = ExamBooking::factory()->create([
             'taken' => 1,
             'finished' => ExamBooking::FINISHED_FLAG,
@@ -55,7 +52,7 @@ class MyTrainingPermissionsTest extends BaseTrainingPanelTestCase
         ]);
         $this->studentExamBooking->examiners()->create([
             'examid' => $this->studentExamBooking->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
         $this->studentPracticalResult = PracticalResult::factory()->create([
             'examid' => $this->studentExamBooking->id,
@@ -67,10 +64,7 @@ class MyTrainingPermissionsTest extends BaseTrainingPanelTestCase
 
         // Second student
         $this->otherStudentAccount = Account::factory()->create();
-        $this->otherStudentMember = Member::factory()->create([
-            'id' => $this->otherStudentAccount->id,
-            'cid' => $this->otherStudentAccount->id,
-        ]);
+        $this->otherStudentMember = Member::factory()->forAccount($this->otherStudentAccount)->create();
         $this->otherStudentExamBooking = ExamBooking::factory()->create([
             'taken' => 1,
             'finished' => ExamBooking::FINISHED_FLAG,
@@ -81,7 +75,7 @@ class MyTrainingPermissionsTest extends BaseTrainingPanelTestCase
         ]);
         $this->otherStudentExamBooking->examiners()->create([
             'examid' => $this->otherStudentExamBooking->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
         $this->otherStudentPracticalResult = PracticalResult::factory()->create([
             'examid' => $this->otherStudentExamBooking->id,
@@ -98,7 +92,7 @@ class MyTrainingPermissionsTest extends BaseTrainingPanelTestCase
         $this->studentAccount->givePermissionTo('training.access');
 
         Livewire::actingAs($this->studentAccount)
-            ->test(MyExamHistory::class)
+            ->test(MyExams::class)
             ->assertSuccessful();
     }
 
@@ -106,7 +100,7 @@ class MyTrainingPermissionsTest extends BaseTrainingPanelTestCase
     public function member_without_training_access_cannot_enter_the_training_panel(): void
     {
         Livewire::actingAs($this->studentAccount)
-            ->test(MyExamHistory::class)
+            ->test(MyExams::class)
             ->assertForbidden();
     }
 
@@ -116,7 +110,7 @@ class MyTrainingPermissionsTest extends BaseTrainingPanelTestCase
         $this->studentAccount->givePermissionTo('training.access');
 
         Livewire::actingAs($this->studentAccount)
-            ->test(MyExamHistory::class)
+            ->test(MyExams::class)
             ->assertSuccessful()
             ->assertDontSee($this->otherStudentAccount->name);
 
@@ -126,11 +120,11 @@ class MyTrainingPermissionsTest extends BaseTrainingPanelTestCase
     public function member_with_no_results_sees_empty_my_exam_history(): void
     {
         $emptyAccount = Account::factory()->create();
-        Member::factory()->create(['id' => $emptyAccount->id, 'cid' => $emptyAccount->id]);
+        Member::factory()->forAccount($emptyAccount)->create();
         $emptyAccount->givePermissionTo('training.access');
 
         Livewire::actingAs($emptyAccount)
-            ->test(MyExamHistory::class)
+            ->test(MyExams::class)
             ->assertSuccessful()
             ->assertDontSee($this->studentAccount->name);
     }
@@ -144,13 +138,13 @@ class MyTrainingPermissionsTest extends BaseTrainingPanelTestCase
 
         // Student A sees their result, not student B's
         Livewire::actingAs($this->studentAccount)
-            ->test(MyExamHistory::class)
+            ->test(MyExams::class)
             ->assertSuccessful()
             ->assertDontSee($this->otherStudentAccount->name);
 
         // Student B sees their result, not student A's
         Livewire::actingAs($this->otherStudentAccount)
-            ->test(MyExamHistory::class)
+            ->test(MyExams::class)
             ->assertSuccessful()
             ->assertDontSee($this->studentAccount->name);
     }

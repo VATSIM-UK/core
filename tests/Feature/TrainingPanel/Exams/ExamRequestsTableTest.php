@@ -5,7 +5,6 @@ namespace Tests\Feature\TrainingPanel\Exams;
 use App\Livewire\Training\ExamRequestsTable;
 use App\Models\Cts\Availability;
 use App\Models\Cts\ExamBooking;
-use App\Models\Cts\ExaminerSettings;
 use App\Models\Cts\Member;
 use App\Models\Cts\PracticalExaminers;
 use App\Models\Mship\Account;
@@ -38,10 +37,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
 
         // Create a student account and member
         $this->studentAccount = Account::factory()->create();
-        $this->studentMember = Member::factory()->create([
-            'id' => $this->studentAccount->id,
-            'cid' => $this->studentAccount->id,
-        ]);
+        $this->studentMember = Member::factory()->forAccount($this->studentAccount)->create();
 
         // Attach an ATC qualification to the panel user (as examiner)
         $atcQualification = Qualification::factory()->atc()->create(['vatsim' => 3]);
@@ -66,31 +62,25 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     }
 
     /**
-     * Secondary examiner Select options only include members with ExaminerSettings for the given column (S1=TWR, S2=APP, S3=CTR).
+     * Create a CTS member whose Core account has the examiner role matching
+     * the exam scope used by the selector (S1=TWR, S2=APP, S3=CTR).
      */
     protected function createExaminerMemberForScope(string $scopeColumn): Member
     {
         $examinerAccount = Account::factory()->create();
-        $examinerMember = Member::factory()->create([
-            'id' => $examinerAccount->id,
-            'cid' => $examinerAccount->id,
-            'examiner' => true,
-        ]);
+        $examinerMember = Member::factory()->forAccount($examinerAccount)->create(['examiner' => true]);
 
-        ExaminerSettings::create([
-            'memberID' => $examinerMember->id,
-            'OBS' => 0,
-            'S1' => $scopeColumn === 'S1' ? 1 : 0,
-            'S2' => $scopeColumn === 'S2' ? 1 : 0,
-            'S3' => $scopeColumn === 'S3' ? 1 : 0,
-            'P1' => 0,
-            'P2' => 0,
-            'P3' => 0,
-            'P4' => 0,
-            'P5' => 0,
-            'lastUpdated' => now(),
-            'updatedBy' => 0,
-        ]);
+        $roleName = [
+            'OBS' => 'ATC Examiner (OBS)',
+            'S1' => 'ATC Examiner (TWR)',
+            'S2' => 'ATC Examiner (APP)',
+            'S3' => 'ATC Examiner (CTR)',
+            'P1' => 'Pilot Examiner (P1)',
+            'P2' => 'Pilot Examiner (P2)',
+            'P3' => 'Pilot Examiner (P3)',
+        ][$scopeColumn] ?? throw new \InvalidArgumentException("Unknown test scope '{$scopeColumn}'.");
+
+        $examinerAccount->assignRole($roleName);
 
         return $examinerMember;
     }
@@ -109,7 +99,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
         // The ExamRequestsTable component itself doesn't enforce authorization
         // Authorization is handled at the page level where it's embedded
         $userWithoutExamPermissions = Account::factory()->create();
-        Member::factory()->create(['id' => $userWithoutExamPermissions->id, 'cid' => $userWithoutExamPermissions->id]);
+        Member::factory()->forAccount($userWithoutExamPermissions)->create();
         $userWithoutExamPermissions->givePermissionTo('training.access');
 
         Livewire::actingAs($userWithoutExamPermissions)
@@ -141,7 +131,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
         // Create examiner record for the accepted exam
         PracticalExaminers::create([
             'examid' => $acceptedExam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         Livewire::actingAs($this->panelUser)
@@ -306,10 +296,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     {
         // Create availability for a different student
         $otherStudentAccount = Account::factory()->create();
-        $otherStudentMember = Member::factory()->create([
-            'id' => $otherStudentAccount->id,
-            'cid' => $otherStudentAccount->id,
-        ]);
+        $otherStudentMember = Member::factory()->forAccount($otherStudentAccount)->create();
 
         $otherAvailability = Availability::factory()
             ->forStudent($otherStudentMember->id)
@@ -406,7 +393,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     {
         // Create a user with only TWR exam permissions
         $twrOnlyUser = Account::factory()->create();
-        $twrMember = Member::factory()->create(['id' => $twrOnlyUser->id, 'cid' => $twrOnlyUser->id]);
+        $twrMember = Member::factory()->forAccount($twrOnlyUser)->create();
         $twrOnlyUser->givePermissionTo('training.access');
         $twrOnlyUser->givePermissionTo('training.exams.conduct.twr');
 
@@ -444,7 +431,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     {
         // Create a user with no exam conduct permissions
         $noPermissionsUser = Account::factory()->create();
-        $noPermissionsMember = Member::factory()->create(['id' => $noPermissionsUser->id, 'cid' => $noPermissionsUser->id]);
+        $noPermissionsMember = Member::factory()->forAccount($noPermissionsUser)->create();
         $noPermissionsUser->givePermissionTo('training.access');
 
         Livewire::actingAs($noPermissionsUser)
@@ -459,7 +446,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     {
         // Create a user with only APP permissions
         $appOnlyUser = Account::factory()->create();
-        $appMember = Member::factory()->create(['id' => $appOnlyUser->id, 'cid' => $appOnlyUser->id]);
+        $appMember = Member::factory()->forAccount($appOnlyUser)->create();
         $appOnlyUser->givePermissionTo('training.access');
         $appOnlyUser->givePermissionTo('training.exams.conduct.app');
 
@@ -540,7 +527,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     {
         // Create a user with only TWR permissions
         $twrOnlyUser = Account::factory()->create();
-        $twrMember = Member::factory()->create(['id' => $twrOnlyUser->id, 'cid' => $twrOnlyUser->id]);
+        $twrMember = Member::factory()->forAccount($twrOnlyUser)->create();
         $twrOnlyUser->givePermissionTo('training.access');
         $twrOnlyUser->givePermissionTo('training.exams.conduct.twr');
 

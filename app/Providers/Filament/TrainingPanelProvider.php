@@ -4,7 +4,9 @@ namespace App\Providers\Filament;
 
 use App\Filament\Training\Pages\Dashboard;
 use App\Filament\Training\Pages\EmailSettings;
+use App\Filament\Training\Pages\Endorsements;
 use App\Filament\Widgets\AccountInfoWidget;
+use App\Filament\Widgets\UpcomingTrainingSessionWidget;
 use App\Http\Middleware\MandatoryTwoFactor;
 use App\Http\Middleware\TrackInactivity;
 use App\Http\Middleware\TrainingPanelAccessMiddleware;
@@ -38,10 +40,12 @@ class TrainingPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
                 EmailSettings::class,
+                Endorsements::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Training/Widgets'), for: 'App\\Filament\\Training\\Widgets')
             ->widgets([
                 AccountInfoWidget::class,
+                UpcomingTrainingSessionWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -62,6 +66,7 @@ class TrainingPanelProvider extends PanelProvider
             ->brandLogo(asset('images/branding/vatsimuk_blackblue.png'))
             ->darkModeBrandLogo(asset('images/branding/vatsimuk_whiteblue.png'))
             ->brandName('VATSIM UK')
+            ->favicon(asset('images/favicon.png'))
             ->navigationGroups([
                 'My Training',
                 'Exams',

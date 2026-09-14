@@ -44,7 +44,9 @@
 								<a class="nav-link" href="{{ route('site.staff') }}">Staff</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="">Meeting Minutes</a> {{-- Link to Meeting Minutes to be created --}}
+								<a class="nav-link"
+									href="https://drive.google.com/drive/folders/19mlijWAU0JjxCPxhJObdKu-D4HM7gLi_?usp=drive_link">Meeting
+									Minutes</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="https://helpdesk.vatsim.uk/">Contact Us</a>
@@ -66,7 +68,7 @@
 								<a class="nav-link" href="https://chartfox.org/">Chartfox</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">ATC Bookings</a>
+								<a class="nav-link" href="{{ route('site.bookings.calendar') }}">ATC Bookings</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="{{ route('site.operations.sectors') }}">UK Area Sectors</a>
@@ -129,10 +131,10 @@
 						<a class="nav-link" href="#">Events <span class="arrow"></span></a>
 						<ul class="nav">
 							<li class="nav-item">
-								<a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">Calendar</a>
+								<a class="nav-link" href="{{ route('site.bookings.calendar') }}">Calendar</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="https://cts.vatsim.uk/bookings/calendar.php">Booking
+								<a class="nav-link" href="https://events.vatsim.uk/">Booking
 									System</a>
 							</li>
 						</ul>
@@ -238,12 +240,12 @@
 
 			@if ($nextEvent)
 				<div class="next-event">
-					<h3 class="text-primary mb-0">{{ $nextEvent->event }}</h3>
+					<h3 class="text-primary mb-0">{{ $nextEvent->name }}</h3>
 					<p class="text-light mb-1">
-						{{ $nextEvent->date->format('l jS F Y') }} &bull;
-						{{ $nextEvent->from }} &ndash; {{ $nextEvent->to }}z
+						{{ $nextEvent->start->format('l jS F Y') }} &bull;
+						{{ $nextEvent->start->format('H:i') }} &ndash; {{ $nextEvent->end->format('H:i') }}z
 					</p>
-					<p class="text-light">{!! $nextEvent->text !!}</p>
+					<p class="text-light">{!! $nextEvent->description !!}</p>
 				</div>
 			@else
 				<p class="text-light">No upcoming events.</p>

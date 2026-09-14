@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Notifications\Training;
 
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
+use App\Models\Training\WaitingList;
 use App\Notifications\DiscordNotification;
 use App\Notifications\DiscordNotificationChannel;
 use App\Notifications\Notification;
@@ -45,28 +46,34 @@ class TrainingPlaceRemovedDueToExpiredAvailability extends Notification implemen
     {
         $trainingPlace = $this->availabilityWarning->trainingPlace;
         $removalDate = now()->format('d M Y');
+        $isPilot = $trainingPlace->department === WaitingList::PILOT_DEPARTMENT;
 
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
             ->subject('Attention: Your Training Place Has Been Removed - Availability Check Expired')
-            ->view('emails.training.training_place_removed_expired_availability', [
-                'recipient' => $notifiable,
-                'training_place_position_name' => $trainingPlace->trainingPosition?->position?->name ?? 'N/A',
-                'removal_date' => $removalDate,
-            ]);
+            ->view(
+                $isPilot
+                    ? 'emails.training.training_place_removed_expired_availability_pilot'
+                    : 'emails.training.training_place_removed_expired_availability',
+                [
+                    'recipient' => $notifiable,
+                    'training_place_position_name' => $trainingPlace->trainingPosition?->position?->name ?? $trainingPlace->display_name,
+                    'removal_date' => $removalDate,
+                ]
+            );
     }
 
     public function toDiscord($notifiable)
     {
         $trainingPlace = $this->availabilityWarning->trainingPlace;
-        $position = $trainingPlace->trainingPosition->position;
+        $positionLabel = $this->placeLabel($trainingPlace);
 
         return [
             'content' => null,
             'embeds' => [
                 [
                     'title' => 'Training Place Automatically Removed',
-                    'description' => "The training place for **{$notifiable->name} ({$notifiable->id})** on **{$position->name} ({$position->callsign})** has been removed because they failed to resolve a pending availability check.",
+                    'description' => "The training place for **{$notifiable->name} ({$notifiable->id})** on **{$positionLabel}** has been removed because they failed to resolve a pending availability check.",
                     'color' => 15158332,
                     'fields' => [
                         [
@@ -83,6 +90,17 @@ class TrainingPlaceRemovedDueToExpiredAvailability extends Notification implemen
 
     public function getChannel(): string
     {
-        return $this->availabilityWarning->trainingPlace->trainingPosition?->training_team_discord_channel_id ?? '';
+        return $this->availabilityWarning->trainingPlace->trainingTeamDiscordChannelId();
+    }
+
+    private function placeLabel($trainingPlace): string
+    {
+        $position = $trainingPlace->trainingPosition?->position;
+
+        if ($position) {
+            return "{$position->name} ({$position->callsign})";
+        }
+
+        return $trainingPlace->display_name;
     }
 }

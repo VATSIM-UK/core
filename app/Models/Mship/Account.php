@@ -29,6 +29,7 @@ use App\Models\Mship\Concerns\HasVisitTransferApplications;
 use App\Models\Mship\Concerns\HasWaitingLists;
 use App\Models\Mship\Note\Type;
 use App\Models\Roster;
+use App\Models\RosterHistory;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListRetentionCheck;
 use Illuminate\Auth\Authenticatable;
@@ -38,6 +39,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
@@ -428,6 +430,11 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     public function roster(): HasOne
     {
         return $this->hasOne(Roster::class, 'account_id', 'id');
+    }
+
+    public function rosterHistory(): HasMany
+    {
+        return $this->hasMany(RosterHistory::class, 'account_id');
     }
 
     public function onRoster(): bool

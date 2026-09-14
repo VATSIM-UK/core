@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Training;
 
+use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Filament\Training\Pages\Exam\ConductExam;
 use App\Models\Cts\ExamBooking;
 use App\Services\Training\CancelPendingExamService;
@@ -21,9 +22,11 @@ use Filament\Tables\Table;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Spatie\CalendarLinks\Link;
 
 class AcceptedExamsTable extends Component implements HasActions, HasForms, HasTable
 {
+    use AddToCalendar;
     use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithTable;
@@ -54,6 +57,7 @@ class AcceptedExamsTable extends Component implements HasActions, HasForms, HasT
                 TextColumn::make('start_date')->label('Date'),
             ])
             ->recordActions([
+                $this->getCalendarActionGroup(),
                 Action::make('Conduct')
                     ->url(fn (ExamBooking $exam): string => ConductExam::getUrl(['examId' => $exam->id]))
                     ->visible(fn (ExamBooking $examBooking) => $examBooking->finished != ExamBooking::FINISHED_FLAG),
@@ -153,5 +157,24 @@ class AcceptedExamsTable extends Component implements HasActions, HasForms, HasT
     public function render()
     {
         return view('livewire.training.accepted-exams-table');
+    }
+
+    protected function buildCalendarLinkObject(mixed $record): Link
+    {
+        \assert($record instanceof ExamBooking);
+
+        return $this->buildExamBookingLink(
+            $record,
+            "Practical Exam - {$record->exam}",
+            $record->position_1,
+            "Exam Type: {$record->exam}\nPosition: {$record->position_1}\nStudent: ".($record->student?->name ?? 'Unknown')
+        );
+    }
+
+    protected function getCalendarIcsFilename(mixed $record): string
+    {
+        \assert($record instanceof ExamBooking);
+
+        return 'practical-exam-'.str($record->exam)->slug();
     }
 }

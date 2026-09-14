@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Accounts\RelationManagers;
 
 use App\Enums\QualificationTypeEnum;
+use App\Filament\Admin\Helpers\Pages\LogRelationAccess;
 use App\Models\Mship\Qualification;
 use App\Services\Training\ManualAtcUpgradeService;
 use Carbon\CarbonImmutable;
@@ -19,9 +20,16 @@ use Illuminate\Support\Facades\Auth;
 
 class QualificationsRelationManager extends RelationManager
 {
+    use LogRelationAccess;
+
     protected static string $relationship = 'qualifications';
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    protected function getLogActionName(): string
+    {
+        return 'ViewQualifications';
+    }
 
     public function table(Table $table): Table
     {
@@ -29,10 +37,13 @@ class QualificationsRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('code'),
                 TextColumn::make('name_long')->label('Name'),
-                TextColumn::make('created_at')->since()->description(fn ($record) => $record->created_at)->label('Awarded')->sortable(),
+                TextColumn::make('type')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => QualificationTypeEnum::tryFrom($state)?->human() ?? $state),
+                TextColumn::make('created_at')->since()->description(fn ($record) => $record->created_at?->toPanelDateTime())->label('Awarded')->sortable(),
             ])
             ->filters([
-                SelectFilter::make('type')->options(collect(QualificationTypeEnum::cases())->mapWithKeys(fn ($enum) => [$enum->value => $enum->name]))->multiple(),
+                SelectFilter::make('type')->options(collect(QualificationTypeEnum::cases())->mapWithKeys(fn ($enum) => [$enum->value => $enum->human()]))->multiple(),
             ])->defaultSort('created_at')
             ->headerActions([
                 Action::make('manual_atc_rating_upgrade')

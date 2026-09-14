@@ -33,7 +33,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
     public function it_loads_if_authorised()
     {
         $account = Account::factory()->create();
-        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+        $student = Member::factory()->forAccount($account)->create();
         $exam = ExamBooking::factory()->create([
             'taken' => 1,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
@@ -43,7 +43,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         ]);
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         $this->panelUser->givePermissionTo('training.exams.conduct.twr');
@@ -59,7 +59,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'exam' => 'TWR']);
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         Livewire::actingAs($this->panelUser)
@@ -84,7 +84,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         $exam = ExamBooking::factory()->create(['taken' => 0, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'exam' => 'TWR']);
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         $this->panelUser->givePermissionTo('training.exams.conduct.twr');
@@ -100,7 +100,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::FINISHED_FLAG, 'exam' => 'TWR']);
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         $this->panelUser->givePermissionTo('training.exams.conduct.twr');
@@ -116,7 +116,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         $exam = ExamBooking::factory()->create(['taken' => 1, 'finished' => ExamBooking::NOT_FINISHED_FLAG, 'exam' => 'APP']);
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         $this->panelUser->givePermissionTo('training.exams.conduct.twr');
@@ -130,7 +130,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
     public function test_can_fill_out_comments_one_of_criteria()
     {
         $account = Account::factory()->create();
-        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+        $student = Member::factory()->forAccount($account)->create();
         $exam = ExamBooking::factory()->create([
             'taken' => 1,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
@@ -140,7 +140,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         ]);
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         $this->panelUser->givePermissionTo('training.exams.conduct.twr');
@@ -170,7 +170,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
     public function test_can_change_grade_on_one_of_criteria()
     {
         $account = Account::factory()->create();
-        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+        $student = Member::factory()->forAccount($account)->create();
         $exam = ExamBooking::factory()->create([
             'taken' => 1,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
@@ -180,7 +180,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         ]);
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         $this->panelUser->givePermissionTo('training.exams.conduct.twr');
@@ -210,7 +210,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
     public function test_full_end_to_end_completion_of_form_pass()
     {
         $account = Account::factory()->create();
-        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+        $student = Member::factory()->forAccount($account)->create();
         $exam = ExamBooking::factory()->create([
             'taken' => 1,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
@@ -220,7 +220,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         ]);
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         $this->panelUser->givePermissionTo('training.exams.conduct.twr');
@@ -267,7 +267,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
     {
         // Create user and login
         $account = Account::factory()->withQualification()->create();
-        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+        $student = Member::factory()->forAccount($account)->create();
 
         $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
         TrainingPosition::factory()->create(['position_id' => $position->id]);
@@ -283,7 +283,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         ]);
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         $this->panelUser->givePermissionTo('training.exams.conduct.twr');
@@ -332,7 +332,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
     {
         // Create user with ATC qualification and login
         $account = Account::factory()->withQualification()->create();
-        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+        $student = Member::factory()->forAccount($account)->create();
 
         // Create OBS position
         $position = Position::factory()->create(['callsign' => 'OBS_PH_PT3']);
@@ -350,7 +350,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         ]);
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         $this->panelUser->givePermissionTo('training.exams.conduct.obs');
@@ -398,7 +398,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
     public function it_removes_training_place_when_exam_is_passed()
     {
         $account = Account::factory()->create();
-        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+        $student = Member::factory()->forAccount($account)->create();
 
         $position = Position::factory()->create(['callsign' => 'EGKK_TWR']);
         $trainingPosition = TrainingPosition::factory()->create(['position_id' => $position->id]);
@@ -414,7 +414,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
 
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         $this->panelUser->givePermissionTo('training.exams.conduct.twr');
@@ -460,7 +460,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
     public function it_only_removes_the_training_place_associated_with_the_passed_exam_position()
     {
         $account = Account::factory()->create();
-        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+        $student = Member::factory()->forAccount($account)->create();
 
         $examPosition = Position::factory()->create(['callsign' => 'EGKK_TWR']);
         $examTrainingPosition = TrainingPosition::factory()->create(['position_id' => $examPosition->id]);
@@ -495,7 +495,7 @@ class ConductExamTest extends BaseTrainingPanelTestCase
 
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         $this->panelUser->givePermissionTo('training.exams.conduct.twr');

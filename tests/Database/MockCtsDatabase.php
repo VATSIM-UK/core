@@ -685,6 +685,8 @@ class MockCtsDatabase
             'DROP TABLE IF EXISTS `theory_answers`;'
         );
 
+        DB::connection('cts')->statement('DROP TABLE IF EXISTS `cancel_reason`;');
+        DB::connection('cts')->statement('DROP TABLE IF EXISTS `reminders`;');
         DB::connection('cts')->statement('DROP TABLE IF EXISTS `prog_sheet_name`;');
         DB::connection('cts')->statement('DROP TABLE IF EXISTS `prog_sheet_categories`;');
         DB::connection('cts')->statement('DROP TABLE IF EXISTS `prog_sheet_fields`;');

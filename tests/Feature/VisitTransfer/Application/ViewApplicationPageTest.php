@@ -7,6 +7,7 @@ use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplications\Pages\V
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
+use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\Admin\BaseAdminTestCase;
@@ -345,5 +346,146 @@ class ViewApplicationPageTest extends BaseAdminTestCase
         $this->assertFalse($waitingList->includesAccount($application->account));
 
         $this->assertTrue($application->fresh()->is_cancelled);
+    }
+
+    #[Test]
+    public function it_shows_reopen_for_review_action_if_user_can_reopen()
+    {
+        $this->adminUser->givePermissionTo('vt.application.accept.*');
+
+        $this->application->status = Application::STATUS_REJECTED;
+        $this->application->save();
+
+        $component = Livewire::actingAs($this->adminUser)
+            ->test(ViewVisitTransferApplication::class, ['record' => $this->application->id])
+            ->assertSuccessful()
+            ->assertActionVisible('reopen_for_review');
+    }
+
+    #[Test]
+    public function it_hides_reopen_for_review_action_without_permission()
+    {
+        $this->application->status = Application::STATUS_REJECTED;
+        $this->application->save();
+
+        $component = Livewire::actingAs($this->adminUser)
+            ->test(ViewVisitTransferApplication::class, ['record' => $this->application->id])
+            ->assertSuccessful()
+            ->assertActionHidden('reopen_for_review');
+    }
+
+    #[Test]
+    public function it_hides_reopen_for_review_action_when_application_is_not_rejected()
+    {
+        $this->adminUser->givePermissionTo('vt.application.accept.*');
+
+        $this->application->status = Application::STATUS_SUBMITTED;
+        $this->application->save();
+
+        $component = Livewire::actingAs($this->adminUser)
+            ->test(ViewVisitTransferApplication::class, ['record' => $this->application->id])
+            ->assertSuccessful()
+            ->assertActionHidden('reopen_for_review');
+    }
+
+    #[Test]
+    public function it_can_reopen_a_rejected_application_for_manual_review()
+    {
+        $this->adminUser->givePermissionTo('vt.application.accept.*');
+
+        $this->application->status = Application::STATUS_REJECTED;
+        $this->application->save();
+
+        Livewire::actingAs($this->adminUser)
+            ->test(ViewVisitTransferApplication::class, ['record' => $this->application->id])
+            ->callAction('reopen_for_review', data: ['staff_note' => 'Reopened for manual review after contacting the member.'])
+            ->assertHasNoFormErrors();
+
+        $this->application->refresh();
+
+        $this->assertTrue($this->application->is_under_review);
+    }
+
+    #[Test]
+    public function it_can_change_facility_with_permission()
+    {
+        $this->adminUser->givePermissionTo('vt.application.modify.*');
+
+        $oldFacility = Facility::factory()->transfer('atc')->create();
+        $newFacility = Facility::factory()->transfer('atc')->create();
+
+        $this->application->update([
+            'facility_id' => $oldFacility->id,
+            'status' => Application::STATUS_UNDER_REVIEW,
+        ]);
+
+        $action = TestAction::make('change_facility')
+            ->schemaComponent('facility.name');
+
+        Livewire::actingAs($this->adminUser)
+            ->test(ViewVisitTransferApplication::class, [
+                'record' => $this->application->id,
+            ])
+            ->assertActionVisible($action)
+            ->callAction($action, data: [
+                'facility_id' => $newFacility->id,
+                'staff_note' => 'Changed facility during testing.',
+            ])
+            ->assertHasNoFormErrors();
+
+        $this->application->refresh();
+
+        $this->assertSame(
+            $newFacility->id,
+            $this->application->facility_id,
+        );
+
+        $this->assertSame(
+            $newFacility->training_team,
+            $this->application->getRawOriginal('training_team'),
+        );
+
+        $this->assertSame(
+            Application::TYPE_TRANSFER,
+            $this->application->type,
+        );
+    }
+
+    #[Test]
+    public function it_cannot_change_facility_without_permission()
+    {
+        $oldFacility = Facility::factory()
+            ->transfer('atc')
+            ->create();
+
+        $newFacility = Facility::factory()
+            ->transfer('atc')
+            ->create();
+
+        $this->application->update([
+            'facility_id' => $oldFacility->id,
+            'status' => Application::STATUS_UNDER_REVIEW,
+        ]);
+
+        $action = TestAction::make('change_facility')
+            ->schemaComponent('facility.name');
+
+        Livewire::actingAs($this->adminUser)
+            ->test(ViewVisitTransferApplication::class, [
+                'record' => $this->application->id,
+            ])
+            ->assertActionDoesNotExist($action);
+
+        $this->application->refresh();
+
+        $this->assertSame(
+            $oldFacility->id,
+            $this->application->facility_id,
+        );
+
+        $this->assertNotSame(
+            $newFacility->id,
+            $this->application->facility_id,
+        );
     }
 }

@@ -2,19 +2,26 @@ import {defineConfig} from 'vite';
 import laravel, {refreshPaths} from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 
+const inDevContainer = Boolean(process.env.DEVCONTAINER || process.env.REMOTE_CONTAINERS);
+
 export default defineConfig({
+    server: inDevContainer
+        ? {host: '0.0.0.0', hmr: {host: 'core.test'}, watch: {usePolling: true}}
+        : undefined,
     plugins: [
         tailwindcss(),
         laravel({
             input: [
                 'resources/assets/sass/app.scss',
+                'resources/assets/sass/home.scss',
                 'resources/assets/css/tailwind.css',
                 'resources/assets/css/mship-dashboard.css',
+                'resources/assets/css/bookings-calendar.css',
+                'resources/assets/js/bookings-calendar.js',
                 'resources/assets/js/app.js',
-                'resources/assets/sass/home.scss',
                 'resources/assets/js/home.js',
                 'resources/assets/js/snow.js',
-                'resources/assets/js/top-notification.js'
+                'resources/assets/js/top-notification.js',
             ],
             refresh: [
                 ...refreshPaths,

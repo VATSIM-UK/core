@@ -8,7 +8,6 @@ use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
-use App\Notifications\ApplicationAccepted;
 use App\Notifications\ApplicationStatusChanged;
 use Carbon\Carbon;
 use Faker\Provider\Base;
@@ -17,7 +16,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\View;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -235,34 +233,6 @@ class ApplicationTest extends TestCase
         $this->assertNotEquals(VTCheckStatus::NotRequired, $application->fresh()->check_outcome_50_hours);
     }
 
-    #[Test]
-    public function it_sends_acceptance_email_to_training_team()
-    {
-        Notification::fake();
-
-        $this->user->addState(\App\Models\Mship\State::findByCode('INTERNATIONAL'));
-
-        $facility = Facility::factory()->visit('atc')->create();
-
-        $application = $this->user->fresh()->createVisitingTransferApplication([
-            'type' => Application::TYPE_VISIT,
-            'facility_id' => $facility->id,
-            'training_team' => $facility->training_team,
-            'status' => Application::STATUS_UNDER_REVIEW,
-        ]);
-
-        $application->accept();
-
-        Notification::assertSentTo($facility, ApplicationAccepted::class, function ($notification, $channels) use ($application, $facility) {
-            $mail = $notification->toMail($facility);
-            $view = View::make($mail->view, $mail->viewData)->render();
-
-            $this->assertStringContainsString('Dear ATC Training Team,', $view);
-
-            return $notification->application->id == $application->id;
-        });
-    }
-
     public static function providerCancelTest()
     {
         // With another accepted visit application
@@ -294,7 +264,7 @@ class ApplicationTest extends TestCase
     #[Test]
     public function it_reports_statistics_correctly()
     {
-        DB::table('vt_application')->truncate();
+        DB::table('vt_application')->delete();
 
         $openNotInProgressApplications = collect(Application::$APPLICATION_IS_CONSIDERED_OPEN)->search(function ($status) {
             return $status == Application::STATUS_IN_PROGRESS;
@@ -383,5 +353,32 @@ class ApplicationTest extends TestCase
         $pilotApplication->complete();
         $this->assertTrue($this->user->fresh()->hasState($visiting));
 
+    }
+
+    #[Test]
+    public function rejecting_an_application_records_the_reason_as_an_account_note()
+    {
+        $application = Application::factory()->transfer('atc')->create([
+            'account_id' => $this->user->id,
+            'status' => Application::STATUS_SUBMITTED,
+        ]);
+
+        $application->reject('Some public reason.', 'A staff note about the rejection.');
+
+        $this->assertTrue($application->fresh()->is_rejected);
+        $this->assertStringContainsString('A staff note about the rejection.', $this->user->fresh()->notes->first()->content);
+    }
+
+    #[Test]
+    public function it_can_reopen_a_rejected_application_for_manual_review()
+    {
+        $application = Application::factory()->transfer('atc')->create([
+            'account_id' => $this->user->id,
+            'status' => Application::STATUS_REJECTED,
+        ]);
+
+        $application->reopenForReview();
+
+        $this->assertTrue($application->fresh()->is_under_review);
     }
 }

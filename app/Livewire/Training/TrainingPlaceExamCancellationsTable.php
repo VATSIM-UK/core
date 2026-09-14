@@ -24,15 +24,13 @@ class TrainingPlaceExamCancellationsTable extends Component implements HasForms,
 
     public function table(Table $table): Table
     {
-        $position = $this->trainingPlace->trainingPosition->exam_callsign;
-
         return $table
             ->heading('Exam Cancellations')
             ->query($this->cancellationsQuery())
             ->columns([
                 TextColumn::make('date')
                     ->label('Date/Time')
-                    ->dateTime('d/m/Y H:i')
+                    ->dateTime()
                     ->sortable(),
                 TextColumn::make('reason')
                     ->label('Reason')

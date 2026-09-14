@@ -4,18 +4,25 @@ declare(strict_types=1);
 
 namespace App\Notifications\Training;
 
+use App\Enums\EmailType;
 use App\Filament\Training\Pages\Mentor\ViewMentoringReport;
 use App\Models\Cts\Session;
+use App\Notifications\Contracts\HasEmailType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class MentoringReportFiled extends Notification implements ShouldQueue
+class MentoringReportFiled extends Notification implements HasEmailType, ShouldQueue
 {
     use Queueable;
 
     public function __construct(public Session $session) {}
+
+    public function getEmailType(): EmailType
+    {
+        return EmailType::MentoringReportFiled;
+    }
 
     /**
      * @return array<int, string>

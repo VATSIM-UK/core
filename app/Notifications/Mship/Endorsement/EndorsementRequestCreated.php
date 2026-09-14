@@ -2,13 +2,15 @@
 
 namespace App\Notifications\Mship\Endorsement;
 
+use App\Enums\EmailType;
 use App\Models\Mship\Account\EndorsementRequest;
+use App\Notifications\Contracts\HasEmailType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class EndorsementRequestCreated extends Notification implements ShouldQueue
+class EndorsementRequestCreated extends Notification implements HasEmailType, ShouldQueue
 {
     use Queueable;
 
@@ -16,6 +18,11 @@ class EndorsementRequestCreated extends Notification implements ShouldQueue
      * Create a new notification instance.
      */
     public function __construct(private EndorsementRequest $endorsementRequest) {}
+
+    public function getEmailType(): EmailType
+    {
+        return EmailType::EndorsementRequestCreated;
+    }
 
     /**
      * Get the notification's delivery channels.

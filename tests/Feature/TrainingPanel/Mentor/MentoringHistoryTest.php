@@ -265,14 +265,17 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_shows_mentor_based_sessions_alongside_permission_based_sessions(): void
+    public function it_only_shows_sessions_within_the_selected_category_even_when_user_was_the_mentor(): void
     {
-        $category = MentorPermissionService::atcCategories()[0];
-        $permittedPosition = $this->createTrainingPosition($category, 'EGLL_GND');
+        $visibleCategory = MentorPermissionService::atcCategories()[0];
+        $hiddenCategory = MentorPermissionService::atcCategories()[1];
+
+        $visiblePosition = $this->createTrainingPosition($visibleCategory, 'EGLL_GND');
+        $this->createTrainingPosition($hiddenCategory, 'EGKK_TWR');
 
         $mentorCtsMember = $this->getOrCreateCtsMember($this->panelUser);
         app(MentorPermissionService::class)->assignToMentorable(
-            $this->panelUser, $permittedPosition, $this->panelUser, $category
+            $this->panelUser, $visiblePosition, $this->panelUser, $visibleCategory
         );
 
         $student = Account::factory()->create();
@@ -281,7 +284,7 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
         $otherMentor = Account::factory()->create();
         $otherMentorCtsMember = $this->getOrCreateCtsMember($otherMentor);
 
-        $permSessionId = $this->insertSession(
+        $visibleSessionId = $this->insertSession(
             $otherMentorCtsMember->id,
             $studentCtsMember->id,
             'EGLL_GND',
@@ -289,7 +292,7 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
             takenDate: now()->subDay()->format('Y-m-d H:i:s'),
         );
 
-        $mentorSessionId = $this->insertSession(
+        $hiddenMentorSessionId = $this->insertSession(
             $mentorCtsMember->id,
             $studentCtsMember->id,
             'EGKK_TWR',
@@ -297,12 +300,13 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
             takenDate: now()->subDay()->format('Y-m-d H:i:s'),
         );
 
-        $permSession = Session::on('cts')->find($permSessionId);
-        $mentorSession = Session::on('cts')->find($mentorSessionId);
+        $visibleSession = Session::on('cts')->find($visibleSessionId);
+        $hiddenMentorSession = Session::on('cts')->find($hiddenMentorSessionId);
 
         Livewire::actingAs($this->panelUser)
-            ->test(MentoringHistory::class, ['category' => $category])
-            ->assertCanSeeTableRecords([$permSession, $mentorSession]);
+            ->test(MentoringHistory::class, ['category' => $visibleCategory])
+            ->assertCanSeeTableRecords([$visibleSession])
+            ->assertCanNotSeeTableRecords([$hiddenMentorSession]);
     }
 
     private function createTrainingPosition(string $category, string $callsign): TrainingPosition

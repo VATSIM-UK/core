@@ -3,12 +3,14 @@
 namespace Tests\Feature\TrainingPanel\Exams;
 
 use App\Enums\ExamResultEnum;
+use App\Enums\PilotExamType;
 use App\Events\Training\Exams\PracticalExamCompleted;
 use App\Filament\Training\Pages\Exam\ConductExam;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
@@ -22,22 +24,23 @@ class ConductExamPilotTest extends BaseTrainingPanelTestCase
         Event::fake();
     }
 
-    private function createPilotExamBooking(string $examType = 'P1'): array
+    private function createPilotExamBooking(string $examType = 'P1', ?string $position1 = null): array
     {
         $account = Account::factory()->withQualification()->create();
-        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+        $student = Member::factory()->forAccount($account)->create();
 
         $exam = ExamBooking::factory()->create([
             'taken' => 1,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'exam' => $examType,
             'student_id' => $student->id,
+            'position_1' => $position1 ?? PilotExamType::from($examType)->label(),
             'student_rating' => Qualification::ofType('pilot')->where('code', 'P0')->first()?->vatsim ?? 0,
         ]);
 
         $exam->examiners()->create([
             'examid' => $exam->id,
-            'senior' => $this->panelUser->id,
+            'senior' => $this->panelUser->member->id,
         ]);
 
         return [$account, $student, $exam];
@@ -93,7 +96,7 @@ class ConductExamPilotTest extends BaseTrainingPanelTestCase
     public function it_does_not_show_partial_pass_for_atc_exams()
     {
         $account = Account::factory()->create();
-        $student = Member::factory()->create(['id' => $account->id, 'cid' => $account->id]);
+        $student = Member::factory()->forAccount($account)->create();
         $exam = ExamBooking::factory()->create([
             'taken' => 1,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
@@ -101,7 +104,7 @@ class ConductExamPilotTest extends BaseTrainingPanelTestCase
             'student_id' => $student->id,
             'student_rating' => Qualification::code('S1')->first()->vatsim,
         ]);
-        $exam->examiners()->create(['examid' => $exam->id, 'senior' => $this->panelUser->id]);
+        $exam->examiners()->create(['examid' => $exam->id, 'senior' => $this->panelUser->member->id]);
         $this->panelUser->givePermissionTo('training.exams.conduct.twr');
 
         $component = Livewire::actingAs($this->panelUser)
@@ -206,5 +209,53 @@ class ConductExamPilotTest extends BaseTrainingPanelTestCase
             ->call('completeExam');
 
         Event::assertDispatched(PracticalExamCompleted::class);
+    }
+
+    #[Test]
+    public function it_removes_training_place_when_pilot_exam_is_passed(): void
+    {
+        [$account, $student, $exam] = $this->createPilotExamBooking('P1', 'P1_PPL(A)');
+        $this->panelUser->givePermissionTo('training.exams.conduct.p1');
+
+        $qualification = Qualification::firstWhere('code', 'PPL')
+            ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
+
+        $trainingPlace = TrainingPlace::factory()
+            ->forQualification($qualification)
+            ->create(['account_id' => $account->id]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ConductExam::class, ['examId' => $exam->id])
+            ->set('examResultData.exam_result', ExamResultEnum::Pass->value)
+            ->set('examResultData.additional_comments', '')
+            ->call('completeExam')
+            ->assertHasNoFormErrors([], 'examResultForm');
+
+        $this->assertSoftDeleted('training_places', ['id' => $trainingPlace->id]);
+    }
+
+    #[Test]
+    public function it_only_removes_the_pilot_training_place_for_the_passed_exam_position(): void
+    {
+        [$account, $student, $exam] = $this->createPilotExamBooking('P1', 'P1_PPL(A)');
+        $this->panelUser->givePermissionTo('training.exams.conduct.p1');
+
+        $ppl = Qualification::firstWhere('code', 'PPL')
+            ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
+        $cmel = Qualification::firstWhere('code', 'CMEL')
+            ?? Qualification::factory()->create(['code' => 'CMEL', 'type' => 'pilot']);
+
+        $pplPlace = TrainingPlace::factory()->forQualification($ppl)->create(['account_id' => $account->id]);
+        $cmelPlace = TrainingPlace::factory()->forQualification($cmel)->create(['account_id' => $account->id]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ConductExam::class, ['examId' => $exam->id])
+            ->set('examResultData.exam_result', ExamResultEnum::Pass->value)
+            ->set('examResultData.additional_comments', '')
+            ->call('completeExam')
+            ->assertHasNoFormErrors([], 'examResultForm');
+
+        $this->assertSoftDeleted('training_places', ['id' => $pplPlace->id]);
+        $this->assertDatabaseHas('training_places', ['id' => $cmelPlace->id, 'deleted_at' => null]);
     }
 }

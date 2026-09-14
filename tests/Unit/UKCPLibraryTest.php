@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
@@ -109,5 +110,56 @@ class UKCPLibraryTest extends TestCase
         $ukcp = $this->app->get(UKCP::class);
         $this->assertEquals([], $ukcp->getStandStatus('EGLL'));
         $this->assertNull(Cache::get('UKCP_STAND_STATUS_EGLL'));
+    }
+
+    #[Test]
+    public function it_can_fetch_controller_positions_v2_dependency(): void
+    {
+        $this->mock(Client::class, function (MockInterface $mock) {
+            $mock->shouldReceive('get')
+                ->with('https://ukcp.vatsim.uk/api/controller-positions-v2', [
+                    'headers' => [
+                        'Authorization' => 'Bearer '.config('services.ukcp.key'),
+                    ],
+                    'timeout' => 15,
+                ])
+                ->andReturn(
+                    new Response(200, [], json_encode([
+                        [
+                            'id' => 1,
+                            'callsign' => 'LON_S_CTR',
+                            'frequency' => 129.425,
+                            'top_down' => ['EGLL', 'EGKK', 'EGLF'],
+                        ],
+                        [
+                            'id' => 2,
+                            'callsign' => 'EGLL_TWR',
+                            'frequency' => 118.500,
+                            'top_down' => [],
+                        ],
+                        [
+                            'id' => 3,
+                            'callsign' => 'LON_CTR',
+                            'frequency' => 127.830,
+                            'top_down' => ['EGLL', 'EGKK', 'EGCC', 'EGBB'],
+                        ],
+                    ]))
+                );
+        });
+
+        $ukcp = $this->app->get(UKCP::class);
+        $positions = $ukcp->getControllerPositionsV2Dependency();
+
+        $this->assertInstanceOf(Collection::class, $positions);
+        $this->assertCount(3, $positions);
+
+        $lonS = $positions->firstWhere('id', 1);
+        $this->assertEquals('LON_S_CTR', $lonS->callsign);
+        $this->assertEquals(129.425, $lonS->frequency);
+        $this->assertEquals(['EGLL', 'EGKK', 'EGLF'], $lonS->top_down);
+
+        $egllTwr = $positions->firstWhere('id', 2);
+        $this->assertEquals('EGLL_TWR', $egllTwr->callsign);
+        $this->assertEquals([], $egllTwr->top_down);
     }
 }

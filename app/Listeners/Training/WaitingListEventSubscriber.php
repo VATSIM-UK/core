@@ -4,6 +4,13 @@ namespace App\Listeners\Training;
 
 use Illuminate\Support\Facades\Log;
 
+// FIXME (logging plan, out of scope): this subscriber is not registered anywhere
+// (EventServiceProvider::$subscribe only wires SyncSubscriber), so it is dead code.
+// As a result, the promoted/demoted/status-change waiting-list events below are
+// currently NOT written to any audit log. Additionally, subscribe() below calls
+// `$event->listen(...)` instead of `$events->listen(...)` for the status-change
+// registration, a pre-existing bug that would break that registration even if this
+// subscriber were wired up. Both issues are left untouched here - out of scope.
 class WaitingListEventSubscriber
 {
     public function accountAdded($event)

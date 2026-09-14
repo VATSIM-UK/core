@@ -10,6 +10,7 @@ use App\Repositories\Cts\MentorRepository;
 use App\Repositories\Cts\StudentRepository;
 use App\Repositories\Cts\ValidationPositionRepository;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 
 class SyncCtsRoles extends Command
@@ -27,6 +28,10 @@ class SyncCtsRoles extends Command
      * @var string
      */
     protected $description = 'Allocate the relevant roles on Core depending on CTS permissions.';
+
+    private int $assignedCount = 0;
+
+    private int $removedCount = 0;
 
     /**
      * Execute the console command.
@@ -64,6 +69,11 @@ class SyncCtsRoles extends Command
         $this->syncStudentsByRts(17, Role::findByName('ATC Students (ENR)')->id); // Enroute Students
 
         $this->syncPilotExaminers(40); // Pilot
+
+        Log::info('sync:cts-roles completed', [
+            'assigned' => $this->assignedCount,
+            'removed' => $this->removedCount,
+        ]);
     }
 
     private function syncMentorsByRts(int $rtsId, int $roleId): void
@@ -139,10 +149,12 @@ class SyncCtsRoles extends Command
 
         foreach ($assignRole as $account) {
             Account::find($account)->assignRole($roleId);
+            $this->assignedCount++;
         }
 
         foreach ($removeRole as $account) {
             Account::find($account)->removeRole($roleId);
+            $this->removedCount++;
         }
     }
 

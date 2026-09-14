@@ -43,6 +43,11 @@ class ApplicationPolicy
         return $user->can('vt.application.reject.*') && $application->can_reject;
     }
 
+    public function reopenForReview(Account $user, Application $application)
+    {
+        return $user->can('vt.application.accept.*') && $application->is_rejected;
+    }
+
     public function complete(Account $user, Application $application)
     {
         return $user->can('vt.application.complete.*') && $application->is_accepted;
@@ -58,6 +63,11 @@ class ApplicationPolicy
         return $user->can('vt.application.accept.*')
         && $application->can_accept
         && (! $this->checkIsSatisfied($application->check_outcome_90_day) || ! $this->checkIsSatisfied($application->check_outcome_50_hours));
+    }
+
+    public function changeFacility(Account $user, Application $application)
+    {
+        return $user->can('vt.application.modify.*') && ($application->can_accept || $application->can_reject || $application->is_accepted);
     }
 
     public function create(Account $user, Application $application)

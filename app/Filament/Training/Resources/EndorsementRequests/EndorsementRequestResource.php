@@ -3,6 +3,7 @@
 namespace App\Filament\Training\Resources\EndorsementRequests;
 
 use App\Events\Training\EndorsementRequestApproved;
+use App\Filament\Admin\Forms\Components\AccountSelect;
 use App\Filament\Training\Resources\EndorsementRequests\Pages\CreateEndorsementRequest;
 use App\Filament\Training\Resources\EndorsementRequests\Pages\ListEndorsementRequests;
 use App\Models\Atc\Position;
@@ -10,6 +11,7 @@ use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account\EndorsementRequest;
 use App\Models\Mship\Qualification;
 use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -28,16 +30,21 @@ class EndorsementRequestResource extends Resource
 {
     protected static ?string $model = EndorsementRequest::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-inbox-arrow-down';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Endorsements';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 Section::make('Request details')->columns(2)->columnSpanFull()->schema([
-                    TextInput::make('account_id')->label('CID')->required(),
+                    AccountSelect::make()->label('Account')->required()->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} ({$record->id})"),
 
                     Select::make('endorsable_type')->options([
                         'App\Models\Atc\PositionGroup' => 'Tier 1 / 2 Endorsements',
@@ -75,6 +82,9 @@ class EndorsementRequestResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                CreateAction::make()->url(fn () => static::getUrl('create'))->visible(fn () => auth()->user()->can('create', EndorsementRequest::class)),
+            ])
             ->columns([
                 TextColumn::make('account_id')->label('CID'),
                 TextColumn::make('account.name')->label('Name'),
@@ -86,7 +96,7 @@ class EndorsementRequestResource extends Resource
                     default => 'warning',
                 }),
                 TextColumn::make('requester.name')->label('Requested By'),
-                TextColumn::make('created_at')->label('Requested')->isoDateTimeFormat('lll'),
+                TextColumn::make('created_at')->label('Requested')->dateTime(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
@@ -113,41 +123,27 @@ class EndorsementRequestResource extends Resource
             ])
             ->paginated([10, 25, 50, 100])
             ->recordActions([
-                Action::make('approve')
-                    ->schema([
-                        Select::make('type')
-                            ->options([
-                                'Permanent' => 'Permanent',
-                                'Temporary' => 'Temporary',
-                            ])
-                            ->default('Temporary')
-                            ->live()
-                            ->required(),
-
-                        TextInput::make('days')
-                            ->label('Valid for (Days)')
-                            ->numeric()
-                            ->step(1)
-                            ->minValue(function () {
-                                return auth()->user()->can('endorsement.bypass.minimumdays')
-                                    ? null
-                                    : 7;
-                            })
-                            ->placeholder(7)
-                            ->maxValue(function (EndorsementRequest $endorsementRequest) {
-                                if (! $endorsementRequest->endorsable instanceof Position) {
-                                    return 365;
-                                }
-
-                                return auth()->user()->can('endorsement.bypass.maximumdays')
-                                    ? null
-                                    : 90 - $endorsementRequest->account->daysSpentTemporarilyEndorsedOn($endorsementRequest->endorsable);
-                            })
-                            ->required(fn (Get $get): bool => $get('type') === 'Temporary')
-                            ->visible(fn (Get $get): bool => $get('type') === 'Temporary'),
-
-                        Textarea::make('notes'),
+                Action::make('viewNotes')
+                    ->icon('heroicon-m-document-text')
+                    ->label('Notes')
+                    ->modalHeading('Request Notes')
+                    ->modalFooterActions([])
+                    ->form([
+                        Textarea::make('notes')
+                            ->hiddenLabel()
+                            ->disabled()
+                            ->columnSpanFull(),
                     ])
+                    ->fillForm(function (EndorsementRequest $endorsementRequest) {
+                        return [
+                            'notes' => $endorsementRequest->notes,
+                        ];
+                    })
+                    ->visible(fn (EndorsementRequest $endorsementRequest) => (auth()->user()->can('approve', $endorsementRequest) || auth()->user()->can('reject', $endorsementRequest)) && $endorsementRequest->notes),
+                Action::make('approve')
+                    ->color('success')
+                    ->schema(fn (EndorsementRequest $endorsementRequest) => static::approvalSchema($endorsementRequest))
+                    ->modalSubmitActionLabel('Approve')
                     ->action(function (EndorsementRequest $endorsementRequest, array $data) {
                         event(new EndorsementRequestApproved($endorsementRequest, $data['days'] ?? null));
 
@@ -157,6 +153,7 @@ class EndorsementRequestResource extends Resource
                     })->visible(fn (EndorsementRequest $endorsementRequest) => $endorsementRequest->status === 'Pending' &&
                             auth()->user()->can('approve', $endorsementRequest)),
                 Action::make('reject')
+                    ->color('danger')
                     ->requiresConfirmation()
                     ->action(function (EndorsementRequest $endorsementRequest, array $data) {
                         $endorsementRequest->markRejected();
@@ -174,6 +171,51 @@ class EndorsementRequestResource extends Resource
         return [
             'index' => ListEndorsementRequests::route('/'),
             'create' => CreateEndorsementRequest::route('/create'),
+        ];
+    }
+
+    public static function approvalSchema(?EndorsementRequest $endorsementRequest = null): array
+    {
+        return [
+            Textarea::make('request_notes')
+                ->label('Request Notes')
+                ->default($endorsementRequest?->notes)
+                ->disabled()
+                ->columnSpanFull()
+                ->visible(fn () => filled($endorsementRequest?->notes)),
+
+            Select::make('type')
+                ->options([
+                    'Permanent' => 'Permanent',
+                    'Temporary' => 'Temporary',
+                ])
+                ->default('Temporary')
+                ->live()
+                ->required(),
+
+            TextInput::make('days')
+                ->label('Valid for (Days)')
+                ->numeric()
+                ->step(1)
+                ->minValue(function () {
+                    return auth()->user()->can('endorsement.bypass.minimumdays')
+                        ? null
+                        : 7;
+                })
+                ->placeholder(7)
+                ->maxValue(function (?EndorsementRequest $endorsementRequest = null) {
+                    if (! $endorsementRequest || ! $endorsementRequest->endorsable instanceof Position) {
+                        return 365;
+                    }
+
+                    return auth()->user()->can('endorsement.bypass.maximumdays')
+                        ? null
+                        : 90 - $endorsementRequest->account->daysSpentTemporarilyEndorsedOn($endorsementRequest->endorsable);
+                })
+                ->required(fn (Get $get): bool => $get('type') === 'Temporary')
+                ->visible(fn (Get $get): bool => $get('type') === 'Temporary'),
+
+            Textarea::make('notes'),
         ];
     }
 }

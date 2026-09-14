@@ -21,7 +21,7 @@ class ApplicationPolicyTest extends TestCase
 
         $this->user = Account::factory()->create();
 
-        $this->user->givePermissionTo(['vt.application.view.*', 'vt.application.accept.*', 'vt.application.reject.*', 'vt.application.complete.*']);
+        $this->user->givePermissionTo(['vt.application.view.*', 'vt.application.accept.*', 'vt.application.reject.*', 'vt.application.complete.*', 'vt.application.modify.*']);
     }
 
     public static function providerApplicationState(): array
@@ -52,5 +52,58 @@ class ApplicationPolicyTest extends TestCase
         $this->assertEquals($can_accept, $policy->accept($this->user, $application));
         $this->assertEquals($can_reject, $policy->reject($this->user, $application));
         $this->assertEquals($can_complete, $policy->complete($this->user, $application));
+    }
+
+    public function test_change_facility_is_allowed_for_accepted_application()
+    {
+        $application = Application::factory()->create([
+            'status' => Application::STATUS_ACCEPTED,
+        ]);
+
+        $policy = app(\App\Policies\VisitTransfer\ApplicationPolicy::class);
+
+        $this->assertTrue($policy->changeFacility($this->user, $application));
+    }
+
+    public function test_reopen_for_review_is_allowed_for_rejected_application()
+    {
+        $application = Application::factory()->create([
+            'status' => Application::STATUS_REJECTED,
+        ]);
+
+        $policy = app(\App\Policies\VisitTransfer\ApplicationPolicy::class);
+
+        $this->assertTrue($policy->reopenForReview($this->user, $application));
+    }
+
+    public function test_reopen_for_review_is_not_allowed_for_non_rejected_application()
+    {
+        foreach ([
+            Application::STATUS_SUBMITTED,
+            Application::STATUS_UNDER_REVIEW,
+            Application::STATUS_ACCEPTED,
+            Application::STATUS_CANCELLED,
+            Application::STATUS_WITHDRAWN,
+        ] as $status) {
+            $application = Application::factory()->create([
+                'status' => $status,
+            ]);
+
+            $policy = app(\App\Policies\VisitTransfer\ApplicationPolicy::class);
+
+            $this->assertFalse($policy->reopenForReview($this->user, $application));
+        }
+    }
+
+    public function test_reopen_for_review_requires_accept_permission()
+    {
+        $user = Account::factory()->create();
+        $application = Application::factory()->create([
+            'status' => Application::STATUS_REJECTED,
+        ]);
+
+        $policy = app(\App\Policies\VisitTransfer\ApplicationPolicy::class);
+
+        $this->assertFalse($policy->reopenForReview($user, $application));
     }
 }

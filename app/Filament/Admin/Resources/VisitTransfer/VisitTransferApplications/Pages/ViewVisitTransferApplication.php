@@ -3,7 +3,9 @@
 namespace App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplications\Pages;
 
 use App\Enums\VTCheckStatus;
+use App\Filament\Admin\Helpers\Pages\LogPageAccess;
 use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplications\VisitTransferApplicationResource;
+use App\Models\Mship\Note\Type;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
@@ -19,7 +21,14 @@ use Filament\Schemas\Schema;
 
 class ViewVisitTransferApplication extends ViewRecord
 {
+    use LogPageAccess;
+
     protected static string $resource = VisitTransferApplicationResource::class;
+
+    protected function getLogActionName(): string
+    {
+        return 'ViewVisitTransferApplication';
+    }
 
     public function getTitle(): string
     {
@@ -98,6 +107,19 @@ class ViewVisitTransferApplication extends ViewRecord
                         ->required(),
                 ])->authorize(fn ($record) => auth()->user()->can('reject', $record)),
 
+            Action::make('reopen_for_review')
+                ->label('Reopen for Manual Review')
+                ->color('warning')
+                ->modalHeading('Reopen Application')
+                ->modalDescription('This will return this rejected application to Under Review.')
+                ->requiresConfirmation()
+                ->action(fn ($record, array $data) => $record->reopenForReview(auth()->user(), $data['staff_note']))
+                ->schema([
+                    Textarea::make('staff_note')
+                        ->label('Staff Note')
+                        ->required(),
+                ])->authorize(fn ($record) => auth()->user()->can('reopenForReview', $record)),
+
             Action::make('complete')
                 ->label('Complete')
                 ->color('primary')
@@ -147,7 +169,44 @@ class ViewVisitTransferApplication extends ViewRecord
                                     TextEntry::make('atc_rating')->label('ATC Rating')->getStateUsing(fn ($record) => ($record->account?->qualification_atc?->name_long ?? 'Unknown ATC')),
                                     TextEntry::make('pilot_rating')->label('Pilot Rating')->getStateUsing(fn ($record) => ($record->account?->qualification_pilot?->name_long ?? 'Unknown Pilot')),
                                     TextEntry::make('type_string')->label('Facility Type'),
-                                    TextEntry::make('facility.name')->label('Facility Name'),
+                                    TextEntry::make('facility.name')->label('Facility Name')->hintAction(Action::make('change_facility')
+                                        ->label('Edit')
+                                        ->icon('heroicon-m-pencil-square')
+                                        ->color('warning')
+                                        ->modalHeading(fn ($record) => "Change Facility for Application #{$record->public_id}")
+                                        ->modalDescription('This will change the facility for the application. It bypasses facility restrictions including rating requirements.')
+                                        ->schema([
+                                            Select::make('facility_id')
+                                                ->label('New Facility')
+                                                ->options(fn () => \App\Models\VisitTransfer\Facility::query()
+                                                    ->where('id', '!=', $application->facility_id)
+                                                    ->orderBy('name')
+                                                    ->pluck('name', 'id'))
+                                                ->searchable()
+                                                ->required(),
+                                            Textarea::make('staff_note')
+                                                ->label('Staff Note')
+                                                ->required(),
+                                        ])
+                                        ->action(function ($record, array $data) {
+                                            $newFacility = \App\Models\VisitTransfer\Facility::find($data['facility_id']);
+                                            if (! $newFacility) {
+                                                throw new \Exception('Selected facility not found.');
+                                            }
+
+                                            if ($newFacility->can_visit && ! $newFacility->can_transfer) {
+                                                $record->type = \App\Models\VisitTransfer\Application::TYPE_VISIT;
+                                            } elseif ($newFacility->can_transfer && ! $newFacility->can_visit) {
+                                                $record->type = \App\Models\VisitTransfer\Application::TYPE_TRANSFER;
+                                            }
+
+                                            $record->training_team = $newFacility->training_team;
+
+                                            $record->setFacility($newFacility, true);
+                                            $noteContent = "Application {$record->id} Facility changed to {$newFacility->name} by ".auth()->user()->id.'. Staff Note: '.$data['staff_note'];
+                                            $this->record->account->addNote(Type::isShortCode('visittransfer')->first(), $noteContent, auth()->user(), $this->record);
+                                        })
+                                        ->authorize(fn ($record) => auth()->user()->can('changeFacility', $record)), ),
                                     TextEntry::make('created_at')->label('Created At')->dateTime(),
                                     TextEntry::make('statement')->label('Statement')->columnSpan(2)->getStateUsing(fn ($record) => $record->statement ?? 'No statement provided'),
                                 ]),
@@ -189,7 +248,7 @@ class ViewVisitTransferApplication extends ViewRecord
 
                                             return TextEntry::make("state_{$state->id}")
                                                 ->label("{$state->name} ({$status})")
-                                                ->getStateUsing(fn () => "Region: {$state->pivot->region}, Division: {$state->pivot->division}, Start: {$state->pivot->start_at?->toFormattedDateString()}".($state->pivot->end_at ? ', End: '.Carbon::parse($state->pivot->end_at)->toFormattedDateString() : ''));
+                                                ->getStateUsing(fn () => "Region: {$state->pivot->region}, Division: {$state->pivot->division}, Start: {$state->pivot->start_at?->toPanelDate()}".($state->pivot->end_at ? ', End: '.Carbon::parse($state->pivot->end_at)->toPanelDate() : ''));
                                         })->toArray()
                                 ),
                             ]),
@@ -201,7 +260,7 @@ class ViewVisitTransferApplication extends ViewRecord
                                     ($application->account?->notes ?? collect())
                                         ->map(function ($note) {
                                             return TextEntry::make("note_{$note->id}")
-                                                ->label('Note by '.($note->writer?->full_name ?? 'System').' on '.$note->created_at->toFormattedDateString())
+                                                ->label('Note by '.($note->writer?->full_name ?? 'System').' on '.$note->created_at->toPanelDate())
                                                 ->getStateUsing(fn () => $note->content);
                                         })->toArray()
                                 ),
@@ -236,7 +295,7 @@ class ViewVisitTransferApplication extends ViewRecord
                                                 ->color(fn () => $oldapp->status_color ?? 'gray'),
                                             TextEntry::make("app_{$oldapp->id}_created")
                                                 ->label('Created')
-                                                ->getStateUsing(fn () => optional($oldapp->created_at)->toDayDateTimeString() ?? 'Unknown'),
+                                                ->getStateUsing(fn () => optional($oldapp->created_at)->toPanelDateTime() ?? 'Unknown'),
                                         ]);
                                     })->toArray()
                             ),

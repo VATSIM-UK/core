@@ -91,7 +91,8 @@ class TrainingPlaceOfferFlowTest extends TestCase
 
         $this->assertDatabaseHas('training_places', [
             'waiting_list_account_id' => $this->waitingListAccount->id,
-            'training_position_id' => $this->trainingPosition->id,
+            'trainable_type' => TrainingPosition::class,
+            'trainable_id' => $this->trainingPosition->id,
         ]);
         $this->assertNotNull($this->waitingListAccount->fresh()->deleted_at);
 

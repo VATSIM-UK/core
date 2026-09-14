@@ -28,6 +28,7 @@ use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -84,8 +85,8 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                 TextColumn::make('taken_date')
                     ->label('Date & Time')
                     ->getStateUsing(function (Session $record) {
-                        $date = Carbon::parse($record->taken_date)->format('d/m/Y');
-                        $time = Carbon::parse($record->taken_from)->format('H:i');
+                        $date = Carbon::parse($record->taken_date)->toPanelDate();
+                        $time = Carbon::parse($record->taken_from)->toPanelTime();
 
                         return trim("{$date} {$time}");
                     })
@@ -93,6 +94,24 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                         ->orderBy('taken_date', $direction)
                         ->orderBy('taken_from', $direction)
                     ),
+
+                IconColumn::make('overlap_warning')
+                    ->label('')
+                    ->grow(false)
+                    ->getStateUsing(fn (Session $record) => $this->overlapForRecord($record) !== null)
+                    ->icon(fn (Session $record) => $this->overlapForRecord($record) ? 'heroicon-o-exclamation-triangle' : null)
+                    ->color('warning')
+                    ->url(fn (Session $record) => $this->overlapForRecord($record) ? route('site.bookings.calendar', ['booking_id' => $this->overlapForRecord($record)->id]) : null)
+                    ->openUrlInNewTab()
+                    ->tooltip(function (Session $record) {
+                        $overlap = $this->overlapForRecord($record);
+
+                        if (! $overlap) {
+                            return null;
+                        }
+
+                        return app(MentoringSessionsService::class)->overlapDescription($overlap);
+                    }),
             ])
             ->actions([
                 Action::make('conduct')
@@ -142,6 +161,37 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
             $takenTo,
             $session->id
         );
+    }
+
+    protected function getMentorOverlappingSession(Get $get, Session $session): ?Session
+    {
+        $takenFrom = $get('taken_from');
+        $takenTo = $get('taken_to');
+        $availId = $get('selected_availability_id');
+        $ctsMentorId = $session->mentor_id;
+
+        if (! $takenFrom || ! $takenTo || ! $availId || ! $ctsMentorId) {
+            return null;
+        }
+
+        $availability = Availability::find($availId);
+
+        if (! $availability) {
+            return null;
+        }
+
+        return app(MentoringSessionsService::class)->checkForMentorOverlappingSession(
+            $ctsMentorId,
+            $availability->date,
+            $takenFrom,
+            $takenTo,
+            $session->id
+        );
+    }
+
+    private function overlapForRecord(Session $record): Session|ExamBooking|null
+    {
+        return app(MentoringSessionsService::class)->findOverlappingBookingForSession($record);
     }
 
     protected function generateTimeOptions(?string $minTime = null, ?string $maxTime = null): array
@@ -293,9 +343,9 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                         ->orderBy('from')
                         ->get()
                         ->mapWithKeys(function ($avail) {
-                            $date = Carbon::parse($avail->date)->format('D, d M Y');
-                            $start = Carbon::parse($avail->from)->format('H:i');
-                            $end = Carbon::parse($avail->to)->format('H:i');
+                            $date = Carbon::parse($avail->date)->toPanelDateWithWeekday();
+                            $start = Carbon::parse($avail->from)->toPanelTime();
+                            $end = Carbon::parse($avail->to)->toPanelTime();
 
                             return [$avail->id => "{$date} ({$start} to {$end})"];
                         })
@@ -393,7 +443,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                             return '';
                         }
 
-                        return $overlap instanceof Session ? 'Overlapping Session Detected' : 'Overlapping Exam Detected';
+                        return app(MentoringSessionsService::class)->overlapHeading($overlap);
                     })
                     ->description(function (Get $get) use ($record) {
                         $overlap = $this->getOverlappingBooking($get, $record);
@@ -402,15 +452,27 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                             return '';
                         }
 
-                        $type = $overlap instanceof Session ? 'session' : 'exam';
-                        $from = $overlap->taken_from;
-                        $to = $overlap->taken_to;
-
-                        return "There is already a {$type} booked on this position from {$from} to {$to}.";
+                        return app(MentoringSessionsService::class)->overlapDescription($overlap);
                     })
                     ->danger()
                     ->visible(function (Get $get) use ($record) {
                         return $this->getOverlappingBooking($get, $record) !== null;
+                    }),
+
+                Callout::make('mentor_overlapping_session')
+                    ->heading(fn () => app(MentoringSessionsService::class)->mentorOverlapHeading())
+                    ->description(function (Get $get) use ($record) {
+                        $overlap = $this->getMentorOverlappingSession($get, $record);
+
+                        if (! $overlap) {
+                            return '';
+                        }
+
+                        return app(MentoringSessionsService::class)->mentorOverlapDescription($overlap);
+                    })
+                    ->danger()
+                    ->visible(function (Get $get) use ($record) {
+                        return $this->getMentorOverlappingSession($get, $record) !== null;
                     }),
             ])
             ->action(function (array $data, Session $record, MentoringSessionsService $mentoringService) {
@@ -446,7 +508,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                 );
 
                 if ($success) {
-                    $dateFormatted = Carbon::parse($availability->date)->format('d/m/Y');
+                    $dateFormatted = Carbon::parse($availability->date)->toPanelDate();
 
                     Notification::make()
                         ->title('Session Rescheduled')
@@ -501,19 +563,14 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
     {
         \assert($record instanceof Session);
 
-        $sessionDate = Carbon::parse($record->taken_date)->format('Y-m-d');
-        $start = Carbon::parse("{$sessionDate} {$record->taken_from}");
-        $end = Carbon::parse("{$sessionDate} {$record->taken_to}");
-
-        if ($end->lte($start)) {
-            $end->addDay();
-        }
-
         $mentorName = $record->mentor?->name ?? 'Unknown';
 
-        return Link::create("Mentoring Session - {$record->position}", $start, $end)
-            ->description("Position: {$record->position}\nMentor: {$mentorName}")
-            ->address($record->position);
+        return $this->buildSessionLink(
+            $record,
+            "Mentoring Session - {$record->position}",
+            $record->position,
+            "Position: {$record->position}\nMentor: {$mentorName}"
+        );
     }
 
     protected function getCalendarIcsFilename(mixed $record): string
