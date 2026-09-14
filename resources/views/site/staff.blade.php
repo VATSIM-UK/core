@@ -88,11 +88,7 @@
 							</tr>
 							<tr>
 								<td>Events Manager</td>
-								<td>James Bayliss-de-Gruchy</td>
-							</tr>
-							<tr>
-								<td>Events Assistant</td>
-								<td>Mohamed Ouahchia</td>
+								<td>Vacant</td>
 							</tr>
 							<tr>
 								<td>Events Assistant</td>
@@ -105,10 +101,6 @@
 							<tr>
 								<td>Operations Assistant</td>
 								<td>Chad Byworth</td>
-							</tr>
-							<tr>
-								<td>Operations Assistant</td>
-								<td>Kieran Hardern</td>
 							</tr>
 							<tr>
 								<td>Operations Assistant</td>

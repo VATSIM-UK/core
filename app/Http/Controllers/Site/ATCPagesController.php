@@ -108,7 +108,7 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
                             ->isUK()
                             ->withoutAfis()
                             ->withoutMilitary()
-                            ->atMinimumQualification(3)
+                            ->atMinimumQualification(2)
                             ->where(function (Builder $b) {
                                 $b->where('facility_type', Atc::TYPE_DEL)
                                     ->orWhere('facility_type', Atc::TYPE_GND)

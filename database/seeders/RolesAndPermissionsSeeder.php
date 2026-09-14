@@ -215,6 +215,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'operations.access',
             'operations.positions',
 
+            // Event System Permissions
+            'events.view',
+            'events.manage',
+
             // Pilot System Permissions
             'pilot.access',
 

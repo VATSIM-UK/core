@@ -33,6 +33,9 @@ class BookingsRepositoryTest extends TestCase
     {
         parent::setUp();
 
+        $this->knownDate = $this->knownDate->copy()->setTime(12, 0);
+        $this->travelTo($this->knownDate);
+
         $this->subjectUnderTest = resolve(BookingRepository::class);
         $this->today = $this->knownDate->toDateString();
         $this->tomorrow = $this->knownDate->copy()->addDay()->toDateString();

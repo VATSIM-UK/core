@@ -8,11 +8,12 @@ use App\Livewire\Bookings\Calendar;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
-use App\Models\Cts\Event;
+use App\Models\Cts\Event as CtsEvent;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member as CtsMember;
 use App\Models\Cts\PracticalExaminers;
 use App\Models\Cts\Session;
+use App\Models\Events\Event;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Repositories\Cts\BookingRepository;
@@ -696,8 +697,8 @@ class CtsBookingsCalendarTest extends TestCase
         $member = Account::factory()->create();
         $addBy = CtsMember::factory()->forAccount($member)->create();
 
-        Event::factory()->create([
-            'event' => 'Cross the Pond',
+        CtsEvent::factory()->create([
+            'event' => 'Test event',
             'date' => $date->toDateString(),
             'from' => '18:00:00',
             'to' => '22:00:00',
@@ -712,7 +713,7 @@ class CtsBookingsCalendarTest extends TestCase
         $this->assertSame('event', $event->source);
         $this->assertSame('18:00', $event->from);
         $this->assertSame('22:00', $event->to);
-        $this->assertSame('Cross the Pond', $event->event_name, 'The event name must be carried through for display');
+        $this->assertSame('Test event', $event->event_name, 'The event name must be carried through for display');
         $this->assertSame('Unknown', $event->member['display_name'], 'The event author must not be shown');
         $this->assertSame('', $event->member['cid']);
     }
@@ -723,18 +724,17 @@ class CtsBookingsCalendarTest extends TestCase
         $date = Carbon::today();
 
         Event::factory()->create([
-            'event' => 'Cross the Pond',
-            'date' => $date->toDateString(),
-            'from' => '18:00:00',
-            'to' => '22:00:00',
-            'gone' => 0,
+            'name' => 'Test event',
+            'start' => $date->copy()->setTime(18, 0),
+            'end' => $date->copy()->setTime(22, 0),
+            'published_at' => now(),
         ]);
 
         $events = Livewire::test(Calendar::class)->get('events');
 
         $this->assertCount(1, $events);
         $this->assertSame(
-            'Cross the Pond',
+            'Test event',
             $events[0]['event_name'],
             'The events row renders event_name, so buildTimeline must not drop it'
         );
@@ -759,18 +759,17 @@ class CtsBookingsCalendarTest extends TestCase
 
         // The event itself.
         Event::factory()->create([
-            'event' => 'Cross the Pond',
-            'date' => $date->toDateString(),
-            'from' => '18:00:00',
-            'to' => '22:00:00',
-            'gone' => 0,
+            'name' => 'Test event',
+            'start' => $date->copy()->setTime(18, 0),
+            'end' => $date->copy()->setTime(22, 0),
+            'published_at' => now(),
         ]);
 
         $component = Livewire::test(Calendar::class);
         $events = $component->get('events');
 
-        $this->assertCount(1, $events, 'Only the cts.events row belongs on the events row');
-        $this->assertSame('Cross the Pond', $events[0]['event_name']);
+        $this->assertCount(1, $events, 'Only the core events row belongs on the events row');
+        $this->assertSame('Test event', $events[0]['event_name']);
 
         $callsigns = [];
         foreach ($component->get('timelinePositions') as $row) {
@@ -789,18 +788,16 @@ class CtsBookingsCalendarTest extends TestCase
         $date = Carbon::today();
 
         Event::factory()->create([
-            'event' => 'Early Start',
-            'date' => $date->toDateString(),
-            'from' => '18:00:00',
-            'to' => '21:00:00',
-            'gone' => 0,
+            'name' => 'Test event',
+            'start' => $date->copy()->setTime(18, 0),
+            'end' => $date->copy()->setTime(21, 0),
+            'published_at' => now(),
         ]);
         Event::factory()->create([
-            'event' => 'Late Finish',
-            'date' => $date->toDateString(),
-            'from' => '20:00:00',
-            'to' => '23:00:00',
-            'gone' => 0,
+            'name' => 'Test event 2',
+            'start' => $date->copy()->setTime(20, 0),
+            'end' => $date->copy()->setTime(23, 0),
+            'published_at' => now(),
         ]);
 
         $component = Livewire::test(Calendar::class);
@@ -815,18 +812,16 @@ class CtsBookingsCalendarTest extends TestCase
         $date = Carbon::today();
 
         Event::factory()->create([
-            'event' => 'Afternoon',
-            'date' => $date->toDateString(),
-            'from' => '14:00:00',
-            'to' => '16:00:00',
-            'gone' => 0,
+            'name' => 'Test event',
+            'start' => $date->copy()->setTime(14, 0),
+            'end' => $date->copy()->setTime(16, 0),
+            'published_at' => now(),
         ]);
         Event::factory()->create([
-            'event' => 'Evening',
-            'date' => $date->toDateString(),
-            'from' => '18:00:00',
-            'to' => '21:00:00',
-            'gone' => 0,
+            'name' => 'Test event 2',
+            'start' => $date->copy()->setTime(18, 0),
+            'end' => $date->copy()->setTime(21, 0),
+            'published_at' => now(),
         ]);
 
         $this->assertSame(1, Livewire::test(Calendar::class)->get('eventLaneCount'));
@@ -838,11 +833,10 @@ class CtsBookingsCalendarTest extends TestCase
         $date = Carbon::today();
 
         Event::factory()->create([
-            'event' => 'Unknown Pleasures',
-            'date' => $date->toDateString(),
-            'from' => '18:00:00',
-            'to' => '22:00:00',
-            'gone' => 0,
+            'name' => 'Test event',
+            'start' => $date->copy()->setTime(18, 0),
+            'end' => $date->copy()->setTime(22, 0),
+            'published_at' => now(),
         ]);
 
         $component = Livewire::test(Calendar::class);
@@ -859,7 +853,7 @@ class CtsBookingsCalendarTest extends TestCase
     {
         $date = Carbon::parse('2026-08-01');
 
-        Event::factory()->create([
+        CtsEvent::factory()->create([
             'date' => $date->toDateString(),
             'from' => '18:00:00',
             'to' => '22:00:00',

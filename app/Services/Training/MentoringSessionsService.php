@@ -9,8 +9,10 @@ use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\CancelReason;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
+use App\Models\Cts\Position as CtsPosition;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionCancelledByStudentNotification;
@@ -25,13 +27,90 @@ use App\Notifications\Training\Mentoring\MentoringSessionRescheduledStudentNotif
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
 class MentoringSessionsService
 {
     /**
+     * Creates a mentoring session for a training-place student from an availability slot.
+     *
+     * Transaction note: `DB::transaction()` only wraps the default (Core) connection.
+     * CTS writes (`Session`, CTS bookings) use the `cts` connection and are not rolled
+     * back if a later Core write fails. Notifications are deferred with `DB::afterCommit()`
+     * so they only run after the Core transaction commits.
+     */
+    public function createSession(
+        TrainingPlace $trainingPlace,
+        Availability $availability,
+        Account $mentorAccount,
+        string $position,
+        string $takenFrom,
+        string $takenTo,
+    ): bool {
+        return DB::transaction(function () use ($trainingPlace, $availability, $mentorAccount, $position, $takenFrom, $takenTo) {
+            $trainingPlace->loadMissing(['trainable', 'account']);
+
+            $mentorMember = Member::where('cid', $mentorAccount->id)->firstOrFail();
+            $studentMember = Member::where('cid', $trainingPlace->account_id)->first();
+
+            if (! $studentMember || $studentMember->id !== $availability->student_id) {
+                throw new InvalidArgumentException('The selected availability does not belong to this training place student.');
+            }
+
+            $placeCallsigns = $trainingPlace->trainableCtsPositions();
+
+            if (! in_array($position, $placeCallsigns, true)) {
+                throw new InvalidArgumentException('The selected position is not valid for this training place.');
+            }
+
+            if ($mentorAccount->cannot('create', [Session::class, $position])) {
+                throw new AuthorizationException('You are not authorized to create mentoring sessions for this position.');
+            }
+
+            if ($trainingPlace->isOnLeaveOfAbsence()) {
+                throw new InvalidArgumentException('Cannot create a mentoring session while the student is on leave of absence.');
+            }
+
+            $this->validateSessionTimes($availability, $takenFrom, $takenTo);
+
+            $ctsPosition = CtsPosition::query()->where('callsign', $position)->first();
+
+            if (! $ctsPosition) {
+                throw new InvalidArgumentException("CTS position not found for callsign [{$position}].");
+            }
+
+            $session = Session::query()->create([
+                'rts_id' => $ctsPosition->rts_id ?? 0,
+                'position' => $ctsPosition->callsign,
+                'progress_sheet_id' => $ctsPosition->prog_sheet_id ?? 0,
+                'student_id' => $studentMember->id,
+                'student_rating' => $studentMember->rating ?? 0,
+                'request_time' => now(),
+                'mentor_id' => $mentorMember->id,
+                'mentor_rating' => $mentorAccount->qualification_atc?->vatsim,
+                'taken' => 1,
+                'taken_date' => $availability->date,
+                'taken_from' => $takenFrom,
+                'taken_to' => $takenTo,
+                'taken_time' => now(),
+            ]);
+
+            DB::afterCommit(function () use ($session) {
+                $this->notifyParticipants($session, 'accepted');
+            });
+
+            $this->createCoreBooking($session);
+
+            return true;
+        });
+    }
+
+    /**
      * Accepts a pending session by claiming a student's availability slot.
+     *
+     * @deprecated Prefer createSession() for Training Panel mentoring.
      */
     public function acceptSession(int $sessionId, int $availabilityId, Account $mentorAccount, string $takenFrom, string $takenTo): bool
     {
@@ -141,15 +220,6 @@ class MentoringSessionsService
                 'sesh_type' => 'ME',
                 'reason' => $reason,
                 'reason_by' => $cancellerMember->id,
-            ]);
-
-            Session::create([
-                'rts_id' => $session->rts_id,
-                'position' => $session->position,
-                'progress_sheet_id' => $session->progress_sheet_id,
-                'student_id' => $session->student_id,
-                'student_rating' => $session->student_rating,
-                'request_time' => Carbon::now(),
             ]);
 
             DB::afterCommit(function () use ($session, $reason, $cancellerAccount) {
@@ -309,6 +379,60 @@ class MentoringSessionsService
         $staffName = $overlap instanceof Session ? $overlap->mentor?->name : $overlap->examiners?->primaryExaminer?->name;
 
         return "{$staffName} already has a {$type} booked on this position from {$from} to {$to}.";
+    }
+
+    /**
+     * Accepted, non-cancelled mentoring sessions for a mentor on a given date.
+     *
+     * @return Collection<int, Session>
+     */
+    public function getMentorSessionsForDate(int $ctsMentorId, string $date): Collection
+    {
+        return Session::query()
+            ->with('student')
+            ->where('mentor_id', $ctsMentorId)
+            ->where('taken', 1)
+            ->whereDate('taken_date', $date)
+            ->whereNotNull('taken_from')
+            ->whereNotNull('taken_to')
+            ->whereNull('cancelled_datetime')
+            ->orderBy('taken_from')
+            ->get();
+    }
+
+    public function checkForMentorOverlappingSession(
+        int $ctsMentorId,
+        string $date,
+        string $takenFrom,
+        string $takenTo,
+        ?int $ignoreSessionId = null,
+    ): ?Session {
+        return Session::query()
+            ->with('student')
+            ->where('mentor_id', $ctsMentorId)
+            ->where('taken', 1)
+            ->whereDate('taken_date', $date)
+            ->where('taken_from', '<', $takenTo)
+            ->where('taken_to', '>', $takenFrom)
+            ->whereNull('cancelled_datetime')
+            ->when($ignoreSessionId, function ($query, $ignoreSessionId) {
+                $query->where('id', '!=', $ignoreSessionId);
+            })
+            ->first();
+    }
+
+    public function mentorOverlapHeading(): string
+    {
+        return 'You Already Have a Session Booked';
+    }
+
+    public function mentorOverlapDescription(Session $overlap): string
+    {
+        $from = Carbon::parse($overlap->taken_from)->format('H:i');
+        $to = Carbon::parse($overlap->taken_to)->format('H:i');
+        $studentName = $overlap->student?->name ?? 'another student';
+
+        return "You already have a session with {$studentName} on {$overlap->position} from {$from} to {$to}.";
     }
 
     private function validateSessionTimes(Availability $availability, string $takenFrom, string $takenTo): void

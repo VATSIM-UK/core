@@ -6,8 +6,8 @@ namespace Tests\Feature\Bookings;
 
 use App\Livewire\Bookings\Calendar;
 use App\Models\Cts\Booking as CtsBooking;
-use App\Models\Cts\Event;
 use App\Models\Cts\Member as CtsMember;
+use App\Models\Events\Event;
 use App\Models\Mship\Account;
 use App\Repositories\Cts\BookingRepository;
 use Carbon\Carbon;
@@ -81,14 +81,13 @@ class CalendarPresentationTest extends TestCase
         return substr($html, $heading);
     }
 
-    private function addEvent(Carbon $date, string $name = 'Cross the Pond'): void
+    private function addEvent(Carbon $date, string $name = 'Test event'): void
     {
         Event::factory()->create([
-            'event' => $name,
-            'date' => $date->toDateString(),
-            'from' => '18:00:00',
-            'to' => '22:00:00',
-            'gone' => 0,
+            'name' => $name,
+            'start' => $date->copy()->setTime(18, 0),
+            'end' => $date->copy()->setTime(22, 0),
+            'published_at' => now(),
         ]);
     }
 

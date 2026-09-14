@@ -85,8 +85,8 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                 TextColumn::make('taken_date')
                     ->label('Date & Time')
                     ->getStateUsing(function (Session $record) {
-                        $date = Carbon::parse($record->taken_date)->format('d/m/Y');
-                        $time = Carbon::parse($record->taken_from)->format('H:i');
+                        $date = Carbon::parse($record->taken_date)->toPanelDate();
+                        $time = Carbon::parse($record->taken_from)->toPanelTime();
 
                         return trim("{$date} {$time}");
                     })
@@ -101,6 +101,8 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                     ->getStateUsing(fn (Session $record) => $this->overlapForRecord($record) !== null)
                     ->icon(fn (Session $record) => $this->overlapForRecord($record) ? 'heroicon-o-exclamation-triangle' : null)
                     ->color('warning')
+                    ->url(fn (Session $record) => $this->overlapForRecord($record) ? route('site.bookings.calendar', ['booking_id' => $this->overlapForRecord($record)->id]) : null)
+                    ->openUrlInNewTab()
                     ->tooltip(function (Session $record) {
                         $overlap = $this->overlapForRecord($record);
 
@@ -154,6 +156,32 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
 
         return app(MentoringSessionsService::class)->checkForOverlappingBookings(
             $session->position,
+            $availability->date,
+            $takenFrom,
+            $takenTo,
+            $session->id
+        );
+    }
+
+    protected function getMentorOverlappingSession(Get $get, Session $session): ?Session
+    {
+        $takenFrom = $get('taken_from');
+        $takenTo = $get('taken_to');
+        $availId = $get('selected_availability_id');
+        $ctsMentorId = $session->mentor_id;
+
+        if (! $takenFrom || ! $takenTo || ! $availId || ! $ctsMentorId) {
+            return null;
+        }
+
+        $availability = Availability::find($availId);
+
+        if (! $availability) {
+            return null;
+        }
+
+        return app(MentoringSessionsService::class)->checkForMentorOverlappingSession(
+            $ctsMentorId,
             $availability->date,
             $takenFrom,
             $takenTo,
@@ -315,9 +343,9 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                         ->orderBy('from')
                         ->get()
                         ->mapWithKeys(function ($avail) {
-                            $date = Carbon::parse($avail->date)->format('D, d M Y');
-                            $start = Carbon::parse($avail->from)->format('H:i');
-                            $end = Carbon::parse($avail->to)->format('H:i');
+                            $date = Carbon::parse($avail->date)->toPanelDateWithWeekday();
+                            $start = Carbon::parse($avail->from)->toPanelTime();
+                            $end = Carbon::parse($avail->to)->toPanelTime();
 
                             return [$avail->id => "{$date} ({$start} to {$end})"];
                         })
@@ -430,6 +458,22 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                     ->visible(function (Get $get) use ($record) {
                         return $this->getOverlappingBooking($get, $record) !== null;
                     }),
+
+                Callout::make('mentor_overlapping_session')
+                    ->heading(fn () => app(MentoringSessionsService::class)->mentorOverlapHeading())
+                    ->description(function (Get $get) use ($record) {
+                        $overlap = $this->getMentorOverlappingSession($get, $record);
+
+                        if (! $overlap) {
+                            return '';
+                        }
+
+                        return app(MentoringSessionsService::class)->mentorOverlapDescription($overlap);
+                    })
+                    ->danger()
+                    ->visible(function (Get $get) use ($record) {
+                        return $this->getMentorOverlappingSession($get, $record) !== null;
+                    }),
             ])
             ->action(function (array $data, Session $record, MentoringSessionsService $mentoringService) {
                 $availability = Availability::find($data['selected_availability_id']);
@@ -464,7 +508,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                 );
 
                 if ($success) {
-                    $dateFormatted = Carbon::parse($availability->date)->format('d/m/Y');
+                    $dateFormatted = Carbon::parse($availability->date)->toPanelDate();
 
                     Notification::make()
                         ->title('Session Rescheduled')

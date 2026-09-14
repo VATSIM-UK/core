@@ -44,7 +44,7 @@ class RosterHistoryRelationManager extends RelationManager
                     ->label('Roster Update')
                     ->getStateUsing(function ($record) {
                         if ($record->rosterUpdate) {
-                            return $record->rosterUpdate->period_start->format('d M Y').' - '.$record->rosterUpdate->period_end->format('d M Y');
+                            return $record->rosterUpdate->period_start->toPanelDate().' - '.$record->rosterUpdate->period_end->toPanelDate();
                         }
 
                         return null;

@@ -8,8 +8,10 @@ use App\Http\Controllers\BaseController;
 use App\Http\Responses\LogoutResponse;
 use App\Libraries\Discord;
 use App\Libraries\UKCP;
+use App\Support\DateFormat;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -37,6 +39,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
+        $this->registerCarbonDateMacros();
+
         Bugsnag::registerCallback(function ($report) {
             if (Auth::check()) {
                 $user = Auth::user();
@@ -50,7 +54,13 @@ class AppServiceProvider extends ServiceProvider
         });
 
         if ($this->app->runningInConsole()) {
-            URL::forceRootUrl(env('APP_PROTOCOL', 'https').'://'.Config::get('app.url'));
+            $url = Config::get('app.url');
+
+            if (! str_starts_with($url, 'http://') && ! str_starts_with($url, 'https://')) {
+                $url = env('APP_PROTOCOL', 'https').'://'.$url;
+            }
+
+            URL::forceRootUrl($url);
         }
 
         $this->registerValidatorExtensions();
@@ -119,6 +129,29 @@ class AppServiceProvider extends ServiceProvider
                 Artisan::call('db:seed', ['--force' => true]);
                 $this->app->make(PermissionRegistrar::class)->forgetCachedPermissions();
             });
+    }
+
+    private function registerCarbonDateMacros(): void
+    {
+        Carbon::macro('toPanelDate', function (): string {
+            /** @var Carbon $this */
+            return $this->format(DateFormat::DATE);
+        });
+
+        Carbon::macro('toPanelDateWithWeekday', function (): string {
+            /** @var Carbon $this */
+            return $this->format(DateFormat::DATE_WITH_WEEKDAY);
+        });
+
+        Carbon::macro('toPanelTime', function (): string {
+            /** @var Carbon $this */
+            return $this->format(DateFormat::TIME);
+        });
+
+        Carbon::macro('toPanelDateTime', function (): string {
+            /** @var Carbon $this */
+            return $this->format(DateFormat::DATETIME);
+        });
     }
 
     public function registerValidatorExtensions()

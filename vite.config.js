@@ -2,7 +2,12 @@ import {defineConfig} from 'vite';
 import laravel, {refreshPaths} from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 
+const inDevContainer = Boolean(process.env.DEVCONTAINER || process.env.REMOTE_CONTAINERS);
+
 export default defineConfig({
+    server: inDevContainer
+        ? {host: '0.0.0.0', hmr: {host: 'core.test'}, watch: {usePolling: true}}
+        : undefined,
     plugins: [
         tailwindcss(),
         laravel({

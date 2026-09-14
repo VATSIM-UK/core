@@ -177,7 +177,7 @@ class TrainingPlaceResource extends Resource
 
                 TextColumn::make('created_at')
                     ->label('Training Start')
-                    ->date('d/m/Y')
+                    ->date()
                     ->sortable()
                     ->summarize(
                         Summarizer::make('average_training_time')

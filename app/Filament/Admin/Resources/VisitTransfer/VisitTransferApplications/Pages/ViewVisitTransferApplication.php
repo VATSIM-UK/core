@@ -248,7 +248,7 @@ class ViewVisitTransferApplication extends ViewRecord
 
                                             return TextEntry::make("state_{$state->id}")
                                                 ->label("{$state->name} ({$status})")
-                                                ->getStateUsing(fn () => "Region: {$state->pivot->region}, Division: {$state->pivot->division}, Start: {$state->pivot->start_at?->toFormattedDateString()}".($state->pivot->end_at ? ', End: '.Carbon::parse($state->pivot->end_at)->toFormattedDateString() : ''));
+                                                ->getStateUsing(fn () => "Region: {$state->pivot->region}, Division: {$state->pivot->division}, Start: {$state->pivot->start_at?->toPanelDate()}".($state->pivot->end_at ? ', End: '.Carbon::parse($state->pivot->end_at)->toPanelDate() : ''));
                                         })->toArray()
                                 ),
                             ]),
@@ -260,7 +260,7 @@ class ViewVisitTransferApplication extends ViewRecord
                                     ($application->account?->notes ?? collect())
                                         ->map(function ($note) {
                                             return TextEntry::make("note_{$note->id}")
-                                                ->label('Note by '.($note->writer?->full_name ?? 'System').' on '.$note->created_at->toFormattedDateString())
+                                                ->label('Note by '.($note->writer?->full_name ?? 'System').' on '.$note->created_at->toPanelDate())
                                                 ->getStateUsing(fn () => $note->content);
                                         })->toArray()
                                 ),
@@ -295,7 +295,7 @@ class ViewVisitTransferApplication extends ViewRecord
                                                 ->color(fn () => $oldapp->status_color ?? 'gray'),
                                             TextEntry::make("app_{$oldapp->id}_created")
                                                 ->label('Created')
-                                                ->getStateUsing(fn () => optional($oldapp->created_at)->toDayDateTimeString() ?? 'Unknown'),
+                                                ->getStateUsing(fn () => optional($oldapp->created_at)->toPanelDateTime() ?? 'Unknown'),
                                         ]);
                                     })->toArray()
                             ),
