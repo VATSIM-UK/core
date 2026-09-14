@@ -4,6 +4,7 @@ namespace App\Filament\Training\Pages\TheoryExam;
 
 use App\Models\Cts\TheoryQuestion;
 use Carbon\Carbon;
+use Devletes\FilamentProgressBar\Infolists\Components\ProgressBarEntry;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction;
@@ -21,7 +22,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Devletes\FilamentProgressBar\Infolists\Components\ProgressBarEntry;
 
 class TheoryExamQuestions extends Page implements HasTable
 {
@@ -284,15 +284,15 @@ class TheoryExamQuestions extends Page implements HasTable
                 TextEntry::make('total')->label('Times Used')->color('info')->badge()->state($total),
                 TextEntry::make('correct')->label('Correct')->color('success')->badge()->state($correct),
                 TextEntry::make('incorrect')->label('Incorrect')->color('danger')->badge()->state($incorrect),
-                ProgressBarEntry::make('success_rate')->label('Success Rate')->state(['progress' => $correct, 'total' => $total])->textPosition('outside')->thresholds([50 => 'success', 0=> 'danger'])->showProgressValue(false)->columnSpanFull()->size('xs'),
+                ProgressBarEntry::make('success_rate')->label('Success Rate')->state(['progress' => $correct, 'total' => $total])->textPosition('outside')->thresholds([50 => 'success', 0 => 'danger'])->showProgressValue(false)->columnSpanFull()->size('xs'),
 
             ]),
 
             Section::make('Distribution')->columns(2)->schema([
-                ProgressBarEntry::make('option_1')->label(fn () => $this->optionLabel($question, 1))->state(['progress' => $optionStats[1]['count'], 'total' => $total])->textPosition('outside')->thresholds([50 => 'success', 0=> 'danger'])->size('xs'),
-                ProgressBarEntry::make('option_2')->label(fn () => $this->optionLabel($question, 2))->state(['progress' => $optionStats[2]['count'], 'total' => $total])->textPosition('outside')->thresholds([50 => 'success', 0=> 'danger'])->size('xs'),
-                ProgressBarEntry::make('option_3')->label(fn () => $this->optionLabel($question, 3))->state(['progress' => $optionStats[3]['count'], 'total' => $total])->textPosition('outside')->thresholds([50 => 'success', 0=> 'danger'])->size('xs'),
-                ProgressBarEntry::make('option_4')->label(fn () => $this->optionLabel($question, 4))->state(['progress' => $optionStats[4]['count'], 'total' => $total])->textPosition('outside')->thresholds([50 => 'success', 0=> 'danger'])->size('xs'),
+                ProgressBarEntry::make('option_1')->label(fn () => $this->optionLabel($question, 1))->state(['progress' => $optionStats[1]['count'], 'total' => $total])->textPosition('outside')->thresholds([50 => 'success', 0 => 'danger'])->size('xs'),
+                ProgressBarEntry::make('option_2')->label(fn () => $this->optionLabel($question, 2))->state(['progress' => $optionStats[2]['count'], 'total' => $total])->textPosition('outside')->thresholds([50 => 'success', 0 => 'danger'])->size('xs'),
+                ProgressBarEntry::make('option_3')->label(fn () => $this->optionLabel($question, 3))->state(['progress' => $optionStats[3]['count'], 'total' => $total])->textPosition('outside')->thresholds([50 => 'success', 0 => 'danger'])->size('xs'),
+                ProgressBarEntry::make('option_4')->label(fn () => $this->optionLabel($question, 4))->state(['progress' => $optionStats[4]['count'], 'total' => $total])->textPosition('outside')->thresholds([50 => 'success', 0 => 'danger'])->size('xs'),
             ]),
         ];
     }
@@ -301,5 +301,4 @@ class TheoryExamQuestions extends Page implements HasTable
     {
         return $question->answer == $option ? "Option {$option} (Correct)" : "Option {$option}";
     }
-
 }
