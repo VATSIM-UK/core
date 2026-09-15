@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('training_waiting_list_flags', function (Blueprint $table) {
             $table->string('moodle_course_idnumber', 100)->nullable()->after('position_group_id');
+            $table->unsignedBigInteger('moodle_quiz_id')->nullable()->after('moodle_course_idnumber');
         });
     }
 
@@ -23,6 +24,7 @@ return new class extends Migration
     {
         Schema::table('training_waiting_list_flags', function (Blueprint $table) {
             $table->dropColumn('moodle_course_idnumber');
+            $table->dropColumn('moodle_quiz_id');
         });
     }
 };

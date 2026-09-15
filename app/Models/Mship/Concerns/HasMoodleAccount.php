@@ -154,26 +154,45 @@ trait HasMoodleAccount
 
     /**
      * Whether the member has passed the given Moodle course, at any time.
-     *
-     * The course can be given by its Moodle course id or its idnumber. A pass is a quiz grade
-     * at or above that quiz's grade to pass (mdl_grade_items.gradepass), quizzes with no pass
-     * grade configured cannot be passed, so they are ignored.
      */
     public function hasPassedMoodleCourse(int|string $course): bool
     {
-        $moodleDatabase = config('services.moodle.database');
-
-        if (! $moodleDatabase) {
-            return false;
-        }
-
-        $moodleAccountId = DB::table($moodleDatabase.'.mdl_user')
-            ->where('username', (string) $this->id)
-            ->value('id');
+        $moodleAccountId = $this->moodleAccountId();
 
         if (! $moodleAccountId) {
             return false;
         }
+
+        return $this->passedMoodleExamQuery($moodleAccountId)
+            ->where(fn ($query) => $query->where('course.id', $course)->orWhere('course.idnumber', (string) $course))
+            ->exists();
+    }
+
+    /**
+     * Whether the member has passed the given Moodle exam, at any time.
+     */
+    public function hasPassedMoodleQuiz(int $quiz): bool
+    {
+        $moodleAccountId = $this->moodleAccountId();
+
+        if (! $moodleAccountId) {
+            return false;
+        }
+
+        return $this->passedMoodleExamQuery($moodleAccountId)
+            ->where('quiz.id', $quiz)
+            ->exists();
+    }
+
+    /**
+     * Every exam the given Moodle user has passed, at any time.
+     *
+     * A pass is a quiz grade at or above that quiz's grade to pass (mdl_grade_items.gradepass).
+     * Quizzes with no grade to pass configured can never be passed, so they are ignored.
+     */
+    private function passedMoodleExamQuery(int $moodleAccountId)
+    {
+        $moodleDatabase = config('services.moodle.database');
 
         return DB::table($moodleDatabase.'.mdl_quiz_grades as grades')
             ->join($moodleDatabase.'.mdl_quiz as quiz', 'quiz.id', '=', 'grades.quiz')
@@ -184,10 +203,24 @@ trait HasMoodleAccount
                     ->where('grade_items.itemmodule', '=', 'quiz');
             })
             ->where('grades.userid', $moodleAccountId)
-            ->where(fn ($query) => $query->where('course.id', $course)->orWhere('course.idnumber', (string) $course))
             ->where('grade_items.gradepass', '>', 0)
-            ->whereColumn('grades.grade', '>=', 'grade_items.gradepass')
-            ->exists();
+            ->whereColumn('grades.grade', '>=', 'grade_items.gradepass');
+    }
+
+    /**
+     * The id of this member's Moodle account, if they have one.
+     */
+    private function moodleAccountId(): ?int
+    {
+        $moodleDatabase = config('services.moodle.database');
+
+        if (! $moodleDatabase) {
+            return null;
+        }
+
+        return DB::table($moodleDatabase.'.mdl_user')
+            ->where('username', (string) $this->id)
+            ->value('id');
     }
 
     private function moodleEnabled()

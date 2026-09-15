@@ -15,6 +15,7 @@ class WaitingListFlag extends Model
         'name',
         'position_group_id',
         'moodle_course_idnumber',
+        'moodle_quiz_id',
         'display_in_table',
     ];
 
@@ -22,6 +23,7 @@ class WaitingListFlag extends Model
 
     protected $casts = [
         'display_in_table' => 'boolean',
+        'moodle_quiz_id' => 'integer',
     ];
 
     protected static function boot()
@@ -50,6 +52,6 @@ class WaitingListFlag extends Model
 
     public function isManual(): bool
     {
-        return is_null($this->position_group_id) && is_null($this->moodle_course_idnumber);
+        return is_null($this->position_group_id) && is_null($this->moodle_course_idnumber) && is_null($this->moodle_quiz_id);
     }
 }
