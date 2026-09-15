@@ -152,6 +152,44 @@ trait HasMoodleAccount
             || $this->hasState('TRANSFERRING');
     }
 
+    /**
+     * Whether the member has passed the given Moodle course, at any time.
+     *
+     * The course can be given by its Moodle course id or its idnumber. A pass is a quiz grade
+     * at or above that quiz's grade to pass (mdl_grade_items.gradepass), quizzes with no pass
+     * grade configured cannot be passed, so they are ignored.
+     */
+    public function hasPassedMoodleCourse(int|string $course): bool
+    {
+        $moodleDatabase = config('services.moodle.database');
+
+        if (! $moodleDatabase) {
+            return false;
+        }
+
+        $moodleAccountId = DB::table($moodleDatabase.'.mdl_user')
+            ->where('username', (string) $this->id)
+            ->value('id');
+
+        if (! $moodleAccountId) {
+            return false;
+        }
+
+        return DB::table($moodleDatabase.'.mdl_quiz_grades as grades')
+            ->join($moodleDatabase.'.mdl_quiz as quiz', 'quiz.id', '=', 'grades.quiz')
+            ->join($moodleDatabase.'.mdl_course as course', 'course.id', '=', 'quiz.course')
+            ->join($moodleDatabase.'.mdl_grade_items as grade_items', function ($join) {
+                $join->on('grade_items.iteminstance', '=', 'quiz.id')
+                    ->where('grade_items.itemtype', '=', 'mod')
+                    ->where('grade_items.itemmodule', '=', 'quiz');
+            })
+            ->where('grades.userid', $moodleAccountId)
+            ->where(fn ($query) => $query->where('course.id', $course)->orWhere('course.idnumber', (string) $course))
+            ->where('grade_items.gradepass', '>', 0)
+            ->whereColumn('grades.grade', '>=', 'grade_items.gradepass')
+            ->exists();
+    }
+
     private function moodleEnabled()
     {
         return config('services.moodle.database') && DB::table('oauth_clients')->where('name', 'Moodle')->first();

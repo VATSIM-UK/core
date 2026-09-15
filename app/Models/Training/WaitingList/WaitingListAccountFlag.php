@@ -37,6 +37,10 @@ class WaitingListAccountFlag extends Pivot
 
     public function getValueAttribute()
     {
+        if ($this->flag->moodle_course_idnumber) {
+            return $this->waitingListAccount->account->hasPassedMoodleCourse($this->flag->moodle_course_idnumber);
+        }
+
         if ($this->flag->position_group_id) {
             return $this->flag->positionGroup->conditionsMetForUser($this->waitingListAccount->account);
         }

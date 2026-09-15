@@ -19,6 +19,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -27,6 +28,8 @@ use Illuminate\Support\Facades\Log;
 class ViewWaitingList extends ViewRecord
 {
     protected static string $resource = WaitingListResource::class;
+
+    protected ?array $moodleCourseOptions = null;
 
     protected function getHeaderWidgets(): array
     {
@@ -98,6 +101,7 @@ class ViewWaitingList extends ViewRecord
                     $flag = WaitingListFlag::create([
                         'name' => $data['name'],
                         'position_group_id' => $data['position_group_id'],
+                        'moodle_course_idnumber' => $data['moodle_course_idnumber'] ?? null,
                         'display_in_table' => $data['display_in_table'] ?? false,
                     ]);
 
@@ -115,6 +119,16 @@ class ViewWaitingList extends ViewRecord
                         return [$item['id'] => $item['name']];
                     }))->hint('If an option is chosen here, this will be an automated flag. This cannot be reversed.'),
 
+                    Select::make('moodle_course_idnumber')
+                        ->label('Moodle Course')
+                        ->options(fn () => $this->moodleCourseOptions())
+                        ->searchable()
+                        ->helperText(function () {
+                            return blank($this->moodleCourseOptions()) ? 'No Moodle courses with a pass mark were found.' : 'The flag ticks once the member has passed this course, at any time. This cannot be reversed.';
+                        })
+                        ->hint('Moodle courses with an exam that has a grade to pass configured only.')
+                        ->visible(fn () => filled(config('services.moodle.database'))),
+
                     Toggle::make('display_in_table')
                         ->label('Display in Waiting List Table')
                         ->default(false),
@@ -123,5 +137,39 @@ class ViewWaitingList extends ViewRecord
             EditAction::make()->label('Edit settings')->visible(fn () => auth()->user()->can('update', $this->record)),
             DeleteAction::make()->label('Delete Waiting List')->requiresConfirmation()->visible(fn () => auth()->user()->can('delete', $this->record)),
         ];
+    }
+
+    /**
+     * The Moodle courses that can be passed.
+     *
+     * Only courses with an exam that has a grade to pass configured are listed, because any
+     * other course could never make a flag tick.
+     */
+    protected function moodleCourseOptions(): array
+    {
+        if (! is_null($this->moodleCourseOptions)) {
+            return $this->moodleCourseOptions;
+        }
+
+        $moodleDatabase = config('services.moodle.database');
+
+        if (! $moodleDatabase) {
+            return $this->moodleCourseOptions = [];
+        }
+
+        return $this->moodleCourseOptions = DB::table($moodleDatabase.'.mdl_course as course')
+            ->join($moodleDatabase.'.mdl_quiz as quiz', 'quiz.course', '=', 'course.id')
+            ->join($moodleDatabase.'.mdl_grade_items as grade_items', function ($join) {
+                $join->on('grade_items.iteminstance', '=', 'quiz.id')
+                    ->where('grade_items.itemtype', '=', 'mod')
+                    ->where('grade_items.itemmodule', '=', 'quiz');
+            })
+            ->where('grade_items.gradepass', '>', 0)
+            ->where('course.idnumber', '!=', '')
+            ->orderBy('course.fullname')
+            ->get(['course.idnumber', 'course.fullname'])
+            ->unique('idnumber')
+            ->mapWithKeys(fn ($course) => [$course->idnumber => "{$course->fullname} ({$course->idnumber})"])
+            ->all();
     }
 }

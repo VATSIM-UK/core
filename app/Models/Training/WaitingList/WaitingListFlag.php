@@ -14,6 +14,7 @@ class WaitingListFlag extends Model
     protected $fillable = [
         'name',
         'position_group_id',
+        'moodle_course_idnumber',
         'display_in_table',
     ];
 
@@ -45,5 +46,10 @@ class WaitingListFlag extends Model
     public function positionGroup()
     {
         return $this->belongsTo(PositionGroup::class);
+    }
+
+    public function isManual(): bool
+    {
+        return is_null($this->position_group_id) && is_null($this->moodle_course_idnumber);
     }
 }
