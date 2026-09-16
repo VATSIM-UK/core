@@ -11,7 +11,7 @@ class SeedBookingCalendar extends Command
 {
     protected $signature = 'bookings:seed-calendar {--user= : CID of the existing account that will own the seeded bookings}';
 
-    protected $description = 'Seed standard bookings for today, owned by an existing account, to exercise the bookings calendar locally';
+    protected $description = 'Seed standard bookings across the next 7 days, owned by an existing account, to exercise the bookings calendar locally';
 
     public function handle(): int
     {
