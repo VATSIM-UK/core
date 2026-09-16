@@ -30,7 +30,7 @@ class DiscordTest extends TestCase
     {
         $this->actingAs($this->user)
             ->get(route('mship.manage.dashboard'))
-            ->assertSee('Discord Registration')
+            ->assertSee('Link Discord account')
             ->assertOk();
     }
 
