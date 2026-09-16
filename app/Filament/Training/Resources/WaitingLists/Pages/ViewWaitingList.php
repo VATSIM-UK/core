@@ -122,7 +122,7 @@ class ViewWaitingList extends ViewRecord
 
                     Select::make('position_group_id')->label('Position Group')->options(fn () => PositionGroup::all()->mapWithKeys(function ($item) {
                         return [$item['id'] => $item['name']];
-                    }))->hint('If an option is chosen here, this will be an automated flag. This cannot be reversed.')->disabled(fn (Get $get): bool => filled($get('moodle_course_idnumber'))),
+                    }))->hint('If an option is chosen here, this will be an automated flag. This cannot be reversed.')->live()->disabled(fn (Get $get): bool => filled($get('moodle_course_idnumber'))),
 
                     Select::make('moodle_course_idnumber')
                         ->label('Moodle Course')
