@@ -82,8 +82,6 @@ class Roster extends Model
 
     public function accountCanControl(Position $position)
     {
-        // If the account is not on the roster,
-        // they cannot control.
         if (! $this->account) {
             return false;
         }
@@ -214,8 +212,6 @@ class Roster extends Model
             return $endorsedForPosition || $endorsedToRating;
         }
 
-        // If they are in a region or international, they cannot control
-        // without one of the above conditions being met.
         if ($this->account->hasState('REGION') || $this->account->hasState('INTERNATIONAL')) {
             return false;
         }

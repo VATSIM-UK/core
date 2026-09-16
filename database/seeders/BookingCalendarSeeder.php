@@ -12,13 +12,25 @@ use Illuminate\Database\Seeder;
 use InvalidArgumentException;
 
 /**
- * Seeds standard bookings for today, owned by an existing account, to exercise the bookings calendar locally.
+ * Seeds standard bookings across the next 7 days (today through +6), owned by an
+ * existing account, to exercise the bookings calendar (day and week views) locally.
  *
  * Usage: php artisan bookings:seed-calendar --user=<cid>
  */
 class BookingCalendarSeeder extends Seeder
 {
-    private const CALLSIGNS = ['EGKK_APP', 'EGLL_TWR', 'EGCC_GND', 'EGPH_DEL', 'EGBB_ATIS'];
+    private const CALLSIGNS = ['EGKK_APP', 'EGLL_TWR', 'EGCC_GND', 'EGPH_DEL'];
+
+    private const DAILY_SLOTS = [
+        ['EGKK_APP', 6, 0, 120],
+        ['EGKK_APP', 7, 0, 120], // overlaps the slot above, to exercise merging
+        ['EGLL_TWR', 8, 30, 90],
+        ['EGCC_GND', 10, 0, 60],
+        ['EGPH_DEL', 11, 30, 90],
+        ['EGKK_APP', 15, 30, 90],
+        ['EGLL_TWR', 18, 0, 120],
+        ['EGCC_GND', 20, 30, 90],
+    ];
 
     public function run(int $cid): void
     {
@@ -43,29 +55,26 @@ class BookingCalendarSeeder extends Seeder
             ),
         ]);
 
-        $today = Carbon::today();
+        $count = 0;
 
-        $schedule = [
-            ['EGKK_APP', $today->copy()->setTime(6, 0), 120],
-            ['EGLL_TWR', $today->copy()->setTime(8, 30), 90],
-            ['EGCC_GND', $today->copy()->setTime(10, 0), 60],
-            ['EGPH_DEL', $today->copy()->setTime(11, 30), 90],
-            ['EGBB_ATIS', $today->copy()->setTime(13, 0), 120],
-            ['EGKK_APP', $today->copy()->setTime(15, 30), 90],
-            ['EGLL_TWR', $today->copy()->setTime(18, 0), 120],
-            ['EGCC_GND', $today->copy()->setTime(20, 30), 90],
-        ];
+        for ($dayOffset = 0; $dayOffset < 7; $dayOffset++) {
+            $day = Carbon::today()->addDays($dayOffset);
 
-        foreach ($schedule as [$callsign, $startsAt, $durationMinutes]) {
-            Booking::create([
-                'position_id' => $positions[$callsign]->id,
-                'member_id' => $member->id,
-                'type' => Booking::TYPE_STANDARD,
-                'starts_at' => $startsAt,
-                'ends_at' => $startsAt->copy()->addMinutes($durationMinutes),
-            ]);
+            foreach (self::DAILY_SLOTS as [$callsign, $hour, $minute, $durationMinutes]) {
+                $startsAt = $day->copy()->setTime($hour, $minute);
+
+                Booking::create([
+                    'position_id' => $positions[$callsign]->id,
+                    'member_id' => $member->id,
+                    'type' => Booking::TYPE_STANDARD,
+                    'starts_at' => $startsAt,
+                    'ends_at' => $startsAt->copy()->addMinutes($durationMinutes),
+                ]);
+
+                $count++;
+            }
         }
 
-        $this->command?->info(sprintf('Seeded %d standard bookings for CID %d.', count($schedule), $cid));
+        $this->command?->info(sprintf('Seeded %d standard bookings across 7 days for CID %d.', $count, $cid));
     }
 }
