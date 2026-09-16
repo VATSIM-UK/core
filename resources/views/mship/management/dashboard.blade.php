@@ -1,10 +1,7 @@
 @extends('layout')
 
+{{-- Deprecated: the classic dashboard is retained for direct access only. --}}
 @section('content')
-	<div class="alert alert-info">
-		Try our <a href="{{ route('mship.manage.dashboard.beta') }}"><strong>beta dashboard</strong></a> — a refreshed layout
-		with the same features.
-	</div>
 	<div class="modal fade" id="primaryEmailChangeModal" tabindex="-1" role="dialog">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">

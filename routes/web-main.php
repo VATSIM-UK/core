@@ -61,7 +61,13 @@ Route::group([
         'as' => 'manage.',
         'prefix' => 'manage',
     ], function () {
+        // Canonical dashboard - the beta layout is now the default.
         Route::get('dashboard')->uses('Management@getDashboard')->name('dashboard');
+
+        // Deprecated classic dashboard, retained for direct access only.
+        Route::get('dashboard/classic')->uses('Management@getDashboardClassic')->name('dashboard.classic');
+
+        // Legacy beta URL, retained as a redirect for existing bookmarks.
         Route::get('dashboard/beta')->uses('Management@getDashboardBeta')->name('dashboard.beta');
         Route::get('cert/update')->uses('Management@requestCertCheck')->name('cert.update');
         Route::get('email/verify/{code}')->uses('Management@getVerifyEmail')->name('email.verify');
