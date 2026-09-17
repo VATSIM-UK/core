@@ -269,7 +269,8 @@ class Calendar extends Component
 
     /**
      * Merges same-aerodrome bookings whose times touch or overlap into one
-     * compact block; different aerodromes are never merged. Sorted by start.
+     * compact block; different aerodromes are never merged. Events always
+     * sort before bookings; within each group, sorted by start.
      *
      * @return list<array{label: string, from: string, to: string, count: int, type: string, id: ?int, source: ?string, cts_booking_id: ?int, startMin: int}>
      */
@@ -298,7 +299,7 @@ class Calendar extends Component
             }
         }
 
-        usort($blocks, fn (array $a, array $b): int => $a['startMin'] <=> $b['startMin']);
+        usort($blocks, fn (array $a, array $b): int => [$a['type'] !== 'EV', $a['startMin']] <=> [$b['type'] !== 'EV', $b['startMin']]);
 
         return $blocks;
     }
