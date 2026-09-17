@@ -377,6 +377,34 @@ class CalendarWeekViewTest extends TestCase
     }
 
     #[Test]
+    public function it_shows_event_blocks_before_booking_blocks_regardless_of_start_time(): void
+    {
+        $date = Carbon::today()->addYears(2);
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        Booking::factory()->create([
+            'position_id' => $position->id,
+            'starts_at' => $date->copy()->setHour(6),
+            'ends_at' => $date->copy()->setHour(7),
+        ]);
+        Event::factory()->published()->create([
+            'name' => 'Test Event',
+            'start' => $date->copy()->setHour(19),
+            'end' => $date->copy()->setHour(21),
+        ]);
+
+        $blocks = Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->call('jumpToDate', $date->toDateString())
+            ->instance()
+            ->buildWeekDayBlocks($date->toDateString());
+
+        $this->assertCount(2, $blocks);
+        $this->assertSame('Test Event', $blocks[0]['label'], 'Event must render above bookings even though it starts later');
+        $this->assertSame('EGKK_APP', $blocks[1]['label']);
+    }
+
+    #[Test]
     public function it_centers_the_week_window_three_days_before_the_selected_date(): void
     {
         $component = Livewire::test(Calendar::class)
