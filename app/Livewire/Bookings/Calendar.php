@@ -186,15 +186,25 @@ class Calendar extends Component
     private function loadWeekBookings(): void
     {
         $weekStart = $this->weekWindowStart();
+        $weekEnd = $weekStart->copy()->addDays(6);
+
+        $bookingsByDate = app(BookingRepository::class)->getBookingsForRange($weekStart, $weekEnd, hideEndedTrainingSessions: true);
+        $eventsByDate = app(EventRepository::class)->getEventsForRange($weekStart, $weekEnd)->groupBy('date');
 
         $this->weekBookings = collect(range(0, 6))
             ->map(fn (int $offset): Carbon => $weekStart->copy()->addDays($offset))
-            ->mapWithKeys(function (Carbon $date): array {
-                $rows = $this->mergedBookingsFor($date)
+            ->mapWithKeys(function (Carbon $date) use ($bookingsByDate, $eventsByDate): array {
+                $dateKey = $date->toDateString();
+
+                $rows = $bookingsByDate->get($dateKey, collect())
+                    ->reject(fn (object $booking): bool => $booking->type === 'EV')
+                    ->concat($eventsByDate->get($dateKey, collect()))
+                    ->sortBy(fn (object $booking): string => $booking->from)
+                    ->values()
                     ->map(fn (object $booking): array => (array) $booking)
                     ->all();
 
-                return [$date->toDateString() => $rows];
+                return [$dateKey => $rows];
             })
             ->all();
     }
