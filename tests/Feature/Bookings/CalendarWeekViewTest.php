@@ -137,6 +137,47 @@ class CalendarWeekViewTest extends TestCase
     }
 
     #[Test]
+    public function it_centers_on_today_when_switching_to_day_view(): void
+    {
+        Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->call('jumpToDate', Carbon::today()->addDays(5)->toDateString())
+            ->call('setViewMode', 'day')
+            ->assertSet('viewMode', 'day')
+            ->assertSet('selectedDate', Carbon::today());
+    }
+
+    #[Test]
+    public function it_switches_to_day_view_for_the_clicked_day_header(): void
+    {
+        $date = Carbon::today()->addDays(2);
+
+        Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->call('viewDayFromWeek', $date->toDateString())
+            ->assertSet('viewMode', 'day')
+            ->assertSet('selectedDate', $date->copy()->startOfDay());
+    }
+
+    #[Test]
+    public function it_renders_each_day_header_as_clickable_to_jump_to_that_day(): void
+    {
+        Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->assertSeeHtml("wire:click=\"viewDayFromWeek('".Carbon::today()->toDateString()."')\"");
+    }
+
+    #[Test]
+    public function it_marks_past_day_headers_distinctly_from_today_and_future_days(): void
+    {
+        Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->assertSeeHtml('data-day-state="past"')
+            ->assertSeeHtml('data-day-state="today"')
+            ->assertSeeHtml('data-day-state="future"');
+    }
+
+    #[Test]
     public function it_shows_the_day_and_week_toggle_buttons(): void
     {
         Livewire::test(Calendar::class)

@@ -251,6 +251,11 @@ class Calendar extends Component
     public function setViewMode(string $mode): void
     {
         $this->viewMode = $mode === 'week' ? 'week' : 'day';
+
+        if ($this->viewMode === 'day') {
+            $this->selectedDate = Carbon::today();
+        }
+
         $this->loadData();
     }
 
