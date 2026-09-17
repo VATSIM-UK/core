@@ -27,16 +27,37 @@ class BookingRepository
 
     public function getBookings(Carbon $date, bool $hideEndedTrainingSessions = false): Collection
     {
-        $core = Booking::whereDate('starts_at', $date->toDateString())
-            ->with('member', 'position', 'ctsBooking', 'bookable')
+        return $this->getBookingsForRange($date, $date, $hideEndedTrainingSessions)
+            ->get($date->toDateString(), collect());
+    }
+
+    /**
+     * Same merge as getBookings(), batched across a date range.
+     *
+     * @return Collection<string, Collection<int, object>> keyed by Y-m-d date string
+     */
+    public function getBookingsForRange(Carbon $start, Carbon $end, bool $hideEndedTrainingSessions = false): Collection
+    {
+        $startDate = $start->toDateString();
+        $endDate = $end->toDateString();
+
+        $core = Booking::whereDate('starts_at', '>=', $startDate)
+            ->whereDate('starts_at', '<=', $endDate)
+            ->with('member', 'position', 'ctsBooking')
+            ->with(['bookable' => fn ($morphTo) => $morphTo->morphWith([
+                Session::class => ['mentor'],
+                ExamBooking::class => ['examiners.primaryExaminer'],
+            ])])
             ->orderBy('starts_at')
             ->get();
 
         $importedIds = $core->pluck('cts_booking_id')->filter()->map(fn ($id) => (int) $id)->values()->all();
 
         $ctsOnly = CtsBooking::query()
-            ->whereDate('date', $date->toDateString())
+            ->whereDate('date', '>=', $startDate)
+            ->whereDate('date', '<=', $endDate)
             ->when(! empty($importedIds), fn ($q) => $q->whereNotIn('id', $importedIds))
+            ->orderBy('date')
             ->orderBy('from')
             ->get();
 
@@ -50,18 +71,28 @@ class BookingRepository
         $ctsCids = $ctsMembers->pluck('cid')->filter()->unique()->values();
         $ctsAccounts = Account::whereIn('id', $ctsCids)->get()->keyBy('id');
 
+        [$examLookup, $sessionLookup] = $this->resolveCtsOwnersBatch($ctsOnly);
+
         // Events live in the CTS events table (not cts.bookings), so they must be
         // pulled in separately or they never appear on the calendar.
-        $events = Event::whereDate('date', $date->toDateString())
+        $events = Event::whereDate('date', '>=', $startDate)
+            ->whereDate('date', '<=', $endDate)
+            ->orderBy('date')
             ->orderBy('from')
             ->get();
 
         return $this->formatBookings($core)
-            ->concat($ctsOnly->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts)))
+            ->concat($ctsOnly->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts, $examLookup, $sessionLookup)))
             ->concat($events->map(fn (Event $event) => $this->formatEvent($event)))
-            ->reject(fn (object $b) => $hideEndedTrainingSessions && $date->isToday() && $this->trainingSessionHasEnded($b))
-            ->sortBy(fn (object $b) => $b->from)
-            ->values();
+            ->groupBy(fn (object $b) => $b->date)
+            ->map(function (Collection $dayBookings, string $dateKey) use ($hideEndedTrainingSessions) {
+                $isToday = $dateKey === Carbon::today()->toDateString();
+
+                return $dayBookings
+                    ->reject(fn (object $b) => $hideEndedTrainingSessions && $isToday && $this->trainingSessionHasEnded($b))
+                    ->sortBy(fn (object $b) => $b->from)
+                    ->values();
+            });
     }
 
     private function trainingSessionHasEnded(object $booking): bool
@@ -142,8 +173,9 @@ class BookingRepository
         $ctsMembers = collect([$ctsMember->getKey() => $ctsMember]);
         $ctsAccounts = Account::whereIn('id', [$account->getKey()])->get()->keyBy('id');
 
+        // Type 'BK' only, so never exam/mentoring.
         return $this->formatBookings($core)
-            ->concat($cts->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts)))
+            ->concat($cts->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts, collect(), collect())))
             ->sortBy(fn (object $b) => $b->date.' '.$b->from)
             ->values();
     }
@@ -204,7 +236,7 @@ class BookingRepository
         return $booking->member;
     }
 
-    private function formatCtsBooking(CtsBooking $cts, Collection $positions, Collection $members, Collection $accounts): object
+    private function formatCtsBooking(CtsBooking $cts, Collection $positions, Collection $members, Collection $accounts, Collection $examLookup, Collection $sessionLookup): object
     {
         $type = (string) $cts->type;
         $position = $positions->get($cts->position);
@@ -214,7 +246,7 @@ class BookingRepository
         // For exams and mentoring the booking row keys on the student, but the owner
         // shown on the calendar is always the leading examiner / mentor. Resolve them
         // from the matching exam/session record; never fall back to the student.
-        $owner = $this->resolveCtsOwner($cts, $account);
+        $owner = $this->resolveCtsOwner($cts, $account, $examLookup, $sessionLookup);
 
         return $this->makeBooking(
             id: null,
@@ -230,31 +262,51 @@ class BookingRepository
         );
     }
 
-    private function resolveCtsOwner(CtsBooking $cts, ?Account $fallback): ?Account
+    private function resolveCtsOwner(CtsBooking $cts, ?Account $fallback, Collection $examLookup, Collection $sessionLookup): ?Account
     {
         if ($cts->isExam()) {
-            $exam = ExamBooking::where('student_id', (int) $cts->member_id)
-                ->where('taken', 1)
-                ->where('taken_date', $cts->date)
-                ->where('taken_from', $cts->from)
-                ->where('position_1', $cts->position)
-                ->first();
+            $exam = $examLookup->get($this->ctsOwnerKey((int) $cts->member_id, (string) $cts->date, (string) $cts->from, (string) $cts->position));
 
-            return $exam?->loadMissing('examiners.primaryExaminer')->examiners?->primaryExaminer?->account;
+            return $exam?->examiners?->primaryExaminer?->account;
         }
 
         if ($cts->isMentoring()) {
-            $session = Session::where('student_id', (int) $cts->member_id)
-                ->where('taken', 1)
-                ->where('taken_date', $cts->date)
-                ->where('taken_from', $cts->from)
-                ->where('position', $cts->position)
-                ->first();
+            $session = $sessionLookup->get($this->ctsOwnerKey((int) $cts->member_id, (string) $cts->date, (string) $cts->from, (string) $cts->position));
 
-            return $session?->loadMissing('mentor')->mentor?->account;
+            return $session?->mentor?->account;
         }
 
         return $fallback;
+    }
+
+    /**
+     * @return array{0: Collection<string, ExamBooking>, 1: Collection<string, Session>}
+     */
+    private function resolveCtsOwnersBatch(Collection $ctsOnly): array
+    {
+        $examRows = $ctsOnly->filter(fn (CtsBooking $c) => $c->isExam());
+        $mentoringRows = $ctsOnly->filter(fn (CtsBooking $c) => $c->isMentoring());
+
+        $examLookup = $examRows->isEmpty() ? collect() : ExamBooking::where('taken', 1)
+            ->whereIn('student_id', $examRows->pluck('member_id')->filter()->map(fn ($id) => (int) $id)->unique()->values())
+            ->whereIn('taken_date', $examRows->pluck('date')->unique()->values())
+            ->with('examiners.primaryExaminer')
+            ->get()
+            ->keyBy(fn (ExamBooking $e) => $this->ctsOwnerKey((int) $e->student_id, (string) $e->taken_date, (string) $e->taken_from, (string) $e->position_1));
+
+        $sessionLookup = $mentoringRows->isEmpty() ? collect() : Session::where('taken', 1)
+            ->whereIn('student_id', $mentoringRows->pluck('member_id')->filter()->map(fn ($id) => (int) $id)->unique()->values())
+            ->whereIn('taken_date', $mentoringRows->pluck('date')->unique()->values())
+            ->with('mentor')
+            ->get()
+            ->keyBy(fn (Session $s) => $this->ctsOwnerKey((int) $s->student_id, (string) $s->taken_date, (string) $s->taken_from, (string) $s->position));
+
+        return [$examLookup, $sessionLookup];
+    }
+
+    private function ctsOwnerKey(int $studentId, string $date, string $from, string $position): string
+    {
+        return $studentId.'|'.$date.'|'.$from.'|'.$position;
     }
 
     private function formatEvent(Event $event): object

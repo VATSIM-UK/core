@@ -32,8 +32,17 @@ class EventRepository
      */
     public function getEventsForDate(Carbon $date): Collection
     {
+        return $this->getEventsForRange($date, $date);
+    }
+
+    /**
+     * @return Collection<int, object>
+     */
+    public function getEventsForRange(Carbon $start, Carbon $end): Collection
+    {
         return Event::published()
-            ->whereDate('start', $date->toDateString())
+            ->whereDate('start', '>=', $start->toDateString())
+            ->whereDate('start', '<=', $end->toDateString())
             ->orderBy('start')
             ->get()
             ->map(fn (Event $event): object => (object) [
