@@ -91,6 +91,10 @@ class Calendar extends Component
 
     public int $dataVersion = 0;
 
+    public string $viewMode = 'day';
+
+    public array $weekBookings = [];
+
     /**
      * Derived render state. Deliberately not public: these are large (the scale
      * alone is 1441 floats) and recomputing them is far cheaper than shipping
@@ -147,6 +151,8 @@ class Calendar extends Component
             'upcomingBookings' => $this->upcomingBookings,
             'upcomingMentoringExamBookings' => $this->upcomingMentoringExamBookings,
             'typeLegend' => self::TYPE_LEGEND,
+            'viewMode' => $this->viewMode,
+            'weekBookings' => $this->weekBookings,
         ]);
     }
 
@@ -162,11 +168,63 @@ class Calendar extends Component
         $this->computeScale();
         $this->buildTimeline();
 
+        if ($this->viewMode === 'week') {
+            $this->loadWeekBookings();
+        } else {
+            $this->weekBookings = [];
+        }
+
         $this->upcomingBookings = auth()->check() && ! auth()->user()->is_banned
             ? app(BookingRepository::class)->getMemberUpcomingBookings(auth()->user())
             : collect();
 
         $this->upcomingMentoringExamBookings = app(BookingRepository::class)->getUpcomingMentoringAndExamBookings();
+    }
+
+    // Cast to plain arrays: this is a public Livewire property, and must
+    // serialise cleanly into the page's snapshot.
+    private function loadWeekBookings(): void
+    {
+        $weekStart = $this->weekWindowStart();
+        $weekEnd = $weekStart->copy()->addDays(6);
+
+        $bookingsByDate = app(BookingRepository::class)->getBookingsForRange($weekStart, $weekEnd, hideEndedTrainingSessions: true);
+        $eventsByDate = app(EventRepository::class)->getEventsForRange($weekStart, $weekEnd)->groupBy('date');
+
+        $this->weekBookings = collect(range(0, 6))
+            ->map(fn (int $offset): Carbon => $weekStart->copy()->addDays($offset))
+            ->mapWithKeys(function (Carbon $date) use ($bookingsByDate, $eventsByDate): array {
+                $dateKey = $date->toDateString();
+
+                $rows = $bookingsByDate->get($dateKey, collect())
+                    ->reject(fn (object $booking): bool => $booking->type === 'EV')
+                    ->concat($eventsByDate->get($dateKey, collect()))
+                    ->sortBy(fn (object $booking): string => $booking->from)
+                    ->values()
+                    ->map(fn (object $booking): array => (array) $booking)
+                    ->all();
+
+                return [$dateKey => $rows];
+            })
+            ->all();
+    }
+
+    // Centred 3 days either side of $selectedDate.
+    public function weekWindowStart(): Carbon
+    {
+        return $this->selectedDate->copy()->subDays(3);
+    }
+
+    // An EV row with a callsign is the controller's own booking during an
+    // event, not the event itself, so it's rejected here.
+    private function mergedBookingsFor(Carbon $date): Collection
+    {
+        return app(BookingRepository::class)
+            ->getBookings($date, hideEndedTrainingSessions: true)
+            ->reject(fn (object $booking): bool => $booking->type === 'EV')
+            ->concat(app(EventRepository::class)->getEventsForDate($date))
+            ->sortBy(fn (object $booking): string => $booking->from)
+            ->values();
     }
 
     public function updatedPositionFilter(): void
@@ -200,19 +258,147 @@ class Calendar extends Component
         $this->dispatch('scroll-to-booking', source: $source, id: $id, ctsBookingId: $ctsBookingId, instant: true);
     }
 
+    public function setViewMode(string $mode): void
+    {
+        $this->viewMode = $mode === 'week' ? 'week' : 'day';
+
+        if ($this->viewMode === 'day') {
+            $this->selectedDate = Carbon::today();
+        }
+
+        $this->loadData();
+    }
+
+    public function viewBookingFromWeek(string $date, string $source, ?int $id = null, ?int $ctsBookingId = null): void
+    {
+        $this->viewMode = 'day';
+        $this->jumpToBooking($date, $source, $id, $ctsBookingId);
+    }
+
+    // A merged block has no single booking to scroll to -- just show its day.
+    public function viewDayFromWeek(string $date): void
+    {
+        $this->viewMode = 'day';
+        $this->jumpToDate($date);
+    }
+
+    /**
+     * Merges same-aerodrome bookings whose times touch or overlap into one
+     * compact block; different aerodromes are never merged. Events always
+     * sort before bookings; within each group, sorted by start.
+     *
+     * @return list<array{label: string, from: string, to: string, count: int, type: string, id: ?int, source: ?string, cts_booking_id: ?int, startMin: int}>
+     */
+    public function buildWeekDayBlocks(string $dateKey): array
+    {
+        $groups = [];
+        foreach ($this->weekBookings[$dateKey] ?? [] as $booking) {
+            $groups[$this->weekGroupKey($booking)][] = $booking;
+        }
+
+        $blocks = [];
+        foreach ($groups as $groupKey => $groupBookings) {
+            foreach ($this->clusterByTime($groupBookings) as $cluster) {
+                // Merged: show the aerodrome. Unmerged: show the full position name.
+                $blocks[] = [
+                    'label' => $cluster['count'] > 1 ? $groupKey : $cluster['label'],
+                    'from' => $cluster['from'],
+                    'to' => $cluster['to'],
+                    'count' => $cluster['count'],
+                    'type' => $cluster['type'],
+                    'id' => $cluster['count'] === 1 ? $cluster['id'] : null,
+                    'source' => $cluster['count'] === 1 ? $cluster['source'] : null,
+                    'cts_booking_id' => $cluster['count'] === 1 ? $cluster['cts_booking_id'] : null,
+                    'startMin' => $cluster['startMin'],
+                ];
+            }
+        }
+
+        usort($blocks, fn (array $a, array $b): int => [$a['type'] !== 'EV', $a['startMin']] <=> [$b['type'] !== 'EV', $b['startMin']]);
+
+        return $blocks;
+    }
+
+    // ICAO prefix (or full callsign if not ICAO-shaped). Events always get
+    // a unique key, since two different events are never "the same aerodrome".
+    private function weekGroupKey(array $booking): string
+    {
+        if ($booking['type'] === 'EV') {
+            return 'event:'.($booking['id'] ?? $booking['event_name'] ?? spl_object_id((object) $booking));
+        }
+
+        $callsign = $booking['position'] ?? 'Unknown';
+        $prefix = explode('_', $callsign)[0] ?? '';
+
+        return (strlen($prefix) === 4 && ctype_alpha($prefix)) ? $prefix : $callsign;
+    }
+
+    // Label for a block covering exactly one booking.
+    private function weekGroupLabel(array $booking): string
+    {
+        if ($booking['type'] === 'EV') {
+            return $booking['event_name'] ?? 'Event';
+        }
+
+        return $booking['position'] ?? 'Unknown';
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $bookings
+     * @return list<array{from: string, to: string, count: int, type: string, label: string, id: ?int, source: ?string, cts_booking_id: ?int, startMin: int, endMin: int}>
+     */
+    private function clusterByTime(array $bookings): array
+    {
+        $prepared = array_map(function (array $booking): array {
+            $start = $this->timeToMinutes($booking['from']);
+            $end = $this->timeToMinutes($booking['to']);
+
+            // Overnight booking (end <= start): treat as running to midnight.
+            return $booking + ['startMin' => $start, 'endMin' => $end > $start ? $end : 1440];
+        }, $bookings);
+
+        usort($prepared, fn (array $a, array $b): int => $a['startMin'] <=> $b['startMin']);
+
+        $clusters = [];
+        $current = null;
+
+        foreach ($prepared as $booking) {
+            if ($current !== null && $booking['startMin'] <= $current['endMin']) {
+                $current['endMin'] = max($current['endMin'], $booking['endMin']);
+                $current['count']++;
+
+                continue;
+            }
+
+            if ($current !== null) {
+                $clusters[] = $current;
+            }
+
+            $current = [
+                'startMin' => $booking['startMin'],
+                'endMin' => $booking['endMin'],
+                'count' => 1,
+                'type' => $booking['type'],
+                'label' => $this->weekGroupLabel($booking),
+                'id' => $booking['id'] !== null ? (int) $booking['id'] : null,
+                'source' => $booking['source'],
+                'cts_booking_id' => $booking['cts_booking_id'] !== null ? (int) $booking['cts_booking_id'] : null,
+            ];
+        }
+
+        if ($current !== null) {
+            $clusters[] = $current;
+        }
+
+        return array_map(fn (array $cluster): array => $cluster + [
+            'from' => sprintf('%02d:%02d', intdiv($cluster['startMin'], 60), $cluster['startMin'] % 60),
+            'to' => sprintf('%02d:%02d', intdiv($cluster['endMin'], 60) % 24, $cluster['endMin'] % 60),
+        ], $clusters);
+    }
+
     public function getBookingsForDate(Carbon $date): void
     {
-        // Events come from the core events table via the Events repository; the
-        // cts.events rows BookingRepository still merges are dropped here. EV
-        // rows with a callsign are a controller's own booking during an event,
-        // not the event itself. Rejecting here, not at render time, keeps them
-        // out of the hour scale and gap collapsing.
-        $this->bookings = app(BookingRepository::class)
-            ->getBookings($date, hideEndedTrainingSessions: true)
-            ->reject(fn (object $booking): bool => $booking->type === 'EV')
-            ->concat(app(EventRepository::class)->getEventsForDate($date))
-            ->sortBy(fn (object $booking): string => $booking->from)
-            ->values();
+        $this->bookings = $this->mergedBookingsFor($date);
     }
 
     /**
