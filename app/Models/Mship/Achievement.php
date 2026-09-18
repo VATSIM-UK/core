@@ -3,6 +3,7 @@
 namespace App\Models\Mship;
 
 use App\Models\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 
 class Achievement extends Model
 {
+    use HasFactory;
     use SoftDeletes;
 
     protected $table = 'mship_achievement';
