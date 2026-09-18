@@ -36,7 +36,7 @@ class AwardedMembers extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(AchievementAward::query()->where('achievement_id', $this->record->id)->with('account'))
+            ->query(AchievementAward::query()->where('achievement_id', $this->record->id)->with(['account', 'creator']))
             ->columns([
                 TextColumn::make('account.id')
                     ->label('CID')->searchable(),
