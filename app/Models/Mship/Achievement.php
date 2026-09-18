@@ -33,6 +33,12 @@ class Achievement extends Model
 
     protected static function booted(): void
     {
+        static::deleting(function (Achievement $achievement) {
+            if ($achievement->image) {
+                Storage::disk('public')->delete($achievement->image);
+            }
+        });
+
         static::updating(function (Achievement $achievement) {
             if ($achievement->isDirty('image')) {
                 $oldImage = $achievement->getOriginal('image');
