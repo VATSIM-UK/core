@@ -57,6 +57,7 @@ class AwardedMembers extends Page implements HasForms, HasTable
                     ->requiresConfirmation()
                     ->action(function (AchievementAward $record) {
                         $record->deleted_by = auth()->user()->id;
+                        $record->saveQuietly();
                         $record->delete();
 
                         Notification::make()
