@@ -22,7 +22,26 @@
 					@endif
 				</div>
 			</header>
-
+			<div class="flex flex-col space-y-3">
+				<h3 class="text-md font-medium">Achievements</h3>
+				<h4 class="text-xs text-gray-500">Achievements are issued to our volunteers in recognition of their contributions to the community.</h4>
+				@if ($account->achievementAwards()->count() > 0)
+				<div class="flex flex-wrap gap-3 justify-center">
+					@foreach ($account->achievementAwards()->get() as $award)
+						<div class="flex flex-col space-y-1 items-center" title="{{ $award->achievement->description }}">
+							<img src="{{ Storage::url($award->achievement->image) }}" alt="{{ $award->achievement->name }}"
+								class="w-10 h-10 rounded-full">
+						<div class="flex flex-col">
+							<span class="text-sm font-medium">{{ $award->achievement->name }}</span>
+							<span class="text-xs text-gray-500 leading-tight"> {{ $award->created_at?->toFormattedDateString() }}</span>
+						</div>
+						</div>
+					@endforeach
+					</div>
+				@else
+					<span class="text-md">No achievements have been awarded.</span>
+				@endif
+			</div>
 			<div class="space-y-2 overflow-auto">
 				<div class="flex flex-col space-y-8">
 					<div class="flex flex-col items-start space-y-1">
@@ -42,6 +61,7 @@
 					</div>
 				</div>
 			</div>
+		</div>
 			<div class="flex flex-col space-y-4">
 				@if ($roster && $roster->restrictionNote == null)
 					<hr>
@@ -94,10 +114,10 @@
 				@endif
 			</div>
 
+
 			<div>
 				<a class="text-bold text-blue-500 hover:cursor-pointer" wire:navigate href="{{ route('site.roster.search') }}">Go
 					back</a>
 			</div>
-		</div>
 	</div>
 </div>
