@@ -29,7 +29,7 @@ class ListAchievements extends ListRecords
                 ->visible(fn (): bool => AchievementResource::canAward())
                 ->authorize(fn (): bool => AchievementResource::canAward())
                 ->form([
-                    AccountSelect::make()->multiple()->label('Account')->required()->dehydrated()
+                    AccountSelect::make()->multiple()->label('Account(s)')->required()->dehydrated()
                         ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} ({$record->id})")
                         ->rules([fn () => function (string $attribute, $value, $fail) {
                             if (in_array(auth()->user()->id, $value)) {
