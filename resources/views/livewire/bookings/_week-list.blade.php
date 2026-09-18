@@ -24,22 +24,37 @@
 				<div class="week-column-scroll flex-1 overflow-y-auto px-1.5 py-1.5 space-y-1.5">
 					@forelse ($blocks as $block)
 						@php $legend = $typeLegend[$block['type']] ?? null; @endphp
-						<button type="button"
-							@if ($block['count'] === 1) wire:click="viewBookingFromWeek('{{ $day->toDateString() }}', '{{ $block['source'] }}', {{ $block['id'] !== null ? (int) $block['id'] : 'null' }}, {{ $block['cts_booking_id'] !== null ? (int) $block['cts_booking_id'] : 'null' }})"
+						<button type="button" x-data='{ booking: @json($block['raw']) }'
+							@if ($block['count'] === 1) @click="window.dispatchEvent(new CustomEvent('open-detail-modal', { detail: { booking: { id: booking.id, source: booking.source, ctsBookingId: booking.cts_booking_id, type: booking.type, position: booking.position, date: booking.date, from: booking.from, to: booking.to, member: booking.member, event_name: booking.event_name, fromWeek: true } } }))"
 							@else
 								wire:click="viewDayFromWeek('{{ $day->toDateString() }}')" @endif
-							class="w-full text-left rounded-md border border-gray-200 hover:border-brand/60 hover:bg-brand/5 transition-colors px-2 py-1.5">
+							class="w-full text-left rounded-md border border-gray-200 hover:border-brand/60 hover:bg-brand/5 transition-colors px-2 py-1.5 {{ $block['isOwn'] ? 'ring-2 ring-yellow-300 ring-inset' : '' }}">
 							<span class="flex items-center gap-1.5">
-								<span class="w-3 h-3 rounded shrink-0 {{ $legend['colour'] ?? 'bg-gray-400' }}"></span>
+								<span
+									class="rounded shrink-0 flex items-center justify-center text-white {{ $legend['icon'] ?? null ? 'w-4 h-4' : 'w-3 h-3' }} {{ $legend['colour'] ?? 'bg-gray-400' }}">
+									@if ($legend['icon'] ?? null)
+										@svg($legend['icon'], 'w-3 h-3')
+									@endif
+								</span>
 								<span
 									class="text-[11px] font-mono tabular-nums text-gray-500 whitespace-nowrap">{{ $block['from'] }}-{{ $block['to'] }}</span>
 							</span>
-							<span class="block text-[12px] font-semibold text-gray-700 truncate mt-0.5">
-								{{ $block['label'] }}
+							<span class="flex items-center gap-1 mt-0.5 min-w-0">
+								<span class="text-[12px] font-semibold text-gray-700 truncate">
+									{{ $block['label'] }}
+								</span>
+								@if ($block['count'] > 1)
+									<span class="text-[11px] text-gray-400 shrink-0">({{ $block['count'] }})</span>
+								@endif
 							</span>
-							@if ($block['count'] > 1)
-								<span class="block text-[11px] text-gray-400 truncate">
-									{{ $block['count'] }} bookings
+							@if ($block['count'] > 1 && !empty($block['positionCodes']))
+								<span class="flex items-center gap-1 mt-1">
+									@foreach ($block['positionCodes'] as $code)
+										@php $badge = \App\Livewire\Bookings\Calendar::POSITION_TYPE_BADGES[$code]; @endphp
+										<span
+											class="w-4 h-4 rounded-sm flex items-center justify-center text-[9px] font-bold text-white {{ $badge['colour'] }}"
+											title="{{ $code }}">{{ $badge['letter'] }}</span>
+									@endforeach
 								</span>
 							@endif
 						</button>
