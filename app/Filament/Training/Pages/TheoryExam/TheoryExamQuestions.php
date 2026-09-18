@@ -51,7 +51,8 @@ class TheoryExamQuestions extends Page implements HasTable
         ];
         $this->allowedLevels = collect($this->userPermissionsTruthTable)->filter(fn ($value) => $value)->keys()->map(fn ($level) => strtoupper($level))->all();
 
-        $requestedLevel = strtoupper(request()->get('level'));
+        $levelParam = request()->get('level');
+        $requestedLevel = is_string($levelParam) ? strtoupper($levelParam) : null;
 
         $this->level = in_array($requestedLevel, $this->allowedLevels) ? $requestedLevel : $this->allowedLevels[0] ?? 'S1';
     }
