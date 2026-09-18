@@ -11,6 +11,8 @@ services:
       - composer-cache:/home/vscode/.cache/composer
       - npm-cache:/home/vscode/.npm
       - gh-config:/home/vscode/.config/gh
+      - ${SSH_AUTH_SOCK:-/dev/null}:/ssh-agent:ro
+      - ${HOME}/.ssh:/home/vscode/.ssh:ro
     extra_hosts:
       - "core.test:127.0.0.1"
     environment:
@@ -19,6 +21,7 @@ services:
       COMPOSER_CACHE_DIR: /home/vscode/.cache/composer
       APACHE_RUN_USER: vscode
       APACHE_RUN_GROUP: vscode
+      SSH_AUTH_SOCK: /ssh-agent
     ports:
       - "80:80"
       - "5173:5173"

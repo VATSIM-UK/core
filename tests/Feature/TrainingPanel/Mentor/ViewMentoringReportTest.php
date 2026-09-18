@@ -634,4 +634,33 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             ->assertDontSee('Previous')
             ->assertDontSee('Current');
     }
+
+    #[Test]
+    public function test_best_score_excludes_sessions_filed_after_the_viewed_report(): void
+    {
+        $this->mentoringSession->update(['position' => 'P1_PPL(A)']);
+        $this->reportSheet->update(['field_score' => FieldScore::DEVELOPING->value]);
+
+        $laterSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'P1_PPL(A)',
+            'progress_sheet_id' => $this->progSheet->prog_sheet_id,
+            'taken_date' => '2025-03-20',
+            'filed' => now(),
+        ]);
+
+        ReportSheet::factory()
+            ->forSession($laterSession->id)
+            ->forStudent($this->studentMember->id)
+            ->forField($this->field->field_id)
+            ->create([
+                'prog_sheet_id' => $this->progSheet->prog_sheet_id,
+                'field_score' => FieldScore::TEST_STANDARD->value,
+            ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertDontSee('Test Standard');
+    }
 }

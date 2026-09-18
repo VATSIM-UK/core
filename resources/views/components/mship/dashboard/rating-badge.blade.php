@@ -20,6 +20,6 @@
 @endphp
 
 <span
-	{{ $attributes->class(["inline-flex shrink-0 items-center rounded px-2 py-0.5 text-xs font-semibold {$color}"]) }}>
+	{{ $attributes->class(["inline-flex shrink-0 items-center rounded px-2 py-0.5 text-sm font-semibold {$color}"]) }}>
 	{{ $code }}
 </span>

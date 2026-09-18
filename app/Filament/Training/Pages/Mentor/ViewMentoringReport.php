@@ -231,6 +231,11 @@ class ViewMentoringReport extends Page implements HasInfolists
     {
         $scoreMap = MentoringReportScores::scoreMapForSessions($this->allSessions);
 
+        $eligibleSessionIds = $this->allSessions
+            ->where('taken_date', '<=', $this->session->taken_date)
+            ->pluck('id')
+            ->all();
+
         $previousSession = $this->otherSessions
             ->where('taken_date', '<=', $this->session->taken_date)
             ->sortByDesc('taken_date')
@@ -248,11 +253,11 @@ class ViewMentoringReport extends Page implements HasInfolists
                 $uniqueKey = $sheet->field_id ?? $index;
 
                 $previousScore = MentoringReportScores::previousScore($scoreMap, $sheet->field_id, $previousSession);
-                $bestScore = MentoringReportScores::bestScore($scoreMap, $sheet->field_id);
+                $bestScore = MentoringReportScores::bestScore($scoreMap, $sheet->field_id, $eligibleSessionIds);
 
                 // Pilot sessions should have the 3 column layout
                 if ($isPilot) {
-                    $bestScoreSessionId = MentoringReportScores::bestScoreSessionId($scoreMap, $sheet->field_id);
+                    $bestScoreSessionId = MentoringReportScores::bestScoreSessionId($scoreMap, $sheet->field_id, $eligibleSessionIds);
 
                     $sheetRows[] = Grid::make(14)
                         ->schema([
