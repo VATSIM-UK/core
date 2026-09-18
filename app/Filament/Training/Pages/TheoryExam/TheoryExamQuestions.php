@@ -220,7 +220,7 @@ class TheoryExamQuestions extends Page implements HasTable
                 ->default($this->level)
                 ->extraAttributes(['class' => 'justify-center']),
 
-            Hidden::make('answer')->required(),
+            Hidden::make('answer')->required()->default(1),
 
             Section::make('Additional Information')
                 ->collapsed()
