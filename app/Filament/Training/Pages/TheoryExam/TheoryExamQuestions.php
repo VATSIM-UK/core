@@ -209,12 +209,10 @@ class TheoryExamQuestions extends Page implements HasTable
             ToggleButtons::make('level')
                 ->disableLabel(true)
                 ->options(
-                    collect([
-                        'S1' => 'S1',
-                        'S2' => 'S2',
-                        'S3' => 'S3',
-                        'C1' => 'C1',
-                    ])->only($this->allowedLevels)->all())
+                    collect($this->levels)
+                        ->mapWithKeys(fn ($level) => [$level => $level])
+                        ->only($this->allowedLevels)
+                        ->all())
                 ->required()
                 ->inline()
                 ->default($this->level)
