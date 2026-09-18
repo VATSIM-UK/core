@@ -333,6 +333,20 @@ window.addEventListener('scroll-to-booking', (event) => {
     findAndHighlightBooking(source + '-' + (id ?? ctsBookingId), !!instant);
 });
 
+window.addEventListener('popstate', () => {
+    const url = new URL(location.href);
+    const segments = url.pathname.split('/').filter(Boolean);
+    const i = segments.indexOf('calendar');
+
+    window.Livewire.dispatch('sync-from-location', {
+        year: i >= 0 && segments[i + 1] ? parseInt(segments[i + 1], 10) : null,
+        month: i >= 0 && segments[i + 2] ? parseInt(segments[i + 2], 10) : null,
+        day: url.searchParams.get('day') ? parseInt(url.searchParams.get('day'), 10) : null,
+        week: url.searchParams.get('week') ? parseInt(url.searchParams.get('week'), 10) : null,
+        bookingId: url.searchParams.get('booking_id') ? parseInt(url.searchParams.get('booking_id'), 10) : null,
+    });
+});
+
 function findAndHighlightBooking(key, instant, attempt = 0) {
     const el = document.querySelector(`[data-booking-key="${CSS.escape(key)}"]`);
 

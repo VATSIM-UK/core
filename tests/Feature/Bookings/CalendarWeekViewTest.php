@@ -8,6 +8,7 @@ use App\Livewire\Bookings\Calendar;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Events\Event;
+use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
@@ -44,40 +45,100 @@ class CalendarWeekViewTest extends TestCase
     #[Test]
     public function it_only_includes_bookings_within_the_seven_day_window(): void
     {
-        // Default window (selectedDate = today) is today-3 .. today+3.
+        // Anchor to a known Wednesday so the Mon-Sun window is deterministic.
+        $anchor = Carbon::parse('2026-09-16');
+        $weekStart = $anchor->copy()->startOfWeek(Carbon::MONDAY);
+        $weekEnd = $weekStart->copy()->addDays(6);
+
         $position = Position::factory()->create();
 
         Booking::factory()->create([
             'position_id' => $position->id,
-            'starts_at' => Carbon::today()->subDays(3)->setHour(9),
-            'ends_at' => Carbon::today()->subDays(3)->setHour(10),
+            'starts_at' => $weekStart->copy()->setHour(9),
+            'ends_at' => $weekStart->copy()->setHour(10),
         ]);
         Booking::factory()->create([
             'position_id' => $position->id,
-            'starts_at' => Carbon::today()->addDays(3)->setHour(9),
-            'ends_at' => Carbon::today()->addDays(3)->setHour(10),
+            'starts_at' => $weekEnd->copy()->setHour(9),
+            'ends_at' => $weekEnd->copy()->setHour(10),
         ]);
         $outsideBefore = Booking::factory()->create([
             'position_id' => $position->id,
-            'starts_at' => Carbon::today()->subDays(4)->setHour(9),
-            'ends_at' => Carbon::today()->subDays(4)->setHour(10),
+            'starts_at' => $weekStart->copy()->subDay()->setHour(9),
+            'ends_at' => $weekStart->copy()->subDay()->setHour(10),
         ]);
         $outsideAfter = Booking::factory()->create([
             'position_id' => $position->id,
-            'starts_at' => Carbon::today()->addDays(4)->setHour(9),
-            'ends_at' => Carbon::today()->addDays(4)->setHour(10),
+            'starts_at' => $weekEnd->copy()->addDay()->setHour(9),
+            'ends_at' => $weekEnd->copy()->addDay()->setHour(10),
         ]);
 
         $weekBookings = Livewire::test(Calendar::class)
             ->call('setViewMode', 'week')
+            ->call('jumpToDate', $anchor->toDateString())
             ->get('weekBookings');
 
-        $this->assertCount(1, $weekBookings[Carbon::today()->subDays(3)->toDateString()]);
-        $this->assertCount(1, $weekBookings[Carbon::today()->addDays(3)->toDateString()]);
+        $this->assertCount(1, $weekBookings[$weekStart->toDateString()]);
+        $this->assertCount(1, $weekBookings[$weekEnd->toDateString()]);
 
         $allIds = collect($weekBookings)->flatten(1)->pluck('id')->map(fn ($id) => (string) $id)->all();
         $this->assertNotContains((string) $outsideBefore->id, $allIds);
         $this->assertNotContains((string) $outsideAfter->id, $allIds);
+    }
+
+    #[Test]
+    public function it_filters_week_bookings_by_callsign_prefix(): void
+    {
+        $anchor = Carbon::parse('2026-09-16');
+        $egll = Position::factory()->create(['callsign' => 'EGLL_TWR']);
+        $egkk = Position::factory()->create(['callsign' => 'EGKK_APP']);
+
+        Booking::factory()->create([
+            'position_id' => $egll->id,
+            'starts_at' => $anchor->copy()->setHour(9),
+            'ends_at' => $anchor->copy()->setHour(10),
+        ]);
+        Booking::factory()->create([
+            'position_id' => $egkk->id,
+            'starts_at' => $anchor->copy()->setHour(9),
+            'ends_at' => $anchor->copy()->setHour(10),
+        ]);
+
+        $weekBookings = Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->call('jumpToDate', $anchor->toDateString())
+            ->set('positionFilter', 'EGLL')
+            ->get('weekBookings');
+
+        $rows = $weekBookings[$anchor->toDateString()];
+        $this->assertCount(1, $rows);
+        $this->assertSame('EGLL_TWR', $rows[0]['position']);
+    }
+
+    #[Test]
+    public function it_excludes_events_from_week_bookings_when_a_callsign_filter_is_applied(): void
+    {
+        $anchor = Carbon::parse('2026-09-16');
+        $position = Position::factory()->create(['callsign' => 'EGLL_TWR']);
+
+        Booking::factory()->create([
+            'position_id' => $position->id,
+            'starts_at' => $anchor->copy()->setHour(9),
+            'ends_at' => $anchor->copy()->setHour(10),
+        ]);
+        Event::factory()->published()->create([
+            'name' => 'Test event',
+            'start' => $anchor->copy()->setHour(18),
+            'end' => $anchor->copy()->setHour(20),
+        ]);
+
+        $weekBookings = Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->call('jumpToDate', $anchor->toDateString())
+            ->set('positionFilter', 'EGLL')
+            ->get('weekBookings');
+
+        $this->assertCount(1, $weekBookings[$anchor->toDateString()]);
     }
 
     #[Test]
@@ -186,12 +247,12 @@ class CalendarWeekViewTest extends TestCase
     }
 
     #[Test]
-    public function it_hides_date_navigation_and_position_search_in_week_mode(): void
+    public function it_hides_day_navigation_but_keeps_position_search_in_week_mode(): void
     {
         Livewire::test(Calendar::class)
             ->call('setViewMode', 'week')
             ->assertDontSee('Previous day')
-            ->assertDontSee('Search callsign...');
+            ->assertSee('Search callsign...');
     }
 
     #[Test]
@@ -446,25 +507,40 @@ class CalendarWeekViewTest extends TestCase
     }
 
     #[Test]
-    public function it_centers_the_week_window_three_days_before_the_selected_date(): void
+    public function it_starts_the_week_window_on_the_monday_of_the_selected_dates_week(): void
     {
+        $wednesday = Carbon::parse('2026-09-16');
+        $this->assertSame(3, $wednesday->dayOfWeekIso, 'sanity check: 2026-09-16 must be a Wednesday');
+
         $component = Livewire::test(Calendar::class)
             ->call('setViewMode', 'week')
-            ->call('jumpToDate', Carbon::today()->addDays(10)->toDateString());
+            ->call('jumpToDate', $wednesday->toDateString());
 
-        $expectedStart = Carbon::today()->addDays(7); // selected date (today+10) minus 3
+        $expectedStart = Carbon::parse('2026-09-14');
         $this->assertTrue($expectedStart->isSameDay($component->instance()->weekWindowStart()));
     }
 
     #[Test]
-    public function it_allows_the_week_window_to_show_past_days(): void
+    public function it_keeps_the_week_window_start_unchanged_for_a_monday_selected_date(): void
     {
+        $monday = Carbon::parse('2026-09-14');
+
         $component = Livewire::test(Calendar::class)
             ->call('setViewMode', 'week')
-            ->call('jumpToDate', Carbon::yesterday()->toDateString());
+            ->call('jumpToDate', $monday->toDateString());
 
-        $expectedStart = Carbon::yesterday()->subDays(3);
-        $this->assertTrue($expectedStart->isSameDay($component->instance()->weekWindowStart()));
+        $this->assertTrue($monday->isSameDay($component->instance()->weekWindowStart()));
+    }
+
+    #[Test]
+    public function it_shows_the_iso_week_number_in_the_header(): void
+    {
+        $date = Carbon::parse('2026-09-16');
+
+        Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->call('jumpToDate', $date->toDateString())
+            ->assertSee('Week 38');
     }
 
     #[Test]
@@ -475,5 +551,317 @@ class CalendarWeekViewTest extends TestCase
             ->call('jumpToDate', Carbon::today()->addDays(10)->toDateString());
 
         $component->assertSet('viewMode', 'week');
+    }
+
+    #[Test]
+    public function it_includes_the_raw_booking_on_an_unmerged_block(): void
+    {
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        $booking = Booking::factory()->create([
+            'position_id' => $position->id,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(10),
+        ]);
+
+        $blocks = Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->instance()
+            ->buildWeekDayBlocks(Carbon::today()->toDateString());
+
+        $this->assertSame((string) $booking->id, $blocks[0]['raw']['id']);
+        $this->assertSame('EGKK_APP', $blocks[0]['raw']['position']);
+    }
+
+    #[Test]
+    public function it_has_no_raw_booking_on_a_merged_block(): void
+    {
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        Booking::factory()->create([
+            'position_id' => $position->id,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(11),
+        ]);
+        Booking::factory()->create([
+            'position_id' => $position->id,
+            'starts_at' => Carbon::today()->setHour(10),
+            'ends_at' => Carbon::today()->setHour(12),
+        ]);
+
+        $blocks = Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->instance()
+            ->buildWeekDayBlocks(Carbon::today()->toDateString());
+
+        $this->assertNull($blocks[0]['raw']);
+    }
+
+    #[Test]
+    public function it_dispatches_the_detail_modal_event_for_an_unmerged_week_block(): void
+    {
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        Booking::factory()->create([
+            'position_id' => $position->id,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(10),
+        ]);
+
+        Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->assertSeeHtml("new CustomEvent('open-detail-modal'");
+    }
+
+    #[Test]
+    public function it_lists_distinct_position_badge_codes_on_a_merged_block(): void
+    {
+        $del = Position::factory()->create(['callsign' => 'EGKK_DEL', 'type' => Position::TYPE_DELIVERY]);
+        $gnd = Position::factory()->create(['callsign' => 'EGKK_GND', 'type' => Position::TYPE_GROUND]);
+
+        Booking::factory()->create([
+            'position_id' => $del->id,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(11),
+        ]);
+        Booking::factory()->create([
+            'position_id' => $gnd->id,
+            'starts_at' => Carbon::today()->setHour(10),
+            'ends_at' => Carbon::today()->setHour(12),
+        ]);
+
+        $blocks = Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->instance()
+            ->buildWeekDayBlocks(Carbon::today()->toDateString());
+
+        $this->assertSame(['DEL', 'GND'], $blocks[0]['positionCodes']);
+    }
+
+    #[Test]
+    public function it_deduplicates_position_badge_codes_on_a_merged_block(): void
+    {
+        $del1 = Position::factory()->create(['callsign' => 'EGKK_DEL', 'type' => Position::TYPE_DELIVERY]);
+        $del2 = Position::factory()->create(['callsign' => 'EGKK_B_DEL', 'type' => Position::TYPE_DELIVERY]);
+
+        Booking::factory()->create([
+            'position_id' => $del1->id,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(11),
+        ]);
+        Booking::factory()->create([
+            'position_id' => $del2->id,
+            'starts_at' => Carbon::today()->setHour(10),
+            'ends_at' => Carbon::today()->setHour(12),
+        ]);
+
+        $blocks = Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->instance()
+            ->buildWeekDayBlocks(Carbon::today()->toDateString());
+
+        $this->assertSame(['DEL'], $blocks[0]['positionCodes']);
+    }
+
+    #[Test]
+    public function it_has_no_badge_codes_for_a_merged_block_of_unbadged_position_types(): void
+    {
+        $atis1 = Position::factory()->create(['callsign' => 'EGKK_ATIS', 'type' => Position::TYPE_ATIS]);
+        $atis2 = Position::factory()->create(['callsign' => 'EGKK_B_ATIS', 'type' => Position::TYPE_ATIS]);
+
+        Booking::factory()->create([
+            'position_id' => $atis1->id,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(11),
+        ]);
+        Booking::factory()->create([
+            'position_id' => $atis2->id,
+            'starts_at' => Carbon::today()->setHour(10),
+            'ends_at' => Carbon::today()->setHour(12),
+        ]);
+
+        $blocks = Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->instance()
+            ->buildWeekDayBlocks(Carbon::today()->toDateString());
+
+        $this->assertSame([], $blocks[0]['positionCodes']);
+    }
+
+    #[Test]
+    public function it_has_no_badge_codes_for_ctr_and_fss_positions_on_a_merged_block(): void
+    {
+        $ctr = Position::factory()->create(['callsign' => 'EGTT_CTR', 'type' => Position::TYPE_ENROUTE]);
+        $fss = Position::factory()->create(['callsign' => 'EGTT_FSS', 'type' => Position::TYPE_FSS]);
+
+        Booking::factory()->create([
+            'position_id' => $ctr->id,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(11),
+        ]);
+        Booking::factory()->create([
+            'position_id' => $fss->id,
+            'starts_at' => Carbon::today()->setHour(10),
+            'ends_at' => Carbon::today()->setHour(12),
+        ]);
+
+        $blocks = Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->instance()
+            ->buildWeekDayBlocks(Carbon::today()->toDateString());
+
+        $this->assertSame([], $blocks[0]['positionCodes']);
+    }
+
+    #[Test]
+    public function it_renders_position_badges_for_a_merged_block(): void
+    {
+        $del = Position::factory()->create(['callsign' => 'EGKK_DEL', 'type' => Position::TYPE_DELIVERY]);
+        $gnd = Position::factory()->create(['callsign' => 'EGKK_GND', 'type' => Position::TYPE_GROUND]);
+
+        Booking::factory()->create([
+            'position_id' => $del->id,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(11),
+        ]);
+        Booking::factory()->create([
+            'position_id' => $gnd->id,
+            'starts_at' => Carbon::today()->setHour(10),
+            'ends_at' => Carbon::today()->setHour(12),
+        ]);
+
+        Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->assertSeeHtml('bg-[#458CFF]')
+            ->assertSeeHtml('bg-[#4A9C25]');
+    }
+
+    #[Test]
+    public function it_shows_the_type_icon_for_a_non_standard_booking_in_the_week_grid(): void
+    {
+        // Freeze "now" so the 9-10 slot below never counts as an ended session.
+        $this->travelTo(Carbon::parse('2026-09-16 08:00:00'));
+
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        Booking::factory()->create([
+            'position_id' => $position->id,
+            'type' => Booking::TYPE_MENTORING,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(10),
+        ]);
+
+        Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->assertSeeHtml('rounded shrink-0 flex items-center justify-center text-white w-4 h-4');
+    }
+
+    #[Test]
+    public function it_shows_no_extra_type_icon_for_a_standard_booking_in_the_week_grid(): void
+    {
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        Booking::factory()->create([
+            'position_id' => $position->id,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(10),
+        ]);
+
+        Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->assertDontSeeHtml('rounded shrink-0 flex items-center justify-center text-white w-4 h-4');
+    }
+
+    #[Test]
+    public function it_highlights_the_current_members_own_booking_in_the_week_grid(): void
+    {
+        $member = Account::factory()->create();
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        Booking::factory()->create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(10),
+        ]);
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->assertSeeHtml('py-1.5 ring-2 ring-yellow-300 ring-inset');
+    }
+
+    #[Test]
+    public function it_does_not_highlight_another_members_booking_in_the_week_grid(): void
+    {
+        $member = Account::factory()->create();
+        $other = Account::factory()->create();
+        $position = Position::factory()->create(['callsign' => 'EGKK_APP', 'type' => Position::TYPE_APPROACH]);
+
+        Booking::factory()->create([
+            'position_id' => $position->id,
+            'member_id' => $other->id,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(10),
+        ]);
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->assertDontSeeHtml('py-1.5 ring-2 ring-yellow-300 ring-inset');
+    }
+
+    #[Test]
+    public function it_highlights_a_merged_block_containing_the_current_members_booking(): void
+    {
+        $member = Account::factory()->create();
+        $other = Account::factory()->create();
+        $del = Position::factory()->create(['callsign' => 'EGLL_DEL', 'type' => Position::TYPE_DELIVERY]);
+        $gnd = Position::factory()->create(['callsign' => 'EGLL_GND', 'type' => Position::TYPE_GROUND]);
+
+        Booking::factory()->create([
+            'position_id' => $del->id,
+            'member_id' => $other->id,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(11),
+        ]);
+        Booking::factory()->create([
+            'position_id' => $gnd->id,
+            'member_id' => $member->id,
+            'starts_at' => Carbon::today()->setHour(10),
+            'ends_at' => Carbon::today()->setHour(12),
+        ]);
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->assertSeeHtml('py-1.5 ring-2 ring-yellow-300 ring-inset');
+    }
+
+    #[Test]
+    public function it_does_not_highlight_a_merged_block_without_the_current_members_booking(): void
+    {
+        $member = Account::factory()->create();
+        $other = Account::factory()->create();
+        $del = Position::factory()->create(['callsign' => 'EGLL_DEL', 'type' => Position::TYPE_DELIVERY]);
+        $gnd = Position::factory()->create(['callsign' => 'EGLL_GND', 'type' => Position::TYPE_GROUND]);
+
+        Booking::factory()->create([
+            'position_id' => $del->id,
+            'member_id' => $other->id,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(11),
+        ]);
+        Booking::factory()->create([
+            'position_id' => $gnd->id,
+            'member_id' => $other->id,
+            'starts_at' => Carbon::today()->setHour(10),
+            'ends_at' => Carbon::today()->setHour(12),
+        ]);
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->assertDontSeeHtml('py-1.5 ring-2 ring-yellow-300 ring-inset');
     }
 }
