@@ -28,9 +28,11 @@
 					the community.</h4>
 				@if ($account->achievementAwards()->count() > 0)
 					<div class="flex flex-wrap gap-3 justify-center">
-						@foreach ($account->achievementAwards()->get() as $award)
-							<div class="flex flex-col space-y-1 items-center" title="{{ $award->achievement->description }}">
-								<img src="{{ Storage::url($award->achievement->image) }}" alt="{{ $award->achievement->name }}"
+						@foreach ($account->achievementAwards()->with('achievement')->get() as $award)
+							@continue(! $award->achievement)
+							<div class="flex flex-col space-y-1 items-center" title="{{ $award->achievement?->description }}">
+								@if ($award->achievement->image)
+									<img src="{{ Storage::url($award->achievement->image) }}" alt="{{ $award->achievement->name }}"
 									class="w-10 h-10 rounded-full">
 								<div class="flex flex-col">
 									<span class="text-sm font-medium">{{ $award->achievement->name }}</span>
