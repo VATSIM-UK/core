@@ -163,17 +163,20 @@ class CalendarWeekViewTest extends TestCase
     #[Test]
     public function it_includes_published_events_in_the_week_grid(): void
     {
+        $eventDate = Carbon::today()->addDays(2);
+
         Event::factory()->published()->create([
             'name' => 'UK Controller Meet',
-            'start' => Carbon::today()->addDays(2)->setHour(19),
-            'end' => Carbon::today()->addDays(2)->setHour(21),
+            'start' => $eventDate->copy()->setHour(19),
+            'end' => $eventDate->copy()->setHour(21),
         ]);
 
         $weekBookings = Livewire::test(Calendar::class)
             ->call('setViewMode', 'week')
+            ->call('jumpToDate', $eventDate->toDateString())
             ->get('weekBookings');
 
-        $dayEntries = $weekBookings[Carbon::today()->addDays(2)->toDateString()];
+        $dayEntries = $weekBookings[$eventDate->toDateString()];
 
         $this->assertCount(1, $dayEntries);
         $this->assertSame('EV', $dayEntries[0]['type']);
