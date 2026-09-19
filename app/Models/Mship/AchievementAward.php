@@ -28,7 +28,7 @@ class AchievementAward extends Model
 
     public function achievement(): BelongsTo
     {
-        return $this->belongsTo(Achievement::class);
+        return $this->belongsTo(Achievement::class)->withTrashed();
     }
 
     public function account(): BelongsTo
