@@ -127,7 +127,7 @@ class Feedback extends Model
     public function position()
     {
         return $this->hasOne(Answer::class)->whereHas('question', function ($query) {
-            $query->where('slug', ['callsign3', 'sessionposition2']);
+            $query->whereIn('slug', ['callsign3', 'sessionposition2', 'position_callsign']);
         });
     }
 

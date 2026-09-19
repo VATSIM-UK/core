@@ -35,13 +35,13 @@ class TwoFactorAuthTest extends TestCase
         });
 
         $this->actingAs($this->account)
-            ->get(route('mship.manage.dashboard'))
+            ->get(route('mship.manage.dashboard.classic'))
             ->assertOk()
             ->assertSee(route('two-factor.setup'), false)
             ->assertSee('Click to Enable', false);
 
         $this->actingAs($this->account)
-            ->get(route('mship.manage.dashboard.beta'))
+            ->get(route('mship.manage.dashboard'))
             ->assertOk()
             ->assertSee(route('two-factor.setup'), false)
             ->assertSee('Enable two-factor', false);

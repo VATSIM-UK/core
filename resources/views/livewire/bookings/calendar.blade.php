@@ -28,29 +28,66 @@
 				</div>
 
 				<div class="flex flex-wrap items-center justify-center gap-2 w-full sm:w-auto sm:justify-end sm:ml-auto">
-					<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->subDay()->toDateString() }}')"
-						class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
-						title="Previous day">
-						<i class="fa fa-chevron-left text-[10px]" aria-hidden="true"></i>
-					</button>
-					<span class="text-sm font-medium text-white/90 min-w-[140px] sm:min-w-[200px] text-center whitespace-nowrap">
-						{{ $selectedDate->format('l, d. m. Y') }}
-						@if ($selectedDate->isToday())
-							<span class="text-brand/90 text-xs font-normal">· today</span>
-						@endif
-					</span>
-					<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->addDay()->toDateString() }}')"
-						class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
-						title="Next day">
-						<i class="fa fa-chevron-right text-[10px]" aria-hidden="true"></i>
-					</button>
-					<input type="date" value="{{ $selectedDate->format('Y-m-d') }}" wire:change="jumpToDate($event.target.value)"
-						class="ml-1 w-[130px] rounded-md border-0 bg-white/10 px-2 py-1 text-xs text-white ring-1 ring-inset ring-white/15 focus:ring-2 focus:ring-white/40 focus:outline-none [color-scheme:dark]"
-						title="Jump to date">
-					<button type="button" wire:click="jumpToDate('{{ \Carbon\Carbon::today()->toDateString() }}')"
-						class="px-2.5 py-1 rounded-md bg-white/15 hover:bg-white/25 transition-colors text-[11px] font-medium text-white">
-						Today
-					</button>
+					@if ($viewMode === 'day')
+						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->subDay()->toDateString() }}', false)"
+							class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
+							title="Previous day">
+							<i class="fa fa-chevron-left text-[10px]" aria-hidden="true"></i>
+						</button>
+						<span class="text-sm font-medium text-white/90 min-w-[140px] sm:min-w-[200px] text-center whitespace-nowrap">
+							{{ $selectedDate->format('l, d. m. Y') }}
+							@if ($selectedDate->isToday())
+								<span class="text-brand/90 text-xs font-normal">· today</span>
+							@endif
+						</span>
+						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->addDay()->toDateString() }}', false)"
+							class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
+							title="Next day">
+							<i class="fa fa-chevron-right text-[10px]" aria-hidden="true"></i>
+						</button>
+						<input type="date" value="{{ $selectedDate->format('Y-m-d') }}" wire:change="jumpToDate($event.target.value)"
+							class="ml-1 w-[130px] rounded-md border-0 bg-white/10 px-2 py-1 text-xs text-white ring-1 ring-inset ring-white/15 focus:ring-2 focus:ring-white/40 focus:outline-none [color-scheme:dark]"
+							title="Jump to date">
+						<button type="button" wire:click="jumpToDate('{{ \Carbon\Carbon::today()->toDateString() }}')"
+							class="px-2.5 py-1 rounded-md bg-white/15 hover:bg-white/25 transition-colors text-[11px] font-medium text-white">
+							Today
+						</button>
+					@else
+						@php $weekStart = $this->weekWindowStart(); @endphp
+						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->subDays(7)->toDateString() }}', false)"
+							class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
+							title="Previous week">
+							<i class="fa fa-chevron-left text-[10px]" aria-hidden="true"></i>
+						</button>
+						<span class="text-sm font-medium text-white/90 min-w-[140px] sm:min-w-[200px] text-center whitespace-nowrap">
+							Week {{ $weekStart->isoWeek() }}
+							<span class="text-white/60 text-xs">&middot; {{ $weekStart->format('d M') }} -
+								{{ $weekStart->copy()->addDays(6)->format('d M Y') }}</span>
+						</span>
+						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->addDays(7)->toDateString() }}', false)"
+							class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
+							title="Next week">
+							<i class="fa fa-chevron-right text-[10px]" aria-hidden="true"></i>
+						</button>
+						<input type="date" value="{{ $selectedDate->format('Y-m-d') }}" wire:change="jumpToDate($event.target.value)"
+							class="ml-1 w-[130px] rounded-md border-0 bg-white/10 px-2 py-1 text-xs text-white ring-1 ring-inset ring-white/15 focus:ring-2 focus:ring-white/40 focus:outline-none [color-scheme:dark]"
+							title="Jump to the week containing this date">
+						<button type="button" wire:click="jumpToDate('{{ \Carbon\Carbon::today()->toDateString() }}')"
+							class="px-2.5 py-1 rounded-md bg-white/15 hover:bg-white/25 transition-colors text-[11px] font-medium text-white">
+							This week
+						</button>
+					@endif
+
+					<div class="flex items-center gap-1 rounded-md bg-white/10 p-0.5 shrink-0">
+						<button type="button" wire:click="setViewMode('day')"
+							class="px-2.5 py-1 rounded text-[11px] font-medium transition-colors {{ $viewMode === 'day' ? 'bg-white/25 text-white' : 'text-white/70 hover:text-white' }}">
+							Day
+						</button>
+						<button type="button" wire:click="setViewMode('week')"
+							class="px-2.5 py-1 rounded text-[11px] font-medium transition-colors {{ $viewMode === 'week' ? 'bg-white/25 text-white' : 'text-white/70 hover:text-white' }}">
+							Week
+						</button>
+					</div>
 				</div>
 			</div>
 
@@ -66,191 +103,205 @@
 		</div>
 
 		{{-- Timeline body --}}
-		<div wire:key="tl-{{ $selectedDate->format('Ymd') }}-{{ $filterVersion }}-{{ $dataVersion }}">
-			@php
-				$timelineConfig = [
-				    'selectedDate' => $selectedDate->format('Y-m-d'),
-				    'isAuthenticated' => auth()->check(),
-				    'currentMemberCid' => auth()->check() ? (string) auth()->id() : null,
-				    'isToday' => $selectedDate->isToday(),
-				    'nowMinutes' => (int) now()->format('H') * 60 + (int) now()->format('i'),
-				    'scale' => $timelineScale,
-				];
-			@endphp
+		@if ($viewMode === 'day')
+			<div wire:key="tl-{{ $selectedDate->format('Ymd') }}-{{ $filterVersion }}-{{ $dataVersion }}">
+				@php
+					$timelineConfig = [
+					    'selectedDate' => $selectedDate->format('Y-m-d'),
+					    'isAuthenticated' => auth()->check(),
+					    'currentMemberCid' => auth()->check() ? (string) auth()->id() : null,
+					    'isToday' => $selectedDate->isToday(),
+					    'nowMinutes' => (int) now()->format('H') * 60 + (int) now()->format('i'),
+					    'scale' => $timelineScale,
+					];
+				@endphp
 
-			<div class="relative">
-				<div
-					class="sm:hidden pointer-events-none absolute top-0 right-0 w-6 h-8 z-30 bg-gradient-to-l from-gray-50/95 to-transparent">
-				</div>
-				<div x-data='bookingsTimeline(@json($timelineConfig))' class="timeline-scroll" x-cloak>
-					<div class="min-w-[1708px] relative">
-						{{-- Hour header --}}
-						<div class="flex border-b border-gray-200 bg-gray-50/80 sticky top-0 z-30">
-							<div
-								class="w-28 sm:w-40 shrink-0 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 sticky left-0 z-[7] bg-gray-50">
-								Position
-							</div>
-							<div class="flex-1 relative h-8" x-ref="headerTrack">
-								@foreach ($timelineHours as $th)
-									@if ($th['type'] === 'gap')
-										<div class="absolute top-0 bottom-0 flex items-center justify-center bg-gray-300/70"
-											style="left: {{ $th['scale_left'] }}%; width: {{ $th['scale_width'] }}%" title="{{ $th['label'] }}">
-											@if ($th['show_label'])
-												<span class="text-[10px] text-gray-500 font-medium">{{ $th['label'] }}</span>
-											@elseif ($th['show_short_label'])
-												<span class="text-[10px] text-gray-500 font-medium">{{ $th['short_label'] }}</span>
-											@endif
-											<span class="absolute top-0 bottom-0 w-px bg-gray-300" style="left: 0px"></span>
-											<span class="absolute top-0 bottom-0 w-px bg-gray-300" style="right: 0px"></span>
-										</div>
-									@else
-										<div class="absolute top-0 bottom-0 flex items-center text-[10px] text-gray-400 font-medium"
-											style="left: {{ $th['scale_left'] }}%" title="{{ sprintf('%02d:00', $th['hour']) }}">
-											@if ($th['show_label'])
-												<span class="pl-1.5">{{ sprintf('%02d:00', $th['hour']) }}</span>
-											@endif
-											<span class="absolute top-0 bottom-0 w-px bg-gray-200" style="left: -1px"></span>
-										</div>
-									@endif
-								@endforeach
-
-								<template x-if="isToday && !nowBallHidden()">
-									<div class="absolute top-full -translate-y-1/2 -ml-[4px] w-2.5 h-2.5 bg-red-500 rounded-full"
-										:style="'left: ' + nowPct + '%'"></div>
-								</template>
-							</div>
-						</div>
-
-						{{-- Timeline rows --}}
-						@if (empty($timelinePositions) && empty($events))
-							<div class="px-4 py-16 text-center text-gray-400">
-								<p class="text-sm font-medium text-gray-500">No positions available for this date.</p>
-								<p class="text-xs mt-1">
-									@auth
-										<span>Try a different date or adjust the filter.</span>
-									@else
-										<span>Log in to see bookable positions.</span>
-									@endauth
-								</p>
-							</div>
-						@else
-							@if (!empty($events))
-								<div class="flex border-b border-gray-200 bg-gray-50/90">
-									<div
-										class="w-28 sm:w-40 shrink-0 px-3 py-2.5 -mb-px border-r border-b border-gray-200 flex items-center gap-2 sticky left-0 bg-gray-50 z-20">
-										<i class="fa fa-star text-[10px] text-gray-400 shrink-0" aria-hidden="true"></i>
-										<span class="text-sm font-bold text-gray-600 uppercase tracking-wide">Events</span>
-									</div>
-									<div class="flex-1 relative" x-data='{ pos: { laneCount: @json($eventLaneCount) } }'
-										:style="'height: ' + rowHeight(pos)">
-										<div x-data='{ events: @json($events) }'>
-											<template x-for="booking in events" :key="booking.source + '-' + (booking.id || booking.cts_booking_id)">
-												<div
-													class="absolute rounded px-2 flex items-center gap-1.5 cursor-pointer text-white text-xs font-medium shadow-sm hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap bg-red-600"
-													:data-booking-key="booking.source + '-' + (booking.id || booking.cts_booking_id)"
-													:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%; top: ' + bookingTop(pos,
-													    booking) + '; height: ' + blockHeight(pos)"
-													:title="(booking.event_name || 'Events') + ' \u00b7 ' + booking.from + ' \u2013 ' + booking.to"
-													@click.stop="openDetailModal({ callsign: booking.event_name || 'Events' }, booking)">
-													<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]" x-text="booking.from"></span>
-													<span class="truncate" x-text="booking.event_name || 'Events'"></span>
-												</div>
-											</template>
-										</div>
-									</div>
+				<div class="relative">
+					<div
+						class="sm:hidden pointer-events-none absolute top-0 right-0 w-6 h-8 z-30 bg-gradient-to-l from-gray-50/95 to-transparent">
+					</div>
+					<div x-data='bookingsTimeline(@json($timelineConfig))' class="timeline-scroll" x-cloak>
+						<div class="min-w-[1708px] relative">
+							{{-- Hour header --}}
+							<div class="flex border-b border-gray-200 bg-gray-50/80 sticky top-0 z-30">
+								<div
+									class="w-28 sm:w-40 shrink-0 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 sticky left-0 z-[7] bg-gray-50">
+									Position
 								</div>
-							@endif
-
-							@foreach ($timelinePositions as $item)
-								@if ($item['type'] === 'group')
-									<div x-data='{ expanded: true, clusters: @json($item['clusters']), icao: @json($item['icao']) }'>
-										<div
-											class="flex border-b border-gray-200 bg-white cursor-pointer hover:bg-brand/5 transition-colors select-none"
-											@click="expanded = !expanded">
-											<div
-												class="w-28 sm:w-40 shrink-0 px-3 py-2.5 -mb-px border-r border-b border-gray-200 flex items-center gap-2 sticky left-0 bg-white z-20">
-												<i class="fa fa-chevron-right text-[10px] text-gray-400 shrink-0 transition-transform duration-150"
-													:style="expanded ? 'transform: rotate(90deg)' : ''" aria-hidden="true"></i>
-												<span class="text-[13px] font-semibold text-gray-700 uppercase tracking-wide" x-text="icao"></span>
+								<div class="flex-1 relative h-8" x-ref="headerTrack">
+									@foreach ($timelineHours as $th)
+										@if ($th['type'] === 'gap')
+											<div class="absolute top-0 bottom-0 flex items-center justify-center bg-gray-300/70"
+												style="left: {{ $th['scale_left'] }}%; width: {{ $th['scale_width'] }}%" title="{{ $th['label'] }}">
+												@if ($th['show_label'])
+													<span class="text-[10px] text-gray-500 font-medium">{{ $th['label'] }}</span>
+												@elseif ($th['show_short_label'])
+													<span class="text-[10px] text-gray-500 font-medium">{{ $th['short_label'] }}</span>
+												@endif
+												<span class="absolute top-0 bottom-0 w-px bg-gray-300" style="left: 0px"></span>
+												<span class="absolute top-0 bottom-0 w-px bg-gray-300" style="right: 0px"></span>
 											</div>
-											<div class="flex-1 h-11 sm:h-10 flex items-center">
-												<template x-if="expanded">
-													<span class="flex-1 border-t border-dashed border-gray-200 mx-3"></span>
-												</template>
-												<template x-if="!expanded">
-													<div class="flex-1 relative h-6">
-														<template x-for="(cluster, idx) in clusters" :key="idx">
-															<div
-																class="absolute top-0 bottom-0 rounded bg-uknavy/80 border border-uknavy/30 flex items-center justify-center gap-1 px-2 overflow-hidden"
-																:style="'left: ' + cluster.left_pct + '%; width: ' + cluster.width_pct + '%'"
-																:title="cluster.count + ' booking' + (cluster.count !== 1 ? 's' : '') + ' \u00b7 ' + cluster.memberCount +
-																    ' member' + (cluster.memberCount !== 1 ? 's' : '') + ' \u00b7 ' + cluster.from + ' \u2013 ' +
-																    cluster
-																    .to">
-																<span class="truncate text-[11px] font-medium text-white/90"
-																	x-text="cluster.count + ' booking' + (cluster.count !== 1 ? 's' : '')"></span>
-															</div>
-														</template>
+										@else
+											<div class="absolute top-0 bottom-0 flex items-center text-[10px] text-gray-400 font-medium"
+												style="left: {{ $th['scale_left'] }}%" title="{{ sprintf('%02d:00', $th['hour']) }}">
+												@if ($th['show_label'])
+													<span class="pl-1.5">{{ sprintf('%02d:00', $th['hour']) }}</span>
+												@endif
+												<span class="absolute top-0 bottom-0 w-px bg-gray-200" style="left: -1px"></span>
+											</div>
+										@endif
+									@endforeach
+
+									<template x-if="isToday && !nowBallHidden()">
+										<div class="absolute top-full -translate-y-1/2 -ml-[4px] w-2.5 h-2.5 bg-red-500 rounded-full"
+											:style="'left: ' + nowPct + '%'"></div>
+									</template>
+								</div>
+							</div>
+
+							{{-- Timeline rows --}}
+							@if (empty($timelinePositions) && empty($events))
+								<div class="px-4 py-16 text-center text-gray-400">
+									<p class="text-sm font-medium text-gray-500">No positions available for this date.</p>
+									<p class="text-xs mt-1">
+										@auth
+											<span>Try a different date or adjust the filter.</span>
+										@else
+											<span>Log in to see bookable positions.</span>
+										@endauth
+									</p>
+								</div>
+							@else
+								@if (!empty($events))
+									<div class="flex border-b border-gray-200 bg-gray-50/90">
+										<div
+											class="w-28 sm:w-40 shrink-0 px-3 py-2.5 -mb-px border-r border-b border-gray-200 flex items-center gap-2 sticky left-0 bg-gray-50 z-20">
+											<i class="fa fa-star text-[10px] text-gray-400 shrink-0" aria-hidden="true"></i>
+											<span class="text-sm font-bold text-gray-600 uppercase tracking-wide">Events</span>
+										</div>
+										<div class="flex-1 relative" x-data='{ pos: { laneCount: @json($eventLaneCount) } }'
+											:style="'height: ' + rowHeight(pos)">
+											<div x-data='{ events: @json($events) }'>
+												<template x-for="booking in events" :key="booking.source + '-' + (booking.id || booking.cts_booking_id)">
+													<div
+														class="absolute rounded px-2 flex items-center gap-1.5 cursor-pointer text-white text-xs font-medium shadow-sm hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap bg-red-600"
+														:data-booking-key="booking.source + '-' + (booking.id || booking.cts_booking_id)"
+														:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%; top: ' + bookingTop(pos,
+														    booking) + '; height: ' + blockHeight(pos)"
+														:title="(booking.event_name || 'Events') + ' \u00b7 ' + booking.from + ' \u2013 ' + booking.to"
+														@click.stop="openDetailModal({ callsign: booking.event_name || 'Events' }, booking)">
+														<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]" x-text="booking.from"></span>
+														<span class="truncate" x-text="booking.event_name || 'Events'"></span>
 													</div>
 												</template>
 											</div>
 										</div>
-										<div x-show="expanded" x-collapse>
-											@foreach ($item['positions'] as $pos)
-												<div x-data='{ pos: @json($pos) }'>
-													@include('livewire.bookings._timeline-row')
-												</div>
-											@endforeach
-										</div>
-									</div>
-								@elseif ($item['type'] === 'single')
-									<div x-data='{ pos: @json($item) }'>
-										@include('livewire.bookings._timeline-row')
-									</div>
-								@elseif ($item['type'] === 'separator')
-									<div class="flex border-b border-gray-300 bg-gray-100 h-4">
-										<div
-											class="w-28 sm:w-40 shrink-0 -mb-px border-r border-r-gray-200 border-b border-b-gray-300 bg-gray-100 sticky left-0 z-20">
-										</div>
-										<div class="flex-1"></div>
 									</div>
 								@endif
-							@endforeach
-						@endif
 
-						<div class="flex absolute inset-0 z-[1] pointer-events-none">
-							<div class="w-28 sm:w-40 shrink-0"></div>
-							<div class="flex-1 relative">
-								@foreach ($timelineHours as $th)
-									@if ($th['type'] === 'gap')
-										<div class="absolute inset-y-0 bg-gray-400/25 border-x border-gray-300/70"
-											style="left: {{ $th['scale_left'] }}%; width: {{ $th['scale_width'] }}%"></div>
+								@foreach ($timelinePositions as $item)
+									@if ($item['type'] === 'group')
+										<div
+											x-data='{ expanded: true, clusters: @json($item['clusters']), icao: @json($item['icao']), badges: @json(\App\Livewire\Bookings\Calendar::POSITION_TYPE_BADGES) }'>
+											<div
+												class="flex border-b border-gray-200 bg-white cursor-pointer hover:bg-brand/5 transition-colors select-none"
+												@click="expanded = !expanded">
+												<div
+													class="w-28 sm:w-40 shrink-0 px-3 py-2.5 -mb-px border-r border-b border-gray-200 flex items-center gap-2 sticky left-0 bg-white z-20">
+													<i class="fa fa-chevron-right text-[10px] text-gray-400 shrink-0 transition-transform duration-150"
+														:style="expanded ? 'transform: rotate(90deg)' : ''" aria-hidden="true"></i>
+													<span class="text-[13px] font-semibold text-gray-700 uppercase tracking-wide" x-text="icao"></span>
+												</div>
+												<div class="flex-1 h-11 sm:h-10 flex items-center">
+													<template x-if="expanded">
+														<span class="flex-1 border-t border-dashed border-gray-200 mx-3"></span>
+													</template>
+													<template x-if="!expanded">
+														<div class="flex-1 relative h-6">
+															<template x-for="(cluster, idx) in clusters" :key="idx">
+																<div
+																	class="absolute top-0 bottom-0 rounded bg-uknavy/80 border border-uknavy/30 flex items-center justify-center gap-1 px-2 overflow-hidden"
+																	:style="'left: ' + cluster.left_pct + '%; width: ' + cluster.width_pct + '%'"
+																	:title="cluster.count + ' booking' + (cluster.count !== 1 ? 's' : '') + ' \u00b7 ' + cluster.memberCount +
+																	    ' member' + (cluster.memberCount !== 1 ? 's' : '') + ' \u00b7 ' + cluster.from + ' \u2013 ' +
+																	    cluster
+																	    .to">
+																	<template x-for="code in cluster.positionCodes" :key="code">
+																		<span
+																			class="w-3.5 h-3.5 rounded-sm flex items-center justify-center text-[8px] font-bold text-white shrink-0"
+																			:class="badges[code].colour" x-text="badges[code].letter"></span>
+																	</template>
+																	<span class="truncate text-[11px] font-medium text-white/90"
+																		x-text="cluster.count + ' booking' + (cluster.count !== 1 ? 's' : '')"></span>
+																</div>
+															</template>
+														</div>
+													</template>
+												</div>
+											</div>
+											<div x-show="expanded" x-collapse>
+												@foreach ($item['positions'] as $pos)
+													<div x-data='{ pos: @json($pos) }'>
+														@include('livewire.bookings._timeline-row')
+													</div>
+												@endforeach
+											</div>
+										</div>
+									@elseif ($item['type'] === 'single')
+										<div x-data='{ pos: @json($item) }'>
+											@include('livewire.bookings._timeline-row')
+										</div>
+									@elseif ($item['type'] === 'separator')
+										<div class="flex border-b border-gray-300 bg-gray-100 h-4">
+											<div
+												class="w-28 sm:w-40 shrink-0 -mb-px border-r border-r-gray-200 border-b border-b-gray-300 bg-gray-100 sticky left-0 z-20">
+											</div>
+											<div class="flex-1"></div>
+										</div>
 									@endif
 								@endforeach
-							</div>
-						</div>
+							@endif
 
-						<template x-if="isToday">
-							<div class="flex absolute inset-x-0 bottom-0 top-[calc(2rem+1px)] z-[9] pointer-events-none">
+							<div class="flex absolute inset-0 z-[1] pointer-events-none">
 								<div class="w-28 sm:w-40 shrink-0"></div>
 								<div class="flex-1 relative">
-									<div class="absolute inset-y-0 w-px bg-red-500" :style="'left: ' + nowPct + '%'"></div>
+									@foreach ($timelineHours as $th)
+										@if ($th['type'] === 'gap')
+											<div class="absolute inset-y-0 bg-gray-400/25 border-x border-gray-300/70"
+												style="left: {{ $th['scale_left'] }}%; width: {{ $th['scale_width'] }}%"></div>
+										@endif
+									@endforeach
 								</div>
 							</div>
-						</template>
+
+							<template x-if="isToday">
+								<div class="flex absolute inset-x-0 bottom-0 top-[calc(2rem+1px)] z-[9] pointer-events-none">
+									<div class="w-28 sm:w-40 shrink-0"></div>
+									<div class="flex-1 relative">
+										<div class="absolute inset-y-0 w-px bg-red-500" :style="'left: ' + nowPct + '%'"></div>
+									</div>
+								</div>
+							</template>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		@else
+			<div wire:key="week-{{ $dataVersion }}-{{ $filterVersion }}">
+				@include('livewire.bookings._week-list')
+			</div>
+		@endif
 
 		{{-- Footer --}}
 		<div
 			class="border-t border-gray-200 px-4 py-2.5 bg-gray-50/80 flex flex-wrap justify-between items-center gap-x-5 gap-y-2">
-			<span class="text-xs text-gray-400">
-				<i class="fa fa-mouse-pointer text-[10px] mr-1" aria-hidden="true"></i> Drag across an empty slot to book - or
-				click
-				for a 1-hour slot
-			</span>
+			@if ($viewMode === 'day')
+				<span class="text-xs text-gray-400">
+					<i class="fa fa-mouse-pointer text-[10px] mr-1" aria-hidden="true"></i> Drag across an empty slot to book - or
+					click
+					for a 1-hour slot
+				</span>
+			@endif
 
 			<div class="relative w-full sm:w-auto">
 				<ul

@@ -6,19 +6,47 @@ namespace Database\Seeders;
 
 use App\Models\Atc\Position;
 use App\Models\Booking;
+use App\Models\Events\Event;
 use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use InvalidArgumentException;
 
-/**
- * Seeds standard bookings for today, owned by an existing account, to exercise the bookings calendar locally.
- *
- * Usage: php artisan bookings:seed-calendar --user=<cid>
- */
 class BookingCalendarSeeder extends Seeder
 {
-    private const CALLSIGNS = ['EGKK_APP', 'EGLL_TWR', 'EGCC_GND', 'EGPH_DEL', 'EGBB_ATIS'];
+    private const CALLSIGNS = [
+        'EGLL_DEL', 'EGLL_GND', 'EGLL_TWR', 'EGLL_APP', 'EGLL_ATIS',
+        'EGKK_APP', 'EGKK_GND', 'EGCC_GND', 'EGPH_DEL',
+        'OBS_PT1',
+    ];
+
+    private const DAILY_SLOTS = [
+        ['EGLL_APP', 9, 0, 120, Booking::TYPE_STANDARD],
+        ['EGLL_TWR', 9, 0, 120, Booking::TYPE_STANDARD],
+        ['EGLL_GND', 9, 30, 90, Booking::TYPE_STANDARD],
+        ['EGLL_DEL', 9, 0, 90, Booking::TYPE_STANDARD],
+        ['EGLL_ATIS', 9, 0, 120, Booking::TYPE_STANDARD],
+
+        ['EGLL_TWR', 12, 0, 90, Booking::TYPE_STANDARD],
+        ['EGLL_TWR', 12, 30, 90, Booking::TYPE_MENTORING],
+
+        ['EGLL_TWR', 18, 0, 90, Booking::TYPE_STANDARD],
+
+        ['EGKK_APP', 6, 0, 120, Booking::TYPE_STANDARD],
+        ['EGKK_GND', 6, 30, 90, Booking::TYPE_STANDARD],
+
+        ['EGKK_APP', 13, 0, 90, Booking::TYPE_EXAM],
+
+        ['OBS_PT1', 19, 0, 120, Booking::TYPE_GROUP_SEMINAR],
+
+        ['EGCC_GND', 16, 0, 60, Booking::TYPE_STANDARD],
+        ['EGPH_DEL', 15, 30, 90, Booking::TYPE_STANDARD],
+    ];
+
+    private const EVENTS = [
+        ['Seeded: EGCB Real Ops', 0, 9, 0, 3],
+        ['Seeded: Controller Meet', 3, 19, 0, 2],
+    ];
 
     public function run(int $cid): void
     {
@@ -28,8 +56,9 @@ class BookingCalendarSeeder extends Seeder
 
         $member = Account::query()->findOrFail($cid);
 
-        if ($this->command?->confirm("Delete existing bookings for CID {$cid} before seeding?", true) ?? true) {
+        if ($this->command?->confirm("Delete existing seeded bookings/events for CID {$cid} before seeding?", true) ?? true) {
             Booking::query()->where('member_id', $cid)->delete();
+            Event::query()->where('name', 'like', 'Seeded:%')->where('published_by', $cid)->delete();
         }
 
         $positions = collect(self::CALLSIGNS)->mapWithKeys(fn (string $callsign) => [
@@ -43,29 +72,36 @@ class BookingCalendarSeeder extends Seeder
             ),
         ]);
 
-        $today = Carbon::today();
+        $count = 0;
 
-        $schedule = [
-            ['EGKK_APP', $today->copy()->setTime(6, 0), 120],
-            ['EGLL_TWR', $today->copy()->setTime(8, 30), 90],
-            ['EGCC_GND', $today->copy()->setTime(10, 0), 60],
-            ['EGPH_DEL', $today->copy()->setTime(11, 30), 90],
-            ['EGBB_ATIS', $today->copy()->setTime(13, 0), 120],
-            ['EGKK_APP', $today->copy()->setTime(15, 30), 90],
-            ['EGLL_TWR', $today->copy()->setTime(18, 0), 120],
-            ['EGCC_GND', $today->copy()->setTime(20, 30), 90],
-        ];
+        for ($dayOffset = 0; $dayOffset < 7; $dayOffset++) {
+            $day = Carbon::today()->addDays($dayOffset);
 
-        foreach ($schedule as [$callsign, $startsAt, $durationMinutes]) {
-            Booking::create([
-                'position_id' => $positions[$callsign]->id,
-                'member_id' => $member->id,
-                'type' => Booking::TYPE_STANDARD,
-                'starts_at' => $startsAt,
-                'ends_at' => $startsAt->copy()->addMinutes($durationMinutes),
+            foreach (self::DAILY_SLOTS as [$callsign, $hour, $minute, $durationMinutes, $type]) {
+                $startsAt = $day->copy()->setTime($hour, $minute);
+
+                Booking::create([
+                    'position_id' => $positions[$callsign]->id,
+                    'member_id' => $member->id,
+                    'type' => $type,
+                    'starts_at' => $startsAt,
+                    'ends_at' => $startsAt->copy()->addMinutes($durationMinutes),
+                ]);
+
+                $count++;
+            }
+        }
+
+        foreach (self::EVENTS as [$name, $dayOffset, $hour, $minute, $durationHours]) {
+            $start = Carbon::today()->addDays($dayOffset)->setTime($hour, $minute);
+
+            Event::factory()->published($member)->create([
+                'name' => $name,
+                'start' => $start,
+                'end' => $start->copy()->addHours($durationHours),
             ]);
         }
 
-        $this->command?->info(sprintf('Seeded %d standard bookings for CID %d.', count($schedule), $cid));
+        $this->command?->info(sprintf('Seeded %d bookings across 7 days and %d events for CID %d.', $count, count(self::EVENTS), $cid));
     }
 }

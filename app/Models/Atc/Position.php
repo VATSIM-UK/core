@@ -158,12 +158,6 @@ class Position extends Model implements Endorseable
         return $this->whereNull('ukcp_position_id');
     }
 
-    /**
-     * Infer the position type from a callsign suffix.
-     *
-     * Maps: _ATIS→1, _DEL→2, _GND→3, _TWR→4, _APP→5,
-     *       _CTR→6, _FSS→8. Falls back to TYPE_TOWER.
-     */
     public static function inferTypeFromCallsign(string $callsign): int
     {
         $suffix = strtoupper(Arr::last(explode('_', $callsign)));
@@ -196,8 +190,6 @@ class Position extends Model implements Endorseable
 
     protected function rts(): Attribute
     {
-        // use the position callsign to determine the rts for the position.
-        // the callsign is in the format of EGXX_TWR, EGXX_APP, EGXX_CTR
         $mapping = [
             'PT3' => 14,
             'GND' => 14,
