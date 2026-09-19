@@ -29,11 +29,12 @@
 				@if ($account->achievementAwards()->count() > 0)
 					<div class="flex flex-wrap gap-3 justify-center">
 						@foreach ($account->achievementAwards()->with('achievement')->get() as $award)
-							@continue(! $award->achievement)
+							@continue(!$award->achievement)
 							<div class="flex flex-col space-y-1 items-center" title="{{ $award->achievement?->description }}">
 								@if ($award->achievement->image)
-									<img src="{{ Storage::url($award->achievement->image) }}" alt="{{ $award->achievement->name }}"
-									class="w-10 h-10 rounded-full">
+									<img src="{{ Storage::disk('public')->url($award->achievement->image) }}" alt="{{ $award->achievement->name }}"
+										class="w-10 h-10 rounded-full">
+								@endif
 								<div class="flex flex-col">
 									<span class="text-sm font-medium">{{ $award->achievement->name }}</span>
 									<span class="text-xs text-gray-500 leading-tight"> {{ $award->created_at?->toFormattedDateString() }}</span>
