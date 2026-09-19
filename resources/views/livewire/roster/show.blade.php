@@ -22,11 +22,12 @@
 					@endif
 				</div>
 			</header>
-			<div class="flex flex-col space-y-3">
-				<h3 class="text-md font-medium">Achievements</h3>
-				<h4 class="text-xs text-gray-500">Achievements are issued to our volunteers in recognition of their contributions to
-					the community.</h4>
-				@if ($account->achievementAwards()->count() > 0)
+			@if ($account->achievementAwards()->count() > 0)
+				<div class="flex flex-col space-y-3">
+					<h3 class="text-md font-medium">Achievements</h3>
+					<h4 class="text-xs text-gray-500">Achievements are issued to our volunteers in recognition of their contributions
+						to
+						the community.</h4>
 					<div class="flex flex-wrap gap-3 justify-center">
 						@foreach ($account->achievementAwards()->with('achievement')->get() as $award)
 							@continue(!$award->achievement)
@@ -42,10 +43,8 @@
 							</div>
 						@endforeach
 					</div>
-				@else
-					<span class="text-md">No achievements have been awarded.</span>
-				@endif
-			</div>
+				</div>
+			@endif
 			<div class="space-y-2 overflow-auto">
 				<div class="flex flex-col space-y-8">
 					<div class="flex flex-col items-start space-y-1">
