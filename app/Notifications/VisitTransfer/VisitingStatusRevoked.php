@@ -2,6 +2,7 @@
 
 namespace App\Notifications\VisitTransfer;
 
+use App\Services\VisitTransfer\VisitingControllerInactivity;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -15,7 +16,7 @@ class VisitingStatusRevoked extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct() {}
+    public function __construct(private string $reason) {}
 
     public function via($notifiable)
     {
@@ -25,10 +26,11 @@ class VisitingStatusRevoked extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->from('community@vatsim.uk', 'VATSIM UK - Community')
+            ->from('community@vatsim.uk', 'VATSIM UK - Community Department')
             ->subject('VATSIM UK Visiting Status Removed')
             ->view('emails.visit-transfer.visiting_status_revoked', [
                 'recipient' => $notifiable,
+                'reason' => VisitingControllerInactivity::reasonText($this->reason),
             ]);
     }
 }

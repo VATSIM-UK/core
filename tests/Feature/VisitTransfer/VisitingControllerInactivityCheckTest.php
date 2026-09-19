@@ -2,10 +2,13 @@
 
 namespace Tests\Feature\VisitTransfer;
 
+use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
+use App\Models\Mship\Account\Endorsement;
 use App\Models\Mship\State;
 use App\Models\Roster;
 use App\Models\RosterHistory;
+use App\Models\VisitTransfer\Application;
 use App\Notifications\VisitTransfer\VisitingStatusRevoked;
 use App\Services\VisitTransfer\VisitingControllerInactivity;
 use Carbon\Carbon;
@@ -78,7 +81,60 @@ class VisitingControllerInactivityCheckTest extends TestCase
         Notification::assertNotSentTo($account, VisitingStatusRevoked::class);
     }
 
-    private function makeVisitingController(Carbon $visitingSince): Account
+    #[Test]
+    public function it_does_not_touch_excluded_visitors(): void
+    {
+        $pilotVisitor = $this->makeVisitingController(now()->subYear(), 'pilot');
+        $this->recordRosterRemoval($pilotVisitor, now()->subMonths(7));
+
+        $withOpenApplication = $this->makeVisitingController(now()->subYear());
+        $this->recordRosterRemoval($withOpenApplication, now()->subMonths(7));
+        Application::factory()->visit('atc')->create([
+            'account_id' => $withOpenApplication->id,
+            'status' => Application::STATUS_UNDER_REVIEW,
+        ]);
+
+        $shanwickOnly = $this->makeVisitingController(now()->subYear());
+        $this->recordRosterRemoval($shanwickOnly, now()->subMonths(7));
+        Endorsement::createQuietly([
+            'account_id' => $shanwickOnly->id,
+            'endorsable_type' => PositionGroup::class,
+            'endorsable_id' => PositionGroup::factory()->create(['name' => VisitingControllerInactivity::SHANWICK_POSITION_GROUP])->id,
+        ]);
+
+        Artisan::call('visit-transfer:check-inactivity');
+
+        foreach ([$pilotVisitor, $withOpenApplication, $shanwickOnly] as $account) {
+            $this->assertTrue($account->fresh()->hasState('VISITING'));
+            $this->assertDatabaseMissing('visiting_removals', ['account_id' => $account->id]);
+            Notification::assertNotSentTo($account, VisitingStatusRevoked::class);
+        }
+    }
+
+    #[Test]
+    public function it_sends_the_revocation_email_with_the_relevant_reason(): void
+    {
+        $account = $this->makeVisitingController(now()->subYear());
+        $this->recordRosterRemoval($account, now()->subMonths(7));
+
+        Artisan::call('visit-transfer:check-inactivity');
+
+        Notification::assertSentTo($account, VisitingStatusRevoked::class, function (VisitingStatusRevoked $notification) use ($account) {
+            $mail = $notification->toMail($account);
+
+            $this->assertSame('VATSIM UK Visiting Status Removed', $mail->subject);
+            $this->assertStringContainsString(
+                'you have remained inactive on the UK controller roster for at least six consecutive months',
+                $mail->render()
+            );
+            $this->assertStringContainsString('Community Department', $mail->render());
+            $this->assertStringNotContainsString('Member Services', $mail->render());
+
+            return true;
+        });
+    }
+
+    private function makeVisitingController(Carbon $visitingSince, string $team = 'atc'): Account
     {
         $account = Account::factory()->create();
         $account->addState(State::findByCode('VISITING'));
@@ -86,6 +142,11 @@ class VisitingControllerInactivityCheckTest extends TestCase
         DB::table('mship_account_state')
             ->where('account_id', $account->id)
             ->update(['start_at' => $visitingSince]);
+
+        Application::factory()->visit($team)->create([
+            'account_id' => $account->id,
+            'status' => Application::STATUS_COMPLETED,
+        ]);
 
         return $account->fresh();
     }

@@ -2,9 +2,13 @@
 
 namespace App\Services\VisitTransfer;
 
+use App\Models\Atc\Position;
+use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
+use App\Models\Mship\Account\Endorsement;
 use App\Models\Roster;
 use App\Models\RosterHistory;
+use App\Models\VisitTransfer\Application;
 use App\Notifications\VisitTransfer\VisitingStatusRevoked;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +27,17 @@ class VisitingControllerInactivity
 
     public const INSTANCE_WINDOW_YEARS = 2;
 
+    public const SHANWICK_POSITION_GROUP = 'Shanwick Oceanic (EGGX)';
+
+    public static function reasonText(string $reason): string
+    {
+        return match ($reason) {
+            self::REASON_SIX_MONTHS => 'you have remained inactive on the UK controller roster for at least six consecutive months',
+            self::REASON_TWICE_IN_TWO_YEARS => 'you have fallen inactive on the UK controller roster at least twice in a two year period',
+            default => $reason,
+        };
+    }
+
     /**
      * Visiting controllers who currently meet one of the removal criteria.
      */
@@ -30,6 +45,7 @@ class VisitingControllerInactivity
     {
         return Account::query()
             ->whereHas('states', fn ($query) => $query->where('mship_state.code', 'VISITING'))
+            ->with(['states', 'visitTransferApplications.facility', 'endorsements.endorsable'])
             ->get()
             ->map(fn (Account $account) => [
                 'account' => $account,
@@ -45,6 +61,18 @@ class VisitingControllerInactivity
     public function reasonFor(Account $account): ?string
     {
         if (! $account->hasState('VISITING')) {
+            return null;
+        }
+
+        if (! $this->isAtcVisitor($account)) {
+            return null;
+        }
+
+        if ($account->hasOpenVisitingTransferApplication()) {
+            return null;
+        }
+
+        if ($this->onlyHoldsShanwickEndorsement($account)) {
             return null;
         }
 
@@ -109,7 +137,51 @@ class VisitingControllerInactivity
                 'removed_at' => now(),
             ]);
 
-            $account->notify(new VisitingStatusRevoked($account, $reason));
+            $account->notify(new VisitingStatusRevoked($reason));
+        });
+    }
+
+    /**
+     * Whether the account's visiting status originates from an ATC visit.
+     */
+    protected function isAtcVisitor(Account $account): bool
+    {
+        return $account->visitApplications()
+            ->whereHas('facility', fn ($query) => $query->where('training_team', 'atc'))
+            ->statusIn([Application::STATUS_ACCEPTED, Application::STATUS_COMPLETED])
+            ->exists();
+    }
+
+    /**
+     * Whether every active endorsement the account holds is for the Shanwick
+     * Oceanic (EGGX) position group, meaning they only control oceanic.
+     */
+    protected function onlyHoldsShanwickEndorsement(Account $account): bool
+    {
+        $endorsements = $account->endorsements->filter(fn (Endorsement $endorsement) => ! $endorsement->hasExpired());
+
+        if ($endorsements->isEmpty()) {
+            return false;
+        }
+
+        $shanwick = PositionGroup::where('name', self::SHANWICK_POSITION_GROUP)->first();
+
+        if (! $shanwick) {
+            return false;
+        }
+
+        $shanwickPositions = $shanwick->positions()->pluck('positions.id');
+
+        return $endorsements->every(function (Endorsement $endorsement) use ($shanwick, $shanwickPositions) {
+            if ($endorsement->endorsable_type === PositionGroup::class) {
+                return (int) $endorsement->endorsable_id === (int) $shanwick->id;
+            }
+
+            if ($endorsement->endorsable_type === Position::class) {
+                return $shanwickPositions->contains((int) $endorsement->endorsable_id);
+            }
+
+            return false;
         });
     }
 
