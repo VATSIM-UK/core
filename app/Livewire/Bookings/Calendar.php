@@ -17,6 +17,7 @@ use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use RuntimeException;
 
@@ -47,6 +48,18 @@ class Calendar extends Component
         'GS' => ['label' => 'Group seminar', 'colour' => 'bg-orange-500', 'icon' => 'heroicon-m-user-group'],
         'EV' => ['label' => 'Event', 'colour' => 'bg-red-600', 'icon' => null],
     ];
+
+    /**
+     * Colours match VATSIM Radar's position colours so a controller recognises them.
+     */
+    public const POSITION_TYPE_BADGES = [
+        'DEL' => ['letter' => 'D', 'colour' => 'bg-[#458CFF]'],
+        'GND' => ['letter' => 'G', 'colour' => 'bg-[#4A9C25]'],
+        'TWR' => ['letter' => 'T', 'colour' => 'bg-[#D32C00]'],
+        'APP' => ['letter' => 'R', 'colour' => 'bg-[#EE7901]'],
+    ];
+
+    private const BADGE_ORDER = ['DEL', 'GND', 'TWR', 'APP'];
 
     /**
      * Upper bound on candidate positions considered for a single search, applied
@@ -115,11 +128,16 @@ class Calendar extends Component
     {
         $this->selectedDate = Carbon::today();
 
+        $isoWeek = request()->input('week');
+        $this->viewMode = $isoWeek !== null ? 'week' : 'day';
+
         $bookingId = request()->input('booking_id');
         $booking = ctype_digit((string) $bookingId) ? Booking::find((int) $bookingId) : null;
 
         if ($booking) {
             $this->selectedDate = $booking->starts_at->copy()->startOfDay();
+        } elseif ($isoWeek !== null) {
+            $this->selectedDate = Carbon::today()->setISODate($year ?? $this->selectedDate->isoWeekYear(), (int) $isoWeek);
         } elseif ($year) {
             $day = request()->input('day', 1);
             $this->selectedDate = Carbon::create($year, $month ?? $this->selectedDate->month, (int) $day);
@@ -162,15 +180,21 @@ class Calendar extends Component
         $this->dataVersion++;
     }
 
+    // Day- and week-view state are mutually exclusive; building both on every
+    // load would double the bookings query and clustering work for the inactive mode.
     private function loadData(): void
     {
-        $this->getBookingsForDate($this->selectedDate);
-        $this->computeScale();
-        $this->buildTimeline();
-
         if ($this->viewMode === 'week') {
+            $this->bookings = collect();
+            $this->timelineScale = [];
+            $this->timelinePositions = [];
+            $this->events = [];
+            $this->eventLaneCount = 1;
             $this->loadWeekBookings();
         } else {
+            $this->getBookingsForDate($this->selectedDate);
+            $this->computeScale();
+            $this->buildTimeline();
             $this->weekBookings = [];
         }
 
@@ -187,18 +211,26 @@ class Calendar extends Component
     {
         $weekStart = $this->weekWindowStart();
         $weekEnd = $weekStart->copy()->addDays(6);
+        $filter = strtoupper($this->positionFilter);
 
         $bookingsByDate = app(BookingRepository::class)->getBookingsForRange($weekStart, $weekEnd, hideEndedTrainingSessions: true);
         $eventsByDate = app(EventRepository::class)->getEventsForRange($weekStart, $weekEnd)->groupBy('date');
 
         $this->weekBookings = collect(range(0, 6))
             ->map(fn (int $offset): Carbon => $weekStart->copy()->addDays($offset))
-            ->mapWithKeys(function (Carbon $date) use ($bookingsByDate, $eventsByDate): array {
+            ->mapWithKeys(function (Carbon $date) use ($bookingsByDate, $eventsByDate, $filter): array {
                 $dateKey = $date->toDateString();
 
-                $rows = $bookingsByDate->get($dateKey, collect())
+                $bookings = $bookingsByDate->get($dateKey, collect())
                     ->reject(fn (object $booking): bool => $booking->type === 'EV')
-                    ->concat($eventsByDate->get($dateKey, collect()))
+                    ->when($filter !== '', fn (Collection $c) => $c->filter(
+                        fn (object $booking): bool => str_starts_with(strtoupper($booking->position ?? ''), $filter)
+                    ));
+
+                // A callsign filter excludes events -- they carry no callsign to match.
+                $events = $filter === '' ? $eventsByDate->get($dateKey, collect()) : collect();
+
+                $rows = $bookings->concat($events)
                     ->sortBy(fn (object $booking): string => $booking->from)
                     ->values()
                     ->map(fn (object $booking): array => (array) $booking)
@@ -209,10 +241,10 @@ class Calendar extends Component
             ->all();
     }
 
-    // Centred 3 days either side of $selectedDate.
+    // Monday of the ISO-8601 week containing $selectedDate.
     public function weekWindowStart(): Carbon
     {
-        return $this->selectedDate->copy()->subDays(3);
+        return $this->selectedDate->copy()->startOfWeek(Carbon::MONDAY);
     }
 
     // An EV row with a callsign is the controller's own booking during an
@@ -233,17 +265,35 @@ class Calendar extends Component
         $this->loadData();
     }
 
-    public function jumpToDate(string $date): void
+    public function jumpToDate(string $date, bool $push = true): void
     {
         $this->selectedDate = Carbon::parse($date);
         $this->refreshData();
+        $this->syncHistory($push);
+    }
 
+    // Public for direct test assertions. Week mode carries ISO (year, week) only --
+    // month/day segments are redundant once the week is known.
+    public function historyUrl(): string
+    {
+        if ($this->viewMode === 'week') {
+            $monday = $this->weekWindowStart();
+
+            return route('site.bookings.calendar', ['year' => $monday->isoWeekYear()]).'?week='.$monday->isoWeek();
+        }
+
+        return route('site.bookings.calendar', [
+            'year' => $this->selectedDate->year,
+            'month' => $this->selectedDate->month,
+        ]).'?day='.$this->selectedDate->day;
+    }
+
+    private function syncHistory(bool $push): void
+    {
         $this->js(sprintf(
-            "history.pushState({}, '', '%s')",
-            route('site.bookings.calendar', [
-                'year' => $this->selectedDate->year,
-                'month' => $this->selectedDate->month,
-            ]).'?day='.$this->selectedDate->day
+            "history.%s({}, '', %s)",
+            $push ? 'pushState' : 'replaceState',
+            json_encode($this->historyUrl())
         ));
     }
 
@@ -267,12 +317,31 @@ class Calendar extends Component
         }
 
         $this->loadData();
+        $this->syncHistory(true);
+    }
+
+    #[On('sync-from-location')]
+    public function syncFromLocation(?int $year, ?int $month, ?int $day, ?int $week = null, ?int $bookingId = null): void
+    {
+        $this->viewMode = $week !== null ? 'week' : 'day';
+
+        $booking = $bookingId ? Booking::find($bookingId) : null;
+
+        $this->selectedDate = match (true) {
+            $booking !== null => $booking->starts_at->copy()->startOfDay(),
+            $week !== null => Carbon::today()->setISODate($year ?? now()->isoWeekYear(), $week),
+            $year !== null => Carbon::create($year, $month ?? now()->month, $day ?? 1),
+            default => Carbon::today(),
+        };
+
+        $this->refreshData();
     }
 
     public function viewBookingFromWeek(string $date, string $source, ?int $id = null, ?int $ctsBookingId = null): void
     {
         $this->viewMode = 'day';
         $this->jumpToBooking($date, $source, $id, $ctsBookingId);
+        $this->syncHistory(true);
     }
 
     // A merged block has no single booking to scroll to -- just show its day.
@@ -287,7 +356,7 @@ class Calendar extends Component
      * compact block; different aerodromes are never merged. Events always
      * sort before bookings; within each group, sorted by start.
      *
-     * @return list<array{label: string, from: string, to: string, count: int, type: string, id: ?int, source: ?string, cts_booking_id: ?int, startMin: int}>
+     * @return list<array{label: string, from: string, to: string, count: int, type: string, id: ?int, source: ?string, cts_booking_id: ?int, startMin: int, raw: ?array<string, mixed>, positionCodes: list<string>, isOwn: bool}>
      */
     public function buildWeekDayBlocks(string $dateKey): array
     {
@@ -299,6 +368,8 @@ class Calendar extends Component
         $blocks = [];
         foreach ($groups as $groupKey => $groupBookings) {
             foreach ($this->clusterByTime($groupBookings) as $cluster) {
+                $cluster['positionCodes'] = $this->sortBadgeCodes($cluster['positionCodes']);
+
                 // Merged: show the aerodrome. Unmerged: show the full position name.
                 $blocks[] = [
                     'label' => $cluster['count'] > 1 ? $groupKey : $cluster['label'],
@@ -310,6 +381,9 @@ class Calendar extends Component
                     'source' => $cluster['count'] === 1 ? $cluster['source'] : null,
                     'cts_booking_id' => $cluster['count'] === 1 ? $cluster['cts_booking_id'] : null,
                     'startMin' => $cluster['startMin'],
+                    'raw' => $cluster['count'] === 1 ? $cluster['booking'] : null,
+                    'positionCodes' => $cluster['positionCodes'],
+                    'isOwn' => $cluster['isOwn'],
                 ];
             }
         }
@@ -343,9 +417,40 @@ class Calendar extends Component
         return $booking['position'] ?? 'Unknown';
     }
 
+    private function isOwnBooking(array $booking): bool
+    {
+        return auth()->check() && ($booking['member']['cid'] ?? null) === (string) auth()->id();
+    }
+
+    private function positionBadgeCode(array $booking): ?string
+    {
+        if ($booking['type'] === 'EV') {
+            return null;
+        }
+
+        return match (Position::inferTypeFromCallsign($booking['position'] ?? '')) {
+            Position::TYPE_DELIVERY => 'DEL',
+            Position::TYPE_GROUND => 'GND',
+            Position::TYPE_TOWER => 'TWR',
+            Position::TYPE_APPROACH => 'APP',
+            default => null,
+        };
+    }
+
+    /**
+     * @param  list<string>  $codes
+     * @return list<string>
+     */
+    private function sortBadgeCodes(array $codes): array
+    {
+        usort($codes, fn (string $a, string $b): int => array_search($a, self::BADGE_ORDER) <=> array_search($b, self::BADGE_ORDER));
+
+        return $codes;
+    }
+
     /**
      * @param  list<array<string, mixed>>  $bookings
-     * @return list<array{from: string, to: string, count: int, type: string, label: string, id: ?int, source: ?string, cts_booking_id: ?int, startMin: int, endMin: int}>
+     * @return list<array{from: string, to: string, count: int, type: string, label: string, id: ?int, source: ?string, cts_booking_id: ?int, startMin: int, endMin: int, booking: array<string, mixed>, positionCodes: list<string>, isOwn: bool}>
      */
     private function clusterByTime(array $bookings): array
     {
@@ -366,6 +471,13 @@ class Calendar extends Component
             if ($current !== null && $booking['startMin'] <= $current['endMin']) {
                 $current['endMin'] = max($current['endMin'], $booking['endMin']);
                 $current['count']++;
+                $code = $this->positionBadgeCode($booking);
+                if ($code !== null && ! in_array($code, $current['positionCodes'], true)) {
+                    $current['positionCodes'][] = $code;
+                }
+                if ($this->isOwnBooking($booking)) {
+                    $current['isOwn'] = true;
+                }
 
                 continue;
             }
@@ -383,6 +495,9 @@ class Calendar extends Component
                 'id' => $booking['id'] !== null ? (int) $booking['id'] : null,
                 'source' => $booking['source'],
                 'cts_booking_id' => $booking['cts_booking_id'] !== null ? (int) $booking['cts_booking_id'] : null,
+                'booking' => $booking,
+                'positionCodes' => array_filter([$this->positionBadgeCode($booking)]),
+                'isOwn' => $this->isOwnBooking($booking),
             ];
         }
 
@@ -515,7 +630,8 @@ class Calendar extends Component
 
         ksort($groups);
         foreach ($groups as $icao => $positions) {
-            ksort($positions);
+            uasort($positions, fn (array $a, array $b): int => [Position::inferTypeFromCallsign($a['callsign']), $a['callsign']]
+                <=> [Position::inferTypeFromCallsign($b['callsign']), $b['callsign']]);
             $posArray = array_values(array_map($this->assignLanes(...), $positions));
             $clusters = $this->buildTimeClusters($posArray);
             $result[] = [
@@ -773,7 +889,7 @@ class Calendar extends Component
         $all = [];
         foreach ($positions as $pos) {
             foreach ($pos['bookings'] as $b) {
-                $all[] = $b;
+                $all[] = $b + ['callsign' => $pos['callsign']];
             }
         }
 
@@ -783,6 +899,8 @@ class Calendar extends Component
 
         usort($all, fn ($a, $b) => $this->timeToMinutes($a['from']) <=> $this->timeToMinutes($b['from']));
 
+        $firstCode = $this->positionBadgeCode(['position' => $all[0]['callsign'], 'type' => $all[0]['type']]);
+
         $clusters = [];
         $current = [
             'from' => $all[0]['from'],
@@ -791,17 +909,22 @@ class Calendar extends Component
             'left_pct' => $all[0]['left_pct'],
             'right_pct' => $all[0]['left_pct'] + $all[0]['width_pct'],
             'members' => [$all[0]['member']?->cid ?? $all[0]['member']['cid'] ?? null],
+            'positionCodes' => array_filter([$firstCode]),
         ];
 
         for ($i = 1; $i < count($all); $i++) {
             $b = $all[$i];
             $memberKey = $b['member']?->cid ?? $b['member']['cid'] ?? null;
+            $code = $this->positionBadgeCode(['position' => $b['callsign'], 'type' => $b['type']]);
             if ($this->timeToMinutes($b['from']) <= $this->timeToMinutes($current['to'])) {
                 $current['to'] = $current['to'] > $b['to'] ? $current['to'] : $b['to'];
                 $current['right_pct'] = max($current['right_pct'], $b['left_pct'] + $b['width_pct']);
                 $current['count']++;
                 if ($memberKey !== null && ! in_array($memberKey, $current['members'], true)) {
                     $current['members'][] = $memberKey;
+                }
+                if ($code !== null && ! in_array($code, $current['positionCodes'], true)) {
+                    $current['positionCodes'][] = $code;
                 }
             } else {
                 $cls = [
@@ -811,6 +934,7 @@ class Calendar extends Component
                     'left_pct' => $current['left_pct'],
                     'right_pct' => $current['right_pct'],
                     'memberCount' => count($current['members']),
+                    'positionCodes' => $this->sortBadgeCodes($current['positionCodes']),
                 ];
                 $cls['width_pct'] = max(round($cls['right_pct'] - $cls['left_pct'], 2), 0.5);
                 $clusters[] = $cls;
@@ -821,6 +945,7 @@ class Calendar extends Component
                     'left_pct' => $b['left_pct'],
                     'right_pct' => $b['left_pct'] + $b['width_pct'],
                     'members' => [$memberKey],
+                    'positionCodes' => array_filter([$code]),
                 ];
             }
         }
@@ -831,6 +956,7 @@ class Calendar extends Component
             'left_pct' => $current['left_pct'],
             'right_pct' => $current['right_pct'],
             'memberCount' => count($current['members']),
+            'positionCodes' => $this->sortBadgeCodes($current['positionCodes']),
         ];
         $cls['width_pct'] = max(round($cls['right_pct'] - $cls['left_pct'], 2), 0.5);
         $clusters[] = $cls;

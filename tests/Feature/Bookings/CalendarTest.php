@@ -965,4 +965,206 @@ class CalendarTest extends TestCase
             ->assertSet('selectedDate', Carbon::create(2025, 1, 1))
             ->assertSee('"isToday":false', false);
     }
+
+    #[Test]
+    public function it_orders_positions_within_an_aerodrome_by_atc_hierarchy(): void
+    {
+        $app = Position::factory()->create(['callsign' => 'EGLL_APP', 'type' => Position::TYPE_APPROACH]);
+        $twr = Position::factory()->create(['callsign' => 'EGLL_TWR', 'type' => Position::TYPE_TOWER]);
+        $gnd = Position::factory()->create(['callsign' => 'EGLL_GND', 'type' => Position::TYPE_GROUND]);
+        $del = Position::factory()->create(['callsign' => 'EGLL_DEL', 'type' => Position::TYPE_DELIVERY]);
+
+        foreach ([$app, $twr, $gnd, $del] as $position) {
+            Booking::factory()->create([
+                'position_id' => $position->id,
+                'starts_at' => Carbon::today()->setHour(9),
+                'ends_at' => Carbon::today()->setHour(10),
+            ]);
+        }
+
+        $timelinePositions = Livewire::test(Calendar::class)->get('timelinePositions');
+        $group = collect($timelinePositions)->firstWhere('icao', 'EGLL');
+
+        $this->assertSame(['EGLL_DEL', 'EGLL_GND', 'EGLL_TWR', 'EGLL_APP'], array_column($group['positions'], 'callsign'));
+    }
+
+    #[Test]
+    public function it_breaks_ties_between_same_type_positions_alphabetically(): void
+    {
+        $delB = Position::factory()->create(['callsign' => 'EGLL_B_DEL', 'type' => Position::TYPE_DELIVERY]);
+        $delA = Position::factory()->create(['callsign' => 'EGLL_A_DEL', 'type' => Position::TYPE_DELIVERY]);
+
+        foreach ([$delB, $delA] as $position) {
+            Booking::factory()->create([
+                'position_id' => $position->id,
+                'starts_at' => Carbon::today()->setHour(9),
+                'ends_at' => Carbon::today()->setHour(10),
+            ]);
+        }
+
+        $timelinePositions = Livewire::test(Calendar::class)->get('timelinePositions');
+        $group = collect($timelinePositions)->firstWhere('icao', 'EGLL');
+
+        $this->assertSame(['EGLL_A_DEL', 'EGLL_B_DEL'], array_column($group['positions'], 'callsign'));
+    }
+
+    #[Test]
+    public function it_starts_in_week_mode_when_the_week_query_param_is_present(): void
+    {
+        Livewire::withQueryParams(['week' => '14'])
+            ->test(Calendar::class)
+            ->assertSet('viewMode', 'week');
+    }
+
+    #[Test]
+    public function it_builds_the_history_url_for_day_mode(): void
+    {
+        $url = Livewire::test(Calendar::class)
+            ->call('jumpToDate', '2026-09-16')
+            ->instance()
+            ->historyUrl();
+
+        $this->assertStringContainsString('/calendar/2026/9', $url);
+        $this->assertStringContainsString('day=16', $url);
+        $this->assertStringNotContainsString('week=', $url);
+    }
+
+    #[Test]
+    public function it_builds_the_history_url_for_week_mode(): void
+    {
+        // 2026-09-16 is a Wednesday, ISO week 38 of 2026.
+        $url = Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->call('jumpToDate', '2026-09-16')
+            ->instance()
+            ->historyUrl();
+
+        $this->assertStringContainsString('/calendar/2026', $url);
+        $this->assertStringNotContainsString('/calendar/2026/', $url);
+        $this->assertStringContainsString('week=38', $url);
+        $this->assertStringNotContainsString('day=', $url);
+    }
+
+    #[Test]
+    public function it_anchors_the_history_url_on_the_iso_week_year_at_a_year_boundary(): void
+    {
+        // 2027-01-01 falls in ISO week 53 of 2026, not calendar year 2027.
+        $url = Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->call('jumpToDate', '2027-01-01')
+            ->instance()
+            ->historyUrl();
+
+        $this->assertStringContainsString('/calendar/2026', $url);
+        $this->assertStringContainsString('week=53', $url);
+    }
+
+    #[Test]
+    public function it_restores_day_mode_from_year_month_day_params(): void
+    {
+        Livewire::test(Calendar::class)
+            ->call('syncFromLocation', 2026, 3, 15, null, null)
+            ->assertSet('viewMode', 'day')
+            ->assertSet('selectedDate', Carbon::create(2026, 3, 15));
+    }
+
+    #[Test]
+    public function it_restores_week_mode_from_year_and_week_params(): void
+    {
+        Livewire::test(Calendar::class)
+            ->call('syncFromLocation', 2026, null, null, 15, null)
+            ->assertSet('viewMode', 'week')
+            ->assertSet('selectedDate', Carbon::today()->setISODate(2026, 15));
+    }
+
+    #[Test]
+    public function it_restores_a_booking_date_from_a_booking_id_param(): void
+    {
+        $booking = Booking::factory()->create([
+            'starts_at' => Carbon::today()->addDays(4)->setHour(9),
+            'ends_at' => Carbon::today()->addDays(4)->setHour(10),
+        ]);
+
+        Livewire::test(Calendar::class)
+            ->call('syncFromLocation', null, null, null, null, $booking->id)
+            ->assertSet('selectedDate', $booking->starts_at->copy()->startOfDay());
+    }
+
+    #[Test]
+    public function it_defaults_to_today_when_syncing_from_location_with_no_params(): void
+    {
+        Livewire::test(Calendar::class)
+            ->call('syncFromLocation', null, null, null, null, null)
+            ->assertSet('selectedDate', Carbon::today())
+            ->assertSet('viewMode', 'day');
+    }
+
+    #[Test]
+    public function it_lists_distinct_position_badge_codes_on_a_collapsed_group_cluster(): void
+    {
+        $del = Position::factory()->create(['callsign' => 'EGLL_DEL', 'type' => Position::TYPE_DELIVERY]);
+        $gnd = Position::factory()->create(['callsign' => 'EGLL_GND', 'type' => Position::TYPE_GROUND]);
+
+        Booking::factory()->create([
+            'position_id' => $del->id,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(11),
+        ]);
+        Booking::factory()->create([
+            'position_id' => $gnd->id,
+            'starts_at' => Carbon::today()->setHour(10),
+            'ends_at' => Carbon::today()->setHour(12),
+        ]);
+
+        $timelinePositions = Livewire::test(Calendar::class)->get('timelinePositions');
+        $group = collect($timelinePositions)->firstWhere('icao', 'EGLL');
+
+        $this->assertSame(['DEL', 'GND'], $group['clusters'][0]['positionCodes']);
+    }
+
+    #[Test]
+    public function it_deduplicates_position_badge_codes_on_a_collapsed_group_cluster(): void
+    {
+        $del1 = Position::factory()->create(['callsign' => 'EGLL_DEL', 'type' => Position::TYPE_DELIVERY]);
+        $del2 = Position::factory()->create(['callsign' => 'EGLL_B_DEL', 'type' => Position::TYPE_DELIVERY]);
+
+        Booking::factory()->create([
+            'position_id' => $del1->id,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(11),
+        ]);
+        Booking::factory()->create([
+            'position_id' => $del2->id,
+            'starts_at' => Carbon::today()->setHour(10),
+            'ends_at' => Carbon::today()->setHour(12),
+        ]);
+
+        $timelinePositions = Livewire::test(Calendar::class)->get('timelinePositions');
+        $group = collect($timelinePositions)->firstWhere('icao', 'EGLL');
+
+        $this->assertSame(['DEL'], $group['clusters'][0]['positionCodes']);
+    }
+
+    #[Test]
+    public function it_has_no_badge_codes_for_a_collapsed_cluster_of_unbadged_position_types(): void
+    {
+        $atis1 = Position::factory()->create(['callsign' => 'EGLL_ATIS', 'type' => Position::TYPE_ATIS]);
+        $atis2 = Position::factory()->create(['callsign' => 'EGLL_B_ATIS', 'type' => Position::TYPE_ATIS]);
+
+        Booking::factory()->create([
+            'position_id' => $atis1->id,
+            'starts_at' => Carbon::today()->setHour(9),
+            'ends_at' => Carbon::today()->setHour(11),
+        ]);
+        Booking::factory()->create([
+            'position_id' => $atis2->id,
+            'starts_at' => Carbon::today()->setHour(10),
+            'ends_at' => Carbon::today()->setHour(12),
+        ]);
+
+        $timelinePositions = Livewire::test(Calendar::class)->get('timelinePositions');
+        $group = collect($timelinePositions)->firstWhere('icao', 'EGLL');
+
+        $this->assertSame([], $group['clusters'][0]['positionCodes']);
+    }
 }

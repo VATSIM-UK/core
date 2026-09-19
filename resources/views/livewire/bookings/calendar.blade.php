@@ -29,7 +29,7 @@
 
 				<div class="flex flex-wrap items-center justify-center gap-2 w-full sm:w-auto sm:justify-end sm:ml-auto">
 					@if ($viewMode === 'day')
-						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->subDay()->toDateString() }}')"
+						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->subDay()->toDateString() }}', false)"
 							class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
 							title="Previous day">
 							<i class="fa fa-chevron-left text-[10px]" aria-hidden="true"></i>
@@ -40,7 +40,7 @@
 								<span class="text-brand/90 text-xs font-normal">· today</span>
 							@endif
 						</span>
-						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->addDay()->toDateString() }}')"
+						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->addDay()->toDateString() }}', false)"
 							class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
 							title="Next day">
 							<i class="fa fa-chevron-right text-[10px]" aria-hidden="true"></i>
@@ -54,15 +54,17 @@
 						</button>
 					@else
 						@php $weekStart = $this->weekWindowStart(); @endphp
-						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->subDays(7)->toDateString() }}')"
+						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->subDays(7)->toDateString() }}', false)"
 							class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
 							title="Previous week">
 							<i class="fa fa-chevron-left text-[10px]" aria-hidden="true"></i>
 						</button>
 						<span class="text-sm font-medium text-white/90 min-w-[140px] sm:min-w-[200px] text-center whitespace-nowrap">
-							{{ $weekStart->format('d M') }} - {{ $weekStart->copy()->addDays(6)->format('d M Y') }}
+							Week {{ $weekStart->isoWeek() }}
+							<span class="text-white/60 text-xs">&middot; {{ $weekStart->format('d M') }} -
+								{{ $weekStart->copy()->addDays(6)->format('d M Y') }}</span>
 						</span>
-						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->addDays(7)->toDateString() }}')"
+						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->addDays(7)->toDateString() }}', false)"
 							class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
 							title="Next week">
 							<i class="fa fa-chevron-right text-[10px]" aria-hidden="true"></i>
@@ -89,17 +91,15 @@
 				</div>
 			</div>
 
-			@if ($viewMode === 'day')
-				<div class="px-3 sm:px-4 pb-2.5 flex items-center gap-2">
-					<div class="relative flex-1 sm:flex-none sm:w-52" wire:ignore>
-						<i class="fa fa-search absolute left-2.5 top-1/2 -translate-y-1/2 text-white/40 text-[10px]"
-							aria-hidden="true"></i>
-						<input type="text" x-data="{ filter: '{{ $positionFilter }}' }" x-model="filter"
-							x-on:input.debounce.250ms="$wire.set('positionFilter', filter)" placeholder="Search callsign..."
-							class="w-full pl-7 pr-3 py-1.5 rounded-md border-0 bg-white/10 text-sm text-white placeholder-white/40 ring-1 ring-inset ring-white/15 focus:ring-2 focus:ring-white/40 focus:outline-none focus:bg-white/15 transition-all">
-					</div>
+			<div class="px-3 sm:px-4 pb-2.5 flex items-center gap-2">
+				<div class="relative flex-1 sm:flex-none sm:w-52" wire:ignore>
+					<i class="fa fa-search absolute left-2.5 top-1/2 -translate-y-1/2 text-white/40 text-[10px]"
+						aria-hidden="true"></i>
+					<input type="text" x-data="{ filter: '{{ $positionFilter }}' }" x-model="filter"
+						x-on:input.debounce.250ms="$wire.set('positionFilter', filter)" placeholder="Search callsign..."
+						class="w-full pl-7 pr-3 py-1.5 rounded-md border-0 bg-white/10 text-sm text-white placeholder-white/40 ring-1 ring-inset ring-white/15 focus:ring-2 focus:ring-white/40 focus:outline-none focus:bg-white/15 transition-all">
 				</div>
-			@endif
+			</div>
 		</div>
 
 		{{-- Timeline body --}}
@@ -201,7 +201,8 @@
 
 								@foreach ($timelinePositions as $item)
 									@if ($item['type'] === 'group')
-										<div x-data='{ expanded: true, clusters: @json($item['clusters']), icao: @json($item['icao']) }'>
+										<div
+											x-data='{ expanded: true, clusters: @json($item['clusters']), icao: @json($item['icao']), badges: @json(\App\Livewire\Bookings\Calendar::POSITION_TYPE_BADGES) }'>
 											<div
 												class="flex border-b border-gray-200 bg-white cursor-pointer hover:bg-brand/5 transition-colors select-none"
 												@click="expanded = !expanded">
@@ -225,6 +226,11 @@
 																	    ' member' + (cluster.memberCount !== 1 ? 's' : '') + ' \u00b7 ' + cluster.from + ' \u2013 ' +
 																	    cluster
 																	    .to">
+																	<template x-for="code in cluster.positionCodes" :key="code">
+																		<span
+																			class="w-3.5 h-3.5 rounded-sm flex items-center justify-center text-[8px] font-bold text-white shrink-0"
+																			:class="badges[code].colour" x-text="badges[code].letter"></span>
+																	</template>
 																	<span class="truncate text-[11px] font-medium text-white/90"
 																		x-text="cluster.count + ' booking' + (cluster.count !== 1 ? 's' : '')"></span>
 																</div>
@@ -281,7 +287,7 @@
 				</div>
 			</div>
 		@else
-			<div wire:key="week-{{ $dataVersion }}">
+			<div wire:key="week-{{ $dataVersion }}-{{ $filterVersion }}">
 				@include('livewire.bookings._week-list')
 			</div>
 		@endif

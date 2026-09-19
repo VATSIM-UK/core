@@ -103,7 +103,12 @@
 				</div>
 			</template>
 
-			<div class="px-5 py-3 bg-gray-50 flex justify-end border-t border-gray-200">
+			<div class="px-5 py-3 bg-gray-50 flex justify-end gap-2 border-t border-gray-200">
+				<template x-if="booking?.fromWeek">
+					<button type="button"
+						x-on:click="$wire.viewBookingFromWeek(booking.date, booking.source, booking.id ? Number(booking.id) : null, booking.ctsBookingId); open = false"
+						class="px-4 py-2 text-sm font-medium text-white bg-brand rounded-md hover:bg-brand/90">Jump to day</button>
+				</template>
 				<button type="button" x-on:click="open = false"
 					class="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-100 border border-gray-300 shadow-sm">Close</button>
 			</div>
