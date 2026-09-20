@@ -294,6 +294,15 @@ class TrainingPlaceService
         return ExamBooking::where('student_id', $student->member->id)
             ->where('position_1', $examPosition)
             ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
+            ->where(function ($query) use ($now) {
+                $query->whereNull('taken_date')
+                    ->orWhere('taken_date', '>', $now->toDateString())
+                    ->orWhere(function ($q) use ($now) {
+                        $q->where('taken_date', $now->toDateString())
+                            ->where('taken_to', '>', $now->toTimeString());
+                    })
+                    ->orWhere('pass', 1);
+            })
             ->exists();
     }
 }
