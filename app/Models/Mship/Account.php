@@ -654,4 +654,9 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
             'id'
         )->withoutGlobalScopes(); // Include waiting list accounts that have been soft deleted
     }
+
+    public function achievementAwards(): HasMany
+    {
+        return $this->hasMany(AchievementAward::class, 'account_id');
+    }
 }

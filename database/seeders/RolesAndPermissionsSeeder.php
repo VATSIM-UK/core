@@ -222,6 +222,11 @@ class RolesAndPermissionsSeeder extends Seeder
             // Pilot System Permissions
             'pilot.access',
 
+            // Achievement System Permissions
+            'achievements.view',
+            'achievements.manage',
+            'achievements.award',
+
             // // TeamSpeak Permissions
             // 'teamspeak.servergroup.serveradmin',
             // 'teamspeak.idle.extended',
