@@ -231,15 +231,15 @@ class CalendarWeekViewTest extends TestCase
             ->assertSeeHtml("wire:click=\"viewDayFromWeek('".Carbon::today()->toDateString()."')\"");
     }
 
-    // #[Test]
-    // public function it_marks_past_day_headers_distinctly_from_today_and_future_days(): void
-    // {
-    //     Livewire::test(Calendar::class)
-    //         ->call('setViewMode', 'week')
-    //         ->assertSeeHtml('data-day-state="past"')
-    //         ->assertSeeHtml('data-day-state="today"')
-    //         ->assertSeeHtml('data-day-state="future"');
-    // }
+    #[Test]
+    public function it_marks_past_day_headers_distinctly_from_today_and_future_days(): void
+    {
+        Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->assertSeeHtml('data-day-state="past"')
+            ->assertSeeHtml('data-day-state="today"')
+            ->assertSeeHtml('data-day-state="future"');
+    }
 
     #[Test]
     public function it_shows_the_day_and_week_toggle_buttons(): void
