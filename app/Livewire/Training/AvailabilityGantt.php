@@ -25,7 +25,6 @@ use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 
@@ -36,9 +35,6 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
     use RemembersTrainingGroupCategory;
 
     public const STUDENTS_PER_PAGE = 6;
-
-    // TEMPORARY DEBUGGING: remove once the missing-availability issue is resolved.
-    private const DEBUG_ACCOUNT_ID = 1783703;
 
     #[Url]
     public string $date;
@@ -54,43 +50,14 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
     public int $studentsPage = 1;
 
-    protected function debugEnabled(): bool
-    {
-        return (int) auth()->id() === self::DEBUG_ACCOUNT_ID;
-    }
-
-    protected function debugLog(string $message, array $context = []): void
-    {
-        if (! $this->debugEnabled()) {
-            return;
-        }
-
-        Log::info("[GanttDebug] {$message}", array_merge([
-            'component' => $this->getId(),
-            'date' => $this->date ?? null,
-            'category' => $this->category ?? null,
-        ], $context));
-    }
-
     public function mount()
     {
-        $this->debugLog('mount:start', [
-            'query' => request()->query(),
-            'session' => collect(session()->all())->except(['_token'])->all(),
-        ]);
-
         $this->date = max(request()->query('date', Carbon::today()->format('Y-m-d')), Carbon::today()->format('Y-m-d'));
         $this->category = request()->query('category', null);
 
         if ($this->category && ! (auth()->user()?->can('viewCategory', [new MentoringScope, $this->category]) ?? false)) {
-            $this->debugLog('mount:category_rejected_by_policy', ['category' => $this->category]);
             $this->category = null;
         }
-
-        $this->debugLog('mount:end', [
-            'resolved_date' => $this->date,
-            'resolved_category' => $this->category,
-        ]);
     }
 
     public function previousDay()
@@ -156,36 +123,18 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
     protected function getAllowedCallsigns(): array
     {
         $user = auth()->user();
-        $canViewAll = $user?->can('viewAll', Session::class) ?? false;
 
-        if ($canViewAll) {
+        if ($user?->can('viewAll', Session::class) ?? false) {
             $service = app(MentorPermissionService::class);
 
-            $allowed = $this->category
-                ? $service->getAllCtsCallsignsForCategory($this->category)
-                : $service->getAllCtsCallsignsForCategories($user->getAvailableMentoringCategories());
+            if ($this->category) {
+                return $service->getAllCtsCallsignsForCategory($this->category);
+            }
 
-            $this->debugLog('allowed_callsigns', [
-                'branch' => 'viewAll',
-                'available_categories' => $user->getAvailableMentoringCategories(),
-                'allowed' => $allowed,
-            ]);
-
-            return $allowed;
+            return $service->getAllCtsCallsignsForCategories($user->getAvailableMentoringCategories());
         }
 
-        $allowed = $this->category
-            ? $user->getAssignedCallsignsForCategory($this->category)
-            : $user->getAllAssignedCallsigns();
-
-        $this->debugLog('allowed_callsigns', [
-            'branch' => 'assigned',
-            'available_categories' => $user->getAvailableMentoringCategories(),
-            'all_assigned' => $user->getAllAssignedCallsigns(),
-            'allowed' => $allowed,
-        ]);
-
-        return $allowed;
+        return $this->category ? $user->getAssignedCallsignsForCategory($this->category) : $user->getAllAssignedCallsigns();
     }
 
     /**
@@ -198,46 +147,18 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         $allowedCallsigns = $this->getAllowedCallsigns();
 
         if ($allowedCallsigns === []) {
-            $this->debugLog('eligible:empty_allow_list');
-
             return collect();
         }
 
-        $allPlaces = TrainingPlace::query()
+        return TrainingPlace::query()
             ->with([
                 'trainable',
                 'account',
                 'leaveOfAbsences' => fn ($query) => $query->current(),
             ])
-            ->get();
-
-        $rejections = [];
-
-        $eligible = $allPlaces
-            ->filter(function (TrainingPlace $place) use ($allowedCallsigns, &$rejections) {
-                $reason = $this->bookabilityFailure($place, $allowedCallsigns);
-
-                if ($reason !== null) {
-                    $rejections[$reason][] = $place->account_id;
-                }
-
-                return $reason === null;
-            })
+            ->get()
+            ->filter(fn (TrainingPlace $place) => $this->isTrainingPlaceBookable($place, $allowedCallsigns))
             ->values();
-
-        if ($this->debugEnabled()) {
-            $this->debugLog('eligible:summary', [
-                'total_places' => $allPlaces->count(),
-                'eligible_count' => $eligible->count(),
-                'eligible_cids' => $eligible->pluck('account_id')->all(),
-                'rejected_by_reason' => collect($rejections)->map(fn ($cids) => [
-                    'count' => count($cids),
-                    'cids' => $cids,
-                ])->all(),
-            ]);
-        }
-
-        return $eligible;
     }
 
     /**
@@ -245,56 +166,27 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
      */
     protected function isTrainingPlaceBookable(TrainingPlace $place, array $allowedCallsigns): bool
     {
-        return $this->bookabilityFailure($place, $allowedCallsigns) === null;
-    }
-
-    /**
-     * Returns null if bookable, otherwise a short reason code.
-     *
-     * @param  array<int, string>  $allowedCallsigns
-     */
-    protected function bookabilityFailure(TrainingPlace $place, array $allowedCallsigns): ?string
-    {
         if ($place->leaveOfAbsences->isNotEmpty()) {
-            return 'on_leave_of_absence';
+            return false;
         }
 
         $placeCallsigns = $place->trainableCtsPositions();
 
         if (! array_intersect($placeCallsigns, $allowedCallsigns)) {
-            return 'no_callsign_overlap';
+            return false;
         }
 
         if ($this->hasPendingExamForPlace($place)) {
-            return 'pending_exam';
+            return false;
         }
 
         $member = Member::query()->where('cid', $place->account_id)->first();
 
         if (! $member) {
-            return 'no_cts_member';
+            return false;
         }
 
-        if ($this->hasFutureBookedSession($member->id, $placeCallsigns)) {
-            if ($this->debugEnabled()) {
-                $this->debugLog('bookability:future_session_detail', [
-                    'cid' => $place->account_id,
-                    'sessions' => Session::query()
-                        ->where('student_id', $member->id)
-                        ->whereIn('position', $placeCallsigns)
-                        ->whereNotNull('taken_date')
-                        ->where('taken_date', '>=', now()->toDateString())
-                        ->where('session_done', 0)
-                        ->whereNull('cancelled_datetime')
-                        ->get(['id', 'position', 'taken_date', 'taken_from', 'taken_to', 'mentor_id'])
-                        ->toArray(),
-                ]);
-            }
-
-            return 'future_booked_session';
-        }
-
-        return null;
+        return ! $this->hasFutureBookedSession($member->id, $placeCallsigns);
     }
 
     protected function hasPendingExamForPlace(TrainingPlace $place): bool
@@ -340,15 +232,13 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         $places = $this->eligibleTrainingPlaces();
 
         if ($places->isEmpty()) {
-            $this->debugLog('students:no_eligible_places');
-
             return collect();
         }
 
         $placeByCid = $places->keyBy('account_id');
         $accountIds = $placeByCid->keys()->all();
 
-        $students = Member::query()
+        return Member::query()
             ->whereIn('cid', $accountIds)
             ->whereHas('availabilities', function ($query) use ($targetDate) {
                 $query->whereDate('date', $targetDate);
@@ -374,21 +264,6 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                 $member->setAttribute('primary_position', $place?->primaryCtsPosition());
                 $member->setAttribute('training_place_id', $place?->id);
             });
-
-        if ($this->debugEnabled()) {
-            $returnedCids = $students->pluck('cid')->map(fn ($c) => (int) $c)->all();
-            $eligibleCids = array_map('intval', $accountIds);
-
-            $this->debugLog('students:result', [
-                'target_date' => $targetDate->toDateString(),
-                'eligible_count' => count($eligibleCids),
-                'returned_count' => count($returnedCids),
-                'returned_cids' => $returnedCids,
-                'eligible_but_no_availability_on_date' => array_values(array_diff($eligibleCids, $returnedCids)),
-            ]);
-        }
-
-        return $students;
     }
 
     public function render()
@@ -444,14 +319,6 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
             $nowLinePercent = max(0, min(100, ($relativeNowMinutes / $totalTimelineMinutes) * 100));
         }
-
-        $this->debugLog('render', [
-            'student_count' => $students->count(),
-            'students_per_page' => $this->studentsPerPage,
-            'students_page' => $this->studentsPage,
-            'mentor_session_count' => $mentorSessions->count(),
-            'timeline' => ['start' => $startTimelineHour, 'end' => $endTimelineHour],
-        ]);
 
         return view('livewire.training.availability-gantt', [
             'students' => $students,
