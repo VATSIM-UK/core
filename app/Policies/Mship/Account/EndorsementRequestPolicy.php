@@ -4,6 +4,7 @@ namespace App\Policies\Mship\Account;
 
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\EndorsementRequest;
+use App\Services\Training\EndorsementRequestVisibilityService;
 
 class EndorsementRequestPolicy
 {
@@ -20,7 +21,19 @@ class EndorsementRequestPolicy
      */
     public function view(Account $account, EndorsementRequest $endorsementRequest): bool
     {
-        return $account->hasAnyPermission("endorsement-request.view.{$endorsementRequest->type}");
+        if (! $account->hasAnyPermission("endorsement-request.view.{$endorsementRequest->type}")) {
+            return false;
+        }
+
+        return app(EndorsementRequestVisibilityService::class)->canView($account, $endorsementRequest);
+    }
+
+    /**
+     * Determine whether the user can view requests raised for any training group.
+     */
+    public function viewAll(Account $account): bool
+    {
+        return $account->hasAnyPermission('endorsement-request.approve.*');
     }
 
     /**
