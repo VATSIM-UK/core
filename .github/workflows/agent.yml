@@ -26,6 +26,31 @@ jobs:
           persist-credentials: false
           allow-unsafe-pr-checkout: true
 
+      - name: Configure OCR docs MCP
+        env:
+          CONTEXT7_API_KEY: ${{ secrets.CONTEXT7_API_KEY }}
+        run: |
+          mkdir -p ~/.opencodereview
+
+          if [ -n "$CONTEXT7_API_KEY" ]; then
+            headers="{\"Authorization\": \"Bearer ${CONTEXT7_API_KEY}\"}"
+          else
+            echo "::warning::CONTEXT7_API_KEY is not set; falling back to unauthenticated Context7"
+            headers="{}"
+          fi
+
+          cat > ~/.opencodereview/config.json <<JSON
+          {
+            "mcp_servers": {
+              "context7": {
+                "type": "remote",
+                "url": "https://mcp.context7.com/mcp",
+                "headers": ${headers}
+              }
+            }
+          }
+          JSON
+
       - name: Open Code Review Action
         uses: alibaba/open-code-review@20db3d7d120ebba3d546ddca3459693ce3e1ae86
         with:
@@ -36,7 +61,14 @@ jobs:
           llm_use_anthropic: "false"
           llm_extra_headers: "x-opencode-session=ocr-pr${{ github.event.pull_request.number }}-${{ github.event.pull_request.head.sha }}"
           llm_extra_body: '{"thinking": {"type": "enabled"}, "reasoning_effort": "high"}'
-          background: "Ignore all code-style, formatting, or indentation issues (Laravel Pint will catch these)."
+          background: >-
+            Ignore all code-style, formatting, or indentation issues (Laravel Pint will catch these).
+            Stack: Laravel 12, Filament v5 (filament/filament v5.8.x), Livewire 3, PHP 8.4.
+            Filament v3 and v4 API semantics differ substantially from v5 and do NOT apply here.
+            vendor/ is not in the checkout, so you cannot read framework or package source.
+            Before asserting how any framework or third-party package behaves, look it up with the
+            context7 tools (resolve-library-id, then query-docs). If a finding depends on library
+            behaviour you were unable to verify that way, do not report it.
 
       - name: Remove review label
         if: always()
