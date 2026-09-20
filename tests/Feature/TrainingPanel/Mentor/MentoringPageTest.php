@@ -456,7 +456,76 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function students_property_excludes_students_with_a_session_booked_for_later_today(): void
+    {
+        $this->travelTo(Carbon::today()->setTime(15, 0));
+
+        $student = $this->createBookableStudent();
+
+        Session::factory()->accepted()->create([
+            'student_id' => $student->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken_date' => Carbon::today()->format('Y-m-d'),
+            'taken_from' => '17:00:00',
+            'taken_to' => '19:00:00',
+            'session_done' => 0,
+            'cancelled_datetime' => null,
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class);
+
+        $this->assertFalse($component->instance()->students->pluck('id')->contains($student->id));
+    }
+
+    #[Test]
+    public function students_property_includes_students_whose_unfinished_session_ended_earlier_today(): void
+    {
+        $this->travelTo(Carbon::today()->setTime(15, 0));
+
+        $student = $this->createBookableStudent();
+
+        Session::factory()->accepted()->create([
+            'student_id' => $student->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken_date' => Carbon::today()->format('Y-m-d'),
+            'taken_from' => '09:00:00',
+            'taken_to' => '11:00:00',
+            'session_done' => 0,
+            'cancelled_datetime' => null,
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class);
+
+        $this->assertTrue($component->instance()->students->pluck('id')->contains($student->id));
+    }
+
+    #[Test]
     public function students_property_excludes_exam_forwarded_students(): void
+    {
+        $this->trainingPosition->update(['exam_callsign' => 'EGLL_APP']);
+
+        $student = $this->createBookableStudent();
+
+        // A freshly forwarded exam has not been scheduled yet, so it has no date.
+        ExamBooking::factory()->create([
+            'student_id' => $student->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'position_1' => 'EGLL_APP',
+            'taken_date' => null,
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class);
+
+        $this->assertFalse($component->instance()->students->pluck('id')->contains($student->id));
+    }
+
+    #[Test]
+    public function students_property_excludes_students_with_an_exam_booked_for_a_future_date(): void
     {
         $this->trainingPosition->update(['exam_callsign' => 'EGLL_APP']);
 
@@ -466,6 +535,106 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
             'student_id' => $student->id,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGLL_APP',
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'pass' => 0,
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class);
+
+        $this->assertFalse($component->instance()->students->pluck('id')->contains($student->id));
+    }
+
+    #[Test]
+    public function students_property_excludes_students_with_an_exam_booked_for_later_today(): void
+    {
+        $this->travelTo(Carbon::today()->setTime(10, 0));
+
+        $this->trainingPosition->update(['exam_callsign' => 'EGLL_APP']);
+
+        $student = $this->createBookableStudent();
+
+        ExamBooking::factory()->create([
+            'student_id' => $student->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'position_1' => 'EGLL_APP',
+            'taken_date' => Carbon::today()->format('Y-m-d'),
+            'taken_from' => '14:00:00',
+            'taken_to' => '16:00:00',
+            'pass' => 0,
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class);
+
+        $this->assertFalse($component->instance()->students->pluck('id')->contains($student->id));
+    }
+
+    #[Test]
+    public function students_property_includes_students_whose_past_exam_was_not_passed(): void
+    {
+        $this->trainingPosition->update(['exam_callsign' => 'EGLL_APP']);
+
+        $student = $this->createBookableStudent();
+
+        ExamBooking::factory()->create([
+            'student_id' => $student->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'position_1' => 'EGLL_APP',
+            'taken_date' => Carbon::yesterday()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'pass' => 0,
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class);
+
+        $this->assertTrue($component->instance()->students->pluck('id')->contains($student->id));
+    }
+
+    #[Test]
+    public function students_property_includes_students_whose_exam_ended_earlier_today_without_a_pass(): void
+    {
+        $this->travelTo(Carbon::today()->setTime(15, 0));
+
+        $this->trainingPosition->update(['exam_callsign' => 'EGLL_APP']);
+
+        $student = $this->createBookableStudent();
+
+        ExamBooking::factory()->create([
+            'student_id' => $student->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'position_1' => 'EGLL_APP',
+            'taken_date' => Carbon::today()->format('Y-m-d'),
+            'taken_from' => '09:00:00',
+            'taken_to' => '11:00:00',
+            'pass' => 0,
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class);
+
+        $this->assertTrue($component->instance()->students->pluck('id')->contains($student->id));
+    }
+
+    #[Test]
+    public function students_property_excludes_students_whose_past_exam_was_passed(): void
+    {
+        $this->trainingPosition->update(['exam_callsign' => 'EGLL_APP']);
+
+        $student = $this->createBookableStudent();
+
+        ExamBooking::factory()->create([
+            'student_id' => $student->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'position_1' => 'EGLL_APP',
+            'taken_date' => Carbon::yesterday()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'pass' => 1,
         ]);
 
         $component = Livewire::actingAs($this->mentor)
