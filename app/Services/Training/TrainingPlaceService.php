@@ -291,6 +291,8 @@ class TrainingPlaceService
             return false;
         }
 
+        $now = now();
+
         return ExamBooking::where('student_id', $student->member->id)
             ->where('position_1', $examPosition)
             ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
