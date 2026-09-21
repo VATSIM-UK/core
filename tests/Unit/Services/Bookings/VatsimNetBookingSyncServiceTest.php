@@ -139,6 +139,37 @@ class VatsimNetBookingSyncServiceTest extends TestCase
     }
 
     #[Test]
+    public function it_skips_pilot_training_bookings(): void
+    {
+        Http::fake();
+
+        $mentor = Account::factory()->create();
+        $student = Account::factory()->create();
+
+        $mentorMember = Member::factory()->forAccount($mentor)->create();
+        $studentMember = Member::factory()->forAccount($student)->create();
+
+        $session = Session::factory()->create([
+            'student_id' => $studentMember->id,
+            'mentor_id' => $mentorMember->id,
+            'position' => 'TFP_FLIGHT',
+        ]);
+
+        $this->assertNull(Position::where('callsign', $session->position)->value('id'));
+
+        $booking = Booking::factory()->forMentoring()->create([
+            'position_id' => null,
+            'member_id' => $student->id,
+            'bookable_type' => Session::class,
+            'bookable_id' => $session->id,
+        ]);
+
+        $this->service->sync($booking);
+
+        Http::assertNothingSent();
+    }
+
+    #[Test]
     public function it_deletes_by_remote_id(): void
     {
         Http::fake(['atc-bookings.vatsim.net/*' => Http::response('', 204)]);
