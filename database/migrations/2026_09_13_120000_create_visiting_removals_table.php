@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('visiting_removals', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('account_id')->index();
+            $table->unsignedInteger('account_id')->index();
             $table->string('reason');
             $table->dateTime('removed_at');
             $table->timestamps();
