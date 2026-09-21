@@ -1,72 +1,67 @@
 <x-slot name="title">Roster</x-slot>
-<main>
-	{{-- flash messages --}}
+
+<main class="w-full max-w-[480px]">
 	@if (session()->has('success'))
-		<div
-			class="bg-green-50 ring-1 ring-inset ring-green-600/20 border-green-100 border-2 rounded mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
-			<div class="shadow space-y-6 rounded-lg sm:px-4">
-				<p class="text-green-700 text-left py-4">🎉 {{ session('success') }}</p>
-			</div>
-		</div>
+		<x-filament::callout color="success" icon="heroicon-o-check-circle" class="mb-4" :description="session('success')" />
 	@endif
+
 	@if (session()->has('error'))
-		<div class="bg-red-50 border-red-600 border-2 rounded mt-2 sm:mx-auto sm:w-full sm:max-w-[480px]">
-			<div class="shadow space-y-6 sm:rounded-lg sm:px-4">
-				<p class="py-4 text-left">❌ {{ session('error') }}</p>
-			</div>
-		</div>
+		<x-filament::callout color="danger" icon="heroicon-o-x-circle" class="mb-4" :description="session('error')" />
 	@endif
-	<div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
-		<div class="bg-white px-6 py-12 shadow space-y-6 sm:rounded-lg sm:px-12">
-			<div class="flex flex-col items-center space-y-8">
-				<div class="flex flex-col items-center space-y-4">
-					<span class="text-2xl font-bold">👋 Hello, {{ auth()->user()->name_first }}!</span>
-					<div>
-						@if ($roster)
-							<span
-								class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-md font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Active
-								on Roster</span>
-						@else
-							<span
-								class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-md font-medium text-red-700 ring-1 ring-inset ring-red-600/20">Inactive
-								on Roster</span>
-						@endif
-					</div>
-					@if ($roster)
-						<span>
-							You are currently <span class="font-bold">active</span> on the VATSIM UK roster and can
-							control any positions
-							<a class="text-blue-500 hover:cursor-pointer"
-								href="{{ route('site.roster.show', ['account' => auth()->user()]) }}">listed on your
-								roster page</a>.
-						</span>
-					@elseif(auth()->user()->hasState('DIVISION') && auth()->user()->has_controller_rating)
-						<span>
-							You are currently <span class="font-bold">inactive</span> on the VATSIM UK roster, and
-							cannot control any UK positions until you
-							<a class="text-blue-500 hover:cursor-pointer" href="{{ route('site.roster.renew') }}">renew
-								your currency</a>.
-						</span>
-					@else
-						<span>
-							You are currently <span class="font-bold">inactive</span> on the VATSIM UK roster, and
-							cannot control any UK positions.
-							<br>
-							Please <a class="text-blue-500 hover:cursor-pointer" href="mailto:community@vatsim.uk">contact Community</a> if
-							you believe this is
-							incorrect.
-						</span>
-					@endif
-				</div>
-				<div class="flex flex-col">
-					@if (!$roster && auth()->user()->hasState('DIVISION') && auth()->user()->has_controller_rating)
-						<a wire:navigate href="{{ route('site.roster.renew') }}"
-							class="text-bold text-blue-500 hover:cursor-pointer">Renew my currency</a>
-					@endif
-					<a wire:navigate href="{{ route('site.roster.search') }}"
-						class="text-bold text-blue-500 hover:cursor-pointer">Search the roster</a>
-				</div>
+
+	<x-filament::section>
+		<x-slot name="heading">
+			<span class="relative flex w-full items-center justify-center">
+				<span>Controller Roster</span>
+				<span class="absolute right-0">
+					<x-filament::badge :color="$roster ? 'success' : 'danger'">
+						{{ $roster ? 'Active' : 'Inactive' }}
+					</x-filament::badge>
+				</span>
+			</span>
+		</x-slot>
+
+		<div class="space-y-4 text-left">
+			<div class="text-xl font-bold">Hello, {{ auth()->user()->name_first }}!</div>
+
+			@if ($roster)
+				<p class="text-sm text-gray-600">
+					You are currently <strong>active</strong> on the VATSIM UK roster and can control any positions
+					listed on your
+					<a class="font-semibold text-brand" wire:navigate
+						href="{{ route('site.roster.show', ['account' => auth()->user()]) }}">roster page</a>.
+				</p>
+			@elseif (auth()->user()->hasState('DIVISION') && auth()->user()->has_controller_rating)
+				<p class="text-sm text-gray-600">
+					You are currently <strong>inactive</strong> on the VATSIM UK roster, and cannot control any UK
+					positions until you
+					<a class="font-semibold text-brand" wire:navigate href="{{ route('site.roster.renew') }}">renew
+						your currency</a>.
+				</p>
+			@else
+				<p class="text-sm text-gray-600">
+					You are currently <strong>inactive</strong> on the VATSIM UK roster, and cannot control any UK
+					positions. Please
+					<a class="font-semibold text-brand" href="mailto:community@vatsim.uk">contact Community</a> if you
+					believe this is incorrect.
+				</p>
+			@endif
+
+			<div class="flex flex-wrap gap-3">
+				@if ($roster)
+					<x-filament::button tag="a" wire:navigate :href="route('site.roster.show', ['account' => auth()->user()])">
+						View my roster
+					</x-filament::button>
+				@elseif (auth()->user()->hasState('DIVISION') && auth()->user()->has_controller_rating)
+					<x-filament::button tag="a" wire:navigate :href="route('site.roster.renew')">
+						Renew my currency
+					</x-filament::button>
+				@endif
+
+				<x-filament::button tag="a" color="gray" wire:navigate :href="route('site.roster.search')">
+					Search the roster
+				</x-filament::button>
 			</div>
 		</div>
-	</div>
+	</x-filament::section>
 </main>

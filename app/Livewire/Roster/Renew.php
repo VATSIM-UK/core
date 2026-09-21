@@ -115,12 +115,12 @@ class Renew extends Component
             'account_id' => auth()->user()->id,
         ]);
 
-        session()->flash('success', '✅ You have been reactivated on the roster! Welcome back!');
+        session()->flash('success', 'You have been reactivated on the roster! Welcome back!');
 
         return redirect()->route('site.roster.index');
     }
 
-    public function markNotificationRead(UKCP $ukcp, int $notificationId, int $arrayIndex)
+    public function markNotificationRead(UKCP $ukcp, int $notificationId)
     {
         $result = $ukcp->markNotificationReadForUser(auth()->user(), $notificationId);
 

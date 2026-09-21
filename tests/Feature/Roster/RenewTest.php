@@ -180,6 +180,25 @@ class RenewTest extends TestCase
             ->assertSee('You have 1 notifications to read.');
     }
 
+    public function test_mark_notification_read_removes_it_from_the_list()
+    {
+        $account = $this->createEligibleAccount();
+        $this->createAtcSession($account, Carbon::now()->subMonths(6));
+
+        $this->mock(UKCP::class, function ($mock) {
+            $mock->shouldReceive('getUnreadNotificationsForUser')->andReturn([
+                ['id' => 7, 'title' => 'Change', 'body' => 'Body', 'link' => null],
+            ]);
+            $mock->shouldReceive('markNotificationReadForUser')->once()->andReturn(true);
+        });
+
+        Livewire::actingAs($account)
+            ->test(Renew::class)
+            ->assertSet('notifications', fn ($notifications) => $notifications->has(7))
+            ->call('markNotificationRead', 7)
+            ->assertSet('notifications', fn ($notifications) => ! $notifications->has(7));
+    }
+
     public function test_cannot_proceed_when_previous_removal_and_no_hours_in_last_two_quarters()
     {
         $account = $this->createEligibleAccount();
