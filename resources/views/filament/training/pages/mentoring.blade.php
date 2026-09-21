@@ -6,7 +6,8 @@
 			</x-slot>
 
 			<x-slot name="description">
-				This is to be expected. Core applies stricter rules than CTS. A student won't appear if they have a session booked in the future, have been forwarded for an exam, or are on a LOA.
+				This is to be expected. Core applies stricter rules than CTS. A student won't appear if they have a session booked
+				in the future, have been forwarded for an exam, or are on a LOA.
 			</x-slot>
 		</x-filament::callout>
 
