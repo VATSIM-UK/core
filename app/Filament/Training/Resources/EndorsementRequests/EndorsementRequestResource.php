@@ -8,8 +8,10 @@ use App\Filament\Training\Resources\EndorsementRequests\Pages\CreateEndorsementR
 use App\Filament\Training\Resources\EndorsementRequests\Pages\ListEndorsementRequests;
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
+use App\Models\Mship\Account;
 use App\Models\Mship\Account\EndorsementRequest;
 use App\Models\Mship\Qualification;
+use App\Services\Training\EndorsementRequestVisibilityService;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\Hidden;
@@ -37,6 +39,19 @@ class EndorsementRequestResource extends Resource
     public static function shouldRegisterNavigation(): bool
     {
         return false;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $user = auth()->user();
+
+        if (! $user instanceof Account) {
+            return $query;
+        }
+
+        return app(EndorsementRequestVisibilityService::class)->scope($query, $user);
     }
 
     public static function form(Schema $schema): Schema
@@ -108,7 +123,7 @@ class EndorsementRequestResource extends Resource
                         'id',
                         fn (Builder $query) => $query->whereIn(
                             'id',
-                            EndorsementRequest::query()->select('account_id'),
+                            static::getEloquentQuery()->select('account_id'),
                         ),
                     )
                     ->searchable()
@@ -122,6 +137,8 @@ class EndorsementRequestResource extends Resource
                     ]),
             ])
             ->paginated([10, 25, 50, 100])
+            ->emptyStateHeading('No endorsement requests found')
+            ->emptyStateDescription('You will see requests raised for students in your training group, and any you have raised yourself.')
             ->recordActions([
                 Action::make('viewNotes')
                     ->icon('heroicon-m-document-text')
