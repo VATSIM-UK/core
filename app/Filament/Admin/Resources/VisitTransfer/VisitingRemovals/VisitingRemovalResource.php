@@ -24,7 +24,7 @@ class VisitingRemovalResource extends Resource
 
     protected static ?string $pluralLabel = 'Visiting Removals';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 30;
 
     public static function canAccess(): bool
     {
@@ -65,11 +65,6 @@ class VisitingRemovalResource extends Resource
                         VisitingControllerInactivity::REASON_TWICE_IN_TWO_YEARS => 'Inactive twice in 2 years',
                     ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [];
     }
 
     public static function getPages(): array
