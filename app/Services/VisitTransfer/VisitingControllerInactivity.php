@@ -148,7 +148,7 @@ class VisitingControllerInactivity
     {
         return $account->visitApplications()
             ->whereHas('facility', fn ($query) => $query->where('training_team', 'atc'))
-            ->statusIn([Application::STATUS_ACCEPTED, Application::STATUS_COMPLETED])
+            ->statusIn([Application::STATUS_COMPLETED])
             ->exists();
     }
 
