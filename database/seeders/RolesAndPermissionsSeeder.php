@@ -103,6 +103,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.statistics.view.*',
             'training.statistics.view.atc',
 
+            // Seminar Permissions
+            'training.seminars.view.*',
+            'training.seminars.manage.*',
+
             // Account Permissions
             'account.self',
             'account.view-insensitive.*',
