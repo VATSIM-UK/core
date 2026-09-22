@@ -120,14 +120,15 @@ class EventResource extends Resource
                             ->disabled(fn (?Event $record): bool => static::detailsAreLocked($record))
                             ->helperText(fn (?Event $record): string => static::lockedHelperText($record)
                                 ?? 'The ATC positions the event covers.'),
-                        Select::make('manager_id')
-                            ->label('Event manager')
+                        Select::make('managers')
+                            ->label('Event managers')
                             ->relationship(
-                                'manager',
+                                'managers',
                                 'name_first',
                                 fn (Builder $query): Builder => $query->permission('admin.access'),
                             )
                             ->getOptionLabelFromRecordUsing(fn (Account $record): string => "{$record->name_first} {$record->name_last} ({$record->id})")
+                            ->multiple()
                             ->searchable()
                             ->preload()
                             ->helperText('Only staff members with admin access can manage an event.'),
@@ -237,7 +238,7 @@ class EventResource extends Resource
         $checklistTotal = count(EventChecklistItem::cases());
 
         return $table
-            ->modifyQueryUsing(fn (Builder $query): Builder => $query->withCount('checklistCompletions'))
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->withCount('checklistCompletions')->with('managers'))
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('start')->dateTime(Event::DATETIME_FORMAT)->sortable(),
@@ -259,11 +260,15 @@ class EventResource extends Resource
                         default => 'warning',
                     })
                     ->sortable(),
-                TextColumn::make('manager.name_first')
-                    ->label('Manager')
-                    ->formatStateUsing(fn (Event $record): string => $record->manager
-                        ? "{$record->manager->name_first} {$record->manager->name_last}"
-                        : ''),
+                TextColumn::make('managers.name_first')
+                    ->label('Managers')
+                    ->badge()
+                    ->state(fn (Event $record): array => $record->managers
+                        ->map(fn (Account $manager): string => "{$manager->name_first} {$manager->name_last}")
+                        ->all())
+                    ->separator(',')
+                    ->limitList(3)
+                    ->toggleable(),
                 TextColumn::make('published_at')
                     ->label('Status')
                     ->badge()

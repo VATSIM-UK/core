@@ -173,12 +173,39 @@ class EventResourceTest extends TestCase
         $event = Event::factory()->create();
 
         Livewire::test(EditEvent::class, ['record' => $event->getRouteKey()])
-            ->assertFormFieldExists('manager_id', function (Select $field) use ($staff, $member): bool {
+            ->assertFormFieldExists('managers', function (Select $field) use ($staff, $member): bool {
                 $options = $field->getOptions();
 
-                return array_key_exists($staff->id, $options)
+                return $field->isMultiple()
+                    && array_key_exists($staff->id, $options)
                     && ! array_key_exists($member->id, $options);
             });
+    }
+
+    public function test_multiple_managers_can_be_assigned_to_an_event(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+        $managers = collect([
+            $this->userWithPermission('events.view'),
+            $this->userWithPermission('events.view'),
+        ]);
+
+        Livewire::test(CreateEvent::class)
+            ->fillForm([
+                'name' => 'Test event',
+                'start' => '2026-09-01 18:00:00',
+                'end' => '2026-09-01 21:00:00',
+                'managers' => $managers->pluck('id')->all(),
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $event = Event::where('name', 'Test event')->firstOrFail();
+
+        $this->assertEqualsCanonicalizing(
+            $managers->pluck('id')->all(),
+            $event->managers->pluck('id')->all(),
+        );
     }
 
     public function test_publish_action_publishes_event(): void
