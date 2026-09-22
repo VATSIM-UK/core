@@ -1,0 +1,6 @@
+{
+  "exclude": [
+    "database/schema/mysql-schema.sql",
+    "resources/assets/js/home.js"
+  ]
+}

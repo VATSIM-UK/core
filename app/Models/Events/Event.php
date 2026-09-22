@@ -30,7 +30,6 @@ class Event extends Model
         'rostered',
         'published_at',
         'published_by',
-        'manager_id',
     ];
 
     protected $casts = [
@@ -45,9 +44,12 @@ class Event extends Model
         return $this->belongsToMany(Position::class, 'event_positions');
     }
 
-    public function manager(): BelongsTo
+    /**
+     * An event can be managed by any number of staff members.
+     */
+    public function managers(): BelongsToMany
     {
-        return $this->belongsTo(Account::class, 'manager_id');
+        return $this->belongsToMany(Account::class, 'event_managers');
     }
 
     public function publisher(): BelongsTo

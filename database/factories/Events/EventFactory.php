@@ -26,8 +26,18 @@ class EventFactory extends Factory
             'rostered' => false,
             'published_at' => null,
             'published_by' => null,
-            'manager_id' => null,
         ];
+    }
+
+    public function withManagers(Account ...$managers): static
+    {
+        return $this->afterCreating(function (Event $event) use ($managers): void {
+            $event->managers()->attach(
+                collect($managers)->pluck('id')->all()
+            );
+
+            $event->unsetRelation('managers');
+        });
     }
 
     public function published(?Account $publisher = null): static
