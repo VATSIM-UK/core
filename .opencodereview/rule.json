@@ -1,6 +1,6 @@
 {
   "exclude": [
-    "composer.lock",
-    "database/schema/mysql-schema.sql"
+    "database/schema/mysql-schema.sql",
+    "resources/assets/js/home.js"
   ]
 }
