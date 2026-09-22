@@ -1,0 +1,6 @@
+{
+  "exclude": [
+    "composer.lock",
+    "database/schema/mysql-schema.sql"
+  ]
+}

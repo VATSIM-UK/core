@@ -5,7 +5,10 @@ on:
     types: [labeled]
 
 concurrency:
-  group: ocr-${{ github.event.pull_request.number }}
+  group: >-
+    ${{ github.event.label.name == 'review'
+        && format('ocr-{0}', github.event.pull_request.number)
+        || format('noop-{0}', github.run_id) }}
   cancel-in-progress: true
 
 jobs:
@@ -52,7 +55,7 @@ jobs:
           JSON
 
       - name: Open Code Review Action
-        uses: alibaba/open-code-review@20db3d7d120ebba3d546ddca3459693ce3e1ae86
+        uses: alibaba/open-code-review@v1.12.9
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           llm_url: "https://opencode.ai/zen/go/v1"
@@ -60,8 +63,15 @@ jobs:
           llm_model: "deepseek-v4.1-flash"
           llm_use_anthropic: "false"
           llm_extra_headers: "x-opencode-session=ocr-pr${{ github.event.pull_request.number }}-${{ github.event.pull_request.head.sha }}"
-          llm_extra_body: '{"thinking": {"type": "enabled"}, "reasoning_effort": "high"}'
-          background: >-
+          llm_extra_body: '{"thinking": {"type": "enabled"}, "reasoning_effort": "medium"}'
+          route_categories: 'style,documentation'
+          stream_progress: 'true'
+          background: |-
+            PR title: ${{ github.event.pull_request.title }}
+
+            PR description:
+            ${{ github.event.pull_request.body }}
+
             Ignore all code-style, formatting, or indentation issues (Laravel Pint will catch these).
             Stack: Laravel 12, Filament v5 (filament/filament v5.8.x), Livewire 3, PHP 8.4.
             Filament v3 and v4 API semantics differ substantially from v5 and do NOT apply here.
@@ -69,6 +79,10 @@ jobs:
             Before asserting how any framework or third-party package behaves, look it up with the
             context7 tools (resolve-library-id, then query-docs). If a finding depends on library
             behaviour you were unable to verify that way, do not report it.
+
+      - name: Fail on incomplete OCR review
+        if: always()
+        run: python3 .github/scripts/check-ocr-completeness.py /tmp/ocr-result.json
 
       - name: Remove review label
         if: always()
