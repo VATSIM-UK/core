@@ -40,9 +40,19 @@ class Feedback extends \App\Http\Controllers\BaseController
         ]);
 
         if ($validator->fails()) {
+            $messages = [];
+
+            if ($validator->errors()->has('cid')) {
+                $messages[] = 'Please enter a valid CID for a home UK member.';
+            }
+
+            if ($validator->errors()->has('datetime')) {
+                $messages[] = 'Please enter a valid date and time.';
+            }
+
             return response()->json([
                 'valid' => false,
-                'message' => 'Please enter a valid CID and date/time.',
+                'message' => implode(' ', $messages),
             ], 422);
         }
 
