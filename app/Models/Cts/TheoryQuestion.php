@@ -6,6 +6,7 @@ use App\Models\Mship\Account;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TheoryQuestion extends Model
 {
@@ -33,7 +34,7 @@ class TheoryQuestion extends Model
         'status',
     ];
 
-    public function answers(): string
+    public function answers(): HasMany
     {
         return $this->hasMany(TheoryAnswer::class, 'question_id');
     }
