@@ -95,13 +95,14 @@ class AccountsRelationManager extends RelationManager
                     ->visible(fn ($record) => $record->waitingList->feature_toggles['check_cts_theory_exam'] ?? true),
 
                 Fieldset::make('manual_flags')
-                    ->label('Manual Flags')
+                    ->label('Flags')
                     ->columnSpanFull()
                     ->schema(function (WaitingListAccount $record) {
-                        return $record->flags->filter(fn ($flag) => $flag->position_group_id == null)->map(function ($flag) {
+                        return $record->flags->map(function ($flag) {
                             return Toggle::make('flags.'.$flag->id)
                                 ->label($flag->name)
-                                ->afterStateHydrated(fn ($component, $state) => $component->state((bool) $flag->pivot->value));
+                                ->afterStateHydrated(fn ($component, $state) => $component->state((bool) $flag->pivot->value))
+                                ->disabled(! $flag->isManual());
                         })->all();
                     })
                     ->visible(fn (WaitingListAccount $record) => $record->flags->isNotEmpty()),
@@ -317,12 +318,13 @@ class AccountsRelationManager extends RelationManager
                             'notes' => $data['notes'],
                         ]);
 
-                        $flagsById = collect(Arr::get($data, 'flags', []));
-                        // only update manual flags
-                        $flagsToUpdate = $record->flags->filter(fn ($flag) => $flag->position_group_id == null);
-                        $flagsToUpdate->each(fn ($flag) => $flagsById->get($flag->id) ? $flag->pivot->mark() : $flag->pivot->unMark());
+                        // only manual flags are set by hand, so automated flags stay attached and
+                        // keep being worked out from the member
+                        $manualFlags = $record->flags->filter(fn ($flag) => $flag->isManual());
+                        $flagsById = collect(Arr::get($data, 'flags', []))->only($manualFlags->pluck('id')->all());
+                        $manualFlags->each(fn ($flag) => $flagsById->get($flag->id) ? $flag->pivot->mark() : $flag->pivot->unMark());
 
-                        $record->flags()->sync(
+                        $record->flags()->syncWithoutDetaching(
                             $flagsById->mapWithKeys(fn ($value, $key) => [$key => ['marked_at' => $value ? now() : null]])->all(),
                         );
 
@@ -510,7 +512,7 @@ class AccountsRelationManager extends RelationManager
         return $trainable;
     }
 
-    // Display All Manual Flags where display option is enabled
+    // Display all flags where the display option is enabled
     protected function getFlagColumns(): array
     {
         return $this->ownerRecord->flags()
@@ -523,7 +525,7 @@ class AccountsRelationManager extends RelationManager
                     ->getStateUsing(function (WaitingListAccount $record) use ($flag) {
                         $flagRecord = $record->flags->firstWhere('id', $flag->id);
 
-                        return $flagRecord?->pivot?->marked_at !== null;
+                        return (bool) $flagRecord?->pivot?->value;
                     });
             })->all();
     }
