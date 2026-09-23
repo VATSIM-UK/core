@@ -20,25 +20,25 @@ jobs:
 
       - name: Extract short commit hash
         run: |
-          echo "::set-env name=COMMIT::$(echo ${GITHUB_SHA} | cut -c1-7)"
-        env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+          echo "COMMIT=$(echo ${GITHUB_SHA} | cut -c1-7)" >> "$GITHUB_ENV"
 
       - name: Extract tag
         run: |
-          echo "::set-env name=TAG::$(git describe --tags --abbrev=0)"
-        env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+          echo "TAG=$(git describe --tags --abbrev=0)" >> "$GITHUB_ENV"
 
       - name: Set additional deployment variables
-        uses: allenevans/set-env@v4.0.0
-        with:
-          APP_URL: https://www.vatsim.uk
+        run: |
+          {
+            echo "APP_URL=https://www.vatsim.uk"
+            echo "APPLICATION_ROOT=$APPLICATION_ROOT"
+            echo "RELEASE_DIRECTORY=$APPLICATION_ROOT/releases/$COMMIT"
+            echo "SHARED_DIRECTORY=$APPLICATION_ROOT/shared"
+            echo "PHP_PATH=/bin/php8.4"
+            echo "VERSIONS_TO_KEEP=5"
+            echo "DISCORD_TRAINING_ALERTS_CHANNEL_ID=$DISCORD_TRAINING_ALERTS_CHANNEL_ID"
+          } >> "$GITHUB_ENV"
+        env:
           APPLICATION_ROOT: ${{ secrets.APPLICATION_ROOT }}
-          RELEASE_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/releases/${{ env.COMMIT }}
-          SHARED_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/shared
-          PHP_PATH: /bin/php8.4
-          VERSIONS_TO_KEEP: 5
           DISCORD_TRAINING_ALERTS_CHANNEL_ID: ${{ secrets.DISCORD_TRAINING_ALERTS_CHANNEL_ID }}
 
       - name: Discord Notification (Start)
@@ -56,7 +56,7 @@ jobs:
         id: github_deployment
         with:
           token: ${{ github.token }}
-          environment_url: https://www.vatsim.uk
+          environment-url: https://www.vatsim.uk
           environment: production
           ref: ${{ github.event.client_payload.ref }}
 
@@ -218,7 +218,7 @@ jobs:
           SENTRY_PROJECT: core
         with:
           environment: production
-          version: ${{ github.sha }}
+          release: ${{ github.sha }}
 
       - name: Housekeeping
         uses: appleboy/ssh-action@master
@@ -255,21 +255,21 @@ jobs:
 
       - name: Update Deployment Status (Failed)
         if: failure()
-        uses: chrnorm/deployment-status@releases/v1
+        uses: chrnorm/deployment-status@v2
         with:
           token: ${{ github.token }}
-          target_url: https://www.vatsim.uk
+          environment-url: https://www.vatsim.uk
           state: "failure"
-          deployment_id: ${{ steps.github_deployment.outputs.deployment_id }}
+          deployment-id: ${{ steps.github_deployment.outputs.deployment_id }}
 
       - name: Update Deployment Status (Success)
         if: success()
-        uses: chrnorm/deployment-status@releases/v1
+        uses: chrnorm/deployment-status@v2
         with:
           token: ${{ github.token }}
-          target_url: https://www.vatsim.uk
+          environment-url: https://www.vatsim.uk
           state: "success"
-          deployment_id: ${{ steps.github_deployment.outputs.deployment_id }}
+          deployment-id: ${{ steps.github_deployment.outputs.deployment_id }}
 
       - name: Discord Notification (Failed)
         if: failure()
