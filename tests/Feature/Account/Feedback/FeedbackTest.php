@@ -354,6 +354,22 @@ class FeedbackTest extends TestCase
             ->assertSee('btn-success', false);
     }
 
+    #[Test]
+    public function test_it_defaults_datetime_picker_to_current_zulu_time()
+    {
+        $form = Form::whereSlug('atc')->first();
+        if (! $form) {
+            $this->markTestSkipped('could not find atc form');
+        }
+
+        $response = $this->actingAs($this->user, 'web')
+            ->get(route('mship.feedback.new.form', $form->slug));
+
+        $response->assertSuccessful()
+            ->assertSee('getTimezoneOffset', false)
+            ->assertSee('value: zulu', false);
+    }
+
     /**
      * Build form data with answers to all questions.
      */
