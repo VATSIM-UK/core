@@ -366,7 +366,8 @@ class FeedbackTest extends TestCase
             ->get(route('mship.feedback.new.form', $form->slug));
 
         $response->assertSuccessful()
-            ->assertSee('getTimezoneOffset', false);
+            ->assertSee('getTimezoneOffset', false)
+            ->assertSee('value: zulu', false);
     }
 
     /**

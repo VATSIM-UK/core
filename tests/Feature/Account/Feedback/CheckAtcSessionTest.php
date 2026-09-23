@@ -20,7 +20,7 @@ class CheckAtcSessionTest extends TestCase
 
         $response->assertStatus(422)
             ->assertJson(['valid' => false])
-            ->assertJsonPath('message', 'Please enter a valid CID for a home UK member.');
+            ->assertJsonPath('message', 'Please enter a valid CID.');
     }
 
     #[Test]
@@ -38,6 +38,20 @@ class CheckAtcSessionTest extends TestCase
     }
 
     #[Test]
+    public function test_it_reports_a_future_datetime()
+    {
+        $response = $this->actingAs($this->user, 'web')
+            ->postJson(route('mship.feedback.check-atc-session'), [
+                'cid' => Account::factory()->createQuietly()->id,
+                'datetime' => now()->addHour()->format('Y-m-d H:i'),
+            ]);
+
+        $response->assertStatus(422)
+            ->assertJson(['valid' => false])
+            ->assertJsonPath('message', 'The date and time cannot be in the future.');
+    }
+
+    #[Test]
     public function test_it_reports_both_cid_and_datetime_errors_when_both_are_invalid()
     {
         $response = $this->actingAs($this->user, 'web')
@@ -48,7 +62,7 @@ class CheckAtcSessionTest extends TestCase
 
         $response->assertStatus(422)
             ->assertJson(['valid' => false])
-            ->assertJsonPath('message', 'Please enter a valid CID for a home UK member. Please enter a valid date and time.');
+            ->assertJsonPath('message', 'Please enter a valid CID. Please enter a valid date and time.');
     }
 
     #[Test]
