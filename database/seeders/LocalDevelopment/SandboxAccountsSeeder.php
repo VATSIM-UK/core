@@ -17,17 +17,17 @@ class SandboxAccountsSeeder extends Seeder
      * CID => [first name, last name]
      */
     private const ACCOUNTS = [
-        10000000 => ['Zero', 'Web'],
-        10000001 => ['One', 'Web'],
-        10000002 => ['Two', 'Web'],
-        10000003 => ['Three', 'Web'],
-        10000004 => ['Four', 'Web'],
-        10000005 => ['Five', 'Web'],
-        10000006 => ['Six', 'Web'],
-        10000007 => ['Seven', 'Web'],
-        10000008 => ['Eight', 'Web'],
-        10000009 => ['Nine', 'Web'],
-        10000010 => ['Ten', 'Web'],
+        10000000 => ['Web', 'Zero'],
+        10000001 => ['Web', 'One'],
+        10000002 => ['Web', 'Two'],
+        10000003 => ['Web', 'Three'],
+        10000004 => ['Web', 'Four'],
+        10000005 => ['Web', 'Five'],
+        10000006 => ['Web', 'Six'],
+        10000007 => ['Web', 'Seven'],
+        10000008 => ['Web', 'Eight'],
+        10000009 => ['Web', 'Nine'],
+        10000010 => ['Web', 'Ten'],
     ];
 
     public function run(): void
