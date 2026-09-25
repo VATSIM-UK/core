@@ -1,126 +1,139 @@
 <x-slot name="title">Roster for {{ $account->id }}</x-slot>
-<div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px] max-h-full">
-	<div class="bg-white shadow rounded-lg overflow-hidden flex flex-col max-h-full">
-		<div class="max-h-full overflow-y-auto space-y-6 sm:px-12 px-6 py-12">
-			<header class="flex flex-col md:flex-row md:justify-between items-center">
-				<div class="inline-flex flex-col md:items-start items-center">
-					<span class="font-bold text-2xl">{{ $account->id }}</span>
-					<div class="opacity-50">
-						<span>{{ $account->qualification_atc }} - </span>
-						<span>{{ $account->primary_state->name }} Member</span>
-					</div>
+
+<main class="w-full max-w-[480px]">
+	<x-filament::section>
+		<x-slot name="heading">
+			<span class="relative flex w-full items-center justify-center">
+				<span class="absolute left-0">
+					<x-filament::icon-button icon="heroicon-m-arrow-left" color="gray" size="sm" tag="a" label="Back"
+						wire:navigate :href="route('site.roster.search')" />
+				</span>
+				<span>Roster for {{ $account->id }}</span>
+				<span class="absolute right-0">
+					<x-filament::badge :color="$roster ? 'success' : 'danger'">
+						{{ $roster ? 'Active' : 'Inactive' }}
+					</x-filament::badge>
+				</span>
+			</span>
+		</x-slot>
+
+		<div class="space-y-6 text-left">
+			<div>
+				<div class="text-2xl font-bold">{{ $account->id }}</div>
+				<div class="text-sm text-gray-500">
+					{{ $account->qualification_atc }} &middot; {{ $account->primary_state?->name ?? 'Unknown' }} Member
 				</div>
-				<div class="ml-2">
-					@if ($roster)
-						<span
-							class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-md font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Active
-							on Roster</span>
-					@else
-						<span
-							class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-md font-medium text-red-700 ring-1 ring-inset ring-red-600/20">Inactive
-							on Roster</span>
-					@endif
-				</div>
-			</header>
+			</div>
+
 			@if ($account->achievementAwards()->count() > 0)
-				<div class="flex flex-col space-y-3">
-					<h3 class="text-md font-medium">Achievements</h3>
-					<h4 class="text-xs text-gray-500">Achievements are issued to our volunteers in recognition of their contributions
-						to
-						the community.</h4>
-					<div class="flex flex-wrap gap-3 justify-center">
+				<div class="space-y-3">
+					<div>
+						<h3 class="text-sm font-semibold">Achievements</h3>
+						<p class="text-xs text-gray-500">Achievements are issued to our volunteers in recognition of
+							their contributions to the community.</p>
+					</div>
+					<div class="flex flex-wrap gap-3">
 						@foreach ($account->achievementAwards()->with('achievement')->get() as $award)
 							@continue(!$award->achievement)
-							<div class="flex flex-col space-y-1 items-center" title="{{ $award->achievement?->description }}">
+							<div class="flex flex-col items-center gap-1 text-center" title="{{ $award->achievement?->description }}">
 								@if ($award->achievement->image)
 									<img src="{{ Storage::disk('public')->url($award->achievement->image) }}" alt="{{ $award->achievement->name }}"
-										class="w-10 h-10 rounded-full">
+										class="h-10 w-10 rounded-full">
 								@endif
-								<div class="flex flex-col">
-									<span class="text-sm font-medium">{{ $award->achievement->name }}</span>
-									<span class="text-xs text-gray-500 leading-tight"> {{ $award->created_at?->toFormattedDateString() }}</span>
-								</div>
+								<span class="text-sm font-medium">{{ $award->achievement->name }}</span>
+								<span class="text-xs text-gray-500">{{ $award->created_at?->toFormattedDateString() }}</span>
 							</div>
 						@endforeach
 					</div>
 				</div>
 			@endif
-			<div class="space-y-2 overflow-auto">
-				<div class="flex flex-col space-y-8">
-					<div class="flex flex-col items-start space-y-1">
-						@foreach ($account->endorsements()->active()->get()->groupBy('type') as $type => $endorsements)
-							<span class="text-sm font-semibold">{{ $type }}</span>
-							@foreach ($endorsements as $endorsement)
-								<span>{{ $endorsement->endorsable?->name ?? 'Unknown Endorsement' }}
-									@if ($endorsement->expires())
-										<span class="text-xs opacity-75">Expires
-											{{ $endorsement->expires_at->toFormattedDateString() }}</span>
-									@endif
-								</span>
-								<span class="text-xs text-left opacity-50">Covers:
-									{{ $endorsement->endorsable?->description ?? 'No description available' }}</span>
-							@endforeach
+
+			<div class="space-y-2">
+				<h3 class="text-sm font-semibold">Endorsements</h3>
+				@forelse ($account->endorsements()->active()->get()->groupBy('type') as $type => $endorsements)
+					<div class="space-y-1">
+						<span class="text-xs font-semibold uppercase tracking-wide text-gray-400">{{ $type }}</span>
+						@foreach ($endorsements as $endorsement)
+							<div class="flex items-start justify-between gap-3 border-b border-gray-100 py-2 last:border-0">
+								<div>
+									<div class="text-sm font-medium">
+										{{ $endorsement->endorsable?->name ?? 'Unknown Endorsement' }}
+									</div>
+									<div class="text-xs text-gray-500">
+										{{ $endorsement->endorsable?->description ?? 'No description available' }}
+									</div>
+								</div>
+								@if ($endorsement->expires())
+									<x-filament::badge color="gray">
+										Expires {{ $endorsement->expires_at->toFormattedDateString() }}
+									</x-filament::badge>
+								@endif
+							</div>
 						@endforeach
 					</div>
-				</div>
+				@empty
+					<p class="text-sm text-gray-500">No active endorsements.</p>
+				@endforelse
 			</div>
-		</div>
-		<div class="flex flex-col space-y-4">
-			@if ($roster && $roster->restrictionNote == null)
-				<hr>
-				<form wire:submit="search" class="flex flex-col mb-4 space-y-4">
-					<div>
-						<label for="email" class="block text-sm font-medium leading-6 text-gray-900">Check
-							Position</label>
-						<div class="mt-2">
-							<input wire:model="searchTerm" id="search" name="search" type="text" autocomplete="off" required
-								placeholder="e.g. EGKK or EGKK_APP"
-								class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-						</div>
-					</div>
 
+			@if ($roster && $roster->restrictionNote === null)
+				<form wire:submit="search" class="space-y-3">
 					<div>
-						<button type="submit"
-							class="flex w-full justify-center rounded-md bg-brand px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-xs hover:bg-sky-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-							Search
-						</button>
+						<label for="position-search" class="block text-sm font-semibold text-gray-900">Check a
+							position</label>
+						<p class="text-xs text-gray-500">Enter a callsign to check whether this controller can staff
+							it.</p>
+					</div>
+					<div class="flex gap-2">
+						<x-filament::input.wrapper class="flex-1">
+							<x-filament::input id="position-search" type="text" wire:model="searchTerm" required autocomplete="off"
+								placeholder="e.g. EGKK or EGKK_APP" />
+						</x-filament::input.wrapper>
+						<x-filament::button type="submit">Check</x-filament::button>
 					</div>
 				</form>
 			@endif
+
 			@if ($positions)
-				@if (count($positions) == 1)
-					<span>
-						{{ $roster->accountCanControl($positions[0])
-						    ? "✅ $account->id can control " . $positions[0]->callsign . '.'
-						    : "❌ $account->id cannot control " . $positions[0]->callsign . '.' }}
-					</span>
+				@if (count($positions) === 1)
+					@php($canControl = $roster?->accountCanControl($positions[0]) ?? false)
+					<x-filament::callout :color="$canControl ? 'success' : 'danger'" :icon="$canControl ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle'" :description="$account->id . ' ' . ($canControl ? 'can' : 'cannot') . ' control ' . $positions[0]->callsign . '.'" />
 				@else
-					<table class="table-auto">
-						<tr>
-							<td></td>
-							<td><i>Can Control</i></td>
-						</tr>
-						@foreach ($positions as $position)
-							<tr class="odd:bg-blue-100">
-								<th>{{ $position->callsign }}</th>
-								<td>{{ $roster->accountCanControl($position) ? '✅' : '❌' }}</td>
+					<table class="w-full text-sm">
+						<thead>
+							<tr class="text-left text-xs uppercase tracking-wide text-gray-400">
+								<th class="py-2">Position</th>
+								<th class="py-2">Can control</th>
 							</tr>
-						@endforeach
+						</thead>
+						<tbody>
+							@foreach ($positions as $position)
+								@php($canControl = $roster?->accountCanControl($position) ?? false)
+								<tr class="border-t border-gray-100">
+									<td class="py-2">{{ $position->callsign }}</td>
+									<td class="py-2">
+										@if ($canControl)
+											<span class="sr-only">Can control</span>
+											<x-filament::icon icon="heroicon-o-check-circle" class="h-5 w-5 text-success-500" />
+										@else
+											<span class="sr-only">Cannot control</span>
+											<x-filament::icon icon="heroicon-o-x-circle" class="h-5 w-5 text-danger-500" />
+										@endif
+									</td>
+								</tr>
+							@endforeach
+						</tbody>
 					</table>
 				@endif
 			@endif
+
 			@if (!$roster)
-				<span>❌ {{ $account->id }} cannot control any UK positions.</span>
+				<x-filament::callout color="danger" icon="heroicon-o-x-circle" :description="$account->id . ' cannot control any UK positions.'" />
 			@endif
+
 			@if ($roster && $roster->restrictionNote)
-				<span class="text-red-500">❗ {{ $roster->restrictionNote->content }}</span>
+				<x-filament::callout color="danger" icon="heroicon-o-exclamation-triangle" :description="$roster->restrictionNote->content" />
 			@endif
 		</div>
-
-
-		<div>
-			<a class="text-bold text-blue-500 hover:cursor-pointer" wire:navigate href="{{ route('site.roster.search') }}">Go
-				back</a>
-		</div>
-	</div>
-</div>
+	</x-filament::section>
+</main>
