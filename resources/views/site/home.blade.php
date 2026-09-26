@@ -240,12 +240,17 @@
 
 			@if ($nextEvent)
 				<div class="next-event">
-					<h3 class="text-primary mb-0">{{ $nextEvent->name }}</h3>
+					<h3 class="text-primary mb-0">
+						<a class="text-primary" style="text-decoration: underline"
+							href="{{ route('site.events.show', $nextEvent) }}">{{ $nextEvent->name }}</a>
+					</h3>
 					<p class="text-light mb-1">
 						{{ $nextEvent->start->format('l jS F Y') }} &bull;
 						{{ $nextEvent->start->format('H:i') }} &ndash; {{ $nextEvent->end->format('H:i') }}z
 					</p>
 					<p class="text-light">{!! $nextEvent->description !!}</p>
+					<a class="btn btn-l btn-round btn-primary px-7" href="{{ route('site.events.show', $nextEvent) }}">View event
+						details</a>
 				</div>
 			@else
 				<p class="text-light">No upcoming events.</p>
