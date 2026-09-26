@@ -89,8 +89,12 @@ class PublicEventsIndexTest extends TestCase
         $response = $this->get(route('site.events.index'));
 
         $response->assertOk();
-
-        $this->assertSame(12, substr_count($response->getContent(), 'View event'));
         $response->assertSee('Go to page 2');
+        $response->assertSee('Past Event 12');
+        $response->assertDontSee('Past Event 13');
+
+        $this->get(route('site.events.index', ['page' => 2]))
+            ->assertOk()
+            ->assertSee('Past Event 13');
     }
 }

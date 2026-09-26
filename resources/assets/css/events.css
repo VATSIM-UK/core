@@ -1,4 +1,10 @@
-@import "tailwindcss";
+/*
+ * `@source` is additive and would leave Tailwind's automatic source detection
+ * enabled, so this second entry would re-emit the whole project's utilities
+ * (already shipped by tailwind.css). `source(none)` opts out of auto-detection
+ * so only the explicitly listed events views are scanned.
+ */
+@import "tailwindcss" source(none);
 
 @config '../../../tailwind.config.js';
 

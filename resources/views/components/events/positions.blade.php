@@ -18,11 +18,14 @@
 		@if ($group->count() === 1)
 			<span class="{{ $chip }}">{{ $group->first()->callsign }}</span>
 		@else
-			<span class="group/pos relative inline-flex">
+			@php($tooltipId = 'event-position-' . \Illuminate\Support\Str::random(8))
+			<span
+				class="group/pos relative inline-flex rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-1"
+				tabindex="0" aria-describedby="{{ $tooltipId }}">
 				<span class="{{ $chip }}">{{ $prefix }}<span
 						class="ml-1 font-sans text-[10px] font-medium text-blue-500">{{ $group->count() }}</span></span>
-				<span role="tooltip"
-					class="pointer-events-none absolute bottom-full left-0 z-20 mb-1.5 w-max max-w-[14rem] rounded-md bg-gray-900 px-2 py-1 font-mono text-[11px] font-semibold leading-snug text-white opacity-0 shadow-lg transition-opacity group-hover/pos:opacity-100">{{ $group->pluck('callsign')->implode(', ') }}</span>
+				<span role="tooltip" id="{{ $tooltipId }}"
+					class="pointer-events-none absolute bottom-full left-0 z-20 mb-1.5 w-max max-w-[14rem] rounded-md bg-gray-900 px-2 py-1 font-mono text-[11px] font-semibold leading-snug text-white opacity-0 shadow-lg transition-opacity group-hover/pos:opacity-100 group-focus/pos:opacity-100">{{ $group->pluck('callsign')->implode(', ') }}</span>
 			</span>
 		@endif
 	@endforeach
