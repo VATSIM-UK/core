@@ -25,7 +25,7 @@
 					@forelse ($blocks as $block)
 						@php $legend = $typeLegend[$block['type']] ?? null; @endphp
 						<button type="button" x-data='{ booking: @json($block['raw']) }'
-							@if ($block['count'] === 1) @click="window.dispatchEvent(new CustomEvent('open-detail-modal', { detail: { booking: { id: booking.id, source: booking.source, ctsBookingId: booking.cts_booking_id, type: booking.type, position: booking.position, date: booking.date, from: booking.from, to: booking.to, member: booking.member, event_name: booking.event_name, fromWeek: true } } }))"
+							@if ($block['count'] === 1) @click="window.dispatchEvent(new CustomEvent('open-detail-modal', { detail: { booking: { id: booking.id, source: booking.source, ctsBookingId: booking.cts_booking_id, type: booking.type, position: booking.position, date: booking.date, from: booking.from, to: booking.to, member: booking.member, event_name: booking.event_name, event_url: booking.event_url, fromWeek: true } } }))"
 							@else
 								wire:click="viewDayFromWeek('{{ $day->toDateString() }}')" @endif
 							class="w-full text-left rounded-md border border-gray-200 hover:border-brand/60 hover:bg-brand/5 transition-colors px-2 py-1.5 {{ $block['isOwn'] ? 'ring-2 ring-yellow-300 ring-inset' : '' }}">

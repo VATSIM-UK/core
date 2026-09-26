@@ -593,7 +593,10 @@ class Calendar extends Component
                 // Events carry their name rather than a callsign, and it is the only
                 // label the events row has to show. It is set by the repository as a
                 // dynamic property, so it is absent on every other booking type.
-                $events[] = $bookingData + ['event_name' => $booking->event_name ?? null];
+                $events[] = $bookingData + [
+                    'event_name' => $booking->event_name ?? null,
+                    'event_url' => $booking->event_url ?? null,
+                ];
 
                 continue;
             }

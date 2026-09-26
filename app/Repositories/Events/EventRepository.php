@@ -84,6 +84,7 @@ class EventRepository
                 'type' => 'EV',
                 'member' => ['cid' => '', 'display_name' => 'Unknown'],
                 'event_name' => $event->name,
+                'event_url' => route('site.events.show', $event),
             ]);
     }
 }
