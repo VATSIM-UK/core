@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@config '../../../tailwind.config.js';
+
+@source '../../../resources/views/livewire/events/**/*.blade.php';
+@source '../../../resources/views/components/events/**/*.blade.php';
+
+[x-cloak] {
+    display: none !important;
+}
+
+/*
+ * Bootstrap ships `a:hover { text-decoration: underline }` unlayered, which
+ * outranks Tailwind's layered `hover:no-underline`. On the card links that
+ * painted an underline across every line of text inside the card, so the rule
+ * has to be re-asserted unlayered here.
+ */
+.ev-page a,
+.ev-page a:hover,
+.ev-page a:focus {
+    text-decoration: none;
+}
+
+/* Links inside the rich event description should still read as links. */
+.ev-prose a,
+.ev-prose a:hover,
+.ev-prose a:focus {
+    text-decoration: underline;
+}
+
+/*
+ * normalize.css ships `a { background-color: transparent }` unlayered, which
+ * outranks Tailwind's layered bg-* utilities, so a link styled as a button (the
+ * "Book a position" CTA) rendered with no fill. revert-layer rolls the unlayered
+ * declaration back to whatever Tailwind's layer set, without naming a colour.
+ */
+.ev-page a {
+    background-color: revert-layer;
+}

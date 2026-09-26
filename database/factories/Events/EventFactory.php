@@ -5,6 +5,7 @@ namespace Database\Factories\Events;
 use App\Enums\EventChecklistItem;
 use App\Models\Events\Event;
 use App\Models\Mship\Account;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EventFactory extends Factory
@@ -22,7 +23,7 @@ class EventFactory extends Factory
             'description' => 'Test description',
             'image_url' => $this->faker->url,
             'start' => $start,
-            'end' => (clone $start)->modify('+3 hours'),
+            'end' => fn (array $attributes) => Carbon::parse($attributes['start'])->addHours(3),
             'rostered' => false,
             'published_at' => null,
             'published_by' => null,

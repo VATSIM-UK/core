@@ -7,6 +7,7 @@ use App\Models\Atc\Position;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Support\DateFormat;
+use App\Support\MemberDisplayName;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -52,6 +53,16 @@ class Event extends Model
         return $this->belongsToMany(Account::class, 'event_managers');
     }
 
+    /**
+     * @return array<int, string> abbreviated organiser names with CIDs
+     */
+    public function organiserLabels(): array
+    {
+        return $this->managers
+            ->map(fn (Account $manager): string => MemberDisplayName::abbreviatedWithCid($manager))
+            ->all();
+    }
+
     public function publisher(): BelongsTo
     {
         return $this->belongsTo(Account::class, 'published_by');
@@ -70,6 +81,11 @@ class Event extends Model
     public function scopeUpcoming(Builder $query): Builder
     {
         return $query->where('end', '>=', now());
+    }
+
+    public function scopePast(Builder $query): Builder
+    {
+        return $query->where('end', '<', now());
     }
 
     public function isDraft(): bool
