@@ -104,6 +104,14 @@
 			</template>
 
 			<div class="px-5 py-3 bg-gray-50 flex justify-end gap-2 border-t border-gray-200">
+				<template x-if="booking?.event_url">
+					{{-- The legacy theme styles bare `a` unlayered, which outranks Tailwind's
+						layered utilities, so the fill and type have to match the sibling
+						buttons inline. --}}
+					<a :href="booking.event_url"
+						style="text-decoration: none; background-color: var(--color-brand); font-size: 14px; font-weight: 400; line-height: 20px"
+						class="px-4 py-2 text-white rounded-md hover:opacity-90">View event</a>
+				</template>
 				<template x-if="booking?.fromWeek">
 					<button type="button"
 						x-on:click="$wire.viewBookingFromWeek(booking.date, booking.source, booking.id ? Number(booking.id) : null, booking.ctsBookingId); open = false"
