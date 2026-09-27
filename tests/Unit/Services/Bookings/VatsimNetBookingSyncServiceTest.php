@@ -92,7 +92,7 @@ class VatsimNetBookingSyncServiceTest extends TestCase
 
         $this->service->sync($booking);
 
-        Http::assertSent(fn ($request) => $request['cid'] === $this->mentor->id && $request['type'] === 'mentoring');
+        Http::assertSent(fn ($request) => $request['cid'] === $this->mentor->id && $request['type'] === 'training');
     }
 
     #[Test]
