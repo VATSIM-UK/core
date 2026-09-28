@@ -1,10 +1,17 @@
 /*
- * `@source` is additive and would leave Tailwind's automatic source detection
- * enabled, so this second entry would re-emit the whole project's utilities
- * (already shipped by tailwind.css). `source(none)` opts out of auto-detection
- * so only the explicitly listed events views are scanned.
+ * The events pages need their own Tailwind build because the shared
+ * `tailwind.css` leaves the app's colour palette unresolved (Filament's theme
+ * defines `--color-gray-*` in terms of `--gray-*`, which nothing sets), so the
+ * concrete colours used here have to come from this file.
+ *
+ * This MUST stay a full build (automatic source detection on). A `source(none)`
+ * build only emits the utilities the events views use, so a generic class like
+ * `.flex-col` gets emitted without its responsive sibling `.lg:flex-row`. Since
+ * this stylesheet loads after `tailwind.css`, that bare `.flex-col` then beats
+ * the nav's `lg:flex-row` on equal specificity and stacks the desktop menu
+ * vertically.
  */
-@import "tailwindcss" source(none);
+@import "tailwindcss";
 
 @config '../../../tailwind.config.js';
 
