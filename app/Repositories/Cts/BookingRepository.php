@@ -12,6 +12,7 @@ use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member as CtsMember;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Support\MemberDisplayName;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -356,12 +357,9 @@ class BookingRepository
             return ['cid' => '', 'display_name' => 'Unknown'];
         }
 
-        $firstName = $account->name_preferred;
-        $lastInitial = mb_substr($account->name_last, 0, 1).'.';
-
         return [
             'cid' => (string) $account->id,
-            'display_name' => $firstName.' '.$lastInitial,
+            'display_name' => MemberDisplayName::abbreviated($account),
         ];
     }
 }

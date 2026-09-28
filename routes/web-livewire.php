@@ -1,6 +1,8 @@
 <?php
 
 use App\Livewire\Bookings\Calendar as BookingsCalendar;
+use App\Livewire\Events\Index as EventsIndex;
+use App\Livewire\Events\Show as EventsShow;
 use App\Livewire\RetentionChecks\Fail;
 use App\Livewire\RetentionChecks\Success;
 use App\Livewire\Roster\Index;
@@ -28,4 +30,12 @@ Route::group([
 ], function () {
     Route::get('calendar/{year?}/{month?}', BookingsCalendar::class)
         ->name('calendar');
+});
+
+Route::group([
+    'as' => 'site.events.',
+    'prefix' => 'events',
+], function () {
+    Route::get('/', EventsIndex::class)->name('index');
+    Route::get('/{event}', EventsShow::class)->name('show');
 });
