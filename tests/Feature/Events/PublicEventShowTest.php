@@ -46,7 +46,9 @@ class PublicEventShowTest extends TestCase
         $this->get(route('site.events.show', $event))
             ->assertOk()
             ->assertSee('18. 10. 2026')
-            ->assertSee('18:00');
+            ->assertSee('18:00')
+            ->assertSee('18:00Z', false)
+            ->assertSee('22:00Z', false);
     }
 
     #[Test]

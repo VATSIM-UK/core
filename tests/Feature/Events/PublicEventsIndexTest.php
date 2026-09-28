@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Events;
 
 use App\Models\Events\Event;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -73,6 +74,21 @@ class PublicEventsIndexTest extends TestCase
             ->assertOk()
             ->assertSee('Rostered')
             ->assertSee('Bookable');
+    }
+
+    #[Test]
+    public function it_marks_event_times_as_zulu_on_the_card(): void
+    {
+        Event::factory()->published()->create([
+            'name' => 'Zulu Time Event',
+            'start' => Carbon::parse('2026-10-18 18:00:00', 'UTC'),
+            'end' => Carbon::parse('2026-10-18 22:00:00', 'UTC'),
+        ]);
+
+        $this->get(route('site.events.index'))
+            ->assertOk()
+            ->assertSee('18:00Z', false)
+            ->assertSee('22:00Z', false);
     }
 
     #[Test]

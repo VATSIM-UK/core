@@ -49,7 +49,7 @@
 			@if ($past)
 				{{ $start->format('M Y') }}
 			@else
-				{{ $start->toPanelTime() }} &ndash; {{ $event->end->toPanelTime() }}z
+				{{ $start->toPanelTime() }}Z &ndash; {{ $event->end->toPanelTime() }}Z
 			@endif
 		</span>
 		<span class="font-bold text-brand">View event &rarr;</span>

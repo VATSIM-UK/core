@@ -45,8 +45,8 @@
 				@svg('heroicon-m-calendar-days', 'size-4 text-blue-700') {{ $event->start->toPanelDate() }}
 			</span>
 			<span class="inline-flex items-center gap-1.5 font-semibold text-gray-700">
-				@svg('heroicon-m-clock', 'size-4 text-blue-700') {{ $event->start->toPanelTime() }} &ndash;
-				{{ $event->end->toPanelTime() }}z &middot; {{ $duration }}
+				@svg('heroicon-m-clock', 'size-4 text-blue-700') {{ $event->start->toPanelTime() }}Z &ndash;
+				{{ $event->end->toPanelTime() }}Z &middot; {{ $duration }}
 			</span>
 		</div>
 
@@ -87,8 +87,8 @@
 						</div>
 						<div class="flex justify-between gap-4 py-2.5">
 							<dt class="font-normal text-gray-500">Time</dt>
-							<dd class="m-0 font-semibold text-gray-900">{{ $event->start->toPanelTime() }} &ndash;
-								{{ $event->end->toPanelTime() }}z</dd>
+							<dd class="m-0 font-semibold text-gray-900">{{ $event->start->toPanelTime() }}Z &ndash;
+								{{ $event->end->toPanelTime() }}Z</dd>
 						</div>
 						<div class="flex justify-between gap-4 py-2.5">
 							<dt class="font-normal text-gray-500">Duration</dt>
