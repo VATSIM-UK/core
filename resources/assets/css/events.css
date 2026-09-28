@@ -1,15 +1,8 @@
 /*
- * The events pages need their own Tailwind build because the shared
- * `tailwind.css` leaves the app's colour palette unresolved (Filament's theme
- * defines `--color-gray-*` in terms of `--gray-*`, which nothing sets), so the
- * concrete colours used here have to come from this file.
- *
- * This MUST stay a full build (automatic source detection on). A `source(none)`
- * build only emits the utilities the events views use, so a generic class like
- * `.flex-col` gets emitted without its responsive sibling `.lg:flex-row`. Since
- * this stylesheet loads after `tailwind.css`, that bare `.flex-col` then beats
- * the nav's `lg:flex-row` on equal specificity and stacks the desktop menu
- * vertically.
+ * Full Tailwind build on purpose: a partial (`source(none)`) build emits
+ * `.flex-col` without `.lg:flex-row` and, loading after `tailwind.css`, would
+ * override the nav's responsive classes. It also supplies the concrete colours
+ * `tailwind.css` leaves unresolved.
  */
 @import "tailwindcss";
 

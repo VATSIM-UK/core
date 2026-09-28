@@ -5,8 +5,6 @@
 			event, with the airspace and positions it covers.</p>
 	</div>
 
-	{{-- No overflow-hidden: the position tooltips on the cards must escape the
-	section. The header rounds its own top corners instead. --}}
 	<div id="upcoming" class="rounded-xl bg-white shadow-sm ring-1 ring-gray-200/80">
 		<div class="flex shrink-0 items-center justify-between gap-3 rounded-t-xl bg-uknavy px-4 py-2.5 text-white">
 			<p role="heading" aria-level="2"
@@ -29,8 +27,6 @@
 		@endif
 	</div>
 
-	{{-- No overflow-hidden: the position tooltips on the cards must escape the
-	section. The header rounds its own top corners instead. --}}
 	<div id="past" class="rounded-xl bg-white shadow-sm ring-1 ring-gray-200/80">
 		<div class="flex shrink-0 items-center justify-between gap-3 rounded-t-xl bg-uknavy px-4 py-2.5 text-white">
 			<p role="heading" aria-level="2"

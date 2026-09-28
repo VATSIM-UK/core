@@ -2,8 +2,6 @@
 
 @php($start = $event->start)
 
-{{-- No overflow-hidden on the card: it would clip the merged-position tooltips.
-The image and footer round their own corners instead. --}}
 <a href="{{ route('site.events.show', $event) }}" wire:navigate
 	class="group flex flex-col rounded-xl bg-white no-underline shadow-sm ring-1 ring-gray-200/80 transition hover:-translate-y-0.5 hover:no-underline hover:shadow-md">
 	<div class="relative {{ $past ? 'h-[112px]' : 'h-[150px]' }} overflow-hidden rounded-t-xl">

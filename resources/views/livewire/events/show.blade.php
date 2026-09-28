@@ -62,7 +62,6 @@
 				</div>
 
 				@if ($event->positions->isNotEmpty())
-					{{-- No overflow-hidden: it would clip the merged-position tooltips. The header rounds its own corners instead. --}}
 					<div class="rounded-xl bg-white shadow-sm ring-1 ring-gray-200/80">
 						<p role="heading" aria-level="2"
 							class="m-0 flex items-center gap-1.5 rounded-t-xl bg-uknavy px-4 py-2.5 text-lg font-semibold leading-snug text-white [&_svg]:text-white">
