@@ -5,8 +5,8 @@
 			event, with the airspace and positions it covers.</p>
 	</div>
 
-	<div id="upcoming" class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200/80">
-		<div class="flex shrink-0 items-center justify-between gap-3 bg-uknavy px-4 py-2.5 text-white">
+	<div id="upcoming" class="rounded-xl bg-white shadow-sm ring-1 ring-gray-200/80">
+		<div class="flex shrink-0 items-center justify-between gap-3 rounded-t-xl bg-uknavy px-4 py-2.5 text-white">
 			<p role="heading" aria-level="2"
 				class="m-0 flex items-center gap-1.5 text-lg font-semibold leading-snug text-white [&_svg]:text-white">
 				@svg('heroicon-m-calendar-days', 'size-4 shrink-0')
@@ -27,8 +27,8 @@
 		@endif
 	</div>
 
-	<div id="past" class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200/80">
-		<div class="flex shrink-0 items-center justify-between gap-3 bg-uknavy px-4 py-2.5 text-white">
+	<div id="past" class="rounded-xl bg-white shadow-sm ring-1 ring-gray-200/80">
+		<div class="flex shrink-0 items-center justify-between gap-3 rounded-t-xl bg-uknavy px-4 py-2.5 text-white">
 			<p role="heading" aria-level="2"
 				class="m-0 flex items-center gap-1.5 text-lg font-semibold leading-snug text-white [&_svg]:text-white">
 				@svg('heroicon-m-clock', 'size-4 shrink-0')

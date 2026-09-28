@@ -62,9 +62,9 @@
 				</div>
 
 				@if ($event->positions->isNotEmpty())
-					<div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200/80">
+					<div class="rounded-xl bg-white shadow-sm ring-1 ring-gray-200/80">
 						<p role="heading" aria-level="2"
-							class="m-0 flex items-center gap-1.5 bg-uknavy px-4 py-2.5 text-lg font-semibold leading-snug text-white [&_svg]:text-white">
+							class="m-0 flex items-center gap-1.5 rounded-t-xl bg-uknavy px-4 py-2.5 text-lg font-semibold leading-snug text-white [&_svg]:text-white">
 							@svg('heroicon-m-map-pin', 'size-4 shrink-0')
 							Positions covered
 						</p>

@@ -3,8 +3,8 @@
 @php($start = $event->start)
 
 <a href="{{ route('site.events.show', $event) }}" wire:navigate
-	class="group flex flex-col overflow-hidden rounded-xl bg-white no-underline shadow-sm ring-1 ring-gray-200/80 transition hover:-translate-y-0.5 hover:no-underline hover:shadow-md">
-	<div class="relative {{ $past ? 'h-[112px]' : 'h-[150px]' }} overflow-hidden">
+	class="group flex flex-col rounded-xl bg-white no-underline shadow-sm ring-1 ring-gray-200/80 transition hover:-translate-y-0.5 hover:no-underline hover:shadow-md">
+	<div class="relative {{ $past ? 'h-[112px]' : 'h-[150px]' }} overflow-hidden rounded-t-xl">
 		<div class="absolute inset-0 {{ $past ? 'bg-gray-400' : 'bg-uknavy' }}"></div>
 		@if ($event->image_url)
 			<img src="{{ $event->image_url }}" alt="" loading="lazy" class="absolute inset-0 h-full w-full object-cover"
@@ -44,7 +44,7 @@
 		@endif
 	</div>
 
-	<div class="flex items-center justify-between border-t border-gray-100 bg-gray-50/80 px-4 py-2.5 text-sm">
+	<div class="flex items-center justify-between rounded-b-xl border-t border-gray-100 bg-gray-50/80 px-4 py-2.5 text-sm">
 		<span class="font-semibold text-gray-600">
 			@if ($past)
 				{{ $start->format('M Y') }}

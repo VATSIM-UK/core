@@ -1,10 +1,10 @@
 /*
- * `@source` is additive and would leave Tailwind's automatic source detection
- * enabled, so this second entry would re-emit the whole project's utilities
- * (already shipped by tailwind.css). `source(none)` opts out of auto-detection
- * so only the explicitly listed events views are scanned.
+ * Full Tailwind build on purpose: a partial (`source(none)`) build emits
+ * `.flex-col` without `.lg:flex-row` and, loading after `tailwind.css`, would
+ * override the nav's responsive classes. It also supplies the concrete colours
+ * `tailwind.css` leaves unresolved.
  */
-@import "tailwindcss" source(none);
+@import "tailwindcss";
 
 @config '../../../tailwind.config.js';
 
