@@ -502,6 +502,20 @@ class CalendarTest extends TestCase
     }
 
     #[Test]
+    public function it_serves_the_calendar_at_the_short_url(): void
+    {
+        $this->get('/calendar')->assertOk();
+    }
+
+    #[Test]
+    public function it_permanently_redirects_the_legacy_calendar_url(): void
+    {
+        $this->get('/atc/bookings/calendar/2026/10?day=5')
+            ->assertStatus(301)
+            ->assertRedirect('/calendar/2026/10?day=5');
+    }
+
+    #[Test]
     public function it_allows_non_staff_members_to_view(): void
     {
         $this->actingAs($this->user)

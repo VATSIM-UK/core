@@ -24,12 +24,17 @@ Route::group([
 Route::get('mship/waiting-lists/retention/success', Success::class)->name('mship.waiting-lists.retention.success');
 Route::get('mship/waiting-lists/retention/fail', Fail::class)->name('mship.waiting-lists.retention.fail');
 
-Route::group([
-    'as' => 'site.bookings.',
-    'prefix' => 'atc/bookings',
-], function () {
-    Route::get('calendar/{year?}/{month?}', BookingsCalendar::class)
-        ->name('calendar');
+Route::get('calendar/{year?}/{month?}', BookingsCalendar::class)
+    ->name('site.bookings.calendar');
+
+// Legacy URL
+Route::get('atc/bookings/calendar/{year?}/{month?}', function (?int $year = null, ?int $month = null) {
+    $parameters = array_filter([
+        'year' => $year,
+        'month' => $month,
+    ], fn (?int $value): bool => $value !== null);
+
+    return redirect()->route('site.bookings.calendar', $parameters + request()->query(), 301);
 });
 
 Route::group([
