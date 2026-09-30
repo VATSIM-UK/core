@@ -6,9 +6,11 @@ use App\Enums\EventChecklistItem;
 use App\Filament\Admin\Resources\Events\EventResource;
 use App\Filament\Admin\Resources\Events\Pages\CreateEvent;
 use App\Filament\Admin\Resources\Events\Pages\EditEvent;
+use App\Models\Atc\Position;
 use App\Models\Events\Event;
 use App\Models\Mship\Account;
 use App\Models\Permission;
+use Filament\Actions\Testing\TestAction;
 use Filament\Forms\Components\Select;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -304,5 +306,29 @@ class EventResourceTest extends TestCase
             ->assertFormFieldEnabled('start')
             ->assertFormFieldEnabled('end')
             ->assertFormFieldEnabled('positions');
+    }
+
+    public function test_add_aerodrome_action_adds_all_positions_at_the_aerodrome(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+        $existing = Position::factory()->create(['callsign' => 'EGLL_TWR']);
+        $del = Position::factory()->create(['callsign' => 'EGCC_DEL']);
+        $app = Position::factory()->create(['callsign' => 'EGCC_N_APP']);
+        Position::factory()->create(['callsign' => 'EGCN_TWR']);
+        Position::factory()->create(['callsign' => 'EGCCX_TWR']);
+
+        Livewire::test(CreateEvent::class)
+            ->fillForm(['positions' => [$existing->id, $del->id]])
+            ->callAction(TestAction::make('addAerodrome')->schemaComponent('positions'), data: ['icao' => 'EGCC'])
+            ->assertFormSet(['positions' => [$existing->id, $del->id, $app->id]]);
+    }
+
+    public function test_add_aerodrome_action_is_unavailable_once_published(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+        $event = Event::factory()->published()->create();
+
+        Livewire::test(EditEvent::class, ['record' => $event->getRouteKey()])
+            ->assertActionDoesNotExist(TestAction::make('addAerodrome')->schemaComponent('positions'));
     }
 }
