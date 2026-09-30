@@ -288,6 +288,7 @@ and migrate the test database once:
 
 ```shell
 cp .env.testing.example .env.testing
+php artisan key:generate --env=testing
 php artisan migrate --env=testing
 ```
 
