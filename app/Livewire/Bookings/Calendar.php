@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Bookings;
 
+use App\Exceptions\Bookings\PositionRosteredException;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
@@ -1051,6 +1052,8 @@ class Calendar extends Component
             ]);
             $this->refreshData();
             $this->dispatch('booking-created');
+        } catch (PositionRosteredException $e) {
+            $this->dispatch('booking-warning', message: $e->getMessage(), eventUrl: route('site.events.show', $e->event));
         } catch (RuntimeException $e) {
             $this->dispatch('booking-warning', message: $e->getMessage());
         } catch (InvalidArgumentException $e) {

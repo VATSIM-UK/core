@@ -48,6 +48,12 @@ class BookingService
             );
 
             if ($positionId !== null && $type === Booking::TYPE_STANDARD) {
+                $this->policy->validateNotRostered(
+                    $positionId,
+                    Carbon::parse($data['starts_at']),
+                    Carbon::parse($data['ends_at'])
+                );
+
                 $this->validateMemberQualification(
                     $data['member_id'],
                     $positionId
@@ -97,6 +103,7 @@ class BookingService
             || $type !== $booking->type;
 
         if ($memberId !== null && $positionId !== null && $type === Booking::TYPE_STANDARD && $bookingChanged) {
+            $this->policy->validateNotRostered($positionId, $startsAt, $endsAt);
             $this->validateMemberQualification($memberId, $positionId);
 
             $this->policy->validateAdvanceBookingLimits($memberId, $startsAt, $booking->id);
