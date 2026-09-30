@@ -3,6 +3,7 @@
 namespace Tests\Feature\Events;
 
 use App\Enums\EventChecklistItem;
+use App\Filament\Admin\Resources\Events\EventResource;
 use App\Filament\Admin\Resources\Events\Pages\CreateEvent;
 use App\Filament\Admin\Resources\Events\Pages\EditEvent;
 use App\Models\Events\Event;
@@ -51,7 +52,8 @@ class EventResourceTest extends TestCase
                 'end' => '2026-09-01 21:00:00',
             ])
             ->call('create')
-            ->assertHasNoFormErrors();
+            ->assertHasNoFormErrors()
+            ->assertRedirect(EventResource::getUrl('edit', ['record' => Event::where('name', 'Test event')->first()]));
 
         $this->assertDatabaseHas('events', ['name' => 'Test event']);
     }
@@ -234,5 +236,32 @@ class EventResourceTest extends TestCase
             ->callAction('publish');
 
         $this->assertTrue($event->fresh()->published_at->greaterThan($originallyPublishedAt));
+    }
+
+    public function test_unpublish_action_is_hidden_for_drafts(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+        $event = Event::factory()->create(['published_at' => null]);
+
+        Livewire::test(EditEvent::class, ['record' => $event->getRouteKey()])
+            ->assertActionHidden('unpublish');
+    }
+
+    public function test_unpublish_action_unlocks_details(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+        $event = Event::factory()->published()->create();
+
+        Livewire::test(EditEvent::class, ['record' => $event->getRouteKey()])
+            ->callAction('unpublish')
+            ->assertNotified();
+
+        $this->assertTrue($event->fresh()->isDraft());
+
+        Livewire::test(EditEvent::class, ['record' => $event->getRouteKey()])
+            ->assertFormFieldEnabled('name')
+            ->assertFormFieldEnabled('start')
+            ->assertFormFieldEnabled('end')
+            ->assertFormFieldEnabled('positions');
     }
 }

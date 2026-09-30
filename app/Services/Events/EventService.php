@@ -23,6 +23,13 @@ class EventService
         return $event->unpublishedChecklist();
     }
 
+    public function unpublish(Event $event): void
+    {
+        $event->published_at = null;
+        $event->published_by = null;
+        $event->save();
+    }
+
     /**
      * Only newly ticked items are attributed to $account, so unticking and
      * reticking reattributes an item to whoever reticked it.
