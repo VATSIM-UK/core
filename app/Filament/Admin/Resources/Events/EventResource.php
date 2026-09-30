@@ -24,6 +24,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -135,7 +136,14 @@ class EventResource extends Resource
                     ]),
                     Toggle::make('rostered')
                         ->label('Rostered')
-                        ->helperText('This will block bookings for the specified positions from being made by members.'),
+                        ->helperText('This will block bookings for the specified positions from being made by members.')
+                        ->live(),
+                    TextInput::make('roster_url')
+                        ->label('Roster URL')
+                        ->url()
+                        ->maxLength(191)
+                        ->columnSpanFull()
+                        ->visible(fn (Get $get): bool => (bool) $get('rostered')),
                 ]),
             Section::make('Checklist')
                 ->description('Track the prep steps before publishing. Ticking a box saves straight away.')

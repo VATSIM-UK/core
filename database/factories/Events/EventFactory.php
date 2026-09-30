@@ -25,6 +25,7 @@ class EventFactory extends Factory
             'start' => $start,
             'end' => fn (array $attributes) => Carbon::parse($attributes['start'])->addHours(3),
             'rostered' => false,
+            'roster_url' => null,
             'published_at' => null,
             'published_by' => null,
         ];

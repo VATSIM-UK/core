@@ -29,6 +29,7 @@ class Event extends Model
         'start',
         'end',
         'rostered',
+        'roster_url',
         'published_at',
         'published_by',
     ];
@@ -39,6 +40,15 @@ class Event extends Model
         'rostered' => 'boolean',
         'published_at' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (Event $event): void {
+            if (! $event->rostered) {
+                $event->roster_url = null;
+            }
+        });
+    }
 
     public function positions(): BelongsToMany
     {
