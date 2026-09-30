@@ -100,7 +100,13 @@
 						</div>
 						<div class="flex justify-between gap-4 py-2.5">
 							<dt class="font-normal text-gray-500">Booking</dt>
-							<dd class="m-0 font-semibold text-gray-900">{{ $event->rostered ? 'Rostered' : 'Open' }}</dd>
+							<dd class="m-0 font-semibold text-gray-900">
+								@if ($event->rostered && $event->roster_url)
+									<a href="{{ $event->roster_url }}" target="_blank" rel="noopener" class="text-brand underline">Rostered</a>
+								@else
+									{{ $event->rostered ? 'Rostered' : 'Open' }}
+								@endif
+							</dd>
 						</div>
 						@if ($event->organiserLabels())
 							<div class="flex justify-between gap-4 py-2.5">
@@ -123,9 +129,17 @@
 							<p class="mb-0 text-center text-sm text-gray-500">Opens the bookings calendar for this date</p>
 						@endunless
 
+						@if ($event->rostered && $event->roster_url)
+							<a href="{{ $event->roster_url }}" target="_blank" rel="noopener"
+								class="no-underline {{ $actionButton }} {{ $actionPrimary }} hover:no-underline">
+								@svg('heroicon-m-clipboard-document-list', 'size-4')
+								View roster &rarr;
+							</a>
+						@endif
+
 						<div x-data="{ open: false }" class="relative">
 							<button type="button" @click="open = !open"
-								class="{{ $actionButton }} {{ $event->rostered ? $actionPrimary : $actionPlain }}">
+								class="{{ $actionButton }} {{ $event->rostered && !$event->roster_url ? $actionPrimary : $actionPlain }}">
 								@svg('heroicon-m-calendar-days', 'size-4')
 								Add to calendar
 							</button>

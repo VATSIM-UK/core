@@ -56,6 +56,47 @@ class EventResourceTest extends TestCase
         $this->assertDatabaseHas('events', ['name' => 'Test event']);
     }
 
+    public function test_roster_url_is_only_visible_when_rostered(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+
+        Livewire::test(CreateEvent::class)
+            ->assertFormFieldHidden('roster_url')
+            ->fillForm(['rostered' => true])
+            ->assertFormFieldVisible('roster_url');
+    }
+
+    public function test_roster_url_is_saved_for_rostered_events(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+
+        Livewire::test(CreateEvent::class)
+            ->fillForm([
+                'name' => 'Test event',
+                'start' => '2026-09-01 18:00:00',
+                'end' => '2026-09-01 21:00:00',
+                'rostered' => true,
+                'roster_url' => 'https://example.com/roster',
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('events', ['name' => 'Test event', 'roster_url' => 'https://example.com/roster']);
+    }
+
+    public function test_roster_url_is_cleared_when_unrostered(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+        $event = Event::factory()->create(['rostered' => true, 'roster_url' => 'https://example.com/roster']);
+
+        Livewire::test(EditEvent::class, ['record' => $event->getRouteKey()])
+            ->fillForm(['rostered' => false])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        $this->assertNull($event->fresh()->roster_url);
+    }
+
     public function test_event_times_must_be_at_15_minute_intervals(): void
     {
         $this->actingAs($this->userWithPermission('events.manage'));
