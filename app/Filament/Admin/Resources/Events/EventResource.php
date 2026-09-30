@@ -7,10 +7,12 @@ use App\Filament\Admin\Resources\Events\Pages\CreateEvent;
 use App\Filament\Admin\Resources\Events\Pages\EditEvent;
 use App\Filament\Admin\Resources\Events\Pages\ListEvents;
 use App\Filament\Admin\Resources\Events\Pages\ViewEvent;
+use App\Models\Atc\Position;
 use App\Models\Events\Event;
 use App\Models\Mship\Account;
 use App\Rules\QuarterHourRule;
 use App\Services\Events\EventService;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\CheckboxList;
@@ -120,7 +122,26 @@ class EventResource extends Resource
                             ->searchable()
                             ->disabled(fn (?Event $record): bool => static::detailsAreLocked($record))
                             ->helperText(fn (?Event $record): string => static::lockedHelperText($record)
-                                ?? 'The ATC positions the event covers.'),
+                                ?? 'The ATC positions the event covers.')
+                            ->hintAction(
+                                Action::make('addAerodrome')
+                                    ->label('Add aerodrome')
+                                    ->icon('heroicon-m-plus')
+                                    ->hidden(fn (?Event $record): bool => static::detailsAreLocked($record))
+                                    ->modalHeading('Add all positions at an aerodrome')
+                                    ->modalSubmitActionLabel('Add')
+                                    ->schema([
+                                        Select::make('icao')
+                                            ->label('Aerodrome')
+                                            ->options(fn (): array => static::aerodromeOptions())
+                                            ->searchable()
+                                            ->required(),
+                                    ])
+                                    ->action(fn (Select $component, array $data) => $component->state(array_values(array_unique([
+                                        ...$component->getState() ?? [],
+                                        ...Position::where('callsign', 'like', $data['icao'].'\_%')->orderBy('callsign')->pluck('id')->all(),
+                                    ])))),
+                            ),
                         Select::make('managers')
                             ->label('Event managers')
                             ->relationship(
@@ -190,6 +211,20 @@ class EventResource extends Resource
     public static function detailsAreLocked(?Event $record): bool
     {
         return $record?->isPublished() ?? false;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private static function aerodromeOptions(): array
+    {
+        return Position::pluck('callsign')
+            ->map(fn (string $callsign): string => strtok($callsign, '_'))
+            ->filter(fn (string $prefix): bool => preg_match('/^[A-Z]{4}$/', $prefix) === 1)
+            ->countBy()
+            ->sortKeys()
+            ->map(fn (int $count, string $icao): string => "{$icao} ({$count} positions)")
+            ->all();
     }
 
     private static function lockedHelperText(?Event $record): ?string
