@@ -195,7 +195,7 @@ class EventResource extends Resource
     private static function lockedHelperText(?Event $record): ?string
     {
         return static::detailsAreLocked($record)
-            ? 'Locked because this event is published.'
+            ? 'Locked because this event is published. Unpublish it to make changes.'
             : null;
     }
 
