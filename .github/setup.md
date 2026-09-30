@@ -282,4 +282,13 @@ php artisan serve --host core.test --port 80
 php artisan test
 ```
 
-If you wish you can use a separate `.env.testing` for testing.
+To keep tests away from your development databases, create a `.env.testing`
+(it replaces `.env` when running tests; unset keys fall back to config defaults)
+and migrate the test database once:
+
+```shell
+cp .env.testing.example .env.testing
+php artisan migrate --env=testing
+```
+
+Re-run the migrate command whenever new migrations are added.
