@@ -11,6 +11,7 @@ use App\Models\Cts\PositionValidation;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Training\Mentoring\MentorTrainingPosition;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\MentorPermissionService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -376,6 +377,68 @@ class MentorPermissionServiceTest extends TestCase
 
         $this->assertContains($mentor->id, $p2Ids);
         $this->assertNotContains($mentor->id, $p1Ids);
+    }
+
+    #[Test]
+    public function it_resolves_students_from_training_places_on_the_given_callsigns(): void
+    {
+        $inScopeStudent = $this->createStudentOnTrainingPlace(
+            $this->createTrainingPosition('S3 Training', ['EGLL_APP'])
+        );
+        $outOfScopeStudent = $this->createStudentOnTrainingPlace(
+            $this->createTrainingPosition('C1 Training', ['EGTT_CTR'])
+        );
+
+        $accountIds = $this->service->studentAccountIdsForCallsigns(['EGLL_APP']);
+
+        $this->assertContains($inScopeStudent->id, $accountIds);
+        $this->assertNotContains($outOfScopeStudent->id, $accountIds);
+    }
+
+    #[Test]
+    public function it_scopes_students_to_the_positions_matched_rather_than_the_category(): void
+    {
+        $studentOnPosition = $this->createStudentOnTrainingPlace(
+            $this->createTrainingPosition('S3 Training', ['EGLL_APP'])
+        );
+        $studentElsewhereInCategory = $this->createStudentOnTrainingPlace(
+            $this->createTrainingPosition('S3 Training', ['EGKK_APP'])
+        );
+
+        $accountIds = $this->service->studentAccountIdsForCallsigns(['EGLL_APP']);
+
+        $this->assertContains($studentOnPosition->id, $accountIds);
+        $this->assertNotContains($studentElsewhereInCategory->id, $accountIds);
+    }
+
+    #[Test]
+    public function it_resolves_no_students_or_places_without_callsigns(): void
+    {
+        $this->createStudentOnTrainingPlace($this->createTrainingPosition('S3 Training', ['EGLL_APP']));
+
+        $this->assertSame([], $this->service->studentAccountIdsForCallsigns([]));
+        $this->assertTrue($this->service->trainingPlacesForCallsigns([])->isEmpty());
+    }
+
+    #[Test]
+    public function it_ignores_training_places_without_matching_callsigns(): void
+    {
+        $student = $this->createStudentOnTrainingPlace($this->createTrainingPosition('S3 Training', []));
+
+        $this->assertNotContains($student->id, $this->service->studentAccountIdsForCallsigns(['EGLL_APP']));
+    }
+
+    private function createStudentOnTrainingPlace(TrainingPosition $trainingPosition): Account
+    {
+        $student = $this->createAccountWithMember();
+
+        TrainingPlace::withoutEvents(function () use ($student, $trainingPosition): void {
+            TrainingPlace::factory()->forTrainingPosition($trainingPosition)->create([
+                'account_id' => $student->id,
+            ]);
+        });
+
+        return $student;
     }
 
     private function createMentorAssignment(Account $account, TrainingPosition|Qualification $mentorable, Account $actor): void

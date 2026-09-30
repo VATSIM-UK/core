@@ -27,6 +27,7 @@ class ApplicationOverviewWidget extends StatsOverviewWidget
 
         $totals = VisitTransferStats::totals($this->type, $start, $end);
         $avgDays = VisitTransferStats::averageDaysToDecision($this->type, $start, $end);
+        $avgDaysToResolution = VisitTransferStats::avgDaysToResolution($this->type, $start, $end);
 
         return [
             Stat::make('Total Applications', $totals['total'])->color('gray'),
@@ -49,6 +50,10 @@ class ApplicationOverviewWidget extends StatsOverviewWidget
 
             Stat::make('Avg. Days to Decision', $avgDays ?? '—')
                 ->description('Submission to accept/reject')
+                ->color('info'),
+
+            Stat::make('Avg. Days to Resolution', $avgDaysToResolution ?? '—')
+                ->description('Submission to completion / cancellation')
                 ->color('info'),
         ];
     }

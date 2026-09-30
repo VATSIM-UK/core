@@ -140,7 +140,7 @@ class ShowTest extends TestCase
         Livewire::test(Show::class, ['account' => $account])
             ->set('searchTerm', 'EGKK')
             ->call('search')
-            ->assertSeeTextInOrder(['EGKK_TWR', '\u2705', 'EGKK_APP', '\u274c']);
+            ->assertSeeTextInOrder(['EGKK_TWR', 'Can control', 'EGKK_APP', 'Cannot control']);
     }
 
     public function test_shows_roster_restriction_only_when_exists()
@@ -163,5 +163,22 @@ class ShowTest extends TestCase
         Livewire::test(Show::class, ['account' => $account])
             ->assertDontSee('Search')
             ->assertSee('Test restriction');
+    }
+
+    public function test_can_check_position_for_account_not_on_roster_without_error(): void
+    {
+        $account = Account::factory()->create();
+        $account->addState(State::findByCode('DIVISION'));
+        $account->addQualification(Qualification::code('S2')->first());
+
+        Position::factory()->create([
+            'callsign' => 'EGKK_APP',
+            'type' => Position::TYPE_APPROACH,
+        ]);
+
+        Livewire::test(Show::class, ['account' => $account])
+            ->set('searchTerm', 'EGKK_APP')
+            ->call('search')
+            ->assertSee("{$account->id} cannot control EGKK_APP");
     }
 }

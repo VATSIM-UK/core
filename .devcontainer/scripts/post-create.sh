@@ -20,6 +20,7 @@ sudo chown vscode:vscode \
     /home/vscode/.npm
 
 git config --global --add safe.directory /workspace
+git config --global push.autoSetupRemote true
 
 if [ ! -f .env ]; then
     step "Creating .env"

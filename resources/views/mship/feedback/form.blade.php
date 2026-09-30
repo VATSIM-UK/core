@@ -13,7 +13,21 @@
 
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$('.datetimepickercustom').datetimepicker();
+			$('.datetimepickercustom').each(function() {
+				var $input = $(this),
+					now = new Date(),
+					zulu = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+
+				if ($.trim($input.val() || '') !== '') {
+					$input.datetimepicker();
+
+					return;
+				}
+
+				$input.datetimepicker({
+					value: zulu
+				});
+			});
 
 			$('.searchable-select').select2({
 				placeholder: "Select or search position...",

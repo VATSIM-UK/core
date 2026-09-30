@@ -25,6 +25,7 @@ class EndorsementRequestCreateTest extends BaseTrainingPanelTestCase
         $positionGroup = PositionGroup::factory()->create();
         $endorsementRequest = EndorsementRequest::factory()->create([
             'account_id' => $accountWithRequest->id,
+            'requested_by' => $this->panelUser->id,
             'endorsable_id' => $positionGroup->id,
             'endorsable_type' => PositionGroup::class,
         ]);

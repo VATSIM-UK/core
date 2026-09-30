@@ -9,6 +9,7 @@ use App\Models\Cts\Member;
 use App\Models\Cts\Position as CtsPosition;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\MentorPermissionService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -119,6 +120,9 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
         $student = Account::factory()->create();
         $studentCtsMember = $this->getOrCreateCtsMember($student);
 
+        $this->createTrainingPlaceFor($student, $positionOne);
+        $this->createTrainingPlaceFor($student, $positionTwo);
+
         $sessionInCategoryOne = $this->insertSession($mentorCtsMember->id, $studentCtsMember->id, 'EGKK_GND');
         $sessionInCategoryTwo = $this->insertSession($mentorCtsMember->id, $studentCtsMember->id, 'EGKK_TWR');
 
@@ -148,6 +152,9 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
         $student = Account::factory()->create();
         $studentCtsMember = $this->getOrCreateCtsMember($student);
 
+        $this->createTrainingPlaceFor($student, $positionOne);
+        $this->createTrainingPlaceFor($student, $positionTwo);
+
         $otherMentor = Account::factory()->create();
         $otherMentorCtsMember = $this->getOrCreateCtsMember($otherMentor);
 
@@ -175,6 +182,8 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
         $student = Account::factory()->create();
         $studentCtsMember = $this->getOrCreateCtsMember($student);
 
+        $this->createTrainingPlaceFor($student, $trainingPosition);
+
         $filedId = $this->insertSession($mentorCtsMember->id, $studentCtsMember->id, 'EGNM_GND', filed: now()->toDateTimeString());
         $unfiledId = $this->insertSession($mentorCtsMember->id, $studentCtsMember->id, 'EGNM_GND', filed: null);
 
@@ -199,6 +208,8 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
         $student = Account::factory()->create();
         $studentCtsMember = $this->getOrCreateCtsMember($student);
 
+        $this->createTrainingPlaceFor($student, $trainingPosition);
+
         $sessionId = $this->insertSession($mentorCtsMember->id, $studentCtsMember->id, 'EGNT_GND', filed: now()->toDateTimeString());
         $session = Session::on('cts')->find($sessionId);
 
@@ -218,6 +229,8 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
 
         $student = Account::factory()->create();
         $studentCtsMember = $this->getOrCreateCtsMember($student);
+
+        $this->createTrainingPlaceFor($student, $trainingPosition);
 
         $sessionId = $this->insertSession($mentorCtsMember->id, $studentCtsMember->id, 'EGNS_GND', noShow: 1, filed: null);
         $session = Session::on('cts')->find($sessionId);
@@ -247,6 +260,8 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
 
         $student = Account::factory()->create();
         $studentCtsMember = $this->getOrCreateCtsMember($student);
+
+        $this->createTrainingPlaceFor($student, $this->createTrainingPosition('OBS to S1 Training', 'EGLL_GND'));
 
         $sessionId = $this->insertSession(
             $mentorCtsMember->id,
@@ -281,6 +296,8 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
         $student = Account::factory()->create();
         $studentCtsMember = $this->getOrCreateCtsMember($student);
 
+        $this->createTrainingPlaceFor($student, $visiblePosition);
+
         $otherMentor = Account::factory()->create();
         $otherMentorCtsMember = $this->getOrCreateCtsMember($otherMentor);
 
@@ -309,6 +326,33 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
             ->assertCanNotSeeTableRecords([$hiddenMentorSession]);
     }
 
+    #[Test]
+    public function it_hides_higher_rated_history_for_students_who_only_hold_a_lower_place(): void
+    {
+        $appPosition = $this->createTrainingPosition('S3 Training', 'EGLL_APP');
+        $gndPosition = $this->createTrainingPosition('OBS to S1 Training', 'EGLL_GND');
+        $twrPosition = $this->createTrainingPosition('S2 Training', 'EGLL_TWR');
+
+        $mentorCtsMember = $this->getOrCreateCtsMember($this->panelUser);
+        app(MentorPermissionService::class)->assignToMentorable($this->panelUser, $appPosition, $this->panelUser, 'S3 Training');
+
+        $student = Account::factory()->create();
+        $studentCtsMember = $this->getOrCreateCtsMember($student);
+
+        $this->createTrainingPlaceFor($student, $gndPosition);
+
+        $obsSessionId = $this->insertSession($mentorCtsMember->id, $studentCtsMember->id, 'EGLL_GND', filed: now()->toDateTimeString());
+        $s2SessionId = $this->insertSession($mentorCtsMember->id, $studentCtsMember->id, 'EGLL_TWR', filed: now()->toDateTimeString());
+
+        $obsSession = Session::on('cts')->find($obsSessionId);
+        $s2Session = Session::on('cts')->find($s2SessionId);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(MentoringHistory::class, ['category' => MentorPermissionService::ALL_CATEGORIES])
+            ->assertCanSeeTableRecords([$obsSession])
+            ->assertCanNotSeeTableRecords([$s2Session]);
+    }
+
     private function createTrainingPosition(string $category, string $callsign): TrainingPosition
     {
         CtsPosition::firstOrCreate(['callsign' => $callsign]);
@@ -317,6 +361,13 @@ class MentoringHistoryTest extends BaseTrainingPanelTestCase
             'category' => $category,
             'cts_positions' => [$callsign],
         ]);
+    }
+
+    private function createTrainingPlaceFor(Account $account, TrainingPosition $trainingPosition): TrainingPlace
+    {
+        return TrainingPlace::factory()
+            ->forTrainingPosition($trainingPosition)
+            ->createQuietly(['account_id' => $account->id]);
     }
 
     private function insertSession(

@@ -29,6 +29,17 @@ trait HasMentoringPermissions
             ->toArray();
     }
 
+    /**
+     * CIDs of the students whose training places fall within this
+     * member's mentoring scope, i.e. the students they may mentor.
+     *
+     * @return array<int, int>
+     */
+    public function studentAccountIdsInMentoringScope(): array
+    {
+        return app(MentorPermissionService::class)->studentAccountIdsForCallsigns($this->getAllAssignedCallsigns());
+    }
+
     public function getAvailableMentoringCategories(): array
     {
         $allCategories = array_merge(

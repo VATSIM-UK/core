@@ -1,25 +1,29 @@
 <x-slot name="title">Search Roster</x-slot>
-<div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
-	<div class="bg-white px-6 py-12 shadow space-y-6 rounded-lg sm:px-12">
-		<form wire:submit="search" class="flex flex-col space-y-4">
-			<div>
-				<label for="email" class="block text-sm font-medium leading-6 text-gray-900">VATSIM CID</label>
-				<div class="mt-2">
-					<input wire:model="searchTerm" id="search" name="search" type="search" autocomplete="off" required
-						class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-				</div>
+
+<main class="w-full max-w-[480px]">
+	<x-filament::section>
+		<x-slot name="heading">
+			<span class="relative flex w-full items-center justify-center">
+				<span class="absolute left-0">
+					<x-filament::icon-button icon="heroicon-m-arrow-left" color="gray" size="sm" tag="a" label="Back"
+						wire:navigate :href="route('site.roster.index')" />
+				</span>
+				<span>Find a controller</span>
+			</span>
+		</x-slot>
+
+		<form wire:submit="search" class="space-y-4 text-left">
+			<p class="text-sm text-gray-600">Enter a VATSIM CID to view roster status and endorsements.</p>
+
+			<div class="space-y-1">
+				<label for="roster-search" class="block text-sm font-semibold text-gray-900">VATSIM CID</label>
+				<x-filament::input.wrapper>
+					<x-filament::input id="roster-search" type="search" wire:model="searchTerm" required autocomplete="off"
+						placeholder="e.g. 1234567" />
+				</x-filament::input.wrapper>
 			</div>
 
-			<div>
-				<button type="submit"
-					class="flex w-full justify-center rounded-md bg-brand px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-xs hover:bg-sky-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-					Search
-				</button>
-			</div>
+			<x-filament::button type="submit">Search roster</x-filament::button>
 		</form>
-		<div>
-			<a wire:navigate href="{{ route('site.roster.index') }}" class="text-bold text-blue-500 hover:cursor-pointer">Go
-				back</a>
-		</div>
-	</div>
-</div>
+	</x-filament::section>
+</main>

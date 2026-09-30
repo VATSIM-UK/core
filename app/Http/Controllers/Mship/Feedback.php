@@ -40,9 +40,21 @@ class Feedback extends \App\Http\Controllers\BaseController
         ]);
 
         if ($validator->fails()) {
+            $messages = [];
+
+            if ($validator->errors()->has('cid')) {
+                $messages[] = 'Please enter a valid CID.';
+            }
+
+            if ($validator->errors()->has('datetime')) {
+                $messages[] = array_keys($validator->failed()['datetime']) === ['BeforeOrEqual']
+                    ? 'The date and time cannot be in the future.'
+                    : 'Please enter a valid date and time.';
+            }
+
             return response()->json([
                 'valid' => false,
-                'message' => 'Please enter a valid CID and date/time.',
+                'message' => implode(' ', $messages),
             ], 422);
         }
 

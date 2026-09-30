@@ -139,9 +139,7 @@ jobs:
         run: php artisan telescope:publish
 
       - name: Cache Application
-        run: |
-          php artisan route:cache
-          php artisan config:cache
+        run: php artisan route:cache
 
       - name: Serve Application
         run: php artisan serve -q &

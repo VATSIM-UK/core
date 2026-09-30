@@ -18,7 +18,7 @@ class TwoFactorResetNotificationTest extends TestCase
         $mail = (new TwoFactorReset($administrator))->toMail($member);
         $rendered = $mail->render();
 
-        $this->assertStringContainsString($administrator->name, $rendered);
+        $this->assertStringContainsString(e($administrator->name), $rendered);
         $this->assertStringContainsString('two-factor authentication', strtolower($rendered));
         $this->assertStringNotContainsString('HELPDESK-1234', $rendered);
     }

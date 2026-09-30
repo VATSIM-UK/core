@@ -208,11 +208,19 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             return false;
         }
 
+        $now = now();
+
         return Session::query()
             ->where('student_id', $memberId)
             ->whereIn('position', $callsigns)
             ->whereNotNull('taken_date')
-            ->where('taken_date', '>=', now()->toDateString())
+            ->where(function ($query) use ($now) {
+                $query->where('taken_date', '>', $now->toDateString())
+                    ->orWhere(function ($q) use ($now) {
+                        $q->where('taken_date', $now->toDateString())
+                            ->where('taken_to', '>', $now->toTimeString());
+                    });
+            })
             ->where('session_done', 0)
             ->whereNull('cancelled_datetime')
             ->exists();

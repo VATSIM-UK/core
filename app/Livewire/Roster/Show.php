@@ -31,7 +31,7 @@ class Show extends Component
     {
         $this->positions = Position::real()->where('callsign', 'LIKE', "%{$this->searchTerm}%")->take(10)->get()->all();
 
-        if (! $this->positions) {
+        if (empty($this->positions)) {
             $this->searchTerm = null;
             $this->positions = null;
 

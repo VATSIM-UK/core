@@ -3,11 +3,14 @@
 namespace Tests\Feature\Events;
 
 use App\Enums\EventChecklistItem;
+use App\Filament\Admin\Resources\Events\EventResource;
 use App\Filament\Admin\Resources\Events\Pages\CreateEvent;
 use App\Filament\Admin\Resources\Events\Pages\EditEvent;
+use App\Models\Atc\Position;
 use App\Models\Events\Event;
 use App\Models\Mship\Account;
 use App\Models\Permission;
+use Filament\Actions\Testing\TestAction;
 use Filament\Forms\Components\Select;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -51,9 +54,51 @@ class EventResourceTest extends TestCase
                 'end' => '2026-09-01 21:00:00',
             ])
             ->call('create')
-            ->assertHasNoFormErrors();
+            ->assertHasNoFormErrors()
+            ->assertRedirect(EventResource::getUrl('edit', ['record' => Event::where('name', 'Test event')->first()]));
 
         $this->assertDatabaseHas('events', ['name' => 'Test event']);
+    }
+
+    public function test_roster_url_is_only_visible_when_rostered(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+
+        Livewire::test(CreateEvent::class)
+            ->assertFormFieldHidden('roster_url')
+            ->fillForm(['rostered' => true])
+            ->assertFormFieldVisible('roster_url');
+    }
+
+    public function test_roster_url_is_saved_for_rostered_events(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+
+        Livewire::test(CreateEvent::class)
+            ->fillForm([
+                'name' => 'Test event',
+                'start' => '2026-09-01 18:00:00',
+                'end' => '2026-09-01 21:00:00',
+                'rostered' => true,
+                'roster_url' => 'https://example.com/roster',
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('events', ['name' => 'Test event', 'roster_url' => 'https://example.com/roster']);
+    }
+
+    public function test_roster_url_is_cleared_when_unrostered(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+        $event = Event::factory()->create(['rostered' => true, 'roster_url' => 'https://example.com/roster']);
+
+        Livewire::test(EditEvent::class, ['record' => $event->getRouteKey()])
+            ->fillForm(['rostered' => false])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        $this->assertNull($event->fresh()->roster_url);
     }
 
     public function test_event_times_must_be_at_15_minute_intervals(): void
@@ -173,12 +218,39 @@ class EventResourceTest extends TestCase
         $event = Event::factory()->create();
 
         Livewire::test(EditEvent::class, ['record' => $event->getRouteKey()])
-            ->assertFormFieldExists('manager_id', function (Select $field) use ($staff, $member): bool {
+            ->assertFormFieldExists('managers', function (Select $field) use ($staff, $member): bool {
                 $options = $field->getOptions();
 
-                return array_key_exists($staff->id, $options)
+                return $field->isMultiple()
+                    && array_key_exists($staff->id, $options)
                     && ! array_key_exists($member->id, $options);
             });
+    }
+
+    public function test_multiple_managers_can_be_assigned_to_an_event(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+        $managers = collect([
+            $this->userWithPermission('events.view'),
+            $this->userWithPermission('events.view'),
+        ]);
+
+        Livewire::test(CreateEvent::class)
+            ->fillForm([
+                'name' => 'Test event',
+                'start' => '2026-09-01 18:00:00',
+                'end' => '2026-09-01 21:00:00',
+                'managers' => $managers->pluck('id')->all(),
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $event = Event::where('name', 'Test event')->firstOrFail();
+
+        $this->assertEqualsCanonicalizing(
+            $managers->pluck('id')->all(),
+            $event->managers->pluck('id')->all(),
+        );
     }
 
     public function test_publish_action_publishes_event(): void
@@ -207,5 +279,56 @@ class EventResourceTest extends TestCase
             ->callAction('publish');
 
         $this->assertTrue($event->fresh()->published_at->greaterThan($originallyPublishedAt));
+    }
+
+    public function test_unpublish_action_is_hidden_for_drafts(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+        $event = Event::factory()->create(['published_at' => null]);
+
+        Livewire::test(EditEvent::class, ['record' => $event->getRouteKey()])
+            ->assertActionHidden('unpublish');
+    }
+
+    public function test_unpublish_action_unlocks_details(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+        $event = Event::factory()->published()->create();
+
+        Livewire::test(EditEvent::class, ['record' => $event->getRouteKey()])
+            ->callAction('unpublish')
+            ->assertNotified();
+
+        $this->assertTrue($event->fresh()->isDraft());
+
+        Livewire::test(EditEvent::class, ['record' => $event->getRouteKey()])
+            ->assertFormFieldEnabled('name')
+            ->assertFormFieldEnabled('start')
+            ->assertFormFieldEnabled('end')
+            ->assertFormFieldEnabled('positions');
+    }
+
+    public function test_add_aerodrome_action_adds_all_positions_at_the_aerodrome(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+        $existing = Position::factory()->create(['callsign' => 'EGLL_TWR']);
+        $del = Position::factory()->create(['callsign' => 'EGCC_DEL']);
+        $app = Position::factory()->create(['callsign' => 'EGCC_N_APP']);
+        Position::factory()->create(['callsign' => 'EGCN_TWR']);
+        Position::factory()->create(['callsign' => 'EGCCX_TWR']);
+
+        Livewire::test(CreateEvent::class)
+            ->fillForm(['positions' => [$existing->id, $del->id]])
+            ->callAction(TestAction::make('addAerodrome')->schemaComponent('positions'), data: ['icao' => 'EGCC'])
+            ->assertFormSet(['positions' => [$existing->id, $del->id, $app->id]]);
+    }
+
+    public function test_add_aerodrome_action_is_unavailable_once_published(): void
+    {
+        $this->actingAs($this->userWithPermission('events.manage'));
+        $event = Event::factory()->published()->create();
+
+        Livewire::test(EditEvent::class, ['record' => $event->getRouteKey()])
+            ->assertActionDoesNotExist(TestAction::make('addAerodrome')->schemaComponent('positions'));
     }
 }

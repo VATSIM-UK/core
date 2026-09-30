@@ -7,10 +7,12 @@ use App\Filament\Admin\Resources\Events\Pages\CreateEvent;
 use App\Filament\Admin\Resources\Events\Pages\EditEvent;
 use App\Filament\Admin\Resources\Events\Pages\ListEvents;
 use App\Filament\Admin\Resources\Events\Pages\ViewEvent;
+use App\Models\Atc\Position;
 use App\Models\Events\Event;
 use App\Models\Mship\Account;
 use App\Rules\QuarterHourRule;
 use App\Services\Events\EventService;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\CheckboxList;
@@ -24,6 +26,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -119,22 +122,49 @@ class EventResource extends Resource
                             ->searchable()
                             ->disabled(fn (?Event $record): bool => static::detailsAreLocked($record))
                             ->helperText(fn (?Event $record): string => static::lockedHelperText($record)
-                                ?? 'The ATC positions the event covers.'),
-                        Select::make('manager_id')
-                            ->label('Event manager')
+                                ?? 'The ATC positions the event covers.')
+                            ->hintAction(
+                                Action::make('addAerodrome')
+                                    ->label('Add aerodrome')
+                                    ->icon('heroicon-m-plus')
+                                    ->hidden(fn (?Event $record): bool => static::detailsAreLocked($record))
+                                    ->modalHeading('Add all positions at an aerodrome')
+                                    ->modalSubmitActionLabel('Add')
+                                    ->schema([
+                                        Select::make('icao')
+                                            ->label('Aerodrome')
+                                            ->options(fn (): array => static::aerodromeOptions())
+                                            ->searchable()
+                                            ->required(),
+                                    ])
+                                    ->action(fn (Select $component, array $data) => $component->state(array_values(array_unique([
+                                        ...$component->getState() ?? [],
+                                        ...Position::where('callsign', 'like', $data['icao'].'\_%')->orderBy('callsign')->pluck('id')->all(),
+                                    ])))),
+                            ),
+                        Select::make('managers')
+                            ->label('Event managers')
                             ->relationship(
-                                'manager',
+                                'managers',
                                 'name_first',
                                 fn (Builder $query): Builder => $query->permission('admin.access'),
                             )
                             ->getOptionLabelFromRecordUsing(fn (Account $record): string => "{$record->name_first} {$record->name_last} ({$record->id})")
+                            ->multiple()
                             ->searchable()
                             ->preload()
                             ->helperText('Only staff members with admin access can manage an event.'),
                     ]),
                     Toggle::make('rostered')
                         ->label('Rostered')
-                        ->helperText('This will block bookings for the specified positions from being made by members.'),
+                        ->helperText('This will block bookings for the specified positions from being made by members.')
+                        ->live(),
+                    TextInput::make('roster_url')
+                        ->label('Roster URL')
+                        ->url()
+                        ->maxLength(191)
+                        ->columnSpanFull()
+                        ->visible(fn (Get $get): bool => (bool) $get('rostered')),
                 ]),
             Section::make('Checklist')
                 ->description('Track the prep steps before publishing. Ticking a box saves straight away.')
@@ -183,10 +213,24 @@ class EventResource extends Resource
         return $record?->isPublished() ?? false;
     }
 
+    /**
+     * @return array<string, string>
+     */
+    private static function aerodromeOptions(): array
+    {
+        return Position::pluck('callsign')
+            ->map(fn (string $callsign): string => strtok($callsign, '_'))
+            ->filter(fn (string $prefix): bool => preg_match('/^[A-Z]{4}$/', $prefix) === 1)
+            ->countBy()
+            ->sortKeys()
+            ->map(fn (int $count, string $icao): string => "{$icao} ({$count} positions)")
+            ->all();
+    }
+
     private static function lockedHelperText(?Event $record): ?string
     {
         return static::detailsAreLocked($record)
-            ? 'Locked because this event is published.'
+            ? 'Locked because this event is published. Unpublish it to make changes.'
             : null;
     }
 
@@ -237,7 +281,7 @@ class EventResource extends Resource
         $checklistTotal = count(EventChecklistItem::cases());
 
         return $table
-            ->modifyQueryUsing(fn (Builder $query): Builder => $query->withCount('checklistCompletions'))
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->withCount('checklistCompletions')->with('managers'))
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('start')->dateTime(Event::DATETIME_FORMAT)->sortable(),
@@ -259,11 +303,15 @@ class EventResource extends Resource
                         default => 'warning',
                     })
                     ->sortable(),
-                TextColumn::make('manager.name_first')
-                    ->label('Manager')
-                    ->formatStateUsing(fn (Event $record): string => $record->manager
-                        ? "{$record->manager->name_first} {$record->manager->name_last}"
-                        : ''),
+                TextColumn::make('managers.name_first')
+                    ->label('Managers')
+                    ->badge()
+                    ->state(fn (Event $record): array => $record->managers
+                        ->map(fn (Account $manager): string => "{$manager->name_first} {$manager->name_last}")
+                        ->all())
+                    ->separator(',')
+                    ->limitList(3)
+                    ->toggleable(),
                 TextColumn::make('published_at')
                     ->label('Status')
                     ->badge()

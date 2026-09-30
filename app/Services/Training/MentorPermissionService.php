@@ -11,6 +11,7 @@ use App\Models\Cts\PositionValidation;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Training\Mentoring\MentorTrainingPosition;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,6 +26,9 @@ class MentorPermissionService
 
     /** @var array<string, string>|null */
     private ?array $ctsCallsignToCategoryMap = null;
+
+    /** Training places resolved for the current request. */
+    private ?Collection $trainingPlaces = null;
 
     public const ATC_CATEGORY_ROLE_MAP = [
         'OBS to S1 Training' => 'ATC Mentor (OBS)',
@@ -498,6 +502,32 @@ class MentorPermissionService
             ->filter()
             ->values()
             ->toArray();
+    }
+
+    public function studentAccountIdsForCallsigns(array $callsigns): array
+    {
+        return $this->trainingPlacesForCallsigns($callsigns)
+            ->pluck('account_id')
+            ->map(fn ($accountId): int => (int) $accountId)
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    public function trainingPlacesForCallsigns(array $callsigns): Collection
+    {
+        if ($callsigns === []) {
+            return collect();
+        }
+
+        return $this->allTrainingPlaces()
+            ->filter(fn (TrainingPlace $place): bool => array_intersect($place->trainableCtsPositions(), $callsigns) !== [])
+            ->values();
+    }
+
+    private function allTrainingPlaces(): Collection
+    {
+        return $this->trainingPlaces ??= TrainingPlace::query()->with('trainable')->get();
     }
 
     public function getAssignedCtsCallsigns(Account $account, string $category): array

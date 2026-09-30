@@ -7,6 +7,7 @@ use App\Models\Atc\Position;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Support\DateFormat;
+use App\Support\MemberDisplayName;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,9 +29,9 @@ class Event extends Model
         'start',
         'end',
         'rostered',
+        'roster_url',
         'published_at',
         'published_by',
-        'manager_id',
     ];
 
     protected $casts = [
@@ -40,14 +41,36 @@ class Event extends Model
         'published_at' => 'datetime',
     ];
 
+    protected static function booted(): void
+    {
+        static::saving(function (Event $event): void {
+            if (! $event->rostered) {
+                $event->roster_url = null;
+            }
+        });
+    }
+
     public function positions(): BelongsToMany
     {
         return $this->belongsToMany(Position::class, 'event_positions');
     }
 
-    public function manager(): BelongsTo
+    /**
+     * An event can be managed by any number of staff members.
+     */
+    public function managers(): BelongsToMany
     {
-        return $this->belongsTo(Account::class, 'manager_id');
+        return $this->belongsToMany(Account::class, 'event_managers');
+    }
+
+    /**
+     * @return array<int, string> abbreviated organiser names with CIDs
+     */
+    public function organiserLabels(): array
+    {
+        return $this->managers
+            ->map(fn (Account $manager): string => MemberDisplayName::abbreviatedWithCid($manager))
+            ->all();
     }
 
     public function publisher(): BelongsTo
@@ -68,6 +91,11 @@ class Event extends Model
     public function scopeUpcoming(Builder $query): Builder
     {
         return $query->where('end', '>=', now());
+    }
+
+    public function scopePast(Builder $query): Builder
+    {
+        return $query->where('end', '<', now());
     }
 
     public function isDraft(): bool

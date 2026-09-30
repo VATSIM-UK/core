@@ -109,11 +109,30 @@ class EventTest extends TestCase
         $this->assertTrue($event->positions->contains($position));
     }
 
-    public function test_manager_relation(): void
+    public function test_managers_relation(): void
     {
-        $manager = Account::factory()->create();
-        $event = Event::factory()->create(['manager_id' => $manager->id]);
+        $managers = Account::factory()->count(2)->create();
+        $event = Event::factory()->withManagers(...$managers->all())->create();
 
-        $this->assertEquals($manager->id, $event->manager->id);
+        $this->assertCount(2, $event->managers);
+        $this->assertEqualsCanonicalizing(
+            $managers->pluck('id')->all(),
+            $event->managers->pluck('id')->all(),
+        );
+    }
+
+    public function test_organiser_labels_abbreviate_managers_and_include_cid(): void
+    {
+        $manager = Account::factory()->create(['id' => 1234567, 'name_first' => 'Alex', 'name_last' => 'Smith']);
+        $event = Event::factory()->withManagers($manager)->create();
+
+        $this->assertSame(['Alex S. (1234567)'], $event->organiserLabels());
+    }
+
+    public function test_organiser_labels_are_empty_without_managers(): void
+    {
+        $event = Event::factory()->create();
+
+        $this->assertSame([], $event->organiserLabels());
     }
 }

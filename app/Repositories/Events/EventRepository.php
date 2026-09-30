@@ -4,6 +4,7 @@ namespace App\Repositories\Events;
 
 use App\Models\Events\Event;
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class EventRepository
@@ -22,6 +23,32 @@ class EventRepository
             ->whereDate('start', today()->toDateString())
             ->orderBy('start')
             ->get();
+    }
+
+    /**
+     * Published events that have not yet finished, soonest first.
+     *
+     * @return Collection<int, Event>
+     */
+    public function getUpcoming(): Collection
+    {
+        return Event::published()
+            ->upcoming()
+            ->orderBy('start')
+            ->with('positions')
+            ->get();
+    }
+
+    /**
+     * Published events that have finished, most recent first.
+     */
+    public function getPast(int $perPage = 12): LengthAwarePaginator
+    {
+        return Event::published()
+            ->past()
+            ->orderByDesc('start')
+            ->with('positions')
+            ->paginate($perPage);
     }
 
     /**
@@ -57,6 +84,7 @@ class EventRepository
                 'type' => 'EV',
                 'member' => ['cid' => '', 'display_name' => 'Unknown'],
                 'event_name' => $event->name,
+                'event_url' => route('site.events.show', $event),
             ]);
     }
 }

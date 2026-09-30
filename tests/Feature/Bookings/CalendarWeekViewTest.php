@@ -234,6 +234,8 @@ class CalendarWeekViewTest extends TestCase
     #[Test]
     public function it_marks_past_day_headers_distinctly_from_today_and_future_days(): void
     {
+        $this->travelTo(Carbon::parse('2026-09-16 12:00:00'));
+
         Livewire::test(Calendar::class)
             ->call('setViewMode', 'week')
             ->assertSeeHtml('data-day-state="past"')

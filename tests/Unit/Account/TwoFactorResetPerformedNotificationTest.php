@@ -20,8 +20,8 @@ class TwoFactorResetPerformedNotificationTest extends TestCase
         $mail = (new TwoFactorResetPerformed($target, $administrator, 'HELPDESK-1234: lost device'))->toMail($recipient);
         $rendered = $mail->render();
 
-        $this->assertStringContainsString($administrator->name, $rendered);
-        $this->assertStringContainsString($target->name, $rendered);
+        $this->assertStringContainsString(e($administrator->name), $rendered);
+        $this->assertStringContainsString(e($target->name), $rendered);
         $this->assertStringContainsString('HELPDESK-1234: lost device', $rendered);
     }
 

@@ -868,10 +868,12 @@ class CheckAvailabilityTest extends TestCase
         // Arrange: No availability or session, but member has a pending (unfinished) exam booking
         // hasPendingExam matches on position_1 vs training position's exam_callsign (or position->callsign)
         $this->trainingPosition->update(['exam_callsign' => 'EGLL_APP']);
+        // A freshly forwarded exam has not been scheduled yet, so it has no date.
         ExamBooking::factory()->create([
             'student_id' => $this->ctsMember->id,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGLL_APP',
+            'taken_date' => null,
         ]);
         $this->trainingPlace->unsetRelation('trainable');
 
@@ -892,6 +894,85 @@ class CheckAvailabilityTest extends TestCase
     }
 
     #[Test]
+    public function it_creates_passed_check_when_member_has_an_exam_booked_for_a_future_date(): void
+    {
+        $this->trainingPosition->update(['exam_callsign' => 'EGLL_APP']);
+        ExamBooking::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'position_1' => 'EGLL_APP',
+            'taken_date' => now()->addDays(3)->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'pass' => 0,
+        ]);
+        $this->trainingPlace->unsetRelation('trainable');
+
+        (new CheckAvailability($this->trainingPlace))->handle();
+
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Passed->value,
+        ]);
+        $this->assertDatabaseMissing('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_creates_passed_check_when_past_exam_was_passed_but_not_yet_finished(): void
+    {
+        $this->trainingPosition->update(['exam_callsign' => 'EGLL_APP']);
+        ExamBooking::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'position_1' => 'EGLL_APP',
+            'taken_date' => now()->subDay()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'pass' => 1,
+        ]);
+        $this->trainingPlace->unsetRelation('trainable');
+
+        (new CheckAvailability($this->trainingPlace))->handle();
+
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Passed->value,
+        ]);
+        $this->assertDatabaseMissing('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_creates_failed_check_when_past_exam_was_not_passed(): void
+    {
+        $this->trainingPosition->update(['exam_callsign' => 'EGLL_APP']);
+        ExamBooking::factory()->create([
+            'student_id' => $this->ctsMember->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'position_1' => 'EGLL_APP',
+            'taken_date' => now()->subDay()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'pass' => 0,
+        ]);
+        $this->trainingPlace->unsetRelation('trainable');
+
+        (new CheckAvailability($this->trainingPlace))->handle();
+
+        // A failed exam is no longer pending, so the student is expected to be available again
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Failed->value,
+        ]);
+        $this->assertDatabaseHas('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
     public function it_resolves_pending_warning_when_check_passes_due_to_pending_exam(): void
     {
         // Arrange: Existing pending warning and a pending exam (no availability/session)
@@ -907,6 +988,7 @@ class CheckAvailabilityTest extends TestCase
             'student_id' => $this->ctsMember->id,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGLL_APP',
+            'taken_date' => null,
         ]);
         $this->trainingPlace->unsetRelation('trainable');
 
@@ -938,6 +1020,7 @@ class CheckAvailabilityTest extends TestCase
             'student_id' => $this->ctsMember->id,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGLL_APP',
+            'taken_date' => null,
         ]);
         // Clear cached relation so job loads training position with updated exam_callsign (observer may have loaded it at create)
         $this->trainingPlace->unsetRelation('trainable');
@@ -959,6 +1042,7 @@ class CheckAvailabilityTest extends TestCase
             'student_id' => $this->ctsMember->id,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGKK_TWR', // Different position; hasPendingExam checks position_1
+            'taken_date' => null,
         ]);
         $this->trainingPlace->unsetRelation('trainable');
 
@@ -989,6 +1073,7 @@ class CheckAvailabilityTest extends TestCase
             'student_id' => $this->ctsMember->id,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGLL_TWR',
+            'taken_date' => null,
         ]);
         $this->trainingPlace->unsetRelation('trainable');
 
@@ -1019,6 +1104,7 @@ class CheckAvailabilityTest extends TestCase
             'student_id' => $this->ctsMember->id,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGKK_APP', // Does not match position->callsign (EGLL_TWR)
+            'taken_date' => null,
         ]);
         $this->trainingPlace->unsetRelation('trainable');
 

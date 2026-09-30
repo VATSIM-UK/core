@@ -114,6 +114,10 @@ class Kernel extends ConsoleKernel
             ->dailyAt('11:00')
             ->graceTimeInMinutes(15);
 
+        $schedule->command('visit-transfer:check-inactivity')
+            ->dailyAt('08:45')
+            ->graceTimeInMinutes(15);
+
         // === By Quarter === //
         $schedule->command('roster:update', [
             Carbon::now()->subMonths(3),

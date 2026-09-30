@@ -99,6 +99,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.mentoring.view.*',
             'training.mentoring.sessions.*',
             'training.mentoring.sessions.reallocate.*',
+            'training.mentoring.reports.view-all',
 
             'training.statistics.view.*',
             'training.statistics.view.atc',
@@ -143,6 +144,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'vt.application.cancel.*',
             'vt.status.revoke',
             'vt.status.grant.manual',
+            'vt.removal.view.*',
             'vt.application.modify.*',
 
             // Waiting List System Permissions,
@@ -221,6 +223,11 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Pilot System Permissions
             'pilot.access',
+
+            // Achievement System Permissions
+            'achievements.view',
+            'achievements.manage',
+            'achievements.award',
 
             // // TeamSpeak Permissions
             // 'teamspeak.servergroup.serveradmin',

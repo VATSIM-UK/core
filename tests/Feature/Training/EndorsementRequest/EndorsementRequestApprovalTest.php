@@ -56,14 +56,15 @@ class EndorsementRequestApprovalTest extends BaseTrainingPanelTestCase
 
     public function test_cannot_approve_permanent_endorsement_request_without_permission()
     {
-        $endorsementRequest = EndorsementRequest::factory()->create([
-            'endorsable_type' => PositionGroup::class,
-            'endorsable_id' => PositionGroup::factory()->create()->id,
-        ]);
-
         $userWithoutPermission = Account::factory()->create();
         Member::factory()->forAccount($userWithoutPermission)->create();
         $userWithoutPermission->givePermissionTo('endorsement-request.access');
+
+        $endorsementRequest = EndorsementRequest::factory()->create([
+            'requested_by' => $userWithoutPermission->id,
+            'endorsable_type' => PositionGroup::class,
+            'endorsable_id' => PositionGroup::factory()->create()->id,
+        ]);
 
         Livewire::actingAs($userWithoutPermission);
         Livewire::test(ResourceTable::class, ['resource' => EndorsementRequestResource::class])
@@ -190,13 +191,14 @@ class EndorsementRequestApprovalTest extends BaseTrainingPanelTestCase
 
     public function test_cannot_approve_temporary_endorsement_without_permission()
     {
+        $userWithoutPermission = Account::factory()->createQuietly();
+        $userWithoutPermission->givePermissionTo('endorsement-request.access');
+
         $endorsementRequest = EndorsementRequest::factory()->create([
+            'requested_by' => $userWithoutPermission->id,
             'endorsable_type' => Position::class,
             'endorsable_id' => Position::factory()->create()->id,
         ]);
-
-        $userWithoutPermission = Account::factory()->createQuietly();
-        $userWithoutPermission->givePermissionTo('endorsement-request.access');
 
         Livewire::actingAs($userWithoutPermission);
         Livewire::test(ResourceTable::class, ['resource' => EndorsementRequestResource::class])

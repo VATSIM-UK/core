@@ -10,6 +10,7 @@ use App\Libraries\Discord;
 use App\Libraries\UKCP;
 use App\Support\DateFormat;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use Filament\Support\Facades\FilamentColor;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
@@ -38,6 +39,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+
+        FilamentColor::register([
+            'primary' => '#25ADE3',
+        ]);
 
         $this->registerCarbonDateMacros();
 

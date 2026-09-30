@@ -7,6 +7,7 @@ namespace Tests\Feature\Bookings;
 use App\Livewire\Bookings\Calendar;
 use App\Models\Atc\Position;
 use App\Models\Booking;
+use App\Models\Events\Event;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Qualification;
@@ -222,6 +223,40 @@ class CalendarTest extends TestCase
                 'position_id' => (string) $position->id,
             ])
             ->assertDispatched('booking-error');
+
+        $this->assertDatabaseMissing('bookings', ['member_id' => $member->id]);
+    }
+
+    #[Test]
+    public function it_warns_and_links_to_the_event_when_the_position_is_rostered(): void
+    {
+        $member = Account::factory()->withQualification()->create();
+        $qual = Qualification::factory()->atc()->create(['vatsim' => 5]);
+        $member->qualifications()->sync([$qual->id]);
+        $member = $member->fresh();
+        $this->placeOnRoster($member);
+
+        $position = Position::factory()->create(['type' => Position::TYPE_ENROUTE]);
+        $event = Event::factory()->published()->create([
+            'name' => 'Manchester Madness',
+            'rostered' => true,
+            'start' => Carbon::tomorrow()->setTime(18, 0),
+            'end' => Carbon::tomorrow()->setTime(21, 0),
+        ]);
+        $event->positions()->attach($position);
+
+        Livewire::actingAs($member)
+            ->test(Calendar::class)
+            ->call('createBooking', [
+                'starts_at' => Carbon::tomorrow()->setTime(19, 0)->format('Y-m-d H:i:s'),
+                'ends_at' => Carbon::tomorrow()->setTime(20, 0)->format('Y-m-d H:i:s'),
+                'position_id' => (string) $position->id,
+            ])
+            ->assertDispatched(
+                'booking-warning',
+                message: 'This position is rostered for Manchester Madness and cannot be booked.',
+                eventUrl: route('site.events.show', $event),
+            );
 
         $this->assertDatabaseMissing('bookings', ['member_id' => $member->id]);
     }
@@ -499,6 +534,20 @@ class CalendarTest extends TestCase
     {
         $this->get(route('site.bookings.calendar'))
             ->assertOk();
+    }
+
+    #[Test]
+    public function it_serves_the_calendar_at_the_short_url(): void
+    {
+        $this->get('/calendar')->assertOk();
+    }
+
+    #[Test]
+    public function it_permanently_redirects_the_legacy_calendar_url(): void
+    {
+        $this->get('/atc/bookings/calendar/2026/10?day=5')
+            ->assertStatus(301)
+            ->assertRedirect('/calendar/2026/10?day=5');
     }
 
     #[Test]
