@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Services\Bookings;
 
+use App\Exceptions\Bookings\PositionRosteredException;
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Atc\PositionGroupCondition;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\Member as CtsMember;
+use App\Models\Events\Event;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
@@ -35,6 +37,42 @@ class BookingPolicyTest extends TestCase
     {
         // forAccount deliberately sets id != cid (id = account->id + 5000000)
         return CtsMember::factory()->forAccount($account)->create();
+    }
+
+    #[Test]
+    public function it_rejects_bookings_on_a_position_rostered_for_a_published_event(): void
+    {
+        $position = Position::factory()->create();
+        $event = Event::factory()->published()->create([
+            'rostered' => true,
+            'start' => Carbon::tomorrow()->setTime(18, 0),
+            'end' => Carbon::tomorrow()->setTime(21, 0),
+        ]);
+        $event->positions()->attach($position);
+
+        try {
+            $this->policy->validateNotRostered($position->id, Carbon::tomorrow()->setTime(20, 0), Carbon::tomorrow()->setTime(22, 0));
+            $this->fail('Expected the rostered position to be rejected.');
+        } catch (PositionRosteredException $e) {
+            $this->assertTrue($e->event->is($event));
+        }
+    }
+
+    #[Test]
+    public function it_allows_bookings_not_blocked_by_a_rostered_event(): void
+    {
+        $position = Position::factory()->create();
+        $start = Carbon::tomorrow()->setTime(18, 0);
+        $end = Carbon::tomorrow()->setTime(21, 0);
+
+        Event::factory()->published()->create(['rostered' => false, 'start' => $start, 'end' => $end])->positions()->attach($position);
+        Event::factory()->create(['rostered' => true, 'start' => $start, 'end' => $end])->positions()->attach($position);
+        Event::factory()->published()->create(['rostered' => true, 'start' => $start, 'end' => $end])->positions()->attach(Position::factory()->create());
+        Event::factory()->published()->create(['rostered' => true, 'start' => $end, 'end' => $end->copy()->addHours(2)])->positions()->attach($position);
+
+        $this->policy->validateNotRostered($position->id, $start, $end);
+
+        $this->addToAssertionCount(1);
     }
 
     #[Test]
