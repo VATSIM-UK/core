@@ -87,6 +87,30 @@ class PublicEventShowTest extends TestCase
     }
 
     #[Test]
+    public function it_links_to_the_roster_when_rostered(): void
+    {
+        $event = Event::factory()->published()->create([
+            'rostered' => true,
+            'roster_url' => 'https://example.com/roster',
+        ]);
+
+        $this->get(route('site.events.show', $event))
+            ->assertOk()
+            ->assertSee('View roster')
+            ->assertSee('https://example.com/roster');
+    }
+
+    #[Test]
+    public function it_does_not_link_to_the_roster_without_a_url(): void
+    {
+        $event = Event::factory()->published()->create(['rostered' => true]);
+
+        $this->get(route('site.events.show', $event))
+            ->assertOk()
+            ->assertDontSee('View roster');
+    }
+
+    #[Test]
     public function it_downloads_an_ics_file(): void
     {
         $event = Event::factory()->published()->create(['name' => 'Lorem Ipsum Dolor']);
