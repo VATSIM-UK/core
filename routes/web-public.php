@@ -54,7 +54,7 @@ Route::group([
         'prefix' => 'policy',
     ], function () {
         Route::get('/division-policy')->uses('PolicyPagesController@viewDivision')->name('division');
-        Route::get('/atc-training-policy')->uses('PolicyPagesController@viewATCTraining')->name('atc-training');
+        Route::redirect('/atc-training-policy', __('atc.policy.url'), 301)->name('atc-training');
         Route::get('/visiting-and-transferring-policy')->uses('PolicyPagesController@viewVisitTransfer')->name('visiting-and-transferring');
         Route::get('/community-standards')->uses('PolicyPagesController@viewCommunityStandards')->name('community-standards');
         Route::get('/privacy-policy')->uses('PolicyPagesController@viewPrivacy')->name('privacy');

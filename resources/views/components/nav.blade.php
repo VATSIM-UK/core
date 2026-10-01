@@ -257,7 +257,7 @@
 							<ul class="nav-dropdown-list">
 								<li class="nav-dropdown-header">Policies</li>
 								<li><a href="{{ route('site.policy.division') }}" class="nav-dropdown-link">Division Policy</a></li>
-								<li><a href="{{ route('site.policy.atc-training') }}" class="nav-dropdown-link">ATC Training Policy</a></li>
+								<li><a href="{{ __('atc.policy.url') }}" class="nav-dropdown-link">ATC Training Policy</a></li>
 								<li><a href="{{ route('site.policy.visiting-and-transferring') }}" class="nav-dropdown-link">Visiting &
 										Transferring Policy</a></li>
 								<li class="nav-dropdown-divider"></li>

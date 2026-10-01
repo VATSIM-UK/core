@@ -19,14 +19,6 @@ class PolicyPagesController extends \App\Http\Controllers\BaseController
         return $this->viewMake('site.policy.division');
     }
 
-    public function viewATCTraining()
-    {
-        $this->setTitle('ATC Training Policy');
-        $this->addBreadcrumb('ATC Training Policy', route('site.policy.atc-training'));
-
-        return $this->viewMake('site.policy.atc-training');
-    }
-
     public function viewVisitTransfer()
     {
         $this->setTitle('Visiting and Transferring Policy');

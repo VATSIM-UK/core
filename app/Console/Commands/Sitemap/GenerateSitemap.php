@@ -53,7 +53,6 @@ class GenerateSitemap extends Command
             ['route' => route('site.operations.sectors'), 'priority' => 0.6, 'change_frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['route' => route('site.community.teamspeak'), 'priority' => 0.5, 'change_frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['route' => route('site.policy.division'), 'priority' => 0.5, 'change_frequency' => Url::CHANGE_FREQUENCY_YEARLY],
-            ['route' => route('site.policy.atc-training'), 'priority' => 0.5, 'change_frequency' => Url::CHANGE_FREQUENCY_YEARLY],
             ['route' => route('site.policy.visiting-and-transferring'), 'priority' => 0.5, 'change_frequency' => Url::CHANGE_FREQUENCY_YEARLY],
             ['route' => route('site.policy.community-standards'), 'priority' => 0.5, 'change_frequency' => Url::CHANGE_FREQUENCY_YEARLY],
             ['route' => route('site.policy.privacy'), 'priority' => 0.3, 'change_frequency' => Url::CHANGE_FREQUENCY_YEARLY],
