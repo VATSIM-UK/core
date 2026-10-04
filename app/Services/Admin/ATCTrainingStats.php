@@ -229,13 +229,6 @@ class ATCTrainingStats
         return $result;
     }
 
-    /**
-     * Passed ATC practical exams, grouped by the training group they complete.
-     *
-     * Exam passes are the source of truth for training throughput: unlike the
-     * qualification pivot they cannot be inflated by rating re-attaches,
-     * data imports, or members outside our training.
-     */
     public static function examPassesByTG(Carbon $startDate, Carbon $endDate): array
     {
         $passes = DB::connection('cts')
