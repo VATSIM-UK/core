@@ -9,6 +9,7 @@ use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Support\Facades\DB;
 
 class ViewSeminar extends ViewRecord
 {
