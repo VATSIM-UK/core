@@ -11,6 +11,7 @@ use App\Models\Cts\PositionValidation;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Training\Mentoring\MentorTrainingPosition;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,6 +27,9 @@ class MentorPermissionService
     /** @var array<string, string>|null */
     private ?array $ctsCallsignToCategoryMap = null;
 
+    /** Training places resolved for the current request. */
+    private ?Collection $trainingPlaces = null;
+
     public const ATC_CATEGORY_ROLE_MAP = [
         'OBS to S1 Training' => 'ATC Mentor (OBS)',
         'S2 Training' => 'ATC Mentor (TWR)',
@@ -40,6 +44,7 @@ class MentorPermissionService
         'P1 Training' => 'Pilot Mentor',
         'P2 Training' => 'Pilot Mentor',
         'P3 Training' => 'Pilot Mentor',
+        'TFP Training' => 'Pilot Mentor',
     ];
 
     public const ATC_TGI_CATEGORY_ROLE_MAP = [
@@ -56,18 +61,26 @@ class MentorPermissionService
         'P1 Training' => 'Pilot Instructor',
         'P2 Training' => 'Pilot Instructor',
         'P3 Training' => 'Pilot Instructor',
+        'TFP Training' => 'Pilot Instructor',
     ];
 
     public const PILOT_CATEGORY_QUALIFICATION_MAP = [
         'P1 Training' => 'PPL',
         'P2 Training' => 'IR',
         'P3 Training' => 'CMEL',
+        'TFP Training' => 'TFP',
     ];
 
     public const QUALIFICATION_CTS_POSITION_MAP = [
         'PPL' => 'P1_PPL(A)',
         'IR' => 'P2_SEIR(A)',
         'CMEL' => 'P3_CMEL(A)',
+        'TFP' => 'TFP_FLIGHT',
+    ];
+
+    /** Mentor CTS validations when they differ from the student/place callsign. */
+    public const QUALIFICATION_CTS_MENTOR_POSITION_MAP = [
+        'TFP' => 'TFP',
     ];
 
     public static function atcCategories(): array
@@ -88,6 +101,16 @@ class MentorPermissionService
     public static function pilotCategories(): array
     {
         return array_keys(self::PILOT_CATEGORY_ROLE_MAP);
+    }
+
+    public static function categoryForQualificationCode(string $code): ?string
+    {
+        return array_flip(self::PILOT_CATEGORY_QUALIFICATION_MAP)[$code] ?? null;
+    }
+
+    public function qualificationCodesForCtsCallsign(string $callsign): array
+    {
+        return array_keys(self::QUALIFICATION_CTS_POSITION_MAP, $callsign, true);
     }
 
     public static function categoryType(string $category): string
@@ -267,6 +290,23 @@ class MentorPermissionService
         return [];
     }
 
+    public function getCtsMentorCallsignsForMentorable($mentorable): array
+    {
+        if ($mentorable instanceof TrainingPosition) {
+            return $mentorable->cts_positions ?? [];
+        }
+
+        if ($mentorable instanceof Qualification) {
+            $callsign = self::QUALIFICATION_CTS_MENTOR_POSITION_MAP[$mentorable->code]
+                ?? self::QUALIFICATION_CTS_POSITION_MAP[$mentorable->code]
+                ?? null;
+
+            return $callsign ? [$callsign] : [];
+        }
+
+        return [];
+    }
+
     private function syncCtsAssign(Account $account, $mentorable, Account $actor): void
     {
         if (($member = $this->resolveMember($account)) === null) {
@@ -280,7 +320,7 @@ class MentorPermissionService
         $actorMember = $this->resolveMember($actor);
         $changedBy = $actorMember ? $actorMember->id : $member->id;
 
-        $callsigns = $this->getCtsCallsignsForMentorable($mentorable);
+        $callsigns = $this->getCtsMentorCallsignsForMentorable($mentorable);
 
         foreach ($callsigns as $callsign) {
             $ctsPosition = Position::where('callsign', $callsign)->first();
@@ -331,7 +371,7 @@ class MentorPermissionService
             return;
         }
 
-        $callsigns = $this->getCtsCallsignsForMentorable($mentorable);
+        $callsigns = $this->getCtsMentorCallsignsForMentorable($mentorable);
 
         foreach ($callsigns as $callsign) {
             $ctsPosition = Position::where('callsign', $callsign)->first();
@@ -416,6 +456,12 @@ class MentorPermissionService
             if ($callsign !== null) {
                 $map[$callsign] = $category;
             }
+
+            $mentorCallsign = self::QUALIFICATION_CTS_MENTOR_POSITION_MAP[$qualificationCode] ?? null;
+
+            if ($mentorCallsign !== null) {
+                $map[$mentorCallsign] = $category;
+            }
         }
 
         return $this->ctsCallsignToCategoryMap = $map;
@@ -456,6 +502,32 @@ class MentorPermissionService
             ->filter()
             ->values()
             ->toArray();
+    }
+
+    public function studentAccountIdsForCallsigns(array $callsigns): array
+    {
+        return $this->trainingPlacesForCallsigns($callsigns)
+            ->pluck('account_id')
+            ->map(fn ($accountId): int => (int) $accountId)
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    public function trainingPlacesForCallsigns(array $callsigns): Collection
+    {
+        if ($callsigns === []) {
+            return collect();
+        }
+
+        return $this->allTrainingPlaces()
+            ->filter(fn (TrainingPlace $place): bool => array_intersect($place->trainableCtsPositions(), $callsigns) !== [])
+            ->values();
+    }
+
+    private function allTrainingPlaces(): Collection
+    {
+        return $this->trainingPlaces ??= TrainingPlace::query()->with('trainable')->get();
     }
 
     public function getAssignedCtsCallsigns(Account $account, string $category): array

@@ -72,8 +72,8 @@ class BansRelationManager extends RelationManager
                 TextColumn::make('type_string')->label('Type'),
                 TextColumn::make('reason.name')->label('Reason'),
                 TextColumn::make('period_amount_string')->label('Duration'),
-                TextColumn::make('period_start')->label('Started')->since()->description(fn ($record) => $record->period_start),
-                TextColumn::make('period_finish')->label('Ends')->description(fn ($record) => $record->period_finish ? $record->period_finish->toDayDateTimeString() : 'Permanent')->getStateUsing(fn ($record) => $record->period_finish ? $record->period_finish->diffForHumans() : 'Never'),
+                TextColumn::make('period_start')->label('Started')->since()->description(fn ($record) => $record->period_start?->toPanelDateTime()),
+                TextColumn::make('period_finish')->label('Ends')->description(fn ($record) => $record->period_finish ? $record->period_finish->toPanelDateTime() : 'Permanent')->getStateUsing(fn ($record) => $record->period_finish ? $record->period_finish->diffForHumans() : 'Never'),
                 TextColumn::make('banner.name')->label('By'),
             ])
             ->headerActions([

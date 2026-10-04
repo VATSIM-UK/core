@@ -22,40 +22,39 @@ class BetaDashboardTest extends TestCase
         });
     }
 
-    public function test_authenticated_user_can_view_beta_dashboard(): void
+    public function test_authenticated_user_can_view_the_default_dashboard(): void
     {
         $this->actingAs($this->user)
-            ->get(route('mship.manage.dashboard.beta'))
+            ->get(route('mship.manage.dashboard'))
             ->assertOk()
-            ->assertSee('beta dashboard', false)
             ->assertSee($this->user->name)
-            ->assertSee('Switch to classic dashboard', false)
+            ->assertSee('Personal Details', false)
             ->assertSee('ATC rating', false)
             ->assertSee('Pilot rating', false);
     }
 
-    public function test_personal_details_shows_current_atc_rating(): void
+    public function test_default_dashboard_shows_current_atc_rating(): void
     {
         $this->actingAs($this->user)
-            ->get(route('mship.manage.dashboard.beta'))
+            ->get(route('mship.manage.dashboard'))
             ->assertOk()
             ->assertSee($this->user->qualification_atc->code, false)
             ->assertSee($this->user->qualification_atc->name_long, false);
     }
 
-    public function test_beta_dashboard_includes_link_to_classic_dashboard(): void
+    public function test_deprecated_classic_dashboard_is_still_accessible(): void
+    {
+        $this->actingAs($this->user)
+            ->get(route('mship.manage.dashboard.classic'))
+            ->assertOk()
+            ->assertSee($this->user->name)
+            ->assertSee('Discord Registration', false);
+    }
+
+    public function test_legacy_beta_url_redirects_to_the_default_dashboard(): void
     {
         $this->actingAs($this->user)
             ->get(route('mship.manage.dashboard.beta'))
-            ->assertOk()
-            ->assertSee(route('mship.manage.dashboard'), false);
-    }
-
-    public function test_classic_dashboard_includes_link_to_beta_dashboard(): void
-    {
-        $this->actingAs($this->user)
-            ->get(route('mship.manage.dashboard'))
-            ->assertOk()
-            ->assertSee(route('mship.manage.dashboard.beta'), false);
+            ->assertRedirect(route('mship.manage.dashboard'));
     }
 }

@@ -69,7 +69,7 @@ class UpdateMember extends Job implements ShouldQueue
         try {
             $response = Http::withHeaders([
                 'Authorization' => $token,
-            ])->withUserAgent('VATSIMUK')->get($url);
+            ])->withUserAgent('VATSIM-UK')->get($url);
 
             if ($response->status() === 404) {
                 Log::info('Member not found in VATSIM API. Deleting', ['account_id' => $this->accountID]);

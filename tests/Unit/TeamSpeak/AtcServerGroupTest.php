@@ -31,15 +31,13 @@ class AtcServerGroupTest extends TestCase
         parent::setUp();
 
         $this->service = new AtcServerGroupService;
-        $this->server = $this->createMock(Server::class);
+        $this->server = $this->createStub(Server::class);
         $this->account = Account::factory()->create();
     }
 
     private function makeReply(): Reply
     {
-        return $this->getMockBuilder(Reply::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createStub(Reply::class);
     }
 
     private function giveAccountTsRegistration(Account $account, int $dbid = 12345): void
@@ -53,9 +51,7 @@ class AtcServerGroupTest extends TestCase
 
     private function makeTsServerGroup(int $sgid = 100): TsServerGroup
     {
-        $node = $this->getMockBuilder(TsServerGroup::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $node = $this->createStub(TsServerGroup::class);
         $node->method('getId')->willReturn($sgid);
 
         return $node;
@@ -100,16 +96,17 @@ class AtcServerGroupTest extends TestCase
 
     public function test_assign_creates_new_ts_server_group_when_none_exists()
     {
+        $server = $this->createMock(Server::class);
         $this->giveAccountTsRegistration($this->account);
-        $this->server->method('serverGroupGetByName')
+        $server->method('serverGroupGetByName')
             ->willThrowException(new ServerQueryException('group not found', 0));
-        $this->server->expects($this->once())
+        $server->expects($this->once())
             ->method('serverGroupCreate')
             ->with('EGKK_TWR')
             ->willReturn(100);
-        $this->server->method('request')->willReturn($this->makeReply());
+        $server->method('request')->willReturn($this->makeReply());
 
-        $this->service->assign($this->account, 'EGKK_TWR', $this->server);
+        $this->service->assign($this->account, 'EGKK_TWR', $server);
 
         $this->assertDatabaseHas('teamspeak_atc_server_groups', [
             'callsign' => 'EGKK_TWR',
@@ -140,14 +137,15 @@ class AtcServerGroupTest extends TestCase
 
     public function test_assign_reuses_existing_db_record_without_ts_lookup()
     {
+        $server = $this->createMock(Server::class);
         $this->giveAccountTsRegistration($this->account);
         $this->makeServerGroup('EGKK_TWR', 100);
 
-        $this->server->expects($this->never())->method('serverGroupGetByName');
-        $this->server->expects($this->never())->method('serverGroupCreate');
-        $this->server->method('request')->willReturn($this->makeReply());
+        $server->expects($this->never())->method('serverGroupGetByName');
+        $server->expects($this->never())->method('serverGroupCreate');
+        $server->method('request')->willReturn($this->makeReply());
 
-        $this->service->assign($this->account, 'EGKK_TWR', $this->server);
+        $this->service->assign($this->account, 'EGKK_TWR', $server);
 
         $this->assertEquals(1, AtcServerGroup::where('callsign', 'EGKK_TWR')->count());
     }
@@ -187,9 +185,10 @@ class AtcServerGroupTest extends TestCase
 
     public function test_assign_skips_ts_calls_when_account_has_no_registration()
     {
-        $this->server->expects($this->never())->method('request');
+        $server = $this->createMock(Server::class);
+        $server->expects($this->never())->method('request');
 
-        $this->service->assign($this->account, 'EGKK_TWR', $this->server);
+        $this->service->assign($this->account, 'EGKK_TWR', $server);
 
         $this->assertDatabaseMissing('teamspeak_atc_group_assignments', [
             'account_id' => $this->account->id,
@@ -347,12 +346,13 @@ class AtcServerGroupTest extends TestCase
 
     public function test_prune_empty_groups_skips_groups_with_assignments()
     {
+        $server = $this->createMock(Server::class);
         $group = $this->makeServerGroup();
         $this->makeAssignment($this->account, $group);
 
-        $this->server->expects($this->never())->method('request');
+        $server->expects($this->never())->method('request');
 
-        $count = $this->service->pruneEmptyGroups($this->server);
+        $count = $this->service->pruneEmptyGroups($server);
 
         $this->assertEquals(0, $count);
         $this->assertDatabaseHas('teamspeak_atc_server_groups', ['id' => $group->id]);

@@ -353,7 +353,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->panelUser)
             ->test(ManageMentors::class, ['category' => $category])
-            ->assertTableColumnStateSet('last_mentored', $date->format('d/m/Y'), record: $mentor);
+            ->assertTableColumnStateSet('last_mentored', $date->toPanelDate(), record: $mentor);
     }
 
     #[Test]
@@ -405,7 +405,7 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->panelUser)
             ->test(ManageMentors::class, ['category' => $category])
-            ->assertTableColumnStateSet('last_mentored', $validDate->format('d/m/Y'), record: $mentor);
+            ->assertTableColumnStateSet('last_mentored', $validDate->toPanelDate(), record: $mentor);
     }
 
     private function createTrainingPosition(string $category, string $callsign): TrainingPosition

@@ -29,6 +29,8 @@ class FacilityResource extends Resource
 
     protected static string|\UnitEnum|null $navigationGroup = 'Visiting / Transferring';
 
+    protected static ?int $navigationSort = 12;
+
     public static function canAccess(): bool
     {
 

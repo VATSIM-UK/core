@@ -2,7 +2,7 @@
 
 @section('body')
     <p>
-        Your access to all of the VATSIM United Kingdom services (Forum/TeamSpeak/CT System) has been revoked for
+        Your access to all of the VATSIM United Kingdom services (Core/TeamSpeak/CT System) has been revoked for
         {{ $ban->period_amount_string }}.
     </p>
 

@@ -17,7 +17,10 @@ class AvailabilityCheck extends Model
 
     use HasUlids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'training_place_id',
+        'status',
+    ];
 
     /**
      * @var array<string, string>

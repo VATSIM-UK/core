@@ -28,7 +28,7 @@ class TrainingPlaceAvailabilityGraceNoticeTest extends TestCase
 
         $this->assertNotNull($notice);
         $this->assertStringContainsString('48', $notice);
-        $this->assertStringContainsString('03/04/2026, 00:00', $notice);
+        $this->assertStringContainsString(Carbon::parse('2026-04-03 00:00')->toPanelDateTime(), $notice);
 
         Carbon::setTestNow();
     }

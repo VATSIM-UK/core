@@ -160,6 +160,60 @@ class BookingTest extends TestCase
     }
 
     #[Test]
+    public function member_overlapping_scope_detects_conflicts(): void
+    {
+        $position = Position::factory()->create();
+        $member = Account::factory()->create();
+
+        Booking::create([
+            'position_id' => $position->id,
+            'member_id' => $member->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::tomorrow()->setHour(10),
+            'ends_at' => Carbon::tomorrow()->setHour(12),
+        ]);
+
+        $overlapping = Booking::memberOverlapping(
+            Carbon::tomorrow()->setHour(11),
+            Carbon::tomorrow()->setHour(13),
+            $member->id
+        )->exists();
+
+        $nonOverlapping = Booking::memberOverlapping(
+            Carbon::tomorrow()->setHour(13),
+            Carbon::tomorrow()->setHour(15),
+            $member->id
+        )->exists();
+
+        $this->assertTrue($overlapping);
+        $this->assertFalse($nonOverlapping);
+    }
+
+    #[Test]
+    public function member_overlapping_scope_does_not_match_different_member(): void
+    {
+        $position = Position::factory()->create();
+        $memberA = Account::factory()->create();
+        $memberB = Account::factory()->create();
+
+        Booking::create([
+            'position_id' => $position->id,
+            'member_id' => $memberA->id,
+            'type' => Booking::TYPE_STANDARD,
+            'starts_at' => Carbon::tomorrow()->setHour(10),
+            'ends_at' => Carbon::tomorrow()->setHour(12),
+        ]);
+
+        $result = Booking::memberOverlapping(
+            Carbon::tomorrow()->setHour(11),
+            Carbon::tomorrow()->setHour(13),
+            $memberB->id
+        )->exists();
+
+        $this->assertFalse($result);
+    }
+
+    #[Test]
     public function it_resolves_bookable_morph_to_exam_booking(): void
     {
         $account = Account::factory()->create();

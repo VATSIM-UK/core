@@ -6,13 +6,16 @@ namespace App\Models;
 
 use App\Models\Atc\Position;
 use App\Models\Mship\Account;
+use App\Observers\BookingObserver;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+#[ObservedBy([BookingObserver::class])]
 class Booking extends Model
 {
     use HasFactory;
@@ -36,11 +39,13 @@ class Booking extends Model
         'bookable_type',
         'bookable_id',
         'cts_booking_id',
+        'vatsim_net_booking_id',
     ];
 
     protected $casts = [
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
+        'vatsim_net_booking_id' => 'integer',
     ];
 
     public function position(): BelongsTo
@@ -66,6 +71,13 @@ class Booking extends Model
     public function scopeOverlapping(Builder $query, Carbon $startsAt, Carbon $endsAt, int $positionId): Builder
     {
         return $query->where('position_id', $positionId)
+            ->where('starts_at', '<', $endsAt)
+            ->where('ends_at', '>', $startsAt);
+    }
+
+    public function scopeMemberOverlapping(Builder $query, Carbon $startsAt, Carbon $endsAt, int $memberId): Builder
+    {
+        return $query->where('member_id', $memberId)
             ->where('starts_at', '<', $endsAt)
             ->where('ends_at', '>', $startsAt);
     }

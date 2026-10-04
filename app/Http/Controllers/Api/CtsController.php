@@ -25,7 +25,7 @@ class CtsController
                 ->header('X-RateLimit-Reset', now()->addSeconds($seconds)->getTimestamp());
         }
 
-        RateLimiter::hit('get-bookings:'.$request->ip(), 300); // 5 minutes
+        RateLimiter::hit('get-bookings:'.$request->ip(), 10); // 10 seconds
 
         $date = Carbon::now()->startOfDay();
         $requestedDate = $request->get('date', null);
@@ -52,14 +52,33 @@ class CtsController
 
         return response()->json([
             'bookings' => $bookings->map(function ($booking) {
-                // we exclude the member object to avoid exposing personal data
-                return collect($booking)->except(['member'])->toArray();
+                // display_name stays private; owner is the resolved CID (member's
+                // cid already carries the calendar's exam/mentoring-owner rules).
+                $row = collect($booking)->except(['member', 'date'])->toArray();
+                $row['id'] = $booking->id !== null ? (int) $booking->id : null;
+                $row['owner'] = $booking->member['cid'] !== '' ? (int) $booking->member['cid'] : null;
+                [$row['from'], $row['to']] = $this->toIsoRange($booking->date, $booking->from, $booking->to);
+
+                return $row;
             }),
             'date' => $date->toDateString(),
             'count' => $bookings->count(),
             'next_page_url' => $this->generateNextPageUrl($date),
             'previous_page_url' => $this->generatePreviousPageUrl($date),
         ]);
+    }
+
+    // to <= from means the booking runs past midnight into the following day.
+    private function toIsoRange(string $date, string $from, string $to): array
+    {
+        $fromDateTime = Carbon::parse($date.' '.$from);
+        $toDateTime = Carbon::parse($date.' '.$to);
+
+        if ($toDateTime->lessThanOrEqualTo($fromDateTime)) {
+            $toDateTime->addDay();
+        }
+
+        return [$fromDateTime->toIso8601String(), $toDateTime->toIso8601String()];
     }
 
     private function generateNextPageUrl(Carbon $date): string

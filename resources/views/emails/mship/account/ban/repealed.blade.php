@@ -2,7 +2,7 @@
 
 @section('body')
     <p>
-        Your access to all of the VATSIM United Kingdom services (Forum/TeamSpeak/CT System) has been reinstated with
+        Your access to all of the VATSIM United Kingdom services (Core/TeamSpeak/CT System) has been reinstated with
         immediate effect.
     </p>
 

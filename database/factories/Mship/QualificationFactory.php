@@ -51,6 +51,17 @@ class QualificationFactory extends Factory
         });
     }
 
+    public function pilotVirtual(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'type' => 'pilot_virtual',
+                'code' => $this->findUniqueQualificationCode('V##'),
+                'vatsim' => 0,
+            ];
+        });
+    }
+
     public function findUniqueQualificationCode($pattern)
     {
         $foundUniqueCode = false;

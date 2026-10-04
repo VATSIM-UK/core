@@ -9,7 +9,12 @@ class AdminAccessLog extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'accessor_account_id',
+        'loggable_id',
+        'loggable_type',
+        'action',
+    ];
 
     public function accessor()
     {

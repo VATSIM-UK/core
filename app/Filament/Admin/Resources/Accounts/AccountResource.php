@@ -115,6 +115,9 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                         TextEntry::make('has_secondary_password')
                             ->label('Has Secondary Password')
                             ->getStateUsing(fn (Account $record) => $record->hasPassword() ? 'Yes' : 'No'),
+                        TextEntry::make('two_factor_enabled')
+                            ->label('Two-Factor Enabled')
+                            ->getStateUsing(fn (Account $record) => $record->hasEnabledTwoFactorAuthentication() ? 'Yes' : 'No'),
                         TextEntry::make('discord_id')
                             ->label('Discord ID')
                             ->getStateUsing(fn (Account $record) => $record->discord_id ?? 'Not Linked'),
@@ -126,7 +129,7 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                             ->color(fn (string $state): string => $state === 'Active' ? 'success' : 'danger'),
                         TextEntry::make('last_seen_controlling_uk')
                             ->label('Last UK Controlling Session')
-                            ->getStateUsing(fn (Account $record) => $record->lastSeenControllingUK()?->format('d M Y, H:i') ?? 'Never Controlled'),
+                            ->getStateUsing(fn (Account $record) => $record->lastSeenControllingUK()?->toPanelDateTime() ?? 'Never Controlled'),
                     ]),
 
                 Grid::make(2)

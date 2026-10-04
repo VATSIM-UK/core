@@ -104,11 +104,16 @@ class Position extends Model implements Endorseable
 
     public function getMinimumVatsimQualificationAttribute()
     {
-        return match ($this->type) {
-            'Ground', 'Delivery', 'ATIS' => 2,
-            'Tower' => 3,
-            'Approach/Radar' => 4,
-            'FSS', 'Terminal Control', 'Enroute' => 5,
+        return static::minimumVatsimRatingForType($this->getRawOriginal('type'));
+    }
+
+    public static function minimumVatsimRatingForType(int $type): int
+    {
+        return match ($type) {
+            self::TYPE_DELIVERY, self::TYPE_GROUND, self::TYPE_ATIS => 2,
+            self::TYPE_TOWER => 3,
+            self::TYPE_APPROACH => 4,
+            self::TYPE_FSS, self::TYPE_TERMINAL, self::TYPE_ENROUTE => 5,
             default => 0,
         };
     }
@@ -153,12 +158,6 @@ class Position extends Model implements Endorseable
         return $this->whereNull('ukcp_position_id');
     }
 
-    /**
-     * Infer the position type from a callsign suffix.
-     *
-     * Maps: _ATIS→1, _DEL→2, _GND→3, _TWR→4, _APP→5,
-     *       _CTR→6, _FSS→8. Falls back to TYPE_TOWER.
-     */
     public static function inferTypeFromCallsign(string $callsign): int
     {
         $suffix = strtoupper(Arr::last(explode('_', $callsign)));
@@ -191,8 +190,6 @@ class Position extends Model implements Endorseable
 
     protected function rts(): Attribute
     {
-        // use the position callsign to determine the rts for the position.
-        // the callsign is in the format of EGXX_TWR, EGXX_APP, EGXX_CTR
         $mapping = [
             'PT3' => 14,
             'GND' => 14,

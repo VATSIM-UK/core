@@ -40,7 +40,8 @@ class VisitTransferCleanupTest extends TestCase
             'type' => Application::TYPE_VISIT,
             'facility_id' => $this->facility->id,
         ]);
-        Carbon::setTestNow();
+
+        Carbon::setTestNow($this->knownDate);
         $this->oldApplication = $application->fresh();
     }
 

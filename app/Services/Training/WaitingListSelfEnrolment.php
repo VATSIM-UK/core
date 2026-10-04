@@ -30,7 +30,7 @@ class WaitingListSelfEnrolment
             return false;
         }
 
-        if (TrainingPlace::where('account_id', $account->id)->whereNull('deleted_at')->exists()) {
+        if (self::accountHasDisqualifyingTrainingPlace($account, $waitingList)) {
             return false;
         }
 
@@ -92,6 +92,36 @@ class WaitingListSelfEnrolment
         }
 
         return true;
+    }
+
+    /**
+     * An account is disqualified if it holds an active TrainingPlace on one of
+     * this waiting list's trainables (a TrainingPosition or Qualification attached to the list)
+     */
+    private static function accountHasDisqualifyingTrainingPlace(Account $account, WaitingList $waitingList): bool
+    {
+        $trainables = $waitingList->trainables;
+
+        if ($trainables->isEmpty()) {
+            // If there are no trainables then we should pass this check
+            return false;
+        }
+
+        $idsByType = $trainables
+            ->groupBy(fn ($trainable) => $trainable->getMorphClass())
+            ->map(fn (Collection $group) => $group->pluck('id'));
+
+        return TrainingPlace::where('account_id', $account->id)
+            ->whereNull('deleted_at')
+            ->where(function ($query) use ($idsByType) {
+                foreach ($idsByType as $morphType => $ids) {
+                    $query->orWhere(function ($q) use ($morphType, $ids) {
+                        $q->where('trainable_type', $morphType)
+                            ->whereIn('trainable_id', $ids);
+                    });
+                }
+            })
+            ->exists();
     }
 
     public static function getListsAccountCanSelfEnrol(Account $account): Collection

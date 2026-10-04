@@ -84,6 +84,17 @@ class AccountPolicy
     }
 
     /**
+     * Whether the user can reset another user's two-factor authentication.
+     *
+     * Deliberately reuses the remove-password permission: both are account
+     * recovery powers exercised by the same people.
+     */
+    public function resetTwoFactor(Account $actor, Account $subject)
+    {
+        return $actor->can("account.remove-password.{$subject->id}") && $this->passesSelfCheck($actor, $subject);
+    }
+
+    /**
      * Whether the user can unlink another user's Discount account
      *
      * @return void

@@ -4,6 +4,7 @@ namespace App\Models\Mship\Concerns;
 
 use App\Exceptions\VisitTransfer\Application\DuplicateApplicationException;
 use App\Models\VisitTransfer\Application;
+use App\Models\VisitTransfer\VisitingRemoval;
 
 trait HasVisitTransferApplications
 {
@@ -15,6 +16,11 @@ trait HasVisitTransferApplications
     public function visitTransferApplications()
     {
         return $this->hasMany(Application::class)->orderBy('created_at', 'DESC');
+    }
+
+    public function visitingRemovals()
+    {
+        return $this->hasMany(VisitingRemoval::class, 'account_id', 'id');
     }
 
     public function visitApplications()

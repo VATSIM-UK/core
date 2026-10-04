@@ -61,6 +61,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(asset('images/branding/vatsimuk_blackblue.png'))
             ->darkModeBrandLogo(asset('images/branding/vatsimuk_whiteblue.png'))
             ->brandName('VATSIM UK')
+            ->favicon(asset('images/favicon.png'))
             ->navigationGroups([
                 NavigationGroup::make('Technology'),
             ])

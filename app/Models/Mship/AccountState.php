@@ -10,6 +10,7 @@ class AccountState extends Pivot
 
     protected $casts = [
         'start_at' => 'datetime',
+        'end_at' => 'datetime',
     ];
 
     protected $hidden = ['id'];

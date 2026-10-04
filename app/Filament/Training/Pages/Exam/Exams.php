@@ -2,6 +2,7 @@
 
 namespace App\Filament\Training\Pages\Exam;
 
+use App\Filament\Training\Pages\Exam\Actions\SetupExamAction;
 use Filament\Pages\Page;
 
 class Exams extends Page
@@ -17,5 +18,12 @@ class Exams extends Page
     public static function canAccess(): bool
     {
         return auth()->user()->can('training.exams.access');
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            SetupExamAction::make(),
+        ];
     }
 }

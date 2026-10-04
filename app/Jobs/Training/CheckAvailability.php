@@ -13,6 +13,7 @@ use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Notifications\Training\AvailabilityWarningCreated;
 use App\Services\Training\AvailabilityWarnings;
 use App\Services\Training\TrainingPlaceService;
+use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\DB;
@@ -63,6 +64,23 @@ class CheckAvailability implements ShouldQueue
         $existingAvailabilityWarning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)->where('status', 'pending')->first();
 
         $hasPendingExam = app(TrainingPlaceService::class)->hasPendingExam($this->trainingPlace);
+
+        if ($this->trainingPlace->isPilot()) {
+            $lastSession = $this->trainingPlace->lastCompletedSession();
+
+            if ($lastSession && Carbon::parse($lastSession->taken_date)->addDays(7)->isFuture()) {
+                $availabilityCheck = AvailabilityCheck::create([
+                    'training_place_id' => $this->trainingPlace->id,
+                    'status' => AvailabilityCheckStatus::Passed,
+                ]);
+
+                if ($existingAvailabilityWarning) {
+                    AvailabilityWarnings::markWarningAsResolved($existingAvailabilityWarning, $availabilityCheck->id);
+                }
+
+                return;
+            }
+        }
 
         if ($hasPendingExam) {
             $availabilityCheck = AvailabilityCheck::create([
@@ -125,7 +143,7 @@ class CheckAvailability implements ShouldQueue
                 'training_place_id' => $this->trainingPlace->id,
                 'availability_check_id' => $availabilityCheck->id,
                 'status' => 'pending',
-                'expires_at' => now()->addDays(5)->endOfDay(),
+                'expires_at' => now()->addDays($this->trainingPlace->availabilityWarningDays())->endOfDay(),
             ]);
             $account->notify(new AvailabilityWarningCreated($warning));
         });

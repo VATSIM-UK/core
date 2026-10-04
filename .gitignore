@@ -26,5 +26,8 @@ _ide_helper.php
 .gitmodules
 
 .vscode/mcp.json
+.playwright-mcp
 public/sitemap.xml
 docs/superpowers
+
+.github/scripts/__pycache__/

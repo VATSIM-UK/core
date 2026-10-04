@@ -44,7 +44,7 @@
 			])
 			<div class="row">
 				<div class="col-md-6 col-xs-12 col-sm-12">
-					<p>
+					<ul>
 						<li>Open TeamSpeak 3</li>
 						<li>Click "Connections" > "Connect"</li>
 						<li>
@@ -57,7 +57,7 @@
 						</li>
 						<li>Fill in the details as shown above, then click "Connect" and wait for your registration to be
 							automatically completed.</li>
-					</p>
+					</ul>
 				</div>
 
 				<div class="col-md-6 hidden-xs hidden-sm">

@@ -38,16 +38,28 @@ class Management extends \App\Http\Controllers\BaseController
 
     public function getDashboard()
     {
+        $this->setTitle('Dashboard');
+
+        return $this->viewMake('mship.management.dashboard-beta')
+            ->with($this->dashboardViewData());
+    }
+
+    /**
+     * @deprecated The classic dashboard is deprecated in favour of the beta layout.
+     *             Retained for direct access at mship.manage.dashboard.classic.
+     */
+    public function getDashboardClassic()
+    {
         return $this->viewMake('mship.management.dashboard')
             ->with($this->dashboardViewData());
     }
 
+    /**
+     * @deprecated The beta dashboard is now the default at mship.manage.dashboard.
+     */
     public function getDashboardBeta()
     {
-        $this->setTitle('Dashboard (Beta)');
-
-        return $this->viewMake('mship.management.dashboard-beta')
-            ->with($this->dashboardViewData());
+        return redirect()->route('mship.manage.dashboard');
     }
 
     /**

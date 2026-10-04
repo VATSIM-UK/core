@@ -140,8 +140,8 @@ class UpcomingExams extends Page implements HasTable
             TextColumn::make('start_date')
                 ->label('Date & Time')
                 ->getStateUsing(function ($record) {
-                    $date = Carbon::parse($record->taken_date)->format('d/m/Y');
-                    $time = Carbon::parse($record->taken_from)->format('H:i');
+                    $date = Carbon::parse($record->taken_date)->toPanelDate();
+                    $time = Carbon::parse($record->taken_from)->toPanelTime();
 
                     return trim("{$date} {$time}");
                 })

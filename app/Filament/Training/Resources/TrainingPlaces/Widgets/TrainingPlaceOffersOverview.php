@@ -4,10 +4,13 @@ namespace App\Filament\Training\Resources\TrainingPlaces\Widgets;
 
 use App\Enums\TrainingPlaceOfferStatus;
 use App\Filament\Support\NameColumn;
+use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
+use App\Policies\TrainingPlacePolicy;
 use App\Services\Training\TrainingPlaceOfferService;
+use App\Support\DateFormat;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
@@ -55,7 +58,7 @@ class TrainingPlaceOffersOverview extends BaseWidget
                     ->searchable(),
 
                 TextColumn::make('display_name')
-                    ->label('Position')
+                    ->label(fn (): string => $this->trainableColumnLabel(auth()->user()))
                     ->state(fn (TrainingPlaceOffer $record): string => $record->display_name),
 
                 TextColumn::make('status')
@@ -73,17 +76,17 @@ class TrainingPlaceOffersOverview extends BaseWidget
 
                 TextColumn::make('created_at')
                     ->label('Offered At')
-                    ->dateTime('d/m/Y H:i')
+                    ->dateTime()
                     ->sortable(),
 
                 TextColumn::make('expires_at')
                     ->label('Expires At')
-                    ->dateTime('d/m/Y H:i')
+                    ->dateTime()
                     ->sortable(),
 
                 TextColumn::make('response_at')
                     ->label('Responded At')
-                    ->dateTime('d/m/Y H:i')
+                    ->dateTime()
                     ->sortable()
                     ->placeholder('-'),
             ])
@@ -170,12 +173,12 @@ class TrainingPlaceOffersOverview extends BaseWidget
                         $indicators = [];
 
                         if ($data['from'] ?? null) {
-                            $indicators[] = Indicator::make('Offered from '.date('d/m/Y', strtotime($data['from'])))
+                            $indicators[] = Indicator::make('Offered from '.date(DateFormat::DATE, strtotime($data['from'])))
                                 ->removeField('from');
                         }
 
                         if ($data['until'] ?? null) {
-                            $indicators[] = Indicator::make('Offered until '.date('d/m/Y', strtotime($data['until'])))
+                            $indicators[] = Indicator::make('Offered until '.date(DateFormat::DATE, strtotime($data['until'])))
                                 ->removeField('until');
                         }
 
@@ -187,5 +190,22 @@ class TrainingPlaceOffersOverview extends BaseWidget
             ->defaultPaginationPageOption(10)
             ->emptyStateHeading('No training place offers')
             ->emptyStateDescription('No offers match the current filter.');
+    }
+
+    private function trainableColumnLabel(?Account $user): string
+    {
+        if (! $user) {
+            return 'Position';
+        }
+
+        $policy = app(TrainingPlacePolicy::class);
+        $canViewAtc = $policy->canViewDepartment($user, WaitingList::ATC_DEPARTMENT);
+        $canViewPilot = $policy->canViewDepartment($user, WaitingList::PILOT_DEPARTMENT);
+
+        return match (true) {
+            $canViewAtc && $canViewPilot => 'Position / Qualification',
+            $canViewPilot => 'Qualification',
+            default => 'Position',
+        };
     }
 }

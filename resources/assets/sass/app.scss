@@ -188,6 +188,15 @@ body, html {
 }
 
 
+/* Prevent Tailwind's .collapse utility from overriding Bootstrap's .collapse class.
+   Tailwind sets visibility: collapse, which hides content in Bootstrap accordions. */
+.panel-collapse.collapse,
+.summary-container.collapse,
+.panel-collapse.collapsing,
+.summary-container.collapsing {
+  visibility: visible;
+}
+
 /* Bootstrap Overwrite */
 
 .label-xs {

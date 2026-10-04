@@ -14,7 +14,6 @@ use App\Models\Cts\Session;
 use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\MentoringSessionsService;
 use App\Services\Training\MentorPermissionService;
-use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\Select;
@@ -241,19 +240,14 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
     {
         \assert($record instanceof Session);
 
-        $sessionDate = Carbon::parse($record->taken_date)->format('Y-m-d');
-        $start = Carbon::parse("{$sessionDate} {$record->taken_from}");
-        $end = Carbon::parse("{$sessionDate} {$record->taken_to}");
-
-        if ($end->lte($start)) {
-            $end->addDay();
-        }
-
         $mentorName = $record->mentor?->name ?? 'TBD';
 
-        return Link::create("Mentoring Session - {$record->position}", $start, $end)
-            ->description("Position: {$record->position}\nMentor: {$mentorName}")
-            ->address($record->position);
+        return $this->buildSessionLink(
+            $record,
+            "Mentoring Session - {$record->position}",
+            $record->position,
+            "Position: {$record->position}\nMentor: {$mentorName}"
+        );
     }
 
     protected function getCalendarIcsFilename(mixed $record): string

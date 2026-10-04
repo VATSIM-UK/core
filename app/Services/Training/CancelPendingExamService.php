@@ -3,6 +3,7 @@
 namespace App\Services\Training;
 
 use App\Models\Booking;
+use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\PracticalExaminers;
@@ -96,6 +97,21 @@ class CancelPendingExamService
         });
 
         DB::connection('cts')->afterCommit(fn () => $sendNotifications());
+
+        $coreBookings = Booking::where('bookable_type', ExamBooking::class)
+            ->where('bookable_id', $examBooking->id)
+            ->get();
+
+        $ctsBookingIds = $coreBookings
+            ->pluck('cts_booking_id')
+            ->filter()
+            ->map(fn ($id) => (int) $id)
+            ->values()
+            ->all();
+
+        if ($ctsBookingIds !== []) {
+            CtsBooking::whereIn('id', $ctsBookingIds)->delete();
+        }
 
         Booking::where('bookable_type', ExamBooking::class)
             ->where('bookable_id', $examBooking->id)

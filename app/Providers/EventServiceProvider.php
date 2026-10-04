@@ -85,6 +85,10 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\NetworkData\AtcSessionEnded::class => [
             \App\Listeners\TeamSpeak\RemoveAtcServerGroup::class,
         ],
+
+        \Laravel\Fortify\Events\RecoveryCodeReplaced::class => [
+            \App\Listeners\Mship\NotifyOfRecoveryCodeUse::class,
+        ],
     ];
 
     /**

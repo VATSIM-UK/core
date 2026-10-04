@@ -39,7 +39,7 @@ class RecentControllingTable extends Component implements HasActions, HasForms, 
             )
             ->defaultSort('connected_at', 'desc')
             ->columns([
-                TextColumn::make('connected_at')->label('Date')->date('d/m/Y H:i:s'),
+                TextColumn::make('connected_at')->label('Date')->dateTime(),
                 TextColumn::make('callsign')
                     ->label('Callsign')
                     ->icon(function ($record) {

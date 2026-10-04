@@ -5,6 +5,7 @@ namespace Tests\Unit\Account\Endorsement;
 use App\Models\Atc\Position;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Endorsement;
+use Illuminate\Database\Eloquent\Model;
 use Tests\TestCase;
 
 class TemporaryEndorsementTimeframeTest extends TestCase
@@ -14,25 +15,25 @@ class TemporaryEndorsementTimeframeTest extends TestCase
         $position = Position::factory()->create();
         $account = Account::factory()->create();
 
-        // create a temporary endorsement that has expired
-        Endorsement::create([
-            'account_id' => $account->id,
-            'endorsable_id' => $position->id,
-            'endorsable_type' => Position::class,
-            'created_at' => now()->subDays(8)->startOfDay(),
-            'expires_at' => now()->subDays(1)->startOfDay(),
-            'created_by' => $this->privacc->id,
-        ]);
+        Model::unguarded(function () use ($position, $account) {
+            Endorsement::create([
+                'account_id' => $account->id,
+                'endorsable_id' => $position->id,
+                'endorsable_type' => Position::class,
+                'created_at' => now()->subDays(8)->startOfDay(),
+                'expires_at' => now()->subDays(1)->startOfDay(),
+                'created_by' => $this->privacc->id,
+            ]);
 
-        // create endorsement that is active to ensure it is included
-        Endorsement::create([
-            'account_id' => $account->id,
-            'endorsable_id' => $position->id,
-            'endorsable_type' => Position::class,
-            'created_at' => now()->startOfDay(),
-            'expires_at' => now()->addDays(2)->startOfDay(),
-            'created_by' => $this->privacc->id,
-        ]);
+            Endorsement::create([
+                'account_id' => $account->id,
+                'endorsable_id' => $position->id,
+                'endorsable_type' => Position::class,
+                'created_at' => now()->startOfDay(),
+                'expires_at' => now()->addDays(2)->startOfDay(),
+                'created_by' => $this->privacc->id,
+            ]);
+        });
 
         $result = $account->daysSpentTemporarilyEndorsedOn($position);
 

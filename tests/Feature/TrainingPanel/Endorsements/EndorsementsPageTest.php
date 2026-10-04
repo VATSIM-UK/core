@@ -213,7 +213,7 @@ class EndorsementsPageTest extends BaseTrainingPanelTestCase
     public function test_requests_tab_renders_endorsement_requests(): void
     {
         $user = $this->createUser(['endorsement-request.access']);
-        $endorsementRequest = EndorsementRequest::factory()->create();
+        $endorsementRequest = EndorsementRequest::factory()->create(['requested_by' => $user->id]);
 
         Livewire::actingAs($user);
         Livewire::test(Endorsements::class)
@@ -302,6 +302,7 @@ class EndorsementsPageTest extends BaseTrainingPanelTestCase
         $user = $this->createUser(['endorsement-request.access']);
 
         $endorsementRequest = EndorsementRequest::factory()->create([
+            'requested_by' => $user->id,
             'endorsable_type' => PositionGroup::class,
             'endorsable_id' => PositionGroup::factory()->create()->id,
         ]);
@@ -316,6 +317,7 @@ class EndorsementsPageTest extends BaseTrainingPanelTestCase
         $user = $this->createUser(['endorsement-request.access']);
 
         $endorsementRequest = EndorsementRequest::factory()->create([
+            'requested_by' => $user->id,
             'endorsable_type' => PositionGroup::class,
             'endorsable_id' => PositionGroup::factory()->create()->id,
         ]);

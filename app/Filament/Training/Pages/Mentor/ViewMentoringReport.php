@@ -144,7 +144,7 @@ class ViewMentoringReport extends Page implements HasInfolists
 
                     TextEntry::make('position')
                         ->label('Position & Time')
-                        ->helperText(fn (Session $record) => Carbon::parse($record->taken_date)->format('d/m/Y').' | '.Carbon::parse($record->taken_from)->format('H:i').' - '.Carbon::parse($record->taken_to)->format('H:i')),
+                        ->helperText(fn (Session $record) => Carbon::parse($record->taken_date)->toPanelDate().' | '.Carbon::parse($record->taken_from)->toPanelTime().' - '.Carbon::parse($record->taken_to)->toPanelTime()),
 
                     Callout::make('adjacent_atc')
                         ->visible(fn (Session $record) => NetworkdataAtc::adjacentPositionsForMentoringSession($record)->isNotEmpty())
@@ -231,12 +231,18 @@ class ViewMentoringReport extends Page implements HasInfolists
     {
         $scoreMap = MentoringReportScores::scoreMapForSessions($this->allSessions);
 
+        $eligibleSessionIds = $this->allSessions
+            ->where('taken_date', '<=', $this->session->taken_date)
+            ->pluck('id')
+            ->all();
+
         $previousSession = $this->otherSessions
             ->where('taken_date', '<=', $this->session->taken_date)
             ->sortByDesc('taken_date')
             ->first();
 
         $groupedSheets = $this->session->reportSheets->reject(fn ($s) => $s->field_id === 0)->groupBy(fn ($s) => $s->field?->category?->catName ?? 'Uncategorized');
+        $isPilot = $this->session->isPilot();
 
         $categorySections = [];
 
@@ -247,8 +253,72 @@ class ViewMentoringReport extends Page implements HasInfolists
                 $uniqueKey = $sheet->field_id ?? $index;
 
                 $previousScore = MentoringReportScores::previousScore($scoreMap, $sheet->field_id, $previousSession);
-                $bestScore = MentoringReportScores::bestScore($scoreMap, $sheet->field_id);
+                $bestScore = MentoringReportScores::bestScore($scoreMap, $sheet->field_id, $eligibleSessionIds);
 
+                // Pilot sessions should have the 3 column layout
+                if ($isPilot) {
+                    $bestScoreSessionId = MentoringReportScores::bestScoreSessionId($scoreMap, $sheet->field_id, $eligibleSessionIds);
+
+                    $sheetRows[] = Grid::make(14)
+                        ->schema([
+                            Grid::make(1)
+                                ->extraAttributes(['class' => 'gap-0'])
+                                ->schema([
+                                    TextEntry::make("field_name_{$uniqueKey}")
+                                        ->state($sheet->field?->field ?? 'Unknown Field')
+                                        ->hiddenLabel()
+                                        ->size(TextSize::Large)
+                                        ->weight(FontWeight::Bold)
+                                        ->extraAttributes(['style' => 'margin-bottom:0.5px']),
+
+                                    TextEntry::make("field_notes_{$uniqueKey}")
+                                        ->label('Notes')
+                                        ->state($this->ctsPlainNotesForHtmlDisplay($sheet->notes))
+                                        ->hiddenLabel()
+                                        ->html()
+                                        ->prose()
+                                        ->extraAttributes(['style' => 'word-break:break-word'])
+                                        ->hidden(blank($sheet->notes)),
+                                ])->columnSpan(8),
+
+                            TextEntry::make("field_best_{$uniqueKey}")
+                                ->label('Best')
+                                ->state($bestScore)
+                                ->badge()
+                                ->icon('heroicon-m-trophy')
+                                ->url(function () use ($bestScoreSessionId, $bestScore, $sheet): ?string {
+                                    if (! $bestScoreSessionId || $bestScoreSessionId === $this->session->id) {
+                                        return null;
+                                    }
+
+                                    if ($sheet->field_score === $bestScore) {
+                                        return null;
+                                    }
+
+                                    return static::getUrl(['sessionId' => $bestScoreSessionId]);
+                                })
+                                ->openUrlInNewTab()
+                                ->columnSpan(2),
+
+                            TextEntry::make("field_previous_{$uniqueKey}")
+                                ->label('Previous')
+                                ->state($previousScore)
+                                ->badge()
+                                ->icon('heroicon-m-clock')
+                                ->columnSpan(2),
+
+                            TextEntry::make("field_score_{$uniqueKey}")
+                                ->label('Current')
+                                ->state($sheet->field_score)
+                                ->badge()
+                                ->columnSpan(2),
+                        ])
+                        ->extraAttributes(['class' => MentoringReportLayout::CRITERION_ROW_CLASSES]);
+
+                    continue;
+                }
+
+                // Mentoring sessions should use the progress entry
                 $sheetRows[] = Grid::make(4)
                     ->schema([
                         Grid::make(1)
@@ -375,7 +445,7 @@ class ViewMentoringReport extends Page implements HasInfolists
             ->map(function (Session $session): Section {
                 $isCurrentSession = $session->id === $this->session->id;
 
-                return Section::make(Carbon::parse($session->taken_date)->format('d/m/Y'))
+                return Section::make(Carbon::parse($session->taken_date)->toPanelDate())
                     ->description($session->mentor?->account?->name)
                     ->headerActions([
                         Action::make("viewReport{$session->id}")

@@ -40,7 +40,7 @@ class AvailabilityChecksTable extends Component implements HasActions, HasForms,
             ->columns([
                 TextColumn::make('created_at')
                     ->label('Day')
-                    ->date('d/m/Y'),
+                    ->date(),
 
                 TextColumn::make('status')
                     ->label('Status')

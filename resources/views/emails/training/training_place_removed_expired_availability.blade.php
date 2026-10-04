@@ -1,7 +1,7 @@
 @extends('emails.messages.post')
 
 @section('body')
-    <p>In accordance with the <a href="https://www.vatsim.uk/policy/atc-training-policy">ATC Training Policy</a>, as we’ve
+    <p>In accordance with the <a href="{{ __('atc.policy.url') }}">ATC Training Policy</a>, as we’ve
         not heard from you on the above and you still do not have either a Session Request or Availability in the CTS, your
         training place has been removed and will shortly be reallocated.</p>
 

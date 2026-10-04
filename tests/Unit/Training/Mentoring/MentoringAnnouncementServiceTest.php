@@ -17,7 +17,7 @@ class MentoringAnnouncementServiceTest extends TestCase
 
     private function makeService(?MentorPermissionService $permissionService = null): MentoringAnnouncementService
     {
-        return new MentoringAnnouncementService(new Discord, $permissionService ?? $this->createMock(MentorPermissionService::class));
+        return new MentoringAnnouncementService(new Discord, $permissionService ?? $this->createStub(MentorPermissionService::class));
     }
 
     private function makeSession(array $attributes = []): Session
@@ -34,10 +34,10 @@ class MentoringAnnouncementServiceTest extends TestCase
 
     private function makeAtcPermissionService(string $category = 'S2 Training'): MentorPermissionService
     {
-        $mock = $this->createMock(MentorPermissionService::class);
-        $mock->method('resolveCategoryForCtsCallsign')->willReturn($category);
+        $stub = $this->createStub(MentorPermissionService::class);
+        $stub->method('resolveCategoryForCtsCallsign')->willReturn($category);
 
-        return $mock;
+        return $stub;
     }
 
     #[Test]
@@ -116,12 +116,12 @@ class MentoringAnnouncementServiceTest extends TestCase
     #[Test]
     public function it_builds_pilot_message_for_pilot_category_sessions(): void
     {
-        $mock = $this->createMock(MentorPermissionService::class);
-        $mock->method('resolveCategoryForCtsCallsign')->willReturn('P1 Training');
+        $stub = $this->createStub(MentorPermissionService::class);
+        $stub->method('resolveCategoryForCtsCallsign')->willReturn('P1 Training');
 
         $session = $this->makeSession(['position' => 'P1_PPL(A)', 'taken_date' => '2026-01-11', 'taken_from' => '12:00:00']);
 
-        $message = $this->makeService($mock)->buildMessage($session, ['ping_pilot' => false, 'ping_controller' => false, 'notes' => '']);
+        $message = $this->makeService($stub)->buildMessage($session, ['ping_pilot' => false, 'ping_controller' => false, 'notes' => '']);
 
         $this->assertStringContainsString('Pilot Mentoring Session', $message);
         $this->assertStringNotContainsString('ATC Mentoring Session', $message);

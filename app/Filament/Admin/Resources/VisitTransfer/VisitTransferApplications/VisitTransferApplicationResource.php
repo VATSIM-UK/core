@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplications\Pages\L
 use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplications\Pages\ViewVisitTransferApplication;
 use App\Filament\Support\NameColumn;
 use App\Models\VisitTransfer\Application;
+use App\Support\DateFormat;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Resources\Resource;
@@ -26,6 +27,8 @@ class VisitTransferApplicationResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Visiting / Transferring';
 
     protected static ?string $label = 'Applications';
+
+    protected static ?int $navigationSort = 13;
 
     public static function canAccess(): bool
     {
@@ -100,12 +103,12 @@ class VisitTransferApplicationResource extends Resource
                         $indicators = [];
 
                         if ($data['from'] ?? null) {
-                            $indicators[] = Indicator::make('updated from '.date('d/m/Y', strtotime($data['from'])))
+                            $indicators[] = Indicator::make('updated from '.date(DateFormat::DATE, strtotime($data['from'])))
                                 ->removeField('from');
                         }
 
                         if ($data['until'] ?? null) {
-                            $indicators[] = Indicator::make('updated until '.date('d/m/Y', strtotime($data['until'])))
+                            $indicators[] = Indicator::make('updated until '.date(DateFormat::DATE, strtotime($data['until'])))
                                 ->removeField('until');
                         }
 

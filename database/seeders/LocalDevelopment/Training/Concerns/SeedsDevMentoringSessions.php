@@ -152,6 +152,39 @@ trait SeedsDevMentoringSessions
     }
 
     /**
+     * Accepted upcoming mentoring session for a mentor on a specific date (demo / local fixtures).
+     */
+    protected function seedDevAcceptedSessionForDate(
+        Member $student,
+        Member $mentor,
+        string $position,
+        string $date,
+        string $from,
+        string $to,
+    ): Session {
+        return $this->upsertDevMentoringSession(
+            [
+                'student_id' => $student->id,
+                'position' => $position,
+                'mentor_id' => $mentor->id,
+                'taken_date' => $date,
+                'session_done' => 0,
+            ],
+            [
+                'mentor_rating' => 3,
+                'taken' => 1,
+                'taken_time' => now()->subHour(),
+                'taken_from' => $from,
+                'taken_to' => $to,
+                'cancelled_datetime' => null,
+                'filed' => null,
+                'noShow' => 0,
+                'request_time' => now()->subDays(2),
+            ],
+        );
+    }
+
+    /**
      * Accepted session past its scheduled time, awaiting a filed report (conduct page).
      */
     protected function seedDevPendingConductSession(Member $student, Member $mentor, string $position, int $progressSheetId = 1): Session

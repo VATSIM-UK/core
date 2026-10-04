@@ -2,12 +2,16 @@
 
 namespace App\Providers;
 
+use App\Support\DateFormat;
 use Filament\Actions\Action;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -32,6 +36,31 @@ class FilamentServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerMacros();
+        $this->registerDefaultDateFormats();
+    }
+
+    protected function registerDefaultDateFormats(): void
+    {
+        $configure = function (string $date, string $time, string $dateTime): void {
+            Table::configureUsing(fn (Table $table) => $table
+                ->defaultDateDisplayFormat($date)
+                ->defaultTimeDisplayFormat($time)
+                ->defaultDateTimeDisplayFormat($dateTime));
+
+            Schema::configureUsing(fn (Schema $schema) => $schema
+                ->defaultDateDisplayFormat($date)
+                ->defaultTimeDisplayFormat($time)
+                ->defaultDateTimeDisplayFormat($dateTime));
+
+            DateTimePicker::configureUsing(fn (DateTimePicker $picker) => $picker
+                ->defaultDateDisplayFormat($date)
+                ->defaultTimeDisplayFormat($time)
+                ->defaultDateTimeDisplayFormat($dateTime)
+                ->defaultDateTimeWithSecondsDisplayFormat($dateTime)
+                ->defaultTimeWithSecondsDisplayFormat($time));
+        };
+
+        $configure(DateFormat::DATE, DateFormat::TIME, DateFormat::DATETIME);
     }
 
     protected function registerMacros(): void
@@ -103,11 +132,6 @@ class FilamentServiceProvider extends ServiceProvider
         IconColumn::macro('timestampBoolean', function (): IconColumn {
             /** @var IconColumn $this */
             return $this->getStateUsing(fn ($record) => $record->{$this->getName()} !== null)->boolean();
-        });
-
-        TextColumn::macro('isoDateTimeFormat', function (string $format): TextColumn {
-            /** @var TextColumn $this */
-            return $this->formatStateUsing(fn ($state) => $state->settings(['formatFunction' => 'isoFormat'])->format($format));
         });
     }
 }

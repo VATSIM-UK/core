@@ -46,6 +46,7 @@ class QualificationTrainingPlaceTest extends TestCase
         $this->assertInstanceOf(Qualification::class, $trainingPlace->trainable);
         $this->assertNull($trainingPlace->trainingPosition);
         $this->assertTrue($trainingPlace->qualification->is($qualification));
+        $this->assertSame('Qualification', $trainingPlace->trainable_type_label);
         $this->assertDatabaseHas('training_places', [
             'id' => $trainingPlace->id,
             'trainable_type' => Qualification::class,
@@ -93,6 +94,35 @@ class QualificationTrainingPlaceTest extends TestCase
         $this->assertDatabaseHas('position_validations', [
             'member_id' => $student->member->id,
             'position_id' => $ctsPosition->id,
+            'status' => PositionValidationStatusEnum::Student->value,
+        ], 'cts');
+    }
+
+    #[Test]
+    public function it_resolves_tfp_category_and_student_cts_callsign_for_virtual_qualification_places(): void
+    {
+        CtsPosition::firstOrCreate(['callsign' => 'TFP_FLIGHT']);
+        $qualification = Qualification::firstWhere('code', 'TFP')
+            ?? Qualification::factory()->pilotVirtual()->create(['code' => 'TFP']);
+
+        $student = Account::factory()->create();
+        Member::factory()->create(['cid' => $student->id]);
+
+        $trainingPlace = TrainingPlace::withoutEvents(function () use ($qualification, $student) {
+            return TrainingPlace::factory()
+                ->forQualification($qualification)
+                ->create(['account_id' => $student->id]);
+        });
+
+        $this->assertSame('TFP Training', $trainingPlace->category);
+        $this->assertSame(['TFP_FLIGHT'], $trainingPlace->trainableCtsPositions());
+        $this->assertSame(WaitingList::PILOT_DEPARTMENT, $trainingPlace->department);
+
+        (new TrainingPlaceService)->assignMentoringPermissions($trainingPlace);
+
+        $this->assertDatabaseHas('position_validations', [
+            'member_id' => $student->member->id,
+            'position_id' => CtsPosition::where('callsign', 'TFP_FLIGHT')->firstOrFail()->id,
             'status' => PositionValidationStatusEnum::Student->value,
         ], 'cts');
     }

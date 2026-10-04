@@ -3,6 +3,10 @@ $(window).on('load', function () {
         hideNotification($(this).attr('data-top-notification-id'))
     })
 
+    $('.top_notification_open_and_dismiss').click(function() {
+        hideNotification($(this).attr('data-top-notification-id'))
+    })
+
     $('.top_notification_dismiss').each(function (index) {
         var notification_id = $(this).attr('data-top-notification-id')
 
@@ -28,14 +32,18 @@ function hideNotification(id) {
     var notification = $(".top_notification[data-top-notification-id=" + id + "]")
     notification.slideUp("slow")
 
-    if(cookieExists('vuk_cookie_consent')){
+    if(hasCookieConsent()){
         setCookie(id, 1, notification.attr('data-top-notification-cookie-expiration-days'))
     }
 }
 
 function showNotification(id) {
-    if(!cookieExists('vuk_cookie_consent')){
+    if(!hasCookieConsent()){
         $(".top_notification_dismiss[data-top-notification-id=" + id + "]").text("Close")
     }
     $(".top_notification[data-top-notification-id=" + id + "]").slideDown("slow")
+}
+
+function hasCookieConsent() {
+    return window.vukCookieConsent === true;
 }

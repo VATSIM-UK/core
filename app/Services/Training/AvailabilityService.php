@@ -119,6 +119,8 @@ class AvailabilityService
                 'to' => $mergedEnd->format('H:i:s'),
             ]);
 
+            $this->logAvailabilityMutation($studentId, 'merged', $existingStart, $existingEnd, $mergedStart, $mergedEnd);
+
             return 'merged';
         }
 
@@ -130,6 +132,30 @@ class AvailabilityService
             'to' => $endUtc->format('H:i:s'),
         ]);
 
+        $this->logAvailabilityMutation($studentId, 'added', null, null, $startUtc, $endUtc);
+
         return 'added';
+    }
+
+    private function logAvailabilityMutation(int $studentId, string $type, ?Carbon $oldFrom, ?Carbon $oldTo, Carbon $newFrom, Carbon $newTo): void
+    {
+        $cid = Member::where('id', $studentId)->value('cid');
+
+        if (! $cid) {
+            return;
+        }
+
+        $service = app(AvailabilityLogService::class);
+        $places = $service->activeTrainingPlacesForAccount($cid);
+
+        if ($places->isEmpty()) {
+            return;
+        }
+
+        match ($type) {
+            'added' => $service->recordAdded($places, $newFrom, $newTo),
+            'merged' => $service->recordMerged($places, $oldFrom, $oldTo, $newFrom, $newTo),
+            default => null,
+        };
     }
 }

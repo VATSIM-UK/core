@@ -2,22 +2,48 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "xdebug.php-debug",
         "bmewburn.vscode-intelephense-client",
-        "mrmlnc.vscode-apache",
+        "laravel.vscode-laravel",
         "open-southeners.laravel-pint",
-        "bradlc.vscode-tailwindcss"
+        "shufo.vscode-blade-formatter",
+        "bradlc.vscode-tailwindcss",
+        "mikestead.dotenv",
+        "editorconfig.editorconfig",
+        "github.vscode-pull-request-github"
       ]
     }
   },
   "dockerComposeFile": "docker-compose.yml",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "24"
+    }
+  },
   "forwardPorts": [
-    8080,
-    3306
+    80,
+    5173,
+    8090,
+    13306
   ],
   "name": "VATSIM UK Core",
-  "postAttachCommand": "composer install && php artisan migrate && php artisan db:seed",
-  "postCreateCommand": "sh .devcontainer/initialSetup.sh",
-  "service": "vatsimuk-core",
+  "portsAttributes": {
+    "13306": {
+      "label": "MySQL"
+    },
+    "5173": {
+      "label": "Vite"
+    },
+    "80": {
+      "label": "core.test (app)",
+      "onAutoForward": "notify"
+    },
+    "8090": {
+      "label": "phpMyAdmin"
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/scripts/post-create.sh",
+  "remoteUser": "vscode",
+  "service": "app",
   "workspaceFolder": "/workspace"
 }

@@ -2,7 +2,7 @@
 	@if ($session && $startsAt && $endsAt)
 		<x-filament::callout icon="heroicon-o-academic-cap" color="primary">
 			<x-slot name="heading">
-				<div class="flex items-center justify-between gap-4">
+				<div class="flex items-center justify-between gap-4 -mt-1">
 					<div>
 						Upcoming session:
 						<span class="font-bold">
@@ -26,7 +26,7 @@
 
 			<x-slot name="description">
 				<time datetime="{{ $startsAt->toIso8601String() }}">
-					{{ $startsAt->format('D d M') }}
+					{{ $startsAt->toPanelDateWithWeekday() }}
 				</time>
 
 				<span class="text-gray-500 dark:text-gray-400">&bull;</span>
@@ -58,7 +58,7 @@
 
 			<x-slot name="description">
 				<time datetime="{{ $examStartsAt->toIso8601String() }}">
-					{{ $examStartsAt->format('D d M') }}
+					{{ $examStartsAt->toPanelDateWithWeekday() }}
 				</time>
 
 				<span class="text-gray-500 dark:text-gray-400">&bull;</span>

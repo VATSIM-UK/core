@@ -1,5 +1,6 @@
 @import '../../../vendor/filament/filament/resources/css/theme.css';
 @import '../../css/filament/training/notes.css';
+@import '../../css/filament/admin/events.css';
 
 @config '../../../tailwind.config.js';
 

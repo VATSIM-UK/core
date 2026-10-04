@@ -26,7 +26,7 @@ jobs:
           php-version: 8.4
           coverage: none
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "24"
 
@@ -89,7 +89,7 @@ jobs:
           coverage: none
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "24"
 
@@ -139,9 +139,7 @@ jobs:
         run: php artisan telescope:publish
 
       - name: Cache Application
-        run: |
-          php artisan route:cache
-          php artisan config:cache
+        run: php artisan route:cache
 
       - name: Serve Application
         run: php artisan serve -q &

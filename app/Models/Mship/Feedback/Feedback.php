@@ -102,6 +102,13 @@ class Feedback extends Model
         return $query->whereNotNull('sent_at');
     }
 
+    public function scopeWherePositionLike($query, string $term)
+    {
+        return $query->whereHas('position', function ($query) use ($term) {
+            $query->where('response', 'like', "{$term}%");
+        });
+    }
+
     public function form()
     {
         return $this->belongsTo(Form::class);
@@ -120,7 +127,7 @@ class Feedback extends Model
     public function position()
     {
         return $this->hasOne(Answer::class)->whereHas('question', function ($query) {
-            $query->where('slug', ['callsign3', 'sessionposition2']);
+            $query->whereIn('slug', ['callsign3', 'sessionposition2', 'position_callsign']);
         });
     }
 

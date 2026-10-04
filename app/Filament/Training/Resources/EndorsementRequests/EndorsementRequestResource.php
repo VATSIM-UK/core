@@ -8,8 +8,10 @@ use App\Filament\Training\Resources\EndorsementRequests\Pages\CreateEndorsementR
 use App\Filament\Training\Resources\EndorsementRequests\Pages\ListEndorsementRequests;
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
+use App\Models\Mship\Account;
 use App\Models\Mship\Account\EndorsementRequest;
 use App\Models\Mship\Qualification;
+use App\Services\Training\EndorsementRequestVisibilityService;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\Hidden;
@@ -37,6 +39,19 @@ class EndorsementRequestResource extends Resource
     public static function shouldRegisterNavigation(): bool
     {
         return false;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $user = auth()->user();
+
+        if (! $user instanceof Account) {
+            return $query;
+        }
+
+        return app(EndorsementRequestVisibilityService::class)->scope($query, $user);
     }
 
     public static function form(Schema $schema): Schema
@@ -96,7 +111,7 @@ class EndorsementRequestResource extends Resource
                     default => 'warning',
                 }),
                 TextColumn::make('requester.name')->label('Requested By'),
-                TextColumn::make('created_at')->label('Requested')->isoDateTimeFormat('lll'),
+                TextColumn::make('created_at')->label('Requested')->dateTime(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
@@ -108,7 +123,7 @@ class EndorsementRequestResource extends Resource
                         'id',
                         fn (Builder $query) => $query->whereIn(
                             'id',
-                            EndorsementRequest::query()->select('account_id'),
+                            static::getEloquentQuery()->select('account_id'),
                         ),
                     )
                     ->searchable()
@@ -122,9 +137,29 @@ class EndorsementRequestResource extends Resource
                     ]),
             ])
             ->paginated([10, 25, 50, 100])
+            ->emptyStateHeading('No endorsement requests found')
+            ->emptyStateDescription('You will see requests raised for students in your training group, and any you have raised yourself.')
             ->recordActions([
+                Action::make('viewNotes')
+                    ->icon('heroicon-m-document-text')
+                    ->label('Notes')
+                    ->modalHeading('Request Notes')
+                    ->modalFooterActions([])
+                    ->form([
+                        Textarea::make('notes')
+                            ->hiddenLabel()
+                            ->disabled()
+                            ->columnSpanFull(),
+                    ])
+                    ->fillForm(function (EndorsementRequest $endorsementRequest) {
+                        return [
+                            'notes' => $endorsementRequest->notes,
+                        ];
+                    })
+                    ->visible(fn (EndorsementRequest $endorsementRequest) => (auth()->user()->can('approve', $endorsementRequest) || auth()->user()->can('reject', $endorsementRequest)) && $endorsementRequest->notes),
                 Action::make('approve')
-                    ->schema(static::approvalSchema())
+                    ->color('success')
+                    ->schema(fn (EndorsementRequest $endorsementRequest) => static::approvalSchema($endorsementRequest))
                     ->modalSubmitActionLabel('Approve')
                     ->action(function (EndorsementRequest $endorsementRequest, array $data) {
                         event(new EndorsementRequestApproved($endorsementRequest, $data['days'] ?? null));
@@ -135,6 +170,7 @@ class EndorsementRequestResource extends Resource
                     })->visible(fn (EndorsementRequest $endorsementRequest) => $endorsementRequest->status === 'Pending' &&
                             auth()->user()->can('approve', $endorsementRequest)),
                 Action::make('reject')
+                    ->color('danger')
                     ->requiresConfirmation()
                     ->action(function (EndorsementRequest $endorsementRequest, array $data) {
                         $endorsementRequest->markRejected();
@@ -155,9 +191,16 @@ class EndorsementRequestResource extends Resource
         ];
     }
 
-    public static function approvalSchema(): array
+    public static function approvalSchema(?EndorsementRequest $endorsementRequest = null): array
     {
         return [
+            Textarea::make('request_notes')
+                ->label('Request Notes')
+                ->default($endorsementRequest?->notes)
+                ->disabled()
+                ->columnSpanFull()
+                ->visible(fn () => filled($endorsementRequest?->notes)),
+
             Select::make('type')
                 ->options([
                     'Permanent' => 'Permanent',

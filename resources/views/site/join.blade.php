@@ -26,9 +26,7 @@
 						This page outlines step-by-step instructions on how to become a pilot or virtual air traffic
 						controller in the UK. Many of our members are both pilots and controllers, so feel free to give
 						them
-						both a try! If you have any problems during the process, please visit our forums or use the
-						"Contact
-						Us" function at the top of the page. If you are already a VATSIM member and want to transfer
+						both a try! If you are already a VATSIM member and want to transfer
 						into
 						the UK for controlling, please see the bottom of this page. Don't forget that VATSIM pilots can
 						fly

@@ -34,8 +34,8 @@ class VisitTransferRelationManager extends RelationManager
                 TextColumn::make('facility.name')->label('Facility'),
                 TextColumn::make('status')->label('Status')->badge()->formatStateUsing(fn ($state, $record) => $record->status_string)
                     ->color(fn ($record) => $record->status_color),
-                TextColumn::make('created_at')->label('Submitted At')->dateTime()->isoDateTimeFormat('lll'),
-                TextColumn::make('updated_at')->label('Last Updated')->dateTime()->isoDateTimeFormat('lll'),
+                TextColumn::make('created_at')->label('Submitted At')->dateTime(),
+                TextColumn::make('updated_at')->label('Last Updated')->dateTime(),
             ])
             ->recordActions([
                 ViewAction::make('View')

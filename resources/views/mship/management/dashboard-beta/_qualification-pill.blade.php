@@ -10,12 +10,12 @@
 	'bg-gray-50 ring-dashed ring-gray-300' => $trainingTone,
 ]) title="{{ $grantedAt->toDateTimeString() }}">
 	<span @class([
-		'text-sm font-bold',
+		'text-base font-bold',
 		'text-uknavy' => !$pilotTone,
 		'text-emerald-800' => $pilotTone,
 	])>{{ $qualification }}</span>
 	<span @class([
-		'text-xs',
+		'text-sm',
 		'text-gray-500' => !$pilotTone,
 		'text-emerald-700/80' => $pilotTone,
 	])>{{ $grantedAt->diffForHumans() }}</span>

@@ -7,9 +7,9 @@
 	]) }}>
 	<div class="bg-uknavy text-white px-4 py-2.5 flex items-center justify-between gap-3 shrink-0">
 		<p role="heading" aria-level="2"
-			class="m-0 flex items-center gap-1.5 text-base font-semibold leading-snug text-white [&_svg]:text-white">
+			class="m-0 flex items-center gap-1.5 text-lg font-semibold leading-snug text-white [&_svg]:text-white">
 			@if ($icon)
-				<i class="{{ $icon }} shrink-0 text-sm text-white" aria-hidden="true"></i>
+				<i class="{{ $icon }} shrink-0 text-base text-white" aria-hidden="true"></i>
 			@endif
 			{{ $title }}
 		</p>
@@ -28,7 +28,7 @@
 	</div>
 
 	@if (isset($footer))
-		<div class="bg-brand shrink-0 px-4 py-2.5 text-sm text-white">
+		<div class="bg-brand shrink-0 px-4 py-2.5 text-base text-white">
 			{{ $footer }}
 		</div>
 	@endif

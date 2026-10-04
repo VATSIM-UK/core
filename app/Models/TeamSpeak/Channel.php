@@ -32,7 +32,7 @@ class Channel extends Model
 
     protected $primaryKey = 'id';
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     /**
      * The parent of the current channel.

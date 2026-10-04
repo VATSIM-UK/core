@@ -23,7 +23,7 @@ class TrainingPosition extends Model
         'feature_toggles' => 'array',
     ];
 
-    protected $guarded = [];
+    protected $guarded = ['id', 'created_at', 'updated_at'];
 
     protected static function booted(): void
     {

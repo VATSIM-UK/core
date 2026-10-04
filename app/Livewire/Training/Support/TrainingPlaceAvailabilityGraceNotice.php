@@ -22,7 +22,7 @@ final class TrainingPlaceAvailabilityGraceNotice
         }
 
         $hours = TrainingPlace::AVAILABILITY_CHECK_GRACE_PERIOD_HOURS;
-        $endsAt = $trainingPlace->availabilityCheckGracePeriodEndsAt()->format('d/m/Y, H:i');
+        $endsAt = $trainingPlace->availabilityCheckGracePeriodEndsAt()->toPanelDateTime();
 
         return "Automated checks for CTS availability and session requests. No automated availability checks are run during the first {$hours} hours after this training place was created. Checks begin on {$endsAt}.";
     }

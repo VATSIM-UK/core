@@ -3,6 +3,7 @@
 namespace Tests\Unit\Training\Exams;
 
 use App\Models\Booking;
+use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamSetup;
 use App\Models\Cts\Member;
@@ -113,6 +114,39 @@ class CancelPendingExamTest extends TestCase
             'bookable_type' => ExamBooking::class,
             'bookable_id' => $this->examBooking->id,
         ]);
+    }
+
+    #[Test]
+    public function it_deletes_cts_booking_when_cancelling_a_scheduled_exam(): void
+    {
+        $ctsBooking = CtsBooking::factory()->create([
+            'date' => $this->examBooking->taken_date,
+            'from' => $this->examBooking->taken_from,
+            'to' => $this->examBooking->taken_to,
+            'position' => $this->examBooking->position_1,
+            'member_id' => $this->examBooking->student_id,
+            'type' => 'EX',
+        ]);
+
+        Booking::create([
+            'position_id' => null,
+            'member_id' => $this->studentAccount->id,
+            'type' => Booking::TYPE_EXAM,
+            'starts_at' => $this->examBooking->taken_date.' '.$this->examBooking->taken_from,
+            'ends_at' => $this->examBooking->taken_date.' '.$this->examBooking->taken_to,
+            'bookable_type' => ExamBooking::class,
+            'bookable_id' => $this->examBooking->id,
+            'cts_booking_id' => $ctsBooking->id,
+        ]);
+
+        $this->service->cancelByStudent($this->examBooking, 'Cannot make it.', $this->studentAccount);
+
+        $this->assertDatabaseMissing('bookings', [
+            'bookable_type' => ExamBooking::class,
+            'bookable_id' => $this->examBooking->id,
+        ]);
+
+        $this->assertDatabaseMissing('bookings', ['id' => $ctsBooking->id], 'cts');
     }
 
     #[Test]

@@ -8,12 +8,12 @@
 			@if ($result === 'accepted')
 				<div class="alert alert-success">
 					<strong>Training place accepted!</strong> You have accepted your training place on
-					{{ $offer->trainingPosition->position->name }} ({{ $offer->trainingPosition->position->callsign }}).
+					{{ $offer->display_name }}.
 				</div>
 			@elseif($result === 'declined')
 				<div class="alert alert-danger">
 					<strong>Training place declined.</strong> You have declined your training place offer for
-					{{ $offer->trainingPosition->position->name }} ({{ $offer->trainingPosition->position->callsign }}) and
+					{{ $offer->display_name }} and
 					therefore have been removed from the waiting list.
 				</div>
 			@endif

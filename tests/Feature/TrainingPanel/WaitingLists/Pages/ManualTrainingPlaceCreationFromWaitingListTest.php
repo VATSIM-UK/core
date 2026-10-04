@@ -51,7 +51,7 @@ class ManualTrainingPlaceCreationFromWaitingListTest extends BaseTrainingPanelTe
                 'pageClass' => ViewRecord::class,
             ])
             ->callTableAction('manualSetupTrainingPlace', $waitingListAccount, [
-                'training_position_id' => $trainingPosition->id,
+                'trainable' => TrainingPosition::class.'|'.$trainingPosition->id,
             ])
             ->assertHasNoTableActionErrors();
 
@@ -93,7 +93,7 @@ class ManualTrainingPlaceCreationFromWaitingListTest extends BaseTrainingPanelTe
                 'pageClass' => ViewRecord::class,
             ])
             ->callTableAction('manualSetupTrainingPlace', $waitingListAccount1, [
-                'training_position_id' => $position1->id,
+                'trainable' => TrainingPosition::class.'|'.$position1->id,
             ])
             ->assertHasNoTableActionErrors();
 
@@ -104,7 +104,7 @@ class ManualTrainingPlaceCreationFromWaitingListTest extends BaseTrainingPanelTe
                 'pageClass' => ViewRecord::class,
             ])
             ->callTableAction('manualSetupTrainingPlace', $waitingListAccount2, [
-                'training_position_id' => $position2->id,
+                'trainable' => TrainingPosition::class.'|'.$position2->id,
             ])
             ->assertHasNoTableActionErrors();
 
@@ -123,7 +123,7 @@ class ManualTrainingPlaceCreationFromWaitingListTest extends BaseTrainingPanelTe
     }
 
     #[Test]
-    public function it_requires_training_position_to_be_selected()
+    public function it_requires_trainable_to_be_selected()
     {
         // Arrange
         $trainingPosition = TrainingPosition::factory()->create();
@@ -142,9 +142,9 @@ class ManualTrainingPlaceCreationFromWaitingListTest extends BaseTrainingPanelTe
                 'pageClass' => ViewRecord::class,
             ])
             ->callTableAction('manualSetupTrainingPlace', $waitingListAccount, [
-                'training_position_id' => null,
+                'trainable' => null,
             ])
-            ->assertHasTableActionErrors(['training_position_id' => 'required']);
+            ->assertHasTableActionErrors(['trainable' => 'required']);
     }
 
     #[Test]
@@ -197,7 +197,7 @@ class ManualTrainingPlaceCreationFromWaitingListTest extends BaseTrainingPanelTe
                 'pageClass' => ViewRecord::class,
             ])
             ->callTableAction('manualSetupTrainingPlace', $waitingListAccount, [
-                'training_position_id' => $trainingPosition->id,
+                'trainable' => TrainingPosition::class.'|'.$trainingPosition->id,
             ])
             ->assertNotified();
     }

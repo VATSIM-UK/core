@@ -54,6 +54,19 @@ The workflow for submitting a new pull request is designed to be simple, but als
 
 **Please** keep your changes in a single PR as small as possible (relating to one issue) as this makes it easier to review and accept. Large PRs with a small error will prevent the entire PR from being accepted.
 
+## Marking PR dependencies
+
+If your PR depends on another open PR being merged first, include a line in your PR description such as `Depends on #123` or `Blocked by #123`. A "Check Dependencies" status check will flag the PR until the dependency is resolved.
+
+## Automatic PR labeling
+
+An automated workflow classifies internal pull requests and applies labels to help reviewers:
+
+- **`type:*`** - the primary intent of the PR (feature, fix, chore, docs, refactor, test)
+- **`needs-*`** - potential gaps flagged for reviewer attention (tests, copy, docs, migration)
+
+Labels update on each push. They are advisory only and do not block merging. If a label is incorrect, you can remove it manually - the workflow will not re-apply it unless the diff changes.
+
 # Expectations
 
 As contributors and maintainers of this project, we pledge to respect all people who contribute through reporting issues, posting feature requests, updating documentation, submitting merge requests or patches, and other activities.

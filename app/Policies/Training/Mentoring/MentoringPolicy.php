@@ -8,6 +8,8 @@ use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Models\Training\Mentoring\MentoringScope;
+use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Services\Training\MentoringReportAccessService;
 use App\Services\Training\MentorPermissionService;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -23,6 +25,16 @@ class MentoringPolicy
     public function viewAny(Account $user): bool
     {
         if ($this->viewAll($user)) {
+            return true;
+        }
+
+        $accessService = app(MentoringReportAccessService::class);
+
+        if ($accessService->canViewAll($user)) {
+            return true;
+        }
+
+        if ($accessService->tgiCategoriesFor($user) !== []) {
             return true;
         }
 
@@ -67,26 +79,7 @@ class MentoringPolicy
      */
     public function view(Account $user, Session $session): bool
     {
-        if ($session->filed === null) {
-            return false;
-        }
-
-        // Students should always be able to view their own reports
-        $member = Member::where('cid', $user->id)->first();
-        if ($member && $session->student_id === $member->id) {
-            return true;
-        }
-
-        // Mentors should always be able to view their own reports
-        if ($this->isAssignedMentor($user, $session)) {
-            return true;
-        }
-
-        if ($this->viewAll($user)) {
-            return true;
-        }
-
-        return $this->mentorPosition($user, $session->position);
+        return app(MentoringReportAccessService::class)->canViewReport($user, $session);
     }
 
     /**
@@ -94,7 +87,7 @@ class MentoringPolicy
      */
     public function viewStudentTrainingPlace(Account $user): bool
     {
-        return $user->can('training-places.view.*');
+        return $user->can('viewAny', TrainingPlace::class);
     }
 
     // Action permissions
@@ -121,6 +114,14 @@ class MentoringPolicy
         }
 
         return $this->mentorPosition($user, $session->position);
+    }
+
+    /**
+     * Create a mentoring session for a training-place student on a CTS position.
+     */
+    public function create(Account $user, string $position): bool
+    {
+        return $this->mentorPosition($user, $position);
     }
 
     /**

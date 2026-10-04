@@ -99,6 +99,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.mentoring.view.*',
             'training.mentoring.sessions.*',
             'training.mentoring.sessions.reallocate.*',
+            'training.mentoring.reports.view-all',
 
             'training.statistics.view.*',
             'training.statistics.view.atc',
@@ -147,6 +148,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'vt.application.cancel.*',
             'vt.status.revoke',
             'vt.status.grant.manual',
+            'vt.removal.view.*',
             'vt.application.modify.*',
 
             // Waiting List System Permissions,
@@ -184,8 +186,14 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Training Places Permissions
             'training-places.view.*',
+            'training-places.view.atc',
+            'training-places.view.pilot',
             'training-places.manual-setup',
+            'training-places.manual-setup.atc',
+            'training-places.manual-setup.pilot',
             'training-places.create-adhoc',
+            'training-places.create-adhoc.atc',
+            'training-places.create-adhoc.pilot',
             'training-places.revoke.*',
             'training-places.restore.*',
             'training-places.loas.create.*',
@@ -213,8 +221,17 @@ class RolesAndPermissionsSeeder extends Seeder
             'operations.access',
             'operations.positions',
 
+            // Event System Permissions
+            'events.view',
+            'events.manage',
+
             // Pilot System Permissions
             'pilot.access',
+
+            // Achievement System Permissions
+            'achievements.view',
+            'achievements.manage',
+            'achievements.award',
 
             // // TeamSpeak Permissions
             // 'teamspeak.servergroup.serveradmin',

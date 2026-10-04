@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\View;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\CalendarLinks\Link;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
 class ExamsOverviewTest extends BaseTrainingPanelTestCase
@@ -249,5 +250,26 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         Notification::assertSentTo($student, ExamCancelledByExaminerStudentNotification::class);
         Notification::assertSentTo($coExaminer, ExamSessionCancelledForCoExaminerNotification::class);
         Notification::assertNotSentTo($this->panelUser, ExamSessionCancelledForCoExaminerNotification::class);
+    }
+
+    #[Test]
+    public function test_accepted_exams_table_builds_calendar_link_object()
+    {
+        $examBooking = ExamBooking::factory()->create([
+            'taken_date' => '2026-07-15',
+            'taken_from' => '14:00:00',
+            'taken_to' => '16:00:00',
+        ]);
+
+        $method = new \ReflectionMethod(AcceptedExamsTable::class, 'buildCalendarLinkObject');
+        $component = new AcceptedExamsTable;
+        $link = $method->invoke($component, $examBooking);
+
+        $this->assertInstanceOf(Link::class, $link);
+        $this->assertSame("Practical Exam - {$examBooking->exam}", $link->title);
+        $this->assertSame('2026-07-15 14:00:00', $link->from->format('Y-m-d H:i:s'));
+        $this->assertSame('2026-07-15 16:00:00', $link->to->format('Y-m-d H:i:s'));
+        $this->assertStringContainsString("Exam Type: {$examBooking->exam}", $link->description);
+        $this->assertStringContainsString($examBooking->position_1, $link->address);
     }
 }

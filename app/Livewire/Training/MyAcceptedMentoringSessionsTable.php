@@ -58,9 +58,9 @@ class MyAcceptedMentoringSessionsTable extends Component implements HasActions, 
                 TextColumn::make('taken_date')
                     ->label('Date & Time')
                     ->getStateUsing(function (Session $record) {
-                        $date = Carbon::parse($record->taken_date)->format('d/m/Y');
-                        $start = Carbon::parse($record->taken_from)->format('H:i');
-                        $end = Carbon::parse($record->taken_to)->format('H:i');
+                        $date = Carbon::parse($record->taken_date)->toPanelDate();
+                        $start = Carbon::parse($record->taken_from)->toPanelTime();
+                        $end = Carbon::parse($record->taken_to)->toPanelTime();
 
                         return trim("{$date} {$start} - {$end}");
                     })
@@ -91,19 +91,14 @@ class MyAcceptedMentoringSessionsTable extends Component implements HasActions, 
     {
         \assert($record instanceof Session);
 
-        $sessionDate = Carbon::parse($record->taken_date)->format('Y-m-d');
-        $start = Carbon::parse("{$sessionDate} {$record->taken_from}");
-        $end = Carbon::parse("{$sessionDate} {$record->taken_to}");
-
-        if ($end->lte($start)) {
-            $end->addDay();
-        }
-
         $mentorName = $record->mentor?->name ?? 'Unknown';
 
-        return Link::create("Mentoring Session - {$record->position}", $start, $end)
-            ->description("Position: {$record->position}\nMentor: {$mentorName}")
-            ->address($record->position);
+        return $this->buildSessionLink(
+            $record,
+            "Mentoring Session - {$record->position}",
+            $record->position,
+            "Position: {$record->position}\nMentor: {$mentorName}"
+        );
     }
 
     protected function getCalendarIcsFilename(mixed $record): string

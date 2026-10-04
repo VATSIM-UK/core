@@ -34,10 +34,11 @@ final class MentoringReportScores
 
     /**
      * @param  array<int, array<int, FieldScore>>  $scoreMap
+     * @param  array<int, int>  $eligibleSessionIds  Session ids allowed to count towards "best" (e.g. sessions up to the report being viewed)
      */
-    public static function bestScore(array $scoreMap, int $fieldId): FieldScore
+    public static function bestScore(array $scoreMap, int $fieldId, array $eligibleSessionIds): FieldScore
     {
-        $fieldScores = collect($scoreMap[$fieldId] ?? []);
+        $fieldScores = collect($scoreMap[$fieldId] ?? [])->only($eligibleSessionIds);
 
         if ($fieldScores->isEmpty()) {
             return FieldScore::NOT_SCORED;
@@ -48,10 +49,11 @@ final class MentoringReportScores
 
     /**
      * @param  array<int, array<int, FieldScore>>  $scoreMap
+     * @param  array<int, int>  $eligibleSessionIds  Session ids allowed to count towards "best" (e.g. sessions up to the report being viewed)
      */
-    public static function bestScoreSessionId(array $scoreMap, int $fieldId): ?int
+    public static function bestScoreSessionId(array $scoreMap, int $fieldId, array $eligibleSessionIds): ?int
     {
-        $fieldScores = collect($scoreMap[$fieldId] ?? []);
+        $fieldScores = collect($scoreMap[$fieldId] ?? [])->only($eligibleSessionIds);
 
         if ($fieldScores->isEmpty()) {
             return null;

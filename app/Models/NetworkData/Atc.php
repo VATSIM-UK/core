@@ -222,6 +222,7 @@ class Atc extends Model
             return $subQuery->where('callsign', 'LIKE', 'EG%')
                 ->orWhere('callsign', 'LIKE', "SCO\_%")
                 ->orWhere('callsign', 'LIKE', "STC\_%")
+                ->orWhere('callsign', 'LIKE', 'SCL\_%')
                 ->orWhere('callsign', 'LIKE', "LON\_%")
                 ->orWhere('callsign', 'LIKE', "LTC\_%")
                 ->orWhere('callsign', 'LIKE', 'MAN\_%')

@@ -13,11 +13,15 @@ use App\Models\Cts\ReportSheet;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Models\Training\Mentoring\MentorTrainingPosition;
+use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
+use App\Services\Training\MentoringReportAccessService;
 use App\Services\Training\MentorPermissionService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Carbon;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\Permission\Models\Role;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
 class ViewMentoringReportTest extends BaseTrainingPanelTestCase
@@ -63,6 +67,8 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             'filed' => now(),
         ]);
 
+        $this->giveStudentAnActiveTrainingPlace('S3 Training');
+
         $this->progSheet = ProgSheet::factory()->create();
 
         $this->category = ProgSheetCategory::factory()
@@ -104,12 +110,74 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function it_denies_the_mentor_who_conducted_the_session_once_the_student_loses_their_training_place(): void
+    {
+        TrainingPlace::query()->where('account_id', $this->student->id)->get()->each(fn ($place) => $place->delete());
+
+        Livewire::actingAs($this->mentor)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertForbidden();
+    }
+
+    #[Test]
+    public function it_denies_an_assigned_mentor_once_the_student_loses_their_training_place(): void
+    {
+        $authorisedMentor = Account::factory()->create();
+        Member::factory()->forAccount($authorisedMentor)->create();
+
+        $trainingPosition = TrainingPosition::factory()->create([
+            'category' => 'S3 Training',
+            'cts_positions' => ['EGLL_APP'],
+        ]);
+
+        MentorTrainingPosition::create([
+            'account_id' => $authorisedMentor->id,
+            'mentorable_type' => TrainingPosition::class,
+            'mentorable_id' => $trainingPosition->id,
+            'created_by' => $authorisedMentor->id,
+        ]);
+
+        TrainingPlace::query()->where('account_id', $this->student->id)->get()->each(fn ($place) => $place->delete());
+
+        Livewire::actingAs($authorisedMentor)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertForbidden();
+    }
+
+    #[Test]
+    public function it_loads_for_a_tgi_for_their_training_group_even_without_a_student_training_place(): void
+    {
+        Role::firstOrCreate(['name' => 'ATC APP Instructor', 'guard_name' => 'web']);
+
+        $tgi = Account::factory()->create();
+        $tgi->assignRole('ATC APP Instructor');
+
+        TrainingPlace::query()->where('account_id', $this->student->id)->get()->each(fn ($place) => $place->delete());
+
+        Livewire::actingAs($tgi)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSuccessful();
+    }
+
+    #[Test]
+    public function it_loads_for_holders_of_the_reports_view_all_permission(): void
+    {
+        $staff = Account::factory()->create();
+        $staff->givePermissionTo(MentoringReportAccessService::VIEW_ALL_PERMISSION);
+
+        Livewire::actingAs($staff)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSuccessful();
+    }
+
+    #[Test]
     public function it_loads_for_a_user_with_a_mentor_training_position_for_the_session_position(): void
     {
         $authorisedMentor = Account::factory()->create();
         Member::factory()->forAccount($authorisedMentor)->create();
 
         $trainingPosition = TrainingPosition::factory()->create([
+            'category' => 'S3 Training',
             'cts_positions' => ['EGLL_APP'],
         ]);
 
@@ -156,6 +224,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
         $this->mock(MentorPermissionService::class, fn ($mock) => $mock
             ->shouldReceive('getCtsCallsignsForMentorable')->andReturn([])
             ->shouldReceive('getAssignedCtsCallsigns')->andReturn([])
+            ->shouldReceive('resolveCategoryForCtsCallsign')->andReturn(null)
         );
 
         Livewire::actingAs($unrelatedUser)
@@ -172,6 +241,7 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
         $this->mock(MentorPermissionService::class, fn ($mock) => $mock
             ->shouldReceive('getCtsCallsignsForMentorable')->andReturn([])
             ->shouldReceive('getAssignedCtsCallsigns')->andReturn([])
+            ->shouldReceive('resolveCategoryForCtsCallsign')->andReturn(null)
         );
 
         Livewire::actingAs($otherStudent)
@@ -188,11 +258,22 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
         $this->mock(MentorPermissionService::class, fn ($mock) => $mock
             ->shouldReceive('getCtsCallsignsForMentorable')->andReturn([])
             ->shouldReceive('getAssignedCtsCallsigns')->andReturn([])
+            ->shouldReceive('resolveCategoryForCtsCallsign')->andReturn(null)
         );
 
         Livewire::actingAs($otherMentor)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
             ->assertForbidden();
+    }
+
+    private function giveStudentAnActiveTrainingPlace(string $category): TrainingPlace
+    {
+        return TrainingPlace::factory()
+            ->forTrainingPosition(TrainingPosition::factory()->create([
+                'category' => $category,
+                'cts_positions' => ['EGLL_APP'],
+            ]))
+            ->createQuietly(['account_id' => $this->student->id]);
     }
 
     #[Test]
@@ -542,8 +623,8 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
         $sections = $component->instance()->getSessionsBySessionTab();
         $headings = array_map(fn ($s) => $s->getHeading(), $sections);
 
-        $this->assertContains('15/03/2025', $headings);
-        $this->assertContains('05/01/2025', $headings);
+        $this->assertContains(Carbon::parse('2025-03-15')->toPanelDate(), $headings);
+        $this->assertContains(Carbon::parse('2025-01-05')->toPanelDate(), $headings);
     }
 
     #[Test]
@@ -610,5 +691,56 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
             ->assertDontSee('Session Cancelled by')
             ->assertDontSee('This session has been marked as a student no-show.');
+    }
+
+    #[Test]
+    public function test_pilot_session_shows_best_previous_current_labels(): void
+    {
+        $this->mentoringSession->update(['position' => 'P1_PPL(A)']);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertSee('Best')
+            ->assertSee('Previous')
+            ->assertSee('Current');
+    }
+
+    #[Test]
+    public function test_atc_session_does_not_show_best_previous_current_labels(): void
+    {
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertDontSee('Best')
+            ->assertDontSee('Previous')
+            ->assertDontSee('Current');
+    }
+
+    #[Test]
+    public function test_best_score_excludes_sessions_filed_after_the_viewed_report(): void
+    {
+        $this->mentoringSession->update(['position' => 'P1_PPL(A)']);
+        $this->reportSheet->update(['field_score' => FieldScore::DEVELOPING->value]);
+
+        $laterSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'P1_PPL(A)',
+            'progress_sheet_id' => $this->progSheet->prog_sheet_id,
+            'taken_date' => '2025-03-20',
+            'filed' => now(),
+        ]);
+
+        ReportSheet::factory()
+            ->forSession($laterSession->id)
+            ->forStudent($this->studentMember->id)
+            ->forField($this->field->field_id)
+            ->create([
+                'prog_sheet_id' => $this->progSheet->prog_sheet_id,
+                'field_score' => FieldScore::TEST_STANDARD->value,
+            ]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
+            ->assertDontSee('Test Standard');
     }
 }

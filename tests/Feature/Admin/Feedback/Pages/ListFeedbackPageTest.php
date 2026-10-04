@@ -3,8 +3,11 @@
 namespace Tests\Feature\Admin\Feedback\Pages;
 
 use App\Filament\Admin\Resources\Feedback\Pages\ListFeedback;
+use App\Models\Mship\Account;
+use App\Models\Mship\Feedback\Answer;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form;
+use App\Models\Mship\Feedback\Question;
 use Filament\Actions\Testing\TestAction;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
@@ -135,5 +138,78 @@ class ListFeedbackPageTest extends BaseAdminTestCase
         // Second feedback was not selected
         $this->assertNull($feedback2->fresh()->sent_at);
         $this->assertNull($feedback2->fresh()->actioned_at);
+    }
+
+    public function test_search_by_submitter_name_with_permission()
+    {
+        $form = factory(Form::class)->create(['slug' => 'atc']);
+        $submitter = Account::factory()->create(['name_first' => 'Searchable', 'name_last' => 'Submitter']);
+        $feedback = factory(Feedback::class)->create(['form_id' => $form->id, 'submitter_account_id' => $submitter->id]);
+
+        $this->adminUser->givePermissionTo('feedback.access');
+        $this->adminUser->givePermissionTo("feedback.view-type.{$form->slug}");
+        $this->adminUser->givePermissionTo('feedback.view-submitter');
+
+        Livewire::actingAs($this->adminUser);
+        Livewire::test(ListFeedback::class)
+            ->searchTable('Submitter')
+            ->assertCanSeeTableRecords([$feedback]);
+    }
+
+    public function test_search_by_submitter_name_does_not_leak_without_permission()
+    {
+        $form = factory(Form::class)->create(['slug' => 'atc']);
+        $submitter = Account::factory()->create(['name_first' => 'Hidden', 'name_last' => 'Submitter']);
+        $feedback = factory(Feedback::class)->create(['form_id' => $form->id, 'submitter_account_id' => $submitter->id]);
+
+        $this->adminUser->givePermissionTo('feedback.access');
+        $this->adminUser->givePermissionTo("feedback.view-type.{$form->slug}");
+
+        Livewire::actingAs($this->adminUser);
+        Livewire::test(ListFeedback::class)
+            ->searchTable('Submitter')
+            ->assertCanNotSeeTableRecords([$feedback]);
+    }
+
+    public function test_position_filter_matches_starts_with()
+    {
+        $form = factory(Form::class)->create(['slug' => 'atc']);
+        $positionQuestion = factory(Question::class)->create(['slug' => 'callsign3']);
+
+        $egkkFeedback = factory(Feedback::class)->create(['form_id' => $form->id]);
+        factory(Answer::class)->create(['feedback_id' => $egkkFeedback->id, 'question_id' => $positionQuestion->id, 'response' => 'EGKK_APP']);
+
+        $egpdFeedback = factory(Feedback::class)->create(['form_id' => $form->id]);
+        factory(Answer::class)->create(['feedback_id' => $egpdFeedback->id, 'question_id' => $positionQuestion->id, 'response' => 'EGPD_TWR']);
+
+        $this->adminUser->givePermissionTo('feedback.access');
+        $this->adminUser->givePermissionTo("feedback.view-type.{$form->slug}");
+
+        Livewire::actingAs($this->adminUser);
+        Livewire::test(ListFeedback::class)
+            ->filterTable('position', ['position' => 'EGKK'])
+            ->assertCanSeeTableRecords([$egkkFeedback])
+            ->assertCanNotSeeTableRecords([$egpdFeedback]);
+    }
+
+    public function test_position_filter_matches_exact_position()
+    {
+        $form = factory(Form::class)->create(['slug' => 'atc']);
+        $positionQuestion = factory(Question::class)->create(['slug' => 'callsign3']);
+
+        $target = factory(Feedback::class)->create(['form_id' => $form->id]);
+        factory(Answer::class)->create(['feedback_id' => $target->id, 'question_id' => $positionQuestion->id, 'response' => 'EGLL_TWR']);
+
+        $other = factory(Feedback::class)->create(['form_id' => $form->id]);
+        factory(Answer::class)->create(['feedback_id' => $other->id, 'question_id' => $positionQuestion->id, 'response' => 'EGPH_TWR']);
+
+        $this->adminUser->givePermissionTo('feedback.access');
+        $this->adminUser->givePermissionTo("feedback.view-type.{$form->slug}");
+
+        Livewire::actingAs($this->adminUser);
+        Livewire::test(ListFeedback::class)
+            ->filterTable('position', ['position' => 'EGLL'])
+            ->assertCanSeeTableRecords([$target])
+            ->assertCanNotSeeTableRecords([$other]);
     }
 }
