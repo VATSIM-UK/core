@@ -82,7 +82,7 @@ class GenerateATCTrainingQuarterlyStats extends BasePage implements HasForms
         $this->statistics = collect([
             'Mentoring Sessions' => ATCTrainingStats::completedMentoringSessionsByTG($startDate, $endDate),
             'Exams Conducted' => ATCTrainingStats::examsConductedByTG($startDate, $endDate),
-            'Rating Upgrades Per TG' => ATCTrainingStats::ratingUpgradesByTG($startDate, $endDate),
+            'Exam Passes Per TG' => ATCTrainingStats::examPassesByTG($startDate, $endDate),
             'Issued Position Group Endorsements' => ATCTrainingStats::issuedPositionGroupEndorsements($startDate, $endDate),
             'Heathrow Endorsements Issued' => ATCTrainingStats::heathrowEndorsementsIssued($startDate, $endDate),
             'ATC Waiting List Counts' => ATCTrainingStats::atcWaitingListCounts(),
