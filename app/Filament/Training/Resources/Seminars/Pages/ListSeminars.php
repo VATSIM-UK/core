@@ -5,6 +5,7 @@ namespace App\Filament\Training\Resources\Seminars\Pages;
 use App\Filament\Training\Resources\Seminars\SeminarResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Schemas\Schema;
 
 class ListSeminars extends ListRecords
 {
@@ -15,5 +16,13 @@ class ListSeminars extends ListRecords
         return [
             CreateAction::make(),
         ];
+    }
+
+    public function content(Schema $schema): Schema
+    {
+        return $schema->components([
+            SeminarResource::scopeCallout(),
+            ...parent::content($schema)->getComponents(),
+        ]);
     }
 }

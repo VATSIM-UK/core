@@ -20,6 +20,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -58,6 +59,17 @@ class SeminarResource extends Resource
     public static function canDelete($record): bool
     {
         return auth()->user()->can('training.seminars.manage.*');
+    }
+
+    public static function scopeCallout(): Callout
+    {
+        return Callout::make('OBS -> S1 Seminars Only')
+            ->info()
+            ->columnSpanFull()
+            ->description(
+                'This functionality can work for seminars beyond OBS > S1 training, but there is currently ONLY copy text for OBS > S1 seminars. '.
+                'If you would like to use it for other TGs, whether Pilot or ATC, please contact the Technology Team.'
+            );
     }
 
     public static function form(Schema $schema): Schema
