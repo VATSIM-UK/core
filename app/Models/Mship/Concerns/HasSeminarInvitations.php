@@ -18,6 +18,7 @@ trait HasSeminarInvitations
     {
         return $this->seminarInvitations()
             ->where('status', SeminarInvitationStatus::CannotAttend->value)
+            ->where('is_short_notice', false)
             ->whereHas('seminar', fn ($query) => $query->where('waiting_list_id', $waitingList->id))
             ->count();
     }

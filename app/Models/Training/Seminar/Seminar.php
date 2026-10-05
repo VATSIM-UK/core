@@ -18,6 +18,8 @@ class Seminar extends Model
 {
     use HasFactory;
 
+    public const SHORT_NOTICE_THRESHOLD_HOURS = 84;
+
     protected $table = 'training_seminars';
 
     protected $guarded = [];
@@ -25,7 +27,7 @@ class Seminar extends Model
     protected $casts = [
         'date' => 'date',
         'closed_at' => 'datetime',
-        'invitation_expiry_days' => 'integer',
+        'invitation_expiry_hours' => 'integer',
         'automatic_invitations_enabled' => 'boolean',
     ];
 
@@ -73,13 +75,12 @@ class Seminar extends Model
 
     public function isSendingCutoffReached(): bool
     {
-        if ($this->closed_at !== null) {
-            return true;
-        }
+        return $this->isClosed();
+    }
 
-        $cutoff = $this->startsAt()->subDays($this->invitation_expiry_days);
-
-        return now()->greaterThanOrEqualTo($cutoff);
+    public function isShortNotice(): bool
+    {
+        return $this->startsAt()->lessThanOrEqualTo(now()->addHours(self::SHORT_NOTICE_THRESHOLD_HOURS));
     }
 
     public function startsAt()

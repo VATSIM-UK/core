@@ -17,7 +17,7 @@ return new class extends Migration
             $table->time('from');
             $table->time('to');
             $table->unsignedSmallInteger('capacity');
-            $table->unsignedSmallInteger('invitation_expiry_days')->default(7);
+            $table->unsignedSmallInteger('invitation_expiry_hours')->default(168);
             $table->boolean('automatic_invitations_enabled')->default(false);
             $table->dateTime('closed_at')->nullable();
             $table->unsignedInteger('created_by');

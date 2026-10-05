@@ -89,11 +89,11 @@ class SeminarResource extends Resource
                 ])->columns(3),
             Section::make('Invitation Settings')
                 ->schema([
-                    TextInput::make('invitation_expiry_days')
-                        ->label('Invitation Expiry (Days)')
+                    TextInput::make('invitation_expiry_hours')
+                        ->label('Invitation Expiry (Hours)')
                         ->integer()
                         ->minValue(1)
-                        ->default(7)
+                        ->default(84)
                         ->required(),
                     TextInput::make('capacity')->integer()->minValue(1)->required(),
                 ])->columns(2),
@@ -126,7 +126,7 @@ class SeminarResource extends Resource
                             return "{$from} - {$to}";
                         }),
                     TextEntry::make('capacity'),
-                    TextEntry::make('invitation_expiry_days')->label('Invitation Expiry (Days)'),
+                    TextEntry::make('invitation_expiry_hours')->label('Invitation Expiry (Hours)'),
                 ])->columns(3),
         ]);
     }

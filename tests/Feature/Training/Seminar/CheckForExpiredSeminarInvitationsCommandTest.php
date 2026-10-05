@@ -33,7 +33,7 @@ class CheckForExpiredSeminarInvitationsCommandTest extends TestCase
             'from' => '10:00',
             'to' => '16:00',
             'capacity' => 10,
-            'invitation_expiry_days' => 7,
+            'invitation_expiry_hours' => 168,
             'created_by' => Account::factory()->create()->id,
         ]);
 
@@ -59,7 +59,7 @@ class CheckForExpiredSeminarInvitationsCommandTest extends TestCase
             'from' => '10:00',
             'to' => '16:00',
             'capacity' => 10,
-            'invitation_expiry_days' => 7,
+            'invitation_expiry_hours' => 168,
             'created_by' => Account::factory()->create()->id,
         ]);
 
@@ -85,7 +85,7 @@ class CheckForExpiredSeminarInvitationsCommandTest extends TestCase
             'from' => '10:00',
             'to' => '16:00',
             'capacity' => 10,
-            'invitation_expiry_days' => 7,
+            'invitation_expiry_hours' => 168,
             'created_by' => Account::factory()->create()->id,
         ]);
 
@@ -111,7 +111,7 @@ class CheckForExpiredSeminarInvitationsCommandTest extends TestCase
             'from' => '10:00',
             'to' => '16:00',
             'capacity' => 10,
-            'invitation_expiry_days' => 7,
+            'invitation_expiry_hours' => 168,
             'created_by' => Account::factory()->create()->id,
         ]);
 
@@ -143,7 +143,7 @@ class CheckForExpiredSeminarInvitationsCommandTest extends TestCase
             'from' => '10:00',
             'to' => '16:00',
             'capacity' => 10,
-            'invitation_expiry_days' => 7,
+            'invitation_expiry_hours' => 168,
             'created_by' => $this->privacc->id,
         ]);
 

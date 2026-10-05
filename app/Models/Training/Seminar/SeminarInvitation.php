@@ -21,6 +21,7 @@ class SeminarInvitation extends Model
 
     protected $casts = [
         'status' => SeminarInvitationStatus::class,
+        'is_short_notice' => 'boolean',
         'sent_at' => 'datetime',
         'responded_at' => 'datetime',
         'expires_at' => 'datetime',

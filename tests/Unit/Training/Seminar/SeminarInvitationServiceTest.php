@@ -37,7 +37,7 @@ class SeminarInvitationServiceTest extends TestCase
         Event::fake();
     }
 
-    private function setUpSeminar(int $capacity = 10, bool $automatic = false, int $expiryDays = 7): void
+    private function setUpSeminar(int $capacity = 10, bool $automatic = false, int $expiryHours = 168): void
     {
         $waitingList = WaitingList::factory()->create([
             'department' => 'atc',
@@ -47,7 +47,7 @@ class SeminarInvitationServiceTest extends TestCase
         $this->seminar = Seminar::factory()->create([
             'waiting_list_id' => $waitingList->id,
             'capacity' => $capacity,
-            'invitation_expiry_days' => $expiryDays,
+            'invitation_expiry_hours' => $expiryHours,
             'automatic_invitations_enabled' => $automatic,
             'created_by' => $this->privacc->id,
         ]);
@@ -322,6 +322,71 @@ class SeminarInvitationServiceTest extends TestCase
     }
 
     #[Test]
+    public function create_invitation_uses_hours_for_expiry(): void
+    {
+        Notification::fake();
+
+        $this->setUpSeminar(5, false, 48);
+        $account = Account::factory()->create();
+        $this->seminar = $this->seminar->fresh();
+
+        $invitation = $this->service->createInvitation($this->seminar, $account);
+
+        $this->assertEqualsWithDelta(
+            48,
+            $invitation->sent_at->diffInHours($invitation->expires_at),
+            0.01
+        );
+    }
+
+    #[Test]
+    public function create_invitation_is_automatically_short_notice_when_seminar_starts_within_threshold(): void
+    {
+        Notification::fake();
+
+        $this->setUpSeminar(5);
+        $this->seminar->update(['date' => now()->addDays(2)->format('Y-m-d')]);
+        $this->seminar = $this->seminar->fresh();
+        $account = Account::factory()->create();
+
+        $invitation = $this->service->createInvitation($this->seminar, $account);
+
+        $this->assertTrue($invitation->fresh()->is_short_notice);
+    }
+
+    #[Test]
+    public function create_invitation_is_not_short_notice_when_seminar_is_beyond_threshold(): void
+    {
+        Notification::fake();
+
+        $this->setUpSeminar(5);
+        $account = Account::factory()->create();
+        $this->seminar = $this->seminar->fresh();
+
+        $invitation = $this->service->createInvitation($this->seminar, $account);
+
+        $this->assertFalse($invitation->fresh()->is_short_notice);
+    }
+
+    #[Test]
+    public function create_invitation_allows_sending_inside_old_expiry_window(): void
+    {
+        Notification::fake();
+
+        $this->setUpSeminar(5);
+        $this->seminar->update(['date' => now()->addDays(1)->format('Y-m-d')]);
+        $this->seminar = $this->seminar->fresh();
+        $account = Account::factory()->create();
+
+        $invitation = $this->service->createInvitation($this->seminar, $account);
+
+        $this->assertDatabaseHas('training_seminar_invitations', [
+            'id' => $invitation->id,
+            'is_short_notice' => true,
+        ]);
+    }
+
+    #[Test]
     public function create_invitation_sends_notification_to_account(): void
     {
         Notification::fake();
@@ -491,7 +556,7 @@ class SeminarInvitationServiceTest extends TestCase
         $seminar1 = Seminar::factory()->create([
             'waiting_list_id' => $waitingList->id,
             'capacity' => 5,
-            'invitation_expiry_days' => 7,
+            'invitation_expiry_hours' => 168,
             'automatic_invitations_enabled' => false,
             'created_by' => $this->privacc->id,
         ]);
@@ -499,7 +564,7 @@ class SeminarInvitationServiceTest extends TestCase
         $seminar2 = Seminar::factory()->create([
             'waiting_list_id' => $waitingList->id,
             'capacity' => 5,
-            'invitation_expiry_days' => 7,
+            'invitation_expiry_hours' => 168,
             'automatic_invitations_enabled' => false,
             'created_by' => $this->privacc->id,
         ]);
@@ -642,5 +707,66 @@ class SeminarInvitationServiceTest extends TestCase
         $count = $this->service->expireUnrespondedInvitations();
 
         $this->assertSame(1, $count);
+    }
+
+    #[Test]
+    public function expire_unresponded_does_not_expire_short_notice_invitations(): void
+    {
+        $this->setUpSeminar(5);
+        $waitingListAccount = $this->addToWaitingList(true);
+        $account = Account::find($waitingListAccount->account_id);
+
+        Notification::fake();
+
+        $invitation = $this->service->createInvitation($this->seminar, $account, $waitingListAccount->id);
+        $invitation->update(['is_short_notice' => true, 'expires_at' => now()->subDay()]);
+
+        $count = $this->service->expireUnrespondedInvitations();
+
+        $this->assertSame(0, $count);
+        $this->assertEquals(SeminarInvitationStatus::Sent, $invitation->fresh()->status);
+        $this->assertNull($waitingListAccount->fresh()->deleted_at);
+    }
+
+    #[Test]
+    public function mark_cannot_attend_does_not_count_short_notice_invitations_towards_limit(): void
+    {
+        $waitingList = WaitingList::factory()->create([
+            'department' => 'atc',
+            'cts_theory_exam_level' => 'S1',
+        ]);
+        $student = Account::factory()->create();
+        $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
+
+        $seminar1 = Seminar::factory()->create([
+            'waiting_list_id' => $waitingList->id,
+            'capacity' => 5,
+            'created_by' => $this->privacc->id,
+        ]);
+
+        $seminar2 = Seminar::factory()->create([
+            'waiting_list_id' => $waitingList->id,
+            'capacity' => 5,
+            'created_by' => $this->privacc->id,
+        ]);
+
+        $invitation1 = SeminarInvitation::factory()->shortNotice()->create([
+            'seminar_id' => $seminar1->id,
+            'account_id' => $student->id,
+            'waiting_list_account_id' => $waitingListAccount->id,
+        ]);
+
+        $invitation2 = SeminarInvitation::factory()->shortNotice()->create([
+            'seminar_id' => $seminar2->id,
+            'account_id' => $student->id,
+            'waiting_list_account_id' => $waitingListAccount->id,
+        ]);
+
+        $this->service->markCannotAttend($invitation1);
+        $this->service->markCannotAttend($invitation2);
+
+        $this->assertSame(0, $student->cannotAttendSeminarCountForWaitingList($waitingList));
+        $this->assertNull($waitingListAccount->fresh()->deleted_at);
+        $this->assertEquals(SeminarInvitationStatus::CannotAttend, $invitation2->fresh()->status);
     }
 }

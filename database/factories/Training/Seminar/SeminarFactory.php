@@ -22,7 +22,7 @@ class SeminarFactory extends Factory
             'from' => '10:00',
             'to' => '16:00',
             'capacity' => fake()->numberBetween(5, 30),
-            'invitation_expiry_days' => 7,
+            'invitation_expiry_hours' => 168,
             'automatic_invitations_enabled' => false,
             'closed_at' => null,
             'created_by' => 1,

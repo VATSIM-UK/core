@@ -80,7 +80,10 @@ class SeminarInvitationService
         }
 
         return DB::transaction(function () use ($seminar, $account, $waitingListAccountId): SeminarInvitation {
-            $expiresAt = now()->addDays($seminar->invitation_expiry_days);
+            $sentAt = now();
+            $isShortNotice = $seminar->isShortNotice();
+
+            $expiresAt = $sentAt->copy()->addHours($seminar->invitation_expiry_hours);
             $seminarStart = $seminar->startsAt();
             if ($expiresAt->greaterThan($seminarStart)) {
                 $expiresAt = $seminarStart;
@@ -92,7 +95,8 @@ class SeminarInvitationService
                 'waiting_list_account_id' => $waitingListAccountId,
                 'token' => $this->generateToken(),
                 'status' => SeminarInvitationStatus::Sent->value,
-                'sent_at' => now(),
+                'is_short_notice' => $isShortNotice,
+                'sent_at' => $sentAt,
                 'expires_at' => $expiresAt,
             ]);
 
@@ -174,6 +178,7 @@ class SeminarInvitationService
         $expired = 0;
         $pendingInvitations = SeminarInvitation::query()
             ->where('status', SeminarInvitationStatus::Sent->value)
+            ->where('is_short_notice', false)
             ->where('expires_at', '<=', now())
             ->get();
 

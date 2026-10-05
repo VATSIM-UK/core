@@ -24,10 +24,18 @@ class SeminarInvitationFactory extends Factory
             'waiting_list_account_id' => null,
             'token' => Str::random(32),
             'status' => SeminarInvitationStatus::Sent,
+            'is_short_notice' => false,
             'sent_at' => now(),
             'responded_at' => null,
             'expires_at' => now()->addDays(7),
         ];
+    }
+
+    public function shortNotice(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_short_notice' => true,
+        ]);
     }
 
     public function attending(): static

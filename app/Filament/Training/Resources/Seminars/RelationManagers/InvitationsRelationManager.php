@@ -7,6 +7,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -29,9 +30,12 @@ class InvitationsRelationManager extends RelationManager
                     ->formatStateUsing(fn ($state) => $state?->label())
                     ->color(fn ($state) => $state?->color()),
                 TextColumn::make('sent_at')->dateTime('d/m/Y H:i')->sortable(),
+                TextColumn::make('expires_at')->dateTime('d/m/Y H:i')->label('Expires')->sortable(),
                 TextColumn::make('responded_at')->dateTime('d/m/Y H:i')->sortable(),
             ])
             ->filters([
+                TernaryFilter::make('is_short_notice')->label('Short Notice'),
+
                 SelectFilter::make('status')
                     ->options(collect(SeminarInvitationStatus::cases())->mapWithKeys(fn ($status) => [
                         $status->value => $status->label(),

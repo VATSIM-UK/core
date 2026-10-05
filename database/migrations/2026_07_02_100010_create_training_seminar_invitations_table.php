@@ -14,6 +14,7 @@ return new class extends Migration
             $table->unsignedInteger('account_id');
             $table->unsignedInteger('waiting_list_account_id')->nullable();
             $table->string('token')->unique();
+            $table->boolean('is_short_notice')->default(false);
             $table->enum('status', [
                 'sent',
                 'attending',
