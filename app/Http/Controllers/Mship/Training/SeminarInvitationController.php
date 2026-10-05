@@ -13,6 +13,8 @@ class SeminarInvitationController extends BaseController
     {
         $invitation = $this->findInvitation($token);
 
+        $this->authoriseOwner($invitation);
+
         if ($invitation->status === SeminarInvitationStatus::Attending) {
             return view('training.seminar-invitation.result', ['result' => 'accepted', 'invitation' => $invitation]);
         }
@@ -59,11 +61,14 @@ class SeminarInvitationController extends BaseController
 
     private function isTokenValid(SeminarInvitation $invitation): bool
     {
-        if ($invitation->account_id !== auth()->id()) {
-            abort(403);
-        }
+        $this->authoriseOwner($invitation);
 
         return $invitation->canRespond();
+    }
+
+    private function authoriseOwner(SeminarInvitation $invitation): void
+    {
+        abort_unless($invitation->account_id === auth()->id(), 403);
     }
 
     private function expired(SeminarInvitation $invitation)

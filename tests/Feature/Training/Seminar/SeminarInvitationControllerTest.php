@@ -148,6 +148,21 @@ class SeminarInvitationControllerTest extends TestCase
     }
 
     #[Test]
+    public function another_member_cannot_accept_someone_elses_attending_invitation(): void
+    {
+        $this->invitation->update([
+            'status' => SeminarInvitationStatus::Attending,
+            'responded_at' => now(),
+        ]);
+
+        $otherMember = Account::factory()->create();
+
+        $this->actingAs($otherMember)
+            ->get(route('mship.waiting-lists.seminar-invitation.accept', $this->invitation->token))
+            ->assertForbidden();
+    }
+
+    #[Test]
     public function unauthenticated_user_redirected_to_login(): void
     {
         $this->get(route('mship.waiting-lists.seminar-invitation.accept', $this->invitation->token))
