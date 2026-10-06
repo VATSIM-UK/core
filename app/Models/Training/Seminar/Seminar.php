@@ -20,6 +20,8 @@ class Seminar extends Model
 
     public const SHORT_NOTICE_THRESHOLD_HOURS = 84;
 
+    public const ADMISSIONS_CLOSE_MINUTES = 30;
+
     protected $table = 'training_seminars';
 
     protected $guarded = [];
@@ -73,9 +75,21 @@ class Seminar extends Model
         return $this->hasStarted();
     }
 
+    /**
+     * The latest moment an invitation may still be sent or expire
+     */
+    public function admissionsCloseAt()
+    {
+        return $this->startsAt()->subMinutes(self::ADMISSIONS_CLOSE_MINUTES);
+    }
+
     public function isSendingCutoffReached(): bool
     {
-        return $this->isClosed();
+        if ($this->closed_at !== null) {
+            return true;
+        }
+
+        return now()->greaterThanOrEqualTo($this->admissionsCloseAt());
     }
 
     public function isShortNotice(): bool

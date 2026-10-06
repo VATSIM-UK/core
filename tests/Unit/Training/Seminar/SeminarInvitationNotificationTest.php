@@ -57,6 +57,9 @@ class SeminarInvitationNotificationTest extends TestCase
 
         $this->assertStringContainsString('that a place is available for you on the next S1 Group Seminar', $html);
         $this->assertStringContainsString('If you fail to action this e-mail, you will be afforded one more opportunity', $html);
+        $this->assertStringContainsString('If you fail to action the second invitation, or if you confirm your attendance', $html);
+        $this->assertStringContainsString('PLEASE NOTE', $html);
+        $this->assertStringContainsString('If you do not accept the second invitation your place on the waiting list will be removed.', $html);
         $this->assertStringNotContainsString('SHORT NOTICE', $html);
         $this->assertStringNotContainsString("'short notice' place", $html);
 
@@ -73,6 +76,8 @@ class SeminarInvitationNotificationTest extends TestCase
         $this->assertStringContainsString("a 'short notice' place is available for you on the next S1 Group Seminar", $html);
         $this->assertStringContainsString('Given that this is a \'short notice\' offer', $html);
         $this->assertStringNotContainsString('If you fail to action this e-mail', $html);
+        $this->assertStringNotContainsString('PLEASE NOTE', $html);
+        $this->assertStringNotContainsString('one more opportunity to attend a group session', $html);
 
         $this->assertButtonsPresent($html);
     }

@@ -84,9 +84,9 @@ class SeminarInvitationService
             $isShortNotice = $seminar->isShortNotice();
 
             $expiresAt = $sentAt->copy()->addHours($seminar->invitation_expiry_hours);
-            $seminarStart = $seminar->startsAt();
-            if ($expiresAt->greaterThan($seminarStart)) {
-                $expiresAt = $seminarStart;
+            $admissionsCloseAt = $seminar->admissionsCloseAt();
+            if ($expiresAt->greaterThan($admissionsCloseAt)) {
+                $expiresAt = $admissionsCloseAt;
             }
 
             $invitation = SeminarInvitation::create([

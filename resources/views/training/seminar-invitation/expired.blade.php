@@ -11,7 +11,7 @@
 				@elseif($invitation->status === \App\Enums\SeminarInvitationStatus::RemovedTwoCannotAttend)
 					You were removed from the waiting list after being unable to attend multiple seminars.
 				@elseif($invitation->status === \App\Enums\SeminarInvitationStatus::RemovedNoResponse || $invitation->expires_at->isPast())
-					The invitation expired on {{ $invitation->expires_at->format('l, j F Y \a\t H:i') }}Z without a response.
+					The invitation expired on {{ $invitation->expires_at->format('l, j F Y \a\t H:i') }}z without a response.
 				@elseif($invitation->seminar->isClosed())
 					The seminar has already started or been closed.
 				@else

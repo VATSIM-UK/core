@@ -280,6 +280,40 @@ class SeminarInvitationServiceTest extends TestCase
     }
 
     #[Test]
+    public function create_invitation_throws_when_within_thirty_minutes_of_seminar_start(): void
+    {
+        $this->setUpSeminar(5);
+        $start = now()->addMinutes(20);
+        $this->seminar->update([
+            'date' => $start->format('Y-m-d'),
+            'from' => $start->format('H:i:s'),
+        ]);
+        $this->seminar = $this->seminar->fresh();
+        $account = Account::factory()->create();
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Seminar admissions are closed.');
+
+        $this->service->createInvitation($this->seminar, $account);
+    }
+
+    #[Test]
+    public function top_up_returns_0_when_within_thirty_minutes_of_seminar_start(): void
+    {
+        $this->setUpSeminar(10, true);
+        $start = now()->addMinutes(20);
+        $this->seminar->update([
+            'date' => $start->format('Y-m-d'),
+            'from' => $start->format('H:i:s'),
+        ]);
+        $this->seminar = $this->seminar->fresh();
+
+        $result = $this->service->topUpAutomaticInvitations($this->seminar);
+
+        $this->assertSame(0, $result);
+    }
+
+    #[Test]
     public function create_invitation_throws_when_at_capacity(): void
     {
         $this->setUpSeminar(1);
@@ -336,6 +370,33 @@ class SeminarInvitationServiceTest extends TestCase
             48,
             $invitation->sent_at->diffInHours($invitation->expires_at),
             0.01
+        );
+    }
+
+    #[Test]
+    public function create_invitation_caps_expiry_at_thirty_minutes_before_seminar_start(): void
+    {
+        Notification::fake();
+
+        $this->setUpSeminar(5, false, 168);
+        $start = now()->addDays(3)->setTime(10, 0);
+        $this->seminar->update([
+            'date' => $start->format('Y-m-d'),
+            'from' => '10:00',
+        ]);
+        $this->seminar = $this->seminar->fresh();
+        $account = Account::factory()->create();
+
+        $invitation = $this->service->createInvitation($this->seminar, $account);
+
+        $this->assertEquals(
+            $this->seminar->admissionsCloseAt()->timestamp,
+            $invitation->expires_at->timestamp
+        );
+        $this->assertEqualsWithDelta(
+            30 * 60,
+            $invitation->expires_at->diffInSeconds($this->seminar->startsAt()),
+            1
         );
     }
 
