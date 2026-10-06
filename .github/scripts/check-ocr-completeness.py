@@ -19,11 +19,13 @@ terminal = manifest.get("terminal_state")
 warnings = data.get("warnings") or []
 failed = (manifest.get("coverage") or {}).get("failed") or []
 
-if status == "skipped" or terminal == "skipped":
+state = terminal if terminal is not None else status
+
+if state == "skipped":
     print("OCR review skipped: no reviewable files")
     sys.exit(0)
 
-if status != "success" or terminal not in (None, "complete") or warnings or failed:
+if state not in ("success", "complete") or warnings or failed:
     print(
         "::error::OCR review incomplete: "
         f"status={status} terminal_state={terminal} "
