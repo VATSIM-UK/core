@@ -8,6 +8,15 @@ use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 
 class SeminarObserver implements ShouldHandleEventsAfterCommit
 {
+    private const CTS_RELEVANT_FIELDS = [
+        'name',
+        'date',
+        'from',
+        'to',
+        'capacity',
+        'created_by',
+    ];
+
     public function created(Seminar $seminar): void
     {
         app(SeminarCtsSyncService::class)->syncSeminar($seminar);
@@ -15,6 +24,10 @@ class SeminarObserver implements ShouldHandleEventsAfterCommit
 
     public function updated(Seminar $seminar): void
     {
+        if (! $seminar->wasChanged(self::CTS_RELEVANT_FIELDS)) {
+            return;
+        }
+
         app(SeminarCtsSyncService::class)->syncSeminar($seminar);
     }
 }

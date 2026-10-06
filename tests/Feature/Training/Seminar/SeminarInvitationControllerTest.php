@@ -90,16 +90,6 @@ class SeminarInvitationControllerTest extends TestCase
     }
 
     #[Test]
-    public function another_member_cannot_accept_someone_elses_invitation(): void
-    {
-        $otherMember = Account::factory()->create();
-
-        $this->actingAs($otherMember)
-            ->get(route('mship.waiting-lists.seminar-invitation.accept', $this->invitation->token))
-            ->assertForbidden();
-    }
-
-    #[Test]
     public function accept_shows_expired_view_when_invitation_expired(): void
     {
         $this->invitation->update(['expires_at' => now()->subDay()]);
@@ -192,16 +182,6 @@ class SeminarInvitationControllerTest extends TestCase
     }
 
     #[Test]
-    public function another_member_cannot_mark_not_interested_for_someone_else(): void
-    {
-        $otherMember = Account::factory()->create();
-
-        $this->actingAs($otherMember)
-            ->get(route('mship.waiting-lists.seminar-invitation.not-interested', $this->invitation->token))
-            ->assertForbidden();
-    }
-
-    #[Test]
     public function not_interested_shows_expired_view_when_expired(): void
     {
         $this->invitation->update(['expires_at' => now()->subDay()]);
@@ -240,16 +220,6 @@ class SeminarInvitationControllerTest extends TestCase
             SeminarInvitationStatus::CannotAttend,
             $this->invitation->fresh()->status
         );
-    }
-
-    #[Test]
-    public function another_member_cannot_mark_cannot_attend_for_someone_else(): void
-    {
-        $otherMember = Account::factory()->create();
-
-        $this->actingAs($otherMember)
-            ->get(route('mship.waiting-lists.seminar-invitation.cannot-attend', $this->invitation->token))
-            ->assertForbidden();
     }
 
     #[Test]

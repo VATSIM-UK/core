@@ -46,7 +46,7 @@ class WaitingListRelationManager extends RelationManager
                     ->modalHeading('Invite Member to Seminar')
                     ->modalDescription('Invite a member who is not on the waiting list.')
                     ->form([
-                        AccountSelect::make('account'),
+                        AccountSelect::make('account')->required(),
                     ])
                     ->action(function (array $data): void {
                         $account = $data['account_id'];
