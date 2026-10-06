@@ -10,6 +10,10 @@ use App\Models\Training\Seminar\SeminarAttendee;
 
 class SeminarCtsSyncService
 {
+    private const CTS_GROUP_SESSION_NAME_LIMIT = 60;
+
+    private const CTS_GROUP_SESSION_DESCRIPTION_LIMIT = 60;
+
     // Temporary logic to sync core seminars with old CTS seminars
     public function syncSeminar(Seminar $seminar): void
     {
@@ -21,8 +25,8 @@ class SeminarCtsSyncService
             ['group_session_id' => $seminar->cts_group_session_id],
             [
                 'rts_id' => 14, // Hardcoded OBS->S1 id
-                'name' => $seminar->name,
-                'description' => mb_substr(($seminar->description ?? $seminar->name), 0, 60),
+                'name' => mb_substr($seminar->name, 0, self::CTS_GROUP_SESSION_NAME_LIMIT),
+                'description' => mb_substr($seminar->name, 0, self::CTS_GROUP_SESSION_DESCRIPTION_LIMIT),
                 'date' => $seminar->date->format('Y-m-d'),
                 'from' => $seminar->from,
                 'to' => $seminar->to,

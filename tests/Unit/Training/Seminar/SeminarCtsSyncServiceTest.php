@@ -46,7 +46,7 @@ class SeminarCtsSyncServiceTest extends TestCase
 
         $this->assertDatabaseHas('group_sessions', [
             'name' => $seminar->name,
-            'description' => mb_substr(($seminar->description ?? $seminar->name), 0, 60),
+            'description' => mb_substr($seminar->name, 0, 60),
             'date' => $seminar->date->format('Y-m-d'),
             'from' => $seminar->from,
             'to' => $seminar->to,

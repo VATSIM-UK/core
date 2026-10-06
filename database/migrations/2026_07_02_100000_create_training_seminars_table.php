@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger('waiting_list_id');
             $table->string('name');
-            $table->string('description', 255)->nullable();
             $table->date('date');
             $table->time('from');
             $table->time('to');

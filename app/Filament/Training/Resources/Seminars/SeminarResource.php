@@ -15,7 +15,6 @@ use Carbon\Carbon;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Infolists\Components\TextEntry;
@@ -89,9 +88,6 @@ class SeminarResource extends Resource
                             ->searchable()
                             ->required(),
                     ]),
-                    Textarea::make('description')
-                        ->rows(5)
-                        ->columnSpanFull(),
                 ])->columnSpanFull(),
             Section::make('Schedule')
                 ->schema([
@@ -119,7 +115,6 @@ class SeminarResource extends Resource
                 ->schema([
                     TextEntry::make('name'),
                     TextEntry::make('waitingList.name')->label('Waiting List'),
-                    TextEntry::make('description')->columnSpanFull(),
                 ])->columns(2),
             Section::make('Schedule & Settings')
                 ->schema([
