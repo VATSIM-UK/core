@@ -186,6 +186,24 @@ class TrainingPlace extends Model
     }
 
     /**
+     * The exam callsign for the training place.
+     */
+    public function examCallsign(): ?string
+    {
+        if ($this->trainable instanceof TrainingPosition) {
+            $this->trainable->loadMissing('position');
+
+            $callsign = $this->trainable->exam_callsign ?? $this->trainable->position?->callsign;
+
+            return filled($callsign) ? (string) $callsign : null;
+        }
+
+        $callsign = collect($this->trainableCtsPositions())->filter()->first();
+
+        return filled($callsign) ? (string) $callsign : null;
+    }
+
+    /**
      * Primary CTS callsign for display / default session booking.
      */
     public function primaryCtsPosition(): ?string
