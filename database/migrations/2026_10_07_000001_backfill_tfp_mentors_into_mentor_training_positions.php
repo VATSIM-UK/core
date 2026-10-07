@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Enums\PositionValidationStatusEnum;
 use App\Models\Mship\Qualification;
+use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
@@ -15,8 +16,6 @@ return new class extends Migration
 
     public function up(): void
     {
-        $now = now();
-
         $qualificationId = DB::table('mship_qualification')
             ->where('code', self::QUALIFICATION_CODE)
             ->value('id');
@@ -30,7 +29,7 @@ return new class extends Migration
             ->join('positions', 'positions.id', '=', 'position_validations.position_id')
             ->where('positions.callsign', self::MENTOR_CALLSIGN)
             ->where('position_validations.status', PositionValidationStatusEnum::Mentor->value)
-            ->select('position_validations.member_id', 'position_validations.changed_by')
+            ->select('position_validations.member_id', 'position_validations.changed_by', 'position_validations.date_changed')
             ->cursor();
 
         foreach ($mentorValidations as $validation) {
@@ -50,13 +49,15 @@ return new class extends Migration
 
             $actorId = $changedByCid && DB::table('mship_account')->where('id', $changedByCid)->exists() ? $changedByCid : $accountId;
 
+            $validatedAt = $validation->date_changed ? Carbon::parse($validation->date_changed) : now();
+
             DB::table('mentor_training_positions')->insertOrIgnore([
                 'account_id' => $accountId,
                 'mentorable_type' => Qualification::class,
                 'mentorable_id' => $qualificationId,
                 'created_by' => $actorId,
-                'created_at' => $now,
-                'updated_at' => $now,
+                'created_at' => $validatedAt,
+                'updated_at' => $validatedAt,
             ]);
         }
     }
