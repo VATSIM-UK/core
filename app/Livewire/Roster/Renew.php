@@ -3,6 +3,7 @@
 namespace App\Livewire\Roster;
 
 use App\Libraries\UKCP;
+use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use App\Models\Roster;
 use App\Models\RosterHistory;
@@ -49,7 +50,7 @@ class Renew extends Component
     private function canReactivate(): bool
     {
         $account = auth()->user();
-        $lastLogon = AtcNetworkdataService::getLatestNetworkdataForAccount($account)?->disconnected_at;
+        $lastLogon = $this->lastConnectionAt($account);
 
         // Check if the account has had a connection in the last 18 months
         if (! $lastLogon || $lastLogon->diffInMonths(Carbon::now()) > 18) {
@@ -61,6 +62,13 @@ class Renew extends Component
         }
 
         return true;
+    }
+
+    private function lastConnectionAt(Account $account): ?Carbon
+    {
+        $session = AtcNetworkdataService::getLatestNetworkdataForAccount($account);
+
+        return $session?->disconnected_at ?? $session?->connected_at;
     }
 
     private function hasMetHoursInLastTwoQuarters(): bool
@@ -93,7 +101,7 @@ class Renew extends Component
     {
         $account = auth()->user();
         $canReactivate = $this->canReactivate();
-        $lastLogon = $canReactivate ? AtcNetworkdataService::getLatestNetworkdataForAccount($account)->disconnected_at : null;
+        $lastLogon = $canReactivate ? $this->lastConnectionAt($account) : null;
         $lastTwoQuartersFailed = ! $this->hasMetHoursInLastTwoQuarters();
 
         return view('livewire.roster.renew', [
