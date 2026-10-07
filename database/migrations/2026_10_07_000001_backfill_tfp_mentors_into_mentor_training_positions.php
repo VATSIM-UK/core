@@ -33,12 +33,12 @@ return new class extends Migration
             ->cursor();
 
         foreach ($mentorValidations as $validation) {
-            $accountId = DB::connection('cts')
+            $accountCid = DB::connection('cts')
                 ->table('members')
                 ->where('id', $validation->member_id)
                 ->value('cid');
 
-            if (! $accountId || ! DB::table('mship_account')->where('id', $accountId)->exists()) {
+            if (! $accountCid || ! DB::table('mship_account')->where('id', $accountCid)->exists()) {
                 continue;
             }
 
@@ -47,15 +47,15 @@ return new class extends Migration
                 ->where('id', $validation->changed_by)
                 ->value('cid');
 
-            $actorId = $changedByCid && DB::table('mship_account')->where('id', $changedByCid)->exists() ? $changedByCid : $accountId;
+            $actorCid = $changedByCid && DB::table('mship_account')->where('id', $changedByCid)->exists() ? $changedByCid : $accountCid;
 
             $validatedAt = $validation->date_changed ? Carbon::parse($validation->date_changed) : now();
 
             DB::table('mentor_training_positions')->insertOrIgnore([
-                'account_id' => $accountId,
+                'account_id' => $accountCid,
                 'mentorable_type' => Qualification::class,
                 'mentorable_id' => $qualificationId,
-                'created_by' => $actorId,
+                'created_by' => $actorCid,
                 'created_at' => $validatedAt,
                 'updated_at' => $validatedAt,
             ]);
