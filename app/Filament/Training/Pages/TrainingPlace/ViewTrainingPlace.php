@@ -2,6 +2,7 @@
 
 namespace App\Filament\Training\Pages\TrainingPlace;
 
+use App\Enums\PilotExamType;
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
 use App\Filament\Training\Pages\TrainingPlace\Widgets\TrainingPlaceStatsWidget;
 use App\Filament\Training\Resources\TrainingPlaces\Pages\ListTrainingPlaces;
@@ -12,6 +13,7 @@ use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\ExamForwardingService;
+use App\Services\Training\ExamSetupService;
 use Exception;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -106,29 +108,19 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
             Action::make('forwardForExam')
                 ->label('Forward for Practical Exam')
                 ->icon('heroicon-o-arrow-right')
-                ->visible(fn () => ! $this->trainingPlace->trashed() && $user->can('training.exams.setup') && $this->trainingPlace->trainingPosition !== null)
+                ->visible(fn () => ! $this->trainingPlace->trashed() && $user->can('training.exams.setup') && $this->trainingPlace->trainable !== null)
                 ->disabled(fn () => $this->hasPendingExam())
-                ->tooltip(fn () => $this->hasPendingExam() ? 'This member already has a pending exam booking.' : 'Forward the member for a practical exam on their primary training position')
-                ->schema([
-                    Select::make('position_id')
-                        ->label('Position')
-                        ->options(fn () => Position::where('callsign', 'NOT LIKE', '%ATIS%')->orderBy('callsign')->pluck('callsign', 'id'))
-                        ->default(fn () => $this->trainingPlace->trainingPosition?->position?->id)
-                        ->required()
-                        ->searchable()
-                        ->preload(),
-                    TextInput::make('student_name')
-                        ->label('Student Name')
-                        ->default(fn () => $this->trainingPlace->account->name)
-                        ->readOnly()
-                        ->dehydrated(false),
-                    TextInput::make('student_cid')
-                        ->label('Student CID')
-                        ->default(fn () => $this->trainingPlace->account->id)
-                        ->readOnly()
-                        ->dehydrated(false),
-                ])
-                ->action(fn (array $data) => $this->forwardForExam($data['position_id']))
+                ->tooltip(fn () => $this->hasPendingExam() ? 'This member already has a pending exam booking.' : 'Forward the member for a practical exam on their training position or qualification')
+                ->schema(fn (): array => $this->forwardForExamFormSchema())
+                ->action(function (array $data): void {
+                    if ($this->trainingPlace->isPilot()) {
+                        $this->forwardPilotForExam($data['pilot_exam_type']);
+
+                        return;
+                    }
+
+                    $this->forwardForExam($data['position_id']);
+                })
                 ->modalHeading('Forward for Practical Exam')
                 ->modalDescription('Confirm the details below to forward this member for a practical exam.')
                 ->modalSubmitActionLabel('Forward for Exam'),
@@ -240,6 +232,90 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
                 ->send();
         } catch (Exception $e) {
             Log::error('Training place forward for exam failed', ['exception' => $e, 'training_place_id' => $this->trainingPlace->id]);
+
+            Notification::make()
+                ->title('Error')
+                ->danger()
+                ->body('An error occurred while forwarding for exam: '.$e->getMessage())
+                ->send();
+        }
+    }
+
+    private function forwardForExamFormSchema(): array
+    {
+        $studentFields = [
+            TextInput::make('student_name')
+                ->label('Student Name')
+                ->default(fn () => $this->trainingPlace->account->name)
+                ->readOnly()
+                ->dehydrated(false),
+            TextInput::make('student_cid')
+                ->label('Student CID')
+                ->default(fn () => $this->trainingPlace->account->id)
+                ->readOnly()
+                ->dehydrated(false),
+        ];
+
+        if ($this->trainingPlace->isPilot()) {
+            return array_merge([
+                Select::make('pilot_exam_type')
+                    ->label('Exam')
+                    ->options(fn () => app(ExamSetupService::class)->pilotExamTypeOptions())
+                    ->default(fn () => $this->defaultPilotExamType())
+                    ->required()
+                    ->searchable(),
+            ], $studentFields);
+        }
+
+        return array_merge([
+            Select::make('position_id')
+                ->label('Position')
+                ->options(fn () => Position::where('callsign', 'NOT LIKE', '%ATIS%')->orderBy('callsign')->pluck('callsign', 'id'))
+                ->default(fn () => $this->trainingPlace->trainingPosition?->position?->id)
+                ->required()
+                ->searchable()
+                ->preload(),
+        ], $studentFields);
+    }
+
+    private function defaultPilotExamType(): ?string
+    {
+        return match ($this->trainingPlace->qualification?->code) {
+            'PPL' => PilotExamType::P1->value,
+            'IR' => PilotExamType::P2->value,
+            'CMEL' => PilotExamType::P3->value,
+            default => null,
+        };
+    }
+
+    public function forwardPilotForExam(string $examType): void
+    {
+        try {
+            $ctsMember = $this->trainingPlace->account->member;
+
+            if (! $ctsMember) {
+                Notification::make()
+                    ->title('Error')
+                    ->danger()
+                    ->body('Unable to forward for exam - missing member information.')
+                    ->send();
+
+                return;
+            }
+
+            /** @var Account|null $user */
+            $user = Auth::user();
+
+            $service = new ExamForwardingService;
+            $service->forwardForPilotExam($ctsMember, $examType, $user->id);
+
+            Notification::make()
+                ->title('Success')
+                ->success()
+                ->body('Exam setup for '.PilotExamType::labelFor($examType).' has been created.')
+                ->send();
+        } catch (Exception $e) {
+            Log::error('Training place forward for pilot exam failed', ['exception' => $e, 'training_place_id' => $this->trainingPlace->id]);
 
             Notification::make()
                 ->title('Error')
