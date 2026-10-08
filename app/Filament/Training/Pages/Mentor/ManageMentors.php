@@ -57,13 +57,7 @@ class ManageMentors extends Page implements HasTable
 
     public function mount(): void
     {
-        $this->rememberCategory();
-
-        if (empty($this->category) || ! $this->canViewCategory($this->category)) {
-            $this->category = $this->firstVisibleCategory() ?? '';
-        }
-
-        $this->saveCategoryToSession();
+        $this->resolveRememberedCategory($this->getVisibleCategories());
     }
 
     protected function getHeaderWidgets(): array
@@ -77,13 +71,9 @@ class ManageMentors extends Page implements HasTable
 
     protected function getHeaderActions(): array
     {
-        $allCategories = collect(MentorPermissionService::atcCategories())
-            ->merge(MentorPermissionService::pilotCategories());
-
         return [
             ActionGroup::make(
-                $allCategories
-                    ->filter(fn (string $cat) => $this->canViewCategory($cat))
+                collect($this->getVisibleCategories())
                     ->map(fn (string $cat) => Action::make('cat_'.str($cat)->slug('_'))
                         ->label($cat)
                         ->url(static::getUrl(['category' => $cat]))
@@ -265,11 +255,13 @@ class ManageMentors extends Page implements HasTable
         return auth()->user()->can('manageCategory', [new ManageMentorsScope, $category]);
     }
 
-    private function firstVisibleCategory(): ?string
+    private function getVisibleCategories(): array
     {
         return collect(MentorPermissionService::atcCategories())
             ->merge(MentorPermissionService::pilotCategories())
-            ->first(fn (string $cat) => $this->canViewCategory($cat));
+            ->filter(fn (string $cat) => $this->canViewCategory($cat))
+            ->values()
+            ->all();
     }
 
     private function mentorsQuery(string $category): Builder

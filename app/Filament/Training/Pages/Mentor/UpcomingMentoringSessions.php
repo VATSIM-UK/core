@@ -61,23 +61,9 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
 
     public function mount(): void
     {
-        $this->rememberCategory();
+        $visibleCategories = $this->getVisibleCategories();
 
-        if ($this->category === MentorPermissionService::ALL_CATEGORIES) {
-            if (! $this->hasMultipleVisibleCategories()) {
-                $this->category = $this->firstVisibleCategory() ?? '';
-            }
-
-            $this->saveCategoryToSession();
-
-            return;
-        }
-
-        if (empty($this->category) || ! $this->canViewCategory($this->category)) {
-            $this->category = $this->defaultCategory();
-        }
-
-        $this->saveCategoryToSession();
+        $this->resolveRememberedCategory($visibleCategories, count($visibleCategories) > 1);
     }
 
     protected function getHeaderActions(): array
@@ -298,15 +284,6 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
         return count($this->getVisibleCategories()) > 1;
     }
 
-    private function defaultCategory(): string
-    {
-        if ($this->hasMultipleVisibleCategories()) {
-            return MentorPermissionService::ALL_CATEGORIES;
-        }
-
-        return $this->firstVisibleCategory() ?? '';
-    }
-
     private function canViewCategory(string $category): bool
     {
         if (auth()->user()->can('training.mentoring.view.*')) {
@@ -314,12 +291,5 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
         }
 
         return auth()->user()->can('training.mentors.view.'.MentorPermissionService::categoryType($category));
-    }
-
-    private function firstVisibleCategory(): ?string
-    {
-        return collect(MentorPermissionService::atcCategories())
-            ->merge(MentorPermissionService::pilotCategories())
-            ->first(fn (string $cat) => $this->canViewCategory($cat));
     }
 }
