@@ -9,6 +9,7 @@ use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Models\Mship\Qualification;
 use App\Models\Training\Mentoring\MentorTrainingPosition;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPlace\TrainingPlaceLeaveOfAbsence;
@@ -515,6 +516,48 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
             'student_id' => $student->id,
             'finished' => ExamBooking::NOT_FINISHED_FLAG,
             'position_1' => 'EGLL_APP',
+            'taken_date' => null,
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class);
+
+        $this->assertFalse($component->instance()->students->pluck('id')->contains($student->id));
+    }
+
+    #[Test]
+    public function students_property_excludes_pilot_students_with_a_pending_exam(): void
+    {
+        $qualification = Qualification::firstWhere('code', 'PPL')
+            ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
+
+        MentorTrainingPosition::create([
+            'account_id' => $this->mentor->id,
+            'mentorable_type' => Qualification::class,
+            'mentorable_id' => $qualification->id,
+            'created_by' => $this->mentor->id,
+        ]);
+
+        $student = Member::factory()->create();
+        Account::factory()->create(['id' => $student->cid]);
+
+        TrainingPlace::withoutEvents(function () use ($student, $qualification): void {
+            TrainingPlace::factory()->forQualification($qualification)->create([
+                'account_id' => $student->cid,
+            ]);
+        });
+
+        Availability::factory()->create([
+            'student_id' => $student->id,
+            'date' => Carbon::today()->format('Y-m-d'),
+            'from' => '10:00:00',
+            'to' => '12:00:00',
+        ]);
+
+        ExamBooking::factory()->create([
+            'student_id' => $student->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'position_1' => 'P1_PPL(A)',
             'taken_date' => null,
         ]);
 
