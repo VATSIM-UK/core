@@ -81,4 +81,29 @@ class RemembersTrainingGroupCategoryTest extends BaseTrainingPanelTestCase
             ->test(MentoringHistory::class)
             ->assertSet('category', $this->category);
     }
+
+    #[Test]
+    public function it_falls_back_to_a_permitted_category_when_all_is_not_supported_on_the_screen(): void
+    {
+        $this->panelUser->givePermissionTo('training.mentors.view.pilot');
+
+        session([self::SESSION_KEY => MentorPermissionService::ALL_CATEGORIES]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ManageMentors::class)
+            ->assertSet('category', MentorPermissionService::atcCategories()[0]);
+    }
+
+    #[Test]
+    public function it_updates_the_session_when_all_cannot_be_shown_on_the_screen(): void
+    {
+        $this->panelUser->givePermissionTo('training.mentors.view.pilot');
+
+        session([self::SESSION_KEY => MentorPermissionService::ALL_CATEGORIES]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ManageMentors::class);
+
+        $this->assertSame(MentorPermissionService::atcCategories()[0], session(self::SESSION_KEY));
+    }
 }
