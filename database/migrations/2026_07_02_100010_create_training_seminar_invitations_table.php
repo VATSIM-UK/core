@@ -22,6 +22,7 @@ return new class extends Migration
                 'cannot_attend',
                 'removed_no_response',
                 'removed_two_cannot_attend',
+                'short_notice_no_response',
             ])->default('sent');
             $table->dateTime('sent_at');
             $table->dateTime('responded_at')->nullable();

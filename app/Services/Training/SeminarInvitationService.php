@@ -178,12 +178,20 @@ class SeminarInvitationService
         $expired = 0;
         $pendingInvitations = SeminarInvitation::query()
             ->where('status', SeminarInvitationStatus::Sent->value)
-            ->where('is_short_notice', false)
             ->where('expires_at', '<=', now())
             ->get();
 
         foreach ($pendingInvitations as $invitation) {
             DB::transaction(function () use ($invitation): void {
+                if ($invitation->is_short_notice) {
+                    $invitation->update([
+                        'status' => SeminarInvitationStatus::ShortNoticeNoResponse->value,
+                        'responded_at' => now(),
+                    ]);
+
+                    return;
+                }
+
                 $invitation->update([
                     'status' => SeminarInvitationStatus::RemovedNoResponse->value,
                     'responded_at' => now(),

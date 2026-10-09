@@ -63,8 +63,10 @@ class ViewSeminar extends ViewRecord
                 ->requiresConfirmation()
                 ->modalHeading('Close Seminar?')
                 ->modalDescription(
-                    'This will permanently close the seminar. '.
-                    'No further invitations can be sent or responded to. '
+                    'This will permanently close the seminar and cannot be undone. '.
+                    'No further invitations will be sent. '.
+                    'Anyone who has been invited but has not yet responded will no longer be able to accept or decline, '.
+                    'their invitations will expire, and they will be removed from the waiting list.'
                 )
                 ->modalSubmitActionLabel('Close Seminar')
                 ->action(function (): void {

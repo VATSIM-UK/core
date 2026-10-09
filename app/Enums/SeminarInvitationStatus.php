@@ -12,6 +12,7 @@ enum SeminarInvitationStatus: string
     case CannotAttend = 'cannot_attend';
     case RemovedNoResponse = 'removed_no_response';
     case RemovedTwoCannotAttend = 'removed_two_cannot_attend';
+    case ShortNoticeNoResponse = 'short_notice_no_response';
 
     public function label(): string
     {
@@ -22,6 +23,7 @@ enum SeminarInvitationStatus: string
             self::CannotAttend => 'Cannot Attend',
             self::RemovedNoResponse => 'Removed (No Response)',
             self::RemovedTwoCannotAttend => 'Removed (Two Cannot Attend)',
+            self::ShortNoticeNoResponse => 'No Response (Short Notice)',
         };
     }
 
@@ -34,6 +36,7 @@ enum SeminarInvitationStatus: string
             self::CannotAttend => 'warning',
             self::RemovedNoResponse => 'danger',
             self::RemovedTwoCannotAttend => 'danger',
+            self::ShortNoticeNoResponse => 'gray',
         };
     }
 

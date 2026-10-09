@@ -771,7 +771,7 @@ class SeminarInvitationServiceTest extends TestCase
     }
 
     #[Test]
-    public function expire_unresponded_does_not_expire_short_notice_invitations(): void
+    public function expire_unresponded_closes_short_notice_invitations_without_a_penalty(): void
     {
         $this->setUpSeminar(5);
         $waitingListAccount = $this->addToWaitingList(true);
@@ -784,9 +784,47 @@ class SeminarInvitationServiceTest extends TestCase
 
         $count = $this->service->expireUnrespondedInvitations();
 
+        $this->assertSame(1, $count);
+        $this->assertEquals(SeminarInvitationStatus::ShortNoticeNoResponse, $invitation->fresh()->status);
+        $this->assertNotNull($invitation->fresh()->responded_at);
+        $this->assertNull($waitingListAccount->fresh()->deleted_at);
+    }
+
+    #[Test]
+    public function expire_unresponded_short_notice_invitation_frees_a_place(): void
+    {
+        $this->setUpSeminar(5);
+        $waitingListAccount = $this->addToWaitingList(true);
+        $account = Account::find($waitingListAccount->account_id);
+
+        Notification::fake();
+
+        $invitation = $this->service->createInvitation($this->seminar, $account, $waitingListAccount->id);
+        $invitation->update(['is_short_notice' => true, 'expires_at' => now()->subDay()]);
+
+        $this->assertSame(4, $this->seminar->fresh()->spacesRemaining());
+
+        $this->service->expireUnrespondedInvitations();
+
+        $this->assertSame(5, $this->seminar->fresh()->spacesRemaining());
+    }
+
+    #[Test]
+    public function expire_unresponded_does_not_close_future_short_notice_invitations(): void
+    {
+        $this->setUpSeminar(5);
+        $waitingListAccount = $this->addToWaitingList(true);
+        $account = Account::find($waitingListAccount->account_id);
+
+        Notification::fake();
+
+        $invitation = $this->service->createInvitation($this->seminar, $account, $waitingListAccount->id);
+        $invitation->update(['is_short_notice' => true, 'expires_at' => now()->addDay()]);
+
+        $count = $this->service->expireUnrespondedInvitations();
+
         $this->assertSame(0, $count);
         $this->assertEquals(SeminarInvitationStatus::Sent, $invitation->fresh()->status);
-        $this->assertNull($waitingListAccount->fresh()->deleted_at);
     }
 
     #[Test]

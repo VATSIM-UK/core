@@ -28,6 +28,7 @@ class SeminarStatsOverview extends StatsOverviewWidget
                 SeminarInvitationStatus::CannotAttend->value,
                 SeminarInvitationStatus::RemovedNoResponse->value,
                 SeminarInvitationStatus::RemovedTwoCannotAttend->value,
+                SeminarInvitationStatus::ShortNoticeNoResponse->value,
             ])->count();
 
         return [

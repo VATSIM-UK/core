@@ -71,6 +71,15 @@ class SeminarInvitationFactory extends Factory
         ]);
     }
 
+    public function shortNoticeNoResponse(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => SeminarInvitationStatus::ShortNoticeNoResponse,
+            'is_short_notice' => true,
+            'responded_at' => now(),
+        ]);
+    }
+
     public function withWaitingListAccount(): static
     {
         return $this->state(function (array $attributes): array {
