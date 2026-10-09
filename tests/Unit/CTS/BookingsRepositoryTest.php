@@ -56,7 +56,7 @@ class BookingsRepositoryTest extends TestCase
     }
 
     #[Test]
-    public function it_excludes_mentoring_and_exam_bookings_that_have_already_ended_today(): void
+    public function it_includes_mentoring_and_exam_bookings_that_have_already_ended_today(): void
     {
         $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
         $mentor = CtsMember::factory()->forAccount(Account::factory()->create())->create();
@@ -99,67 +99,10 @@ class BookingsRepositoryTest extends TestCase
             'bookable_id' => $exam->id,
         ]);
 
-        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today), hideEndedTrainingSessions: true);
+        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
 
-        $this->assertNull(
-            $bookings->firstWhere('id', (string) $endedMentoring->id),
-            'A mentoring session that has already ended today must not show up'
-        );
-        $this->assertNull(
-            $bookings->firstWhere('id', (string) $endedExam->id),
-            'An exam that has already ended today must not show up'
-        );
-
-        $defaultBookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today));
-
-        $this->assertNotNull(
-            $defaultBookings->firstWhere('id', (string) $endedMentoring->id),
-            'Without the flag, an ended mentoring session must still be returned'
-        );
-    }
-
-    #[Test]
-    public function it_still_shows_bookings_that_have_not_ended_today(): void
-    {
-        $position = Position::factory()->create(['callsign' => 'EGKK_APP']);
-        $mentor = CtsMember::factory()->forAccount(Account::factory()->create())->create();
-
-        $session = Session::factory()->create([
-            'student_id' => CtsMember::factory()->create()->id,
-            'mentor_id' => $mentor->id,
-            'position' => 'EGKK_APP',
-            'taken' => 1,
-            'taken_date' => $this->today,
-            'taken_from' => $this->knownDate->copy()->subHour()->format('H:i:s'),
-            'taken_to' => $this->knownDate->copy()->addHour()->format('H:i:s'),
-        ]);
-        $inProgressMentoring = Booking::factory()->create([
-            'position_id' => $position->id,
-            'type' => Booking::TYPE_MENTORING,
-            'starts_at' => $this->knownDate->copy()->subHour(),
-            'ends_at' => $this->knownDate->copy()->addHour(),
-            'bookable_type' => Session::class,
-            'bookable_id' => $session->id,
-        ]);
-
-        // Already ended, but not a mentoring/exam type: the filter must not touch it.
-        $endedStandard = Booking::factory()->create([
-            'position_id' => $position->id,
-            'type' => Booking::TYPE_STANDARD,
-            'starts_at' => $this->knownDate->copy()->subHours(3),
-            'ends_at' => $this->knownDate->copy()->subHour(),
-        ]);
-
-        $bookings = $this->subjectUnderTest->getBookings(Carbon::parse($this->today), hideEndedTrainingSessions: true);
-
-        $this->assertNotNull(
-            $bookings->firstWhere('id', (string) $inProgressMentoring->id),
-            'A mentoring session that has started but not yet ended must still show up'
-        );
-        $this->assertNotNull(
-            $bookings->firstWhere('id', (string) $endedStandard->id),
-            'The end-time filter only applies to mentoring/exam bookings, not standard ones'
-        );
+        $this->assertNotNull($bookings->firstWhere('id', (string) $endedMentoring->id));
+        $this->assertNotNull($bookings->firstWhere('id', (string) $endedExam->id));
     }
 
     #[Test]

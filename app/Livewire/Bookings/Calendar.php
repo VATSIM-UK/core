@@ -214,7 +214,7 @@ class Calendar extends Component
         $weekEnd = $weekStart->copy()->addDays(6);
         $filter = strtoupper($this->positionFilter);
 
-        $bookingsByDate = app(BookingRepository::class)->getBookingsForRange($weekStart, $weekEnd, hideEndedTrainingSessions: true);
+        $bookingsByDate = app(BookingRepository::class)->getBookingsForRange($weekStart, $weekEnd);
         $eventsByDate = app(EventRepository::class)->getEventsForRange($weekStart, $weekEnd)->groupBy('date');
 
         $this->weekBookings = collect(range(0, 6))
@@ -253,7 +253,7 @@ class Calendar extends Component
     private function mergedBookingsFor(Carbon $date): Collection
     {
         return app(BookingRepository::class)
-            ->getBookings($date, hideEndedTrainingSessions: true)
+            ->getBookings($date)
             ->reject(fn (object $booking): bool => $booking->type === 'EV')
             ->concat(app(EventRepository::class)->getEventsForDate($date))
             ->sortBy(fn (object $booking): string => $booking->from)
