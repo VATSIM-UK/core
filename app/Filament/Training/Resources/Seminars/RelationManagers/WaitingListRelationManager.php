@@ -69,6 +69,8 @@ class WaitingListRelationManager extends RelationManager
                             ->title('Invitation sent')
                             ->success()
                             ->send();
+
+                        $this->refreshInvitations();
                     })
                     ->visible(fn () => $this->ownerRecord->canInvite() && auth()->user()->can('training.seminars.manage.*')),
             ])
@@ -92,6 +94,8 @@ class WaitingListRelationManager extends RelationManager
                             $record->account,
                             $record->id
                         );
+
+                        $this->refreshInvitations();
                     })
                     ->requiresConfirmation()
                     ->modalHeading('Send Seminar Invitation')
@@ -118,5 +122,11 @@ class WaitingListRelationManager extends RelationManager
         return $this->invitationsByAccountId ??= $this->ownerRecord->invitations()
             ->get()
             ->keyBy('account_id');
+    }
+
+    private function refreshInvitations(): void
+    {
+        $this->invitationsByAccountId = null;
+        $this->ownerRecord->refresh();
     }
 }
