@@ -7,6 +7,7 @@ use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
 use App\Models\Cts\Position;
 use App\Models\Cts\PositionValidation;
+use App\Models\Mship\Account\AvailabilitySetting;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\AvailabilityLogService;
 use App\Services\Training\AvailabilityService;
@@ -106,10 +107,76 @@ class MyAvailability extends Page implements HasForms, HasTable
 
     public function mount(): void
     {
-        $this->form->fill([
-            'from' => '18:00',
-            'to' => '21:00',
-        ]);
+        $this->form->fill($this->getDefaultAvailabilityTimes());
+    }
+
+    protected function getDefaultAvailabilityTimes(): array
+    {
+        return auth()->user()?->availability_defaults ?? [
+            'from' => AvailabilitySetting::DEFAULT_FROM,
+            'to' => AvailabilitySetting::DEFAULT_TO,
+        ];
+    }
+
+    public function defaultAvailabilityTimesAction(): Action
+    {
+        return Action::make('defaultAvailabilityTimes')
+            ->label('Change default times')
+            ->icon('heroicon-o-cog-6-tooth')
+            ->modalHeading('Default availability times')
+            ->modalDescription('These times are pre-filled on the Add Availability form.')
+            ->modalSubmitActionLabel('Save')
+            ->form([
+                Select::make('from')
+                    ->label('From')
+                    ->required()
+                    ->searchable()
+                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
+                    ->options($this->generateTimeOptions())
+                    ->optionsLimit(100),
+
+                Select::make('to')
+                    ->label('To')
+                    ->required()
+                    ->searchable()
+                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
+                    ->options($this->generateTimeOptions())
+                    ->optionsLimit(100),
+            ])
+            ->fillForm(fn () => $this->getDefaultAvailabilityTimes())
+            ->action(function (array $data): void {
+                $user = auth()->user();
+
+                if (! $user) {
+                    return;
+                }
+
+                $start = Carbon::parse($data['from']);
+                $end = Carbon::parse($data['to']);
+
+                if ($start->greaterThan($end)) {
+                    Notification::make()
+                        ->title('The "From" time must be before the "To" time.')
+                        ->danger()
+                        ->send();
+
+                    return;
+                }
+
+                if ($end->lessThanOrEqualTo($start) || ! $this->getAvailabilityService()->meetsMinimumDuration($start, $end)) {
+                    Notification::make()
+                        ->title('Default times must be at least '.AvailabilityService::MINIMUM_SLOT_DURATION_MINUTES.' minutes apart.')
+                        ->danger()
+                        ->send();
+
+                    return;
+                }
+
+                $user->setAvailabilityDefaults($data['from'], $data['to']);
+                $this->form->fill($this->getDefaultAvailabilityTimes());
+
+                Notification::make()->title('Default availability times saved')->success()->send();
+            });
     }
 
     public function form(Schema $form): Schema
@@ -191,10 +258,7 @@ class MyAvailability extends Page implements HasForms, HasTable
             Notification::make()->title("{$addedCount} availability slot(s) added")->success()->send();
         }
 
-        $this->form->fill([
-            'from' => '18:00',
-            'to' => '21:00',
-        ]);
+        $this->form->fill($this->getDefaultAvailabilityTimes());
     }
 
     public function table(Table $table): Table
