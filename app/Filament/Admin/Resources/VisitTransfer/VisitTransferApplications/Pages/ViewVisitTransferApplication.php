@@ -6,6 +6,7 @@ use App\Enums\VTCheckStatus;
 use App\Filament\Admin\Helpers\Pages\LogPageAccess;
 use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplications\VisitTransferApplicationResource;
 use App\Models\Mship\Note\Type;
+use App\Models\VisitTransfer\Application;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
@@ -195,9 +196,9 @@ class ViewVisitTransferApplication extends ViewRecord
                                             }
 
                                             if ($newFacility->can_visit && ! $newFacility->can_transfer) {
-                                                $record->type = \App\Models\VisitTransfer\Application::TYPE_VISIT;
+                                                $record->type = Application::TYPE_VISIT;
                                             } elseif ($newFacility->can_transfer && ! $newFacility->can_visit) {
-                                                $record->type = \App\Models\VisitTransfer\Application::TYPE_TRANSFER;
+                                                $record->type = Application::TYPE_TRANSFER;
                                             }
 
                                             $record->training_team = $newFacility->training_team;
@@ -274,6 +275,7 @@ class ViewVisitTransferApplication extends ViewRecord
                             Grid::make(1)->columnSpanFull()->schema(
                                 ($application->account?->visitTransferApplications ?? collect())
                                     ->where('id', '!=', $application->id)
+                                    ->whereNotIn('status', [Application::STATUS_WITHDRAWN, Application::STATUS_LAPSED, Application::STATUS_EXPIRED])
                                     ->sortByDesc('created_at')
                                     ->map(function ($oldapp) {
                                         return Grid::make(5)->columnSpanFull()->schema([
