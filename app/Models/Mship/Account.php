@@ -84,7 +84,7 @@ use Watson\Rememberable\Rememberable;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Activity> $activityRecent
  * @property-read int|null $activity_recent_count
- * @property-read \App\Models\Mship\Account\AvailabilitySetting|null $availabilitySetting
+ * @property-read Account\AvailabilitySetting|null $availabilitySetting
  * @property-read array $availability_defaults
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Account\Ban> $bans
  * @property-read int|null $bans_count
