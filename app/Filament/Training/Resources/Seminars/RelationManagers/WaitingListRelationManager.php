@@ -4,6 +4,7 @@ namespace App\Filament\Training\Resources\Seminars\RelationManagers;
 
 use App\Filament\Admin\Forms\Components\AccountSelect;
 use App\Models\Mship\Account;
+use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Services\Training\SeminarInvitationService;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
@@ -25,7 +26,7 @@ class WaitingListRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->with(['account', 'waitingList']))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['account', 'waitingList', 'theoryReminder']))
             ->defaultSort('created_at', 'asc')
             ->columns([
                 TextColumn::make('account_id')->label('CID'),
@@ -35,9 +36,20 @@ class WaitingListRelationManager extends RelationManager
                 TextColumn::make('invitation_status')
                     ->label('Invitation')
                     ->badge()
-                    ->state(fn ($record) => $this->invitationFor($record->account_id)?->status)
-                    ->formatStateUsing(fn ($state) => $state?->label() ?? 'Not Invited')
-                    ->color(fn ($state) => $state?->color() ?? 'gray'),
+                    ->state(function (WaitingListAccount $record) {
+                        if ($invitation = $this->invitationFor($record->account_id)) {
+                            return $invitation->status->label();
+                        }
+
+                        return $record->theoryReminder ? 'Theory Reminder' : 'Not Invited';
+                    })
+                    ->color(function (WaitingListAccount $record) {
+                        if ($invitation = $this->invitationFor($record->account_id)) {
+                            return $invitation->status->color();
+                        }
+
+                        return $record->theoryReminder ? 'warning' : 'gray';
+                    }),
             ])
             ->headerActions([
                 Action::make('inviteNonMember')

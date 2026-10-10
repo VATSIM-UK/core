@@ -117,6 +117,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('training:check-for-expired-seminar-invitations')
             ->dailyAt('11:30');
 
+        $schedule->command('training:check-seminar-theory-exam-reminders')
+            ->dailyAt('11:45');
+
         $schedule->command('visit-transfer:check-inactivity')
             ->dailyAt('08:45')
             ->graceTimeInMinutes(15);

@@ -15,6 +15,8 @@ use Illuminate\Support\Str;
 
 class SeminarInvitationService
 {
+    public function __construct(private SeminarTheoryExamReminderService $theoryExamReminders) {}
+
     public function topUpAutomaticInvitations(Seminar $seminar): int
     {
         if (! $seminar->automatic_invitations_enabled || $seminar->isSendingCutoffReached()) {
@@ -45,7 +47,8 @@ class SeminarInvitationService
             }
 
             if (! $waitingListAccount->theory_exam_passed) {
-                // Eventually will fire CTS Theory Exam reminder email and logic
+                $this->theoryExamReminders->sendReminder($waitingListAccount, $seminar);
+
                 continue;
             }
 
