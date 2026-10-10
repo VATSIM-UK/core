@@ -28,6 +28,7 @@ class WaitingListRelationManager extends RelationManager
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query->with(['account', 'waitingList', 'theoryReminder']))
             ->defaultSort('created_at', 'asc')
+            ->recordAction('viewStatus')
             ->columns([
                 TextColumn::make('account_id')->label('CID'),
                 TextColumn::make('account.name')->label('Name')->searchable(['name_first', 'name_last']),
@@ -41,14 +42,14 @@ class WaitingListRelationManager extends RelationManager
                             return $invitation->status->label();
                         }
 
-                        return $record->theoryReminder ? 'Theory Reminder' : 'Not Invited';
+                        return $this->isRemindedForSeminar($record) ? 'Theory Reminder' : 'Not Invited';
                     })
                     ->color(function (WaitingListAccount $record) {
                         if ($invitation = $this->invitationFor($record->account_id)) {
                             return $invitation->status->color();
                         }
 
-                        return $record->theoryReminder ? 'warning' : 'gray';
+                        return $this->isRemindedForSeminar($record) ? 'warning' : 'gray';
                     }),
             ])
             ->headerActions([
@@ -72,6 +73,18 @@ class WaitingListRelationManager extends RelationManager
                             return;
                         }
 
+                        $waitingListAccount = $this->waitingListAccountFor($account);
+
+                        if ($waitingListAccount?->wasRemindedForSeminar($this->ownerRecord->id)) {
+                            Notification::make()
+                                ->title('Theory exam reminder sent')
+                                ->body('This member was sent a theory exam reminder for this seminar, so they cannot be invited to it.')
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
                         app(SeminarInvitationService::class)->createInvitation(
                             $this->ownerRecord,
                             Account::query()->findOrFail($account),
@@ -88,19 +101,23 @@ class WaitingListRelationManager extends RelationManager
             ])
             ->recordActions([
                 Action::make('manualInvite')
-                    ->label(fn ($record) => match (true) {
+                    ->label(fn (WaitingListAccount $record) => match (true) {
                         $this->isAlreadyInvited($record->account_id) => 'Already Invited',
+                        $this->isRemindedForSeminar($record) => 'Theory Reminder',
                         ! $this->ownerRecord->canInvite() => 'At Capacity',
                         default => 'Invite',
                     })
-                    ->icon('heroicon-o-paper-airplane')
-                    ->color(fn ($record) => match (true) {
+                    ->icon(fn (WaitingListAccount $record) => $this->isRemindedForSeminar($record)
+                        ? 'heroicon-o-exclamation-triangle'
+                        : 'heroicon-o-paper-airplane')
+                    ->color(fn (WaitingListAccount $record) => match (true) {
                         $this->isAlreadyInvited($record->account_id) => 'gray',
+                        $this->isRemindedForSeminar($record) => 'warning',
                         ! $this->ownerRecord->canInvite() => 'gray',
                         default => 'primary',
                     })
-                    ->disabled(fn ($record) => $this->isAlreadyInvited($record->account_id) || ! $this->ownerRecord->canInvite())
-                    ->action(function ($record): void {
+                    ->disabled(fn (WaitingListAccount $record) => $this->isAlreadyInvited($record->account_id) || $this->isRemindedForSeminar($record) || ! $this->ownerRecord->canInvite())
+                    ->action(function (WaitingListAccount $record): void {
                         app(SeminarInvitationService::class)->createInvitation(
                             $this->ownerRecord,
                             $record->account,
@@ -122,6 +139,18 @@ class WaitingListRelationManager extends RelationManager
     private function isAlreadyInvited(int $accountId): bool
     {
         return $this->invitationFor($accountId) !== null;
+    }
+
+    private function isRemindedForSeminar(WaitingListAccount $record): bool
+    {
+        return $record->wasRemindedForSeminar($this->ownerRecord->id);
+    }
+
+    private function waitingListAccountFor(int $accountId): ?WaitingListAccount
+    {
+        return $this->ownerRecord->waitingListAccounts()
+            ->where('account_id', $accountId)
+            ->first();
     }
 
     private function invitationFor(int $accountId)

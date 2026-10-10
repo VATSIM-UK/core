@@ -196,4 +196,18 @@ class WaitingListAccount extends Model
             ->where('status', TrainingPlaceOfferStatus::Pending->value)
             ->exists();
     }
+
+    /**
+     * Whether a theory exam reminder was raised for the given seminar.
+     */
+    public function wasRemindedForSeminar(int $seminarId): bool
+    {
+        $reminder = $this->relationLoaded('theoryReminder') ? $this->theoryReminder : $this->theoryReminder()->first();
+
+        if ($reminder === null || $reminder->seminar_id === null) {
+            return false;
+        }
+
+        return (int) $reminder->seminar_id === $seminarId;
+    }
 }
