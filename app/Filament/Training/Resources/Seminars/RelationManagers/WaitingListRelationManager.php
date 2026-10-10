@@ -28,7 +28,6 @@ class WaitingListRelationManager extends RelationManager
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query->with(['account', 'waitingList', 'theoryReminder']))
             ->defaultSort('created_at', 'asc')
-            ->recordAction('viewStatus')
             ->columns([
                 TextColumn::make('account_id')->label('CID'),
                 TextColumn::make('account.name')->label('Name')->searchable(['name_first', 'name_last']),
