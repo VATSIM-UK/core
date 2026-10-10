@@ -140,6 +140,7 @@ class SeminarTheoryExamReminderService
         $latestAttempt = TheoryResult::query()
             ->where('student_id', $memberId)
             ->where('exam', $examLevel)
+            ->where('submitted', 1)
             ->max('started');
 
         return $latestAttempt ? Carbon::parse($latestAttempt) : null;
