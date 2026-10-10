@@ -134,7 +134,7 @@ class SeminarResource extends Resource
                         }),
                     TextEntry::make('capacity'),
                     TextEntry::make('invitation_expiry_hours')->label('Invitation Expiry (Hours)'),
-                ])->columns(3),
+                ])->columns(4),
         ]);
     }
 
