@@ -17,7 +17,7 @@ class SeminarTheoryExamReminderNotification extends Notification
 
     public function toMail($notifiable): MailMessage
     {
-        $reminder = $this->reminder->loadMissing('waitingListAccount.waitingList');
+        $reminder = $this->reminder;
 
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
