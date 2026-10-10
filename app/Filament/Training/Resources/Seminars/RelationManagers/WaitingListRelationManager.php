@@ -4,6 +4,7 @@ namespace App\Filament\Training\Resources\Seminars\RelationManagers;
 
 use App\Filament\Admin\Forms\Components\AccountSelect;
 use App\Models\Mship\Account;
+use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Services\Training\SeminarInvitationService;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
@@ -25,7 +26,7 @@ class WaitingListRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->with(['account', 'waitingList']))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['account', 'waitingList', 'theoryReminder']))
             ->defaultSort('created_at', 'asc')
             ->columns([
                 TextColumn::make('account_id')->label('CID'),
@@ -35,9 +36,20 @@ class WaitingListRelationManager extends RelationManager
                 TextColumn::make('invitation_status')
                     ->label('Invitation')
                     ->badge()
-                    ->state(fn ($record) => $this->invitationFor($record->account_id)?->status)
-                    ->formatStateUsing(fn ($state) => $state?->label() ?? 'Not Invited')
-                    ->color(fn ($state) => $state?->color() ?? 'gray'),
+                    ->state(function (WaitingListAccount $record) {
+                        if ($invitation = $this->invitationFor($record->account_id)) {
+                            return $invitation->status->label();
+                        }
+
+                        return $this->isRemindedForSeminar($record) ? 'Theory Reminder' : 'Not Invited';
+                    })
+                    ->color(function (WaitingListAccount $record) {
+                        if ($invitation = $this->invitationFor($record->account_id)) {
+                            return $invitation->status->color();
+                        }
+
+                        return $this->isRemindedForSeminar($record) ? 'warning' : 'gray';
+                    }),
             ])
             ->headerActions([
                 Action::make('inviteNonMember')
@@ -60,6 +72,18 @@ class WaitingListRelationManager extends RelationManager
                             return;
                         }
 
+                        $waitingListAccount = $this->waitingListAccountFor($account);
+
+                        if ($waitingListAccount?->wasRemindedForSeminar($this->ownerRecord->id)) {
+                            Notification::make()
+                                ->title('Theory exam reminder sent')
+                                ->body('This member was sent a theory exam reminder for this seminar, so they cannot be invited to it.')
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
                         app(SeminarInvitationService::class)->createInvitation(
                             $this->ownerRecord,
                             Account::query()->findOrFail($account),
@@ -76,19 +100,23 @@ class WaitingListRelationManager extends RelationManager
             ])
             ->recordActions([
                 Action::make('manualInvite')
-                    ->label(fn ($record) => match (true) {
+                    ->label(fn (WaitingListAccount $record) => match (true) {
                         $this->isAlreadyInvited($record->account_id) => 'Already Invited',
+                        $this->isRemindedForSeminar($record) => 'Theory Reminder',
                         ! $this->ownerRecord->canInvite() => 'At Capacity',
                         default => 'Invite',
                     })
-                    ->icon('heroicon-o-paper-airplane')
-                    ->color(fn ($record) => match (true) {
+                    ->icon(fn (WaitingListAccount $record) => $this->isRemindedForSeminar($record)
+                        ? 'heroicon-o-exclamation-triangle'
+                        : 'heroicon-o-paper-airplane')
+                    ->color(fn (WaitingListAccount $record) => match (true) {
                         $this->isAlreadyInvited($record->account_id) => 'gray',
+                        $this->isRemindedForSeminar($record) => 'warning',
                         ! $this->ownerRecord->canInvite() => 'gray',
                         default => 'primary',
                     })
-                    ->disabled(fn ($record) => $this->isAlreadyInvited($record->account_id) || ! $this->ownerRecord->canInvite())
-                    ->action(function ($record): void {
+                    ->disabled(fn (WaitingListAccount $record) => $this->isAlreadyInvited($record->account_id) || $this->isRemindedForSeminar($record) || ! $this->ownerRecord->canInvite())
+                    ->action(function (WaitingListAccount $record): void {
                         app(SeminarInvitationService::class)->createInvitation(
                             $this->ownerRecord,
                             $record->account,
@@ -110,6 +138,18 @@ class WaitingListRelationManager extends RelationManager
     private function isAlreadyInvited(int $accountId): bool
     {
         return $this->invitationFor($accountId) !== null;
+    }
+
+    private function isRemindedForSeminar(WaitingListAccount $record): bool
+    {
+        return $record->wasRemindedForSeminar($this->ownerRecord->id);
+    }
+
+    private function waitingListAccountFor(int $accountId): ?WaitingListAccount
+    {
+        return $this->ownerRecord->waitingListAccounts()
+            ->where('account_id', $accountId)
+            ->first();
     }
 
     private function invitationFor(int $accountId)
