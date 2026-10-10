@@ -22,7 +22,7 @@ class WaitingListTheoryReminder extends Model
     /**
      * Days to wait before checking again after a failed attempt
      */
-    public const FAILED_ATTEMPT_RECHECK_WINDOW_DAYS = 7;
+    public const FAILED_ATTEMPT_RECHECK_WINDOW_DAYS = 14;
 
     protected $table = 'training_waiting_list_theory_reminders';
 
