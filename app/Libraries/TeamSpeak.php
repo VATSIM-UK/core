@@ -50,12 +50,8 @@ class TeamSpeak
         return config('services.teamspeak.host') && config('services.teamspeak.username') && config('services.teamspeak.password') && config('services.teamspeak.port') && config('services.teamspeak.query_port');
     }
 
-    public static function run($nickname = 'VATSIM UK TeamSpeak Bot', $nonBlocking = false, bool $uniqueNickname = false): Server
+    public static function run($nickname = 'VATSIM UK TeamSpeak Bot', $nonBlocking = false): Server
     {
-        if ($uniqueNickname) {
-            $nickname .= ' '.random_int(1000, 9999);
-        }
-
         $connectionUrl = sprintf(
             'serverquery://%s:%s@%s:%s/?nickname=%s&server_port=%s%s#no_query_clients',
             urlencode(config('services.teamspeak.username')),

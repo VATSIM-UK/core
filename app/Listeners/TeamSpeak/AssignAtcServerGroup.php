@@ -43,7 +43,7 @@ class AssignAtcServerGroup implements ShouldQueue
         $server = null;
 
         try {
-            $server = TeamSpeak::run('vUK Assign ATC Group', uniqueNickname: true);
+            $server = TeamSpeak::run('vUK Assign ATC Group');
             $this->service->assign($account, $callsign, $server);
         } catch (\Throwable $e) {
             Log::error('Failed to assign ATC server group', [
