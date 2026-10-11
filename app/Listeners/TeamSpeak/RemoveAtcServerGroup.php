@@ -42,7 +42,7 @@ class RemoveAtcServerGroup implements ShouldQueue
         $server = null;
 
         try {
-            $server = TeamSpeak::run('vUK Remove ATC Group');
+            $server = TeamSpeak::run('vUK Remove ATC Group', uniqueNickname: true);
             $this->service->releaseExisting($account, $server);
         } catch (\Throwable $e) {
             Log::error('Failed to release ATC server group', [
