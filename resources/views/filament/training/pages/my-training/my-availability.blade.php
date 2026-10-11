@@ -29,6 +29,10 @@
 				<x-slot name="description">
 					All times are in Zulu.
 				</x-slot>
+				<x-slot name="afterHeader">
+					<x-filament::icon-button color="gray" icon="heroicon-o-cog-6-tooth" label="Change default times"
+						tooltip="Change default times" wire:click="mountAction('defaultAvailabilityTimes')" />
+				</x-slot>
 
 				{{ $this->form }}
 
