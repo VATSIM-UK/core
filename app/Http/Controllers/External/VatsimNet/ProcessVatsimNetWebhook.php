@@ -19,6 +19,13 @@ class ProcessVatsimNetWebhook extends BaseController
             'webhook' => $webhook,
         ]);
 
+        // Ignore bad payloads
+        if (! isset($webhook['resource']) || ! is_array($webhook['actions'] ?? null)) {
+            return response()->json([
+                'status' => 'ok',
+            ]);
+        }
+
         Log::debug('VATSIM.net webhook received', [
             'resource' => $webhook['resource'],
             'actions.length' => count($webhook['actions']),
@@ -27,12 +34,16 @@ class ProcessVatsimNetWebhook extends BaseController
         // Sort the actions by timestamp to make sure that we process them in the correct order
         $actions = $webhook['actions'];
         usort($actions, function ($a, $b) {
-            return $a['timestamp'] <=> $b['timestamp'];
+            return ($a['timestamp'] ?? null) <=> ($b['timestamp'] ?? null);
         });
 
         $jobs = [];
 
         foreach ($actions as $action) {
+            if (! is_array($action) || ! isset($action['action'])) {
+                continue;
+            }
+
             switch ($action['action']) {
                 case 'member_created_action':
                     $jobs[] = new MemberCreatedAction($webhook['resource'], $action);
