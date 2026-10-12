@@ -9,7 +9,6 @@ use App\Services\TeamSpeak\AtcServerGroupService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
-use PlanetTeamSpeak\TeamSpeak3Framework\Node\Server;
 
 class RemoveAtcServerGroup implements ShouldQueue
 {
@@ -52,20 +51,7 @@ class RemoveAtcServerGroup implements ShouldQueue
 
             $this->fail($e);
         } finally {
-            self::closeConnection($server);
-        }
-    }
-
-    private static function closeConnection(?Server $server): void
-    {
-        if ($server === null) {
-            return;
-        }
-
-        try {
-            $server->request('quit');
-        } catch (\Throwable) {
-
+            TeamSpeak::close($server);
         }
     }
 }

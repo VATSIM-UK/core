@@ -6,7 +6,6 @@ use App\Libraries\TeamSpeak;
 use App\Services\TeamSpeak\AtcServerGroupService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use PlanetTeamSpeak\TeamSpeak3Framework\Node\Server;
 
 class SyncAtcServerGroups extends Command
 {
@@ -40,22 +39,9 @@ class SyncAtcServerGroups extends Command
 
             return self::FAILURE;
         } finally {
-            self::closeConnection($server);
+            TeamSpeak::close($server);
         }
 
         return self::SUCCESS;
-    }
-
-    private static function closeConnection(?Server $server): void
-    {
-        if ($server === null) {
-            return;
-        }
-
-        try {
-            $server->request('quit');
-        } catch (\Throwable) {
-
-        }
     }
 }
