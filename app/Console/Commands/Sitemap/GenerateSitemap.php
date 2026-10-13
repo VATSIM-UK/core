@@ -42,7 +42,6 @@ class GenerateSitemap extends Command
             ['route' => route('site.atc.endorsements'), 'priority' => 0.7, 'change_frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['route' => route('site.atc.heathrow'), 'priority' => 0.6, 'change_frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['route' => route('site.atc.mentor'), 'priority' => 0.6, 'change_frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
-            ['route' => route('site.atc.bookings'), 'priority' => 0.6, 'change_frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['route' => route('site.pilots.landing'), 'priority' => 0.8, 'change_frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['route' => route('site.pilots.ratings'), 'priority' => 0.7, 'change_frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['route' => route('site.pilots.mentor'), 'priority' => 0.6, 'change_frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
