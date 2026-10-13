@@ -530,6 +530,14 @@ class CalendarTest extends TestCase
     }
 
     #[Test]
+    public function it_links_to_the_division_policy_bookings_rules(): void
+    {
+        Livewire::test(Calendar::class)
+            ->assertSee('Bookings must adhere to Division Policy 2.4')
+            ->assertSee('href="'.route('site.policy.division').'#24-bookings-and-reservations"', false);
+    }
+
+    #[Test]
     public function it_allows_guests_to_view(): void
     {
         $this->get(route('site.bookings.calendar'))
