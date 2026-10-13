@@ -901,6 +901,49 @@ class SeminarInvitationServiceTest extends TestCase
     }
 
     #[Test]
+    public function create_invitation_throws_when_the_account_was_reminded_for_this_seminar(): void
+    {
+        $this->setUpSeminar(5, true);
+        $waitingListAccount = $this->addToWaitingList(false);
+        $this->seminar = $this->seminar->fresh();
+
+        $this->service->topUpAutomaticInvitations($this->seminar);
+        $this->assertTrue($waitingListAccount->fresh()->wasRemindedForSeminar($this->seminar->id));
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('This student was sent a theory exam reminder for this seminar and cannot be invited.');
+
+        $this->service->createInvitation(
+            $this->seminar->fresh(),
+            $waitingListAccount->account,
+            $waitingListAccount->id
+        );
+    }
+
+    #[Test]
+    public function create_invitation_does_not_use_a_waiting_list_account_belonging_to_another_account(): void
+    {
+        $this->setUpSeminar(5, true);
+        $remindedMembership = $this->addToWaitingList(false);
+        $this->seminar = $this->seminar->fresh();
+
+        $this->service->topUpAutomaticInvitations($this->seminar);
+        $this->assertTrue($remindedMembership->fresh()->wasRemindedForSeminar($this->seminar->id));
+
+        // Someone else's reminded membership must neither block this invite nor be linked to it.
+        $otherStudent = Account::factory()->create();
+
+        $invitation = $this->service->createInvitation(
+            $this->seminar->fresh(),
+            $otherStudent,
+            $remindedMembership->id
+        );
+
+        $this->assertSame($otherStudent->id, $invitation->account_id);
+        $this->assertNull($invitation->waiting_list_account_id);
+    }
+
+    #[Test]
     public function top_up_reminds_students_who_have_not_passed_the_theory_exam(): void
     {
         $this->setUpSeminar(5, true);

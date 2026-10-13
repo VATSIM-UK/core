@@ -14,6 +14,7 @@ use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListTheoryReminder;
 use App\Notifications\Training\SeminarInvitationNotification;
 use App\Notifications\Training\SeminarTheoryExamReminderNotification;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -86,14 +87,14 @@ class SeminarInvitationService
         }
 
         DB::transaction(function () use ($seminar, $waitingListAccount): void {
-            $reminder = WaitingListTheoryReminder::create([
+            WaitingListTheoryReminder::create([
                 'waiting_list_account_id' => $waitingListAccount->id,
                 'account_id' => $waitingListAccount->account_id,
                 'seminar_id' => $seminar->id,
                 'reminded_at' => now(),
             ]);
 
-            $waitingListAccount->account->notify(new SeminarTheoryExamReminderNotification($reminder));
+            $waitingListAccount->account->notify(new SeminarTheoryExamReminderNotification);
         });
     }
 
@@ -134,7 +135,7 @@ class SeminarInvitationService
             throw new \InvalidArgumentException('This student was sent a theory exam reminder for this seminar and cannot be invited.');
         }
 
-        return DB::transaction(function () use ($seminar, $account, $waitingListAccountId): SeminarInvitation {
+        return DB::transaction(function () use ($seminar, $account, $waitingListAccount): SeminarInvitation {
             $sentAt = now();
             $isShortNotice = $seminar->isShortNotice();
 
@@ -147,7 +148,7 @@ class SeminarInvitationService
             $invitation = SeminarInvitation::create([
                 'seminar_id' => $seminar->id,
                 'account_id' => $account->id,
-                'waiting_list_account_id' => $waitingListAccountId,
+                'waiting_list_account_id' => $waitingListAccount?->id,
                 'token' => $this->generateToken(),
                 'status' => SeminarInvitationStatus::Sent->value,
                 'is_short_notice' => $isShortNotice,
@@ -276,15 +277,16 @@ class SeminarInvitationService
         );
     }
 
+    /**
+     * Find the membership the invitation is being raised for, only ever returning a row for
+     * this account on this seminar's waiting list.
+     */
     private function resolveWaitingListAccount(Seminar $seminar, Account $account, ?int $waitingListAccountId): ?WaitingListAccount
     {
-        if ($waitingListAccountId) {
-            return WaitingListAccount::query()->whereKey($waitingListAccountId)->first();
-        }
-
         return WaitingListAccount::query()
             ->where('list_id', $seminar->waiting_list_id)
             ->where('account_id', $account->id)
+            ->when($waitingListAccountId !== null, fn (Builder $query) => $query->whereKey($waitingListAccountId))
             ->first();
     }
 

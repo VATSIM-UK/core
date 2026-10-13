@@ -18,6 +18,4 @@
 
     <p>If you have any questions, please feel free to open a ticket in <a href="https://helpdesk.vatsim.uk">VATSIM UK's
             helpdesk</a>.</p>
-
-    <p>Best Regards,<br>The New Controller Training Group Team</p>
 @stop
