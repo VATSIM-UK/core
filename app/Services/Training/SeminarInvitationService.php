@@ -16,6 +16,7 @@ use App\Notifications\Training\SeminarInvitationNotification;
 use App\Notifications\Training\SeminarTheoryExamReminderNotification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class SeminarInvitationService
@@ -57,14 +58,23 @@ class SeminarInvitationService
                 continue;
             }
 
-            if (! $waitingListAccount->theory_exam_passed) {
-                $this->handleMissingTheoryExam($seminar, $waitingList, $waitingListAccount);
+            try {
+                if (! $waitingListAccount->theory_exam_passed) {
+                    $this->handleMissingTheoryExam($seminar, $waitingList, $waitingListAccount);
 
-                continue;
+                    continue;
+                }
+
+                $this->createInvitation($seminar, $waitingListAccount->account, $waitingListAccount->id);
+                $invited++;
+            } catch (\Throwable $e) {
+                Log::error('Seminar invitation / reminder failed', [
+                    'exception' => $e,
+                    'seminar_id' => $seminar->id,
+                    'waiting_list_account_id' => $waitingListAccount->id,
+                    'account_id' => $waitingListAccount->account_id,
+                ]);
             }
-
-            $this->createInvitation($seminar, $waitingListAccount->account, $waitingListAccount->id);
-            $invited++;
         }
 
         return $invited;

@@ -18,6 +18,7 @@ use App\Models\Training\WaitingList\WaitingListTheoryReminder;
 use App\Notifications\Training\SeminarInvitationNotification;
 use App\Notifications\Training\SeminarTheoryExamReminderNotification;
 use App\Services\Training\SeminarInvitationService;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Notifications\ChannelManager;
 use Illuminate\Support\Facades\Event;
@@ -994,16 +995,83 @@ class SeminarInvitationServiceTest extends TestCase
         Notification::clearResolvedInstance(ChannelManager::class);
         Mail::shouldReceive('mailer')->andThrow(new RuntimeException('Mail failed'));
 
-        try {
-            $this->service->topUpAutomaticInvitations($this->seminar);
-            $this->fail('Expected the notification failure to be thrown.');
-        } catch (RuntimeException $exception) {
-            $this->assertSame('Mail failed', $exception->getMessage());
-        }
+        // The failure is logged and swallowed rather than cancelling the rest of the batch.
+        $this->assertSame(0, $this->service->topUpAutomaticInvitations($this->seminar));
 
         $this->assertSame(
             0,
             WaitingListTheoryReminder::query()->where('waiting_list_account_id', $waitingListAccount->id)->count()
+        );
+    }
+
+    #[Test]
+    public function top_up_still_processes_students_after_a_notification_failure(): void
+    {
+        $this->setUpSeminar(5, true);
+
+        $failing = $this->addToWaitingList(false);
+
+        // Students are processed oldest first, so keep their join times apart to fix the order.
+        Carbon::setTestNow(now()->addMinute());
+        $later = $this->addToWaitingList(false);
+        Carbon::setTestNow();
+
+        // This student ignored a reminder from an earlier seminar, so they are removed without any email.
+        $this->remindAtAnEarlierSeminar($later);
+        $this->seminar = $this->seminar->fresh();
+
+        // Send for real so that the mail failure aborts the first student's reminder transaction.
+        $this->app->forgetInstance(ChannelManager::class);
+        Notification::clearResolvedInstance(ChannelManager::class);
+        Mail::shouldReceive('mailer')->andThrow(new RuntimeException('Mail failed'));
+
+        $this->service->topUpAutomaticInvitations($this->seminar);
+
+        $this->assertSame(
+            0,
+            WaitingListTheoryReminder::query()->where('waiting_list_account_id', $failing->id)->count()
+        );
+
+        // The student behind the failing one was still dealt with.
+        $this->assertSame(
+            RemovalReason::SeminarTheoryExamNotPassed,
+            $later->fresh()->removal_type
+        );
+    }
+
+    #[Test]
+    public function top_up_still_processes_students_after_an_invitation_notification_failure(): void
+    {
+        $this->setUpSeminar(5, true);
+
+        $failing = $this->addToWaitingList(true);
+
+        // Students are processed oldest first, so keep their join times apart to fix the order.
+        Carbon::setTestNow(now()->addMinute());
+        $later = $this->addToWaitingList(false);
+        Carbon::setTestNow();
+
+        // This student ignored a reminder from an earlier seminar, so they are removed without any email.
+        $this->remindAtAnEarlierSeminar($later);
+        $this->seminar = $this->seminar->fresh();
+
+        // Send for real so that the mail failure aborts the first student's invitation transaction.
+        $this->app->forgetInstance(ChannelManager::class);
+        Notification::clearResolvedInstance(ChannelManager::class);
+        Mail::shouldReceive('mailer')->andThrow(new RuntimeException('Mail failed'));
+
+        $this->assertSame(0, $this->service->topUpAutomaticInvitations($this->seminar));
+
+        // The failed invitation was rolled back, so the student is invited again on the next run.
+        $this->assertDatabaseMissing('training_seminar_invitations', [
+            'seminar_id' => $this->seminar->id,
+            'account_id' => $failing->account_id,
+        ]);
+
+        // The student behind the failing one was still dealt with.
+        $this->assertSame(
+            RemovalReason::SeminarTheoryExamNotPassed,
+            $later->fresh()->removal_type
         );
     }
 
