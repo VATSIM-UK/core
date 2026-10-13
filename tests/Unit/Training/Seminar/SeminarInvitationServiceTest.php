@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Unit\Training\Seminar;
 
 use App\Enums\SeminarInvitationStatus;
-use App\Enums\TheoryExamReminderStatus;
 use App\Models\Cts\Member;
 use App\Models\Cts\TheoryResult;
 use App\Models\Mship\Account;
@@ -13,15 +12,19 @@ use App\Models\Training\Seminar\Seminar;
 use App\Models\Training\Seminar\SeminarAttendee;
 use App\Models\Training\Seminar\SeminarInvitation;
 use App\Models\Training\WaitingList;
+use App\Models\Training\WaitingList\RemovalReason;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Models\Training\WaitingList\WaitingListTheoryReminder;
 use App\Notifications\Training\SeminarInvitationNotification;
 use App\Notifications\Training\SeminarTheoryExamReminderNotification;
 use App\Services\Training\SeminarInvitationService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Notifications\ChannelManager;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\Test;
+use RuntimeException;
 use Tests\TestCase;
 
 class SeminarInvitationServiceTest extends TestCase
@@ -62,22 +65,47 @@ class SeminarInvitationServiceTest extends TestCase
         $waitingListAccount = $this->seminar->waitingList->addToWaitingList($student, $this->privacc);
 
         if ($theoryExamPassed) {
-            $member = Member::factory()->create(['cid' => $student->id]);
-            TheoryResult::create([
-                'exam' => 'S1',
-                'student_id' => $member->id,
-                'pass' => 1,
-                'questions' => 40,
-                'time_mins' => 60,
-                'passmark' => 75,
-                'correct' => 35,
-                'started' => now()->subDay(),
-                'submitted' => 1,
-                'submitted_time' => now()->subDay(),
-            ]);
+            $this->passTheoryExam($waitingListAccount);
         }
 
         return $waitingListAccount;
+    }
+
+    private function passTheoryExam(WaitingListAccount $waitingListAccount): void
+    {
+        $member = Member::factory()->create(['cid' => $waitingListAccount->account_id]);
+
+        TheoryResult::create([
+            'exam' => 'S1',
+            'student_id' => $member->id,
+            'pass' => 1,
+            'questions' => 40,
+            'time_mins' => 60,
+            'passmark' => 75,
+            'correct' => 35,
+            'started' => now()->subDay(),
+            'submitted' => 1,
+            'submitted_time' => now()->subDay(),
+        ]);
+    }
+
+    /**
+     * Simulate a student who was reminded instead of invited when an earlier seminar was filled.
+     */
+    private function remindAtAnEarlierSeminar(WaitingListAccount $waitingListAccount): WaitingListTheoryReminder
+    {
+        $earlierSeminar = Seminar::factory()->create([
+            'waiting_list_id' => $this->seminar->waiting_list_id,
+            'capacity' => 5,
+            'created_by' => $this->privacc->id,
+        ]);
+
+        return WaitingListTheoryReminder::create([
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'account_id' => $waitingListAccount->account_id,
+            'seminar_id' => $earlierSeminar->id,
+            'reminded_at' => now()->subDays(7),
+        ]);
     }
 
     #[Test]
@@ -885,7 +913,6 @@ class SeminarInvitationServiceTest extends TestCase
             'waiting_list_account_id' => $waitingListAccount->id,
             'account_id' => $waitingListAccount->account_id,
             'seminar_id' => $this->seminar->id,
-            'status' => TheoryExamReminderStatus::Pending->value,
         ]);
 
         Notification::assertSentTo(
@@ -895,7 +922,7 @@ class SeminarInvitationServiceTest extends TestCase
     }
 
     #[Test]
-    public function top_up_does_not_send_a_student_more_than_one_reminder(): void
+    public function top_up_does_not_remind_or_remove_a_student_twice_for_the_same_seminar(): void
     {
         $this->setUpSeminar(5, true);
         $waitingListAccount = $this->addToWaitingList(false);
@@ -904,11 +931,116 @@ class SeminarInvitationServiceTest extends TestCase
         $this->service->topUpAutomaticInvitations($this->seminar);
         $this->service->topUpAutomaticInvitations($this->seminar->fresh());
 
-        $this->assertSame(1, WaitingListTheoryReminder::query()->count());
         $this->assertSame(
             1,
             WaitingListTheoryReminder::query()->where('waiting_list_account_id', $waitingListAccount->id)->count()
         );
+        $this->assertNull($waitingListAccount->fresh()->deleted_at);
         Notification::assertSentTimes(SeminarTheoryExamReminderNotification::class, 1);
+    }
+
+    #[Test]
+    public function top_up_rolls_back_the_reminder_when_the_notification_fails(): void
+    {
+        $this->setUpSeminar(5, true);
+        $waitingListAccount = $this->addToWaitingList(false);
+        $this->seminar = $this->seminar->fresh();
+
+        // Send for real so that the mail failure aborts the reminder transaction.
+        $this->app->forgetInstance(ChannelManager::class);
+        Notification::clearResolvedInstance(ChannelManager::class);
+        Mail::shouldReceive('mailer')->andThrow(new RuntimeException('Mail failed'));
+
+        try {
+            $this->service->topUpAutomaticInvitations($this->seminar);
+            $this->fail('Expected the notification failure to be thrown.');
+        } catch (RuntimeException $exception) {
+            $this->assertSame('Mail failed', $exception->getMessage());
+        }
+
+        $this->assertSame(
+            0,
+            WaitingListTheoryReminder::query()->where('waiting_list_account_id', $waitingListAccount->id)->count()
+        );
+    }
+
+    #[Test]
+    public function top_up_does_not_remove_a_student_when_the_reminder_has_no_seminar(): void
+    {
+        $this->setUpSeminar(5, true);
+        $waitingListAccount = $this->addToWaitingList(false);
+
+        // A reminder whose seminar has since been deleted has no seminar to compare against.
+        $this->remindAtAnEarlierSeminar($waitingListAccount)->update(['seminar_id' => null]);
+        $this->seminar = $this->seminar->fresh();
+
+        $this->service->topUpAutomaticInvitations($this->seminar);
+
+        $this->assertNull($waitingListAccount->fresh()->deleted_at);
+        $this->assertSame(
+            1,
+            WaitingListTheoryReminder::query()->where('waiting_list_account_id', $waitingListAccount->id)->count()
+        );
+    }
+
+    #[Test]
+    public function top_up_removes_students_who_were_reminded_for_an_earlier_seminar_and_still_have_not_passed(): void
+    {
+        $this->setUpSeminar(5, true);
+        $waitingListAccount = $this->addToWaitingList(false);
+        $this->remindAtAnEarlierSeminar($waitingListAccount);
+        $this->seminar = $this->seminar->fresh();
+
+        $result = $this->service->topUpAutomaticInvitations($this->seminar);
+
+        $this->assertSame(0, $result);
+        $this->assertDatabaseMissing('training_seminar_invitations', [
+            'seminar_id' => $this->seminar->id,
+            'account_id' => $waitingListAccount->account_id,
+        ]);
+
+        $removed = $waitingListAccount->fresh();
+        $this->assertNotNull($removed->deleted_at);
+        $this->assertEquals(RemovalReason::SeminarTheoryExamNotPassed, $removed->removal_type);
+    }
+
+    #[Test]
+    public function top_up_invites_students_who_were_reminded_for_an_earlier_seminar_and_have_now_passed(): void
+    {
+        $this->setUpSeminar(5, true);
+        $waitingListAccount = $this->addToWaitingList(false);
+        $this->remindAtAnEarlierSeminar($waitingListAccount);
+        $this->passTheoryExam($waitingListAccount);
+        $this->seminar = $this->seminar->fresh();
+
+        $result = $this->service->topUpAutomaticInvitations($this->seminar);
+
+        $this->assertSame(1, $result);
+        $this->assertDatabaseHas('training_seminar_invitations', [
+            'seminar_id' => $this->seminar->id,
+            'account_id' => $waitingListAccount->account_id,
+            'status' => SeminarInvitationStatus::Sent->value,
+        ]);
+        $this->assertNull($waitingListAccount->fresh()->deleted_at);
+    }
+
+    #[Test]
+    public function top_up_keeps_reminded_students_out_of_the_seminar_they_were_reminded_for(): void
+    {
+        $this->setUpSeminar(5, true);
+        $waitingListAccount = $this->addToWaitingList(false);
+        $this->seminar = $this->seminar->fresh();
+
+        $this->service->topUpAutomaticInvitations($this->seminar);
+
+        // Passing the exam afterwards does not earn them a place at this seminar.
+        $this->passTheoryExam($waitingListAccount);
+        $this->service->topUpAutomaticInvitations($this->seminar->fresh());
+
+        $this->assertDatabaseMissing('training_seminar_invitations', [
+            'seminar_id' => $this->seminar->id,
+            'account_id' => $waitingListAccount->account_id,
+        ]);
+        $this->assertNull($waitingListAccount->fresh()->deleted_at);
     }
 }

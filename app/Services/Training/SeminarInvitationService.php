@@ -7,17 +7,18 @@ use App\Models\Mship\Account;
 use App\Models\Training\Seminar\Seminar;
 use App\Models\Training\Seminar\SeminarAttendee;
 use App\Models\Training\Seminar\SeminarInvitation;
+use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\Removal;
 use App\Models\Training\WaitingList\RemovalReason;
 use App\Models\Training\WaitingList\WaitingListAccount;
+use App\Models\Training\WaitingList\WaitingListTheoryReminder;
 use App\Notifications\Training\SeminarInvitationNotification;
+use App\Notifications\Training\SeminarTheoryExamReminderNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class SeminarInvitationService
 {
-    public function __construct(private SeminarTheoryExamReminderService $theoryExamReminders) {}
-
     public function topUpAutomaticInvitations(Seminar $seminar): int
     {
         if (! $seminar->automatic_invitations_enabled || $seminar->isSendingCutoffReached()) {
@@ -56,7 +57,7 @@ class SeminarInvitationService
             }
 
             if (! $waitingListAccount->theory_exam_passed) {
-                $this->theoryExamReminders->sendReminder($waitingListAccount, $seminar);
+                $this->handleMissingTheoryExam($seminar, $waitingList, $waitingListAccount);
 
                 continue;
             }
@@ -66,6 +67,46 @@ class SeminarInvitationService
         }
 
         return $invited;
+    }
+
+    private function handleMissingTheoryExam(Seminar $seminar, WaitingList $waitingList, WaitingListAccount $waitingListAccount): void
+    {
+        $reminder = $waitingListAccount->theoryReminder;
+
+        if ($reminder !== null) {
+            if ($reminder->isForAnotherSeminar($seminar->id)) {
+                $this->removeForMissingTheoryExam($waitingList, $waitingListAccount);
+            }
+
+            return;
+        }
+
+        if (! $waitingList->cts_theory_exam_level) {
+            return;
+        }
+
+        DB::transaction(function () use ($seminar, $waitingListAccount): void {
+            $reminder = WaitingListTheoryReminder::create([
+                'waiting_list_account_id' => $waitingListAccount->id,
+                'account_id' => $waitingListAccount->account_id,
+                'seminar_id' => $seminar->id,
+                'reminded_at' => now(),
+            ]);
+
+            $waitingListAccount->account->notify(new SeminarTheoryExamReminderNotification($reminder));
+        });
+    }
+
+    private function removeForMissingTheoryExam(WaitingList $waitingList, WaitingListAccount $waitingListAccount): void
+    {
+        if (! $waitingList->includesAccount($waitingListAccount->account_id)) {
+            return;
+        }
+
+        $waitingList->removeFromWaitingList(
+            $waitingListAccount->account,
+            new Removal(RemovalReason::SeminarTheoryExamNotPassed, null)
+        );
     }
 
     public function createInvitation(Seminar $seminar, Account $account, ?int $waitingListAccountId = null): SeminarInvitation

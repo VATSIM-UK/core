@@ -17,7 +17,7 @@ enum RemovalReason: string
     case SeminarNoResponse = 'seminar_no_response';
     case SeminarTwoCannotAttend = 'seminar_two_cannot_attend';
     case SeminarNotInterested = 'seminar_not_interested';
-    case SeminarTheoryExamNotAttempted = 'seminar_theory_exam_not_attempted';
+    case SeminarTheoryExamNotPassed = 'seminar_theory_exam_not_passed';
     case Other = 'other';
 
     public function label(): string
@@ -36,7 +36,7 @@ enum RemovalReason: string
             self::SeminarNoResponse => 'Seminar invitation not responded to',
             self::SeminarTwoCannotAttend => 'Seminar invitation cannot-attend twice',
             self::SeminarNotInterested => 'Seminar invitation marked not interested',
-            self::SeminarTheoryExamNotAttempted => 'Seminar theory exam not attempted',
+            self::SeminarTheoryExamNotPassed => 'Theory exam not passed after reminder',
             self::Other => 'Other (please specify)',
         };
     }
