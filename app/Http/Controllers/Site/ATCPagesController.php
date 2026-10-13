@@ -196,12 +196,4 @@ class ATCPagesController extends \App\Http\Controllers\BaseController
 
         return $this->viewMake('site.atc.mentor');
     }
-
-    public function viewBookings()
-    {
-        $this->setTitle('Bookings');
-        $this->addBreadcrumb('Bookings', route('site.atc.bookings'));
-
-        return $this->viewMake('site.atc.bookings');
-    }
 }
