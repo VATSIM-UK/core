@@ -38,8 +38,9 @@ class ATCPagesTest extends TestCase
     }
 
     #[Test]
-    public function test_it_loads_the_bookings_page()
+    public function test_the_bookings_page_redirects_to_the_division_policy()
     {
-        $this->get(route('site.atc.bookings'))->assertOk();
+        $this->get(route('site.atc.bookings'))
+            ->assertRedirect(route('site.policy.division'));
     }
 }

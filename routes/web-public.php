@@ -19,7 +19,7 @@ Route::group([
         Route::get('/endorsements')->uses('ATCPagesController@viewEndorsements')->name('endorsements');
         Route::get('/heathrow')->uses('ATCPagesController@viewHeathrow')->name('heathrow');
         Route::get('/becoming-a-mentor')->uses('ATCPagesController@viewBecomingAMentor')->name('mentor');
-        Route::get('/bookings')->uses('ATCPagesController@viewBookings')->name('bookings');
+        Route::redirect('/bookings', '/policy/division-policy', 301)->name('bookings');
     });
 
     Route::group([
