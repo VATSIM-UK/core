@@ -1045,6 +1045,14 @@ class SeminarInvitationServiceTest extends TestCase
         $removed = $waitingListAccount->fresh();
         $this->assertNotNull($removed->deleted_at);
         $this->assertEquals(RemovalReason::SeminarTheoryExamNotPassed, $removed->removal_type);
+
+        // The member's account is left with a note explaining the removal.
+        $this->assertDatabaseHas('mship_account_note', [
+            'account_id' => $waitingListAccount->account_id,
+            'content' => 'Member was reminded on '
+                .now()->subDays(7)->format('d/m/Y')
+                .' that the S1 theory exam must be passed before the next seminar, and has been removed from the waiting list as it has still not been passed.',
+        ]);
     }
 
     #[Test]

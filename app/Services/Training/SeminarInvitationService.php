@@ -76,7 +76,7 @@ class SeminarInvitationService
 
         if ($reminder !== null) {
             if ($reminder->isForAnotherSeminar($seminar->id)) {
-                $this->removeForMissingTheoryExam($waitingList, $waitingListAccount);
+                $this->removeForMissingTheoryExam($reminder, $waitingList, $waitingListAccount);
             }
 
             return;
@@ -98,15 +98,23 @@ class SeminarInvitationService
         });
     }
 
-    private function removeForMissingTheoryExam(WaitingList $waitingList, WaitingListAccount $waitingListAccount): void
+    private function removeForMissingTheoryExam(WaitingListTheoryReminder $reminder, WaitingList $waitingList, WaitingListAccount $waitingListAccount): void
     {
         if (! $waitingList->includesAccount($waitingListAccount->account_id)) {
             return;
         }
 
+        $account = $waitingListAccount->account;
+
         $waitingList->removeFromWaitingList(
-            $waitingListAccount->account,
+            $account,
             new Removal(RemovalReason::SeminarTheoryExamNotPassed, null)
+        );
+
+        $account->addNote(
+            'training',
+            "Member was reminded on {$reminder->reminded_at->format('d/m/Y')} that the {$waitingList->cts_theory_exam_level} theory exam "
+            .'must be passed before the next seminar, and has been removed from the waiting list as it has still not been passed.'
         );
     }
 
