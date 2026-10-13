@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -110,6 +111,11 @@ class WaitingListAccount extends Model
         return $this->hasMany(WaitingListRetentionCheck::class, 'waiting_list_account_id');
     }
 
+    public function theoryReminder(): HasOne
+    {
+        return $this->hasOne(WaitingListTheoryReminder::class, 'waiting_list_account_id');
+    }
+
     public function trainingPlaceOffers(): HasMany
     {
         return $this->hasMany(TrainingPlaceOffer::class);
@@ -189,5 +195,10 @@ class WaitingListAccount extends Model
         return $this->trainingPlaceOffers()
             ->where('status', TrainingPlaceOfferStatus::Pending->value)
             ->exists();
+    }
+
+    public function wasRemindedForSeminar(int $seminarId): bool
+    {
+        return (bool) $this->theoryReminder?->isForSeminar($seminarId);
     }
 }
