@@ -16,7 +16,7 @@
     <p>This ticket counts as your first attempt at attending a seminar. If, when we are planning the next seminar, you
         are found to have not passed the theory exam, you will have your place on the OBS &gt; S1 Waiting List removed.</p>
 
-    <p>If you have any questions, please feel free to open a ticket in VATSIM <a href="https://helpdesk.vatsim.uk">UK's
+    <p>If you have any questions, please feel free to open a ticket in <a href="https://helpdesk.vatsim.uk">VATSIM UK's
             helpdesk</a>.</p>
 
     <p>Best Regards,<br>The New Controller Training Group Team</p>
