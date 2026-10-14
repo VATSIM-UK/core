@@ -52,11 +52,18 @@ class MentorInactivityService
      */
     public function isInactive(?Carbon $lastMentoredAt, ?Carbon $assignedAt = null): bool
     {
-        if ($lastMentoredAt !== null) {
-            return $lastMentoredAt->lt($this->cutoff());
-        }
+        $reference = match (true) {
+            // Never mentored in this group
+            $lastMentoredAt === null => $assignedAt,
+            // Assigned date unknown
+            $assignedAt === null => $lastMentoredAt,
+            // Permissions regranted at some point after their last session, so they should be given another 6 months of grace
+            $assignedAt->greaterThan($lastMentoredAt) => $assignedAt,
+            // Mentored since being assigned, so the session is the later date.
+            default => $lastMentoredAt,
+        };
 
-        return $assignedAt === null || $assignedAt->lt($this->cutoff());
+        return $reference === null || $reference->lt($this->cutoff());
     }
 
     /**

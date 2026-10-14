@@ -84,6 +84,17 @@ class MentorInactivityServiceTest extends TestCase
     }
 
     #[Test]
+    public function it_does_not_flag_a_regranted_mentor_whose_older_sessions_are_stale(): void
+    {
+        $mentor = $this->createMentor();
+        $this->assignMentor($mentor, 'S2 Training', ['EGREGRA_TWR']);
+        $this->createMentoringSession($mentor, 'EGREGRA_TWR', now()->subMonths(9));
+        $this->ageMentorAssignment($mentor, now()->subDay());
+
+        $this->assertCount(0, $this->service->inactiveMentoringAssignments());
+    }
+
+    #[Test]
     public function it_does_not_flag_a_mentor_assigned_within_the_last_six_months_who_has_not_mentored_yet(): void
     {
         $mentor = $this->createMentor();
@@ -108,6 +119,7 @@ class MentorInactivityServiceTest extends TestCase
     {
         $mentor = $this->createMentor();
         $this->assignMentor($mentor, 'S2 Training', ['EGTEST_TWR']);
+        $this->ageMentorAssignment($mentor, now()->subMonths(6)->subDay());
         $this->createMentoringSession($mentor, 'EGTEST_TWR', now()->subMonths(6)->subDay());
 
         $assignments = $this->service->inactiveMentoringAssignments();

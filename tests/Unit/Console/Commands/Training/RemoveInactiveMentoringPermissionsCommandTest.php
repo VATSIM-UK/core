@@ -82,6 +82,24 @@ class RemoveInactiveMentoringPermissionsCommandTest extends TestCase
     }
 
     #[Test]
+    public function it_does_not_touch_a_regranted_mentor_whose_older_sessions_are_stale(): void
+    {
+        $mentor = $this->createMentor();
+        $position = $this->assignMentor($mentor, 'S2 Training', ['EGCMDREG_TWR']);
+        $this->createMentoringSession($mentor, 'EGCMDREG_TWR', now()->subMonths(9));
+        $this->ageMentorAssignment($mentor, now()->subDay());
+
+        $this->artisan('training:remove-inactive-mentoring-permissions')->assertExitCode(0);
+
+        $this->assertDatabaseHas('mentor_training_positions', [
+            'account_id' => $mentor->id,
+            'mentorable_id' => $position->id,
+        ]);
+
+        Notification::assertNotSentTo($mentor, MentoringPermissionsRemovedForInactivityNotification::class);
+    }
+
+    #[Test]
     public function it_does_not_touch_exempt_training_staff(): void
     {
         $mentor = $this->createMentor();
