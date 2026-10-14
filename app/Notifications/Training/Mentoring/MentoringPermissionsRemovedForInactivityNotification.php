@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Notifications\Training\Mentoring;
 
-use App\Models\Mship\Account;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;

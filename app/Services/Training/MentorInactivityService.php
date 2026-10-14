@@ -47,9 +47,16 @@ class MentorInactivityService
         return $account->hasRole(self::EXEMPT_STAFF_ROLES);
     }
 
-    public function isInactive(?Carbon $lastMentoredAt): bool
+    /**
+     * Whether a mentor has to be considered inactive in a training group.
+     */
+    public function isInactive(?Carbon $lastMentoredAt, ?Carbon $assignedAt = null): bool
     {
-        return $lastMentoredAt === null || $lastMentoredAt->lt($this->cutoff());
+        if ($lastMentoredAt !== null) {
+            return $lastMentoredAt->lt($this->cutoff());
+        }
+
+        return $assignedAt === null || $assignedAt->lt($this->cutoff());
     }
 
     /**
@@ -63,15 +70,35 @@ class MentorInactivityService
             ->get()
             ->reject(fn (Account $account) => $this->isExempt($account))
             ->flatMap(function (Account $account) {
+                $assignedAt = $this->assignedAtByCategory($account);
+
                 return collect($this->categoriesForAccount($account))
                     ->map(fn (string $category) => [
                         'account' => $account,
                         'category' => $category,
+                        'assigned_at' => $assignedAt[$category] ?? null,
                         'last_mentored_at' => $this->permissionService->getLastMentoredDate($account, $category),
                     ])
-                    ->filter(fn (array $assignment) => $this->isInactive($assignment['last_mentored_at']));
+                    ->filter(fn (array $assignment) => $this->isInactive($assignment['last_mentored_at'], $assignment['assigned_at']));
             })
             ->values();
+    }
+
+    /**
+     * The date the mentor was first granted mentoring rights in each of their
+     * training groups.
+     */
+    private function assignedAtByCategory(Account $account): array
+    {
+        return $account->mentorTrainingPositions
+            ->map(fn (MentorTrainingPosition $permission) => [
+                'category' => $this->categoryForMentorable($permission->mentorable),
+                'assigned_at' => $permission->created_at,
+            ])
+            ->filter(fn (array $permission) => $permission['category'] !== null && $permission['assigned_at'] !== null)
+            ->groupBy('category')
+            ->map(fn (Collection $permissions) => $permissions->min('assigned_at'))
+            ->all();
     }
 
     public function categoriesForAccount(Account $account): array
@@ -99,7 +126,7 @@ class MentorInactivityService
 
             $this->permissionService->revokeFromCategory($account, $category);
 
-            $account->notify(new MentoringPermissionsRemovedForInactivityNotification($account, $category));
+            $account->notify(new MentoringPermissionsRemovedForInactivityNotification($category));
 
             Log::info('Inactive mentoring permissions removed', [
                 'account_id' => $account->id,

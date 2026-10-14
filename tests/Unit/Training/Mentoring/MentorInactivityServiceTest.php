@@ -17,6 +17,7 @@ use App\Notifications\Training\Mentoring\MentoringPermissionsRemovedForInactivit
 use App\Services\Training\MentorInactivityService;
 use App\Services\Training\MentorPermissionService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Role;
@@ -43,10 +44,11 @@ class MentorInactivityServiceTest extends TestCase
     }
 
     #[Test]
-    public function it_flags_a_mentor_who_has_never_mentored_as_inactive(): void
+    public function it_flags_a_mentor_who_has_never_mentored_within_six_months_of_being_assigned(): void
     {
         $mentor = $this->createMentor();
         $this->assignMentor($mentor, 'S2 Training', ['EGTEST_TWR']);
+        $this->ageMentorAssignment($mentor, now()->subMonths(6)->subDay());
 
         $assignments = $this->service->inactiveMentoringAssignments();
 
@@ -54,6 +56,41 @@ class MentorInactivityServiceTest extends TestCase
         $this->assertSame($mentor->id, $assignments->first()['account']->id);
         $this->assertSame('S2 Training', $assignments->first()['category']);
         $this->assertNull($assignments->first()['last_mentored_at']);
+    }
+
+    #[Test]
+    public function it_flags_a_mentor_whose_assignment_date_is_unknown(): void
+    {
+        $mentor = $this->createMentor();
+        $this->assignMentor($mentor, 'S2 Training', ['EGLEGACY_TWR']);
+
+        DB::table('mentor_training_positions')
+            ->where('account_id', $mentor->id)
+            ->update(['created_at' => null]);
+
+        $assignments = $this->service->inactiveMentoringAssignments();
+
+        $this->assertCount(1, $assignments);
+        $this->assertNull($assignments->first()['assigned_at']);
+    }
+
+    #[Test]
+    public function it_does_not_flag_a_newly_assigned_mentor_who_has_not_mentored_yet(): void
+    {
+        $mentor = $this->createMentor();
+        $this->assignMentor($mentor, 'S2 Training', ['EGNEW_TWR']);
+
+        $this->assertCount(0, $this->service->inactiveMentoringAssignments());
+    }
+
+    #[Test]
+    public function it_does_not_flag_a_mentor_assigned_within_the_last_six_months_who_has_not_mentored_yet(): void
+    {
+        $mentor = $this->createMentor();
+        $this->assignMentor($mentor, 'S2 Training', ['EGGRACE_TWR']);
+        $this->ageMentorAssignment($mentor, now()->subMonths(5));
+
+        $this->assertCount(0, $this->service->inactiveMentoringAssignments());
     }
 
     #[Test]
@@ -97,6 +134,7 @@ class MentorInactivityServiceTest extends TestCase
         $mentor = $this->createMentor();
         $this->assignMentor($mentor, 'S2 Training', ['EGTEST_TWR']);
         $this->assignMentor($mentor, 'S3 Training', ['EGTEST_APP']);
+        $this->ageMentorAssignment($mentor, now()->subMonths(6)->subDay());
         $this->createMentoringSession($mentor, 'EGTEST_APP', now()->subMonth());
 
         $assignments = $this->service->inactiveMentoringAssignments();
@@ -120,6 +158,8 @@ class MentorInactivityServiceTest extends TestCase
         $mentor = $this->createMentor();
         $this->assignMentor($mentor, 'S3 Training', ['EGTEST_APP']);
 
+        $this->ageMentorAssignment($mentor, now()->subMonths(6)->subDay());
+
         Role::firstOrCreate(['name' => 'ATC APP Instructor', 'guard_name' => 'web']);
         $mentor->assignRole('ATC APP Instructor');
 
@@ -132,6 +172,8 @@ class MentorInactivityServiceTest extends TestCase
         $mentor = $this->createMentor();
         $this->assignMentor($mentor, 'S2 Training', ['EGTEST_TWR']);
 
+        $this->ageMentorAssignment($mentor, now()->subMonths(6)->subDay());
+
         Role::firstOrCreate(['name' => 'ATC Training Director', 'guard_name' => 'web']);
         $mentor->assignRole('ATC Training Director');
 
@@ -143,6 +185,7 @@ class MentorInactivityServiceTest extends TestCase
     {
         $mentor = $this->createMentor();
         $position = $this->assignMentor($mentor, 'S2 Training', ['EGREM_TWR']);
+        $this->ageMentorAssignment($mentor, now()->subMonths(6)->subDay());
 
         $ctsValidation = PositionValidation::query()
             ->where('member_id', $mentor->member->id)
@@ -196,6 +239,8 @@ class MentorInactivityServiceTest extends TestCase
         $mentor = $this->createMentor();
         $position = $this->assignMentor($mentor, 'S3 Training', ['EGSTAFF_APP']);
 
+        $this->ageMentorAssignment($mentor, now()->subMonths(6)->subDay());
+
         Role::firstOrCreate(['name' => 'ATC APP Instructor', 'guard_name' => 'web']);
         $mentor->assignRole('ATC APP Instructor');
 
@@ -207,6 +252,17 @@ class MentorInactivityServiceTest extends TestCase
         ]);
 
         Notification::assertNotSentTo($mentor, MentoringPermissionsRemovedForInactivityNotification::class);
+    }
+
+    /**
+     * Backdate the mentoring rights the mentor currently holds, as the inactivity
+     * grace period is measured from the date they were assigned those rights.
+     */
+    private function ageMentorAssignment(Account $mentor, \Carbon\Carbon $assignedAt): void
+    {
+        MentorTrainingPosition::query()
+            ->where('account_id', $mentor->id)
+            ->update(['created_at' => $assignedAt]);
     }
 
     private function createMentor(): Account

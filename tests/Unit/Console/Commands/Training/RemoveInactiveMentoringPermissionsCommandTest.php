@@ -36,6 +36,7 @@ class RemoveInactiveMentoringPermissionsCommandTest extends TestCase
     {
         $mentor = $this->createMentor();
         $position = $this->assignMentor($mentor, 'S2 Training', ['EGCMDTWR_TWR']);
+        $this->ageMentorAssignment($mentor, now()->subMonths(6)->subDay());
 
         $this->artisan('training:remove-inactive-mentoring-permissions')->assertExitCode(0);
 
@@ -65,10 +66,27 @@ class RemoveInactiveMentoringPermissionsCommandTest extends TestCase
     }
 
     #[Test]
+    public function it_does_not_touch_newly_assigned_mentors_without_sessions(): void
+    {
+        $mentor = $this->createMentor();
+        $position = $this->assignMentor($mentor, 'S2 Training', ['EGCMDNEW_TWR']);
+
+        $this->artisan('training:remove-inactive-mentoring-permissions')->assertExitCode(0);
+
+        $this->assertDatabaseHas('mentor_training_positions', [
+            'account_id' => $mentor->id,
+            'mentorable_id' => $position->id,
+        ]);
+
+        Notification::assertNotSentTo($mentor, MentoringPermissionsRemovedForInactivityNotification::class);
+    }
+
+    #[Test]
     public function it_does_not_touch_exempt_training_staff(): void
     {
         $mentor = $this->createMentor();
         $position = $this->assignMentor($mentor, 'S3 Training', ['EGCMDSTF_APP']);
+        $this->ageMentorAssignment($mentor, now()->subMonths(6)->subDay());
 
         Role::firstOrCreate(['name' => 'ATC Training Manager', 'guard_name' => 'web']);
         $mentor->assignRole('ATC Training Manager');
@@ -81,6 +99,17 @@ class RemoveInactiveMentoringPermissionsCommandTest extends TestCase
         ]);
 
         Notification::assertNotSentTo($mentor, MentoringPermissionsRemovedForInactivityNotification::class);
+    }
+
+    /**
+     * Backdate the mentoring rights the mentor currently holds, as the inactivity
+     * grace period is measured from the date they were assigned those rights.
+     */
+    private function ageMentorAssignment(Account $mentor, \Carbon\Carbon $assignedAt): void
+    {
+        MentorTrainingPosition::query()
+            ->where('account_id', $mentor->id)
+            ->update(['created_at' => $assignedAt]);
     }
 
     private function createMentor(): Account
