@@ -33,7 +33,7 @@ class MentorInactivityService
 
     public function cutoff(): Carbon
     {
-        return now()->subMonths((int) config('training.mentoring.inactivity_months', 6));
+        return now()->subMonths(6);
     }
 
     public function isExempt(Account $account): bool
