@@ -25,14 +25,8 @@ class MentorInactivityService
         'ATC Division Instructor',
         'ATC Instructor',
         'Training Assistant',
-        'ATC NC Instructor',
-        'ATC TWR Instructor',
-        'ATC APP Instructor',
-        'ATC Enroute Instructor',
-        'ATC Heathrow Instructor',
         'Pilot Training Director',
         'Pilot Training Manager',
-        'Pilot Instructor',
     ];
 
     public function __construct(private MentorPermissionService $permissionService) {}
@@ -44,7 +38,11 @@ class MentorInactivityService
 
     public function isExempt(Account $account): bool
     {
-        return $account->hasRole(self::EXEMPT_STAFF_ROLES);
+        return $account->hasRole(array_merge(
+            self::EXEMPT_STAFF_ROLES,
+            array_values(MentorPermissionService::ATC_TGI_CATEGORY_ROLE_MAP),
+            array_values(MentorPermissionService::PILOT_TGI_CATEGORY_ROLE_MAP),
+        ));
     }
 
     /**
