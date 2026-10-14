@@ -16,7 +16,7 @@ class MentoringPermissionsRemovedForInactivityNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(private Account $account, private string $category) {}
+    public function __construct(private string $category) {}
 
     /**
      * Get the notification's delivery channels.
