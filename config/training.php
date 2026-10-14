@@ -5,6 +5,9 @@ return [
     'mentoring' => [
         'no_show_delay_minutes' => (int) env('TRAINING_MENTORING_NO_SHOW_DELAY_MINUTES', 5),
         'short_notice_hours' => (int) env('TRAINING_MENTORING_SHORT_NOTICE_HOURS', 24),
+        // Mentors who have not mentored in a training group for this many months have
+        // their mentoring permissions within that group automatically removed.
+        'inactivity_months' => (int) env('TRAINING_MENTORING_INACTIVITY_MONTHS', 6),
     ],
 
     'availability_warning_days' => [
