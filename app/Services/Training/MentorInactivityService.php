@@ -11,7 +11,6 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Notifications\Training\Mentoring\MentoringPermissionsRemovedForInactivityNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class MentorInactivityService
 {
@@ -133,7 +132,7 @@ class MentorInactivityService
 
             $account->notify(new MentoringPermissionsRemovedForInactivityNotification($category));
 
-            Log::info('Inactive mentoring permissions removed', [
+            audit('Inactive mentoring permissions removed', [
                 'account_id' => $account->id,
                 'category' => $category,
                 'last_mentored_at' => $assignment['last_mentored_at']?->toDateString(),
