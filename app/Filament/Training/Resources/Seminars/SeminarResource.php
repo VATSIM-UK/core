@@ -114,10 +114,6 @@ class SeminarResource extends Resource
             Section::make('Seminar Details')
                 ->schema([
                     TextEntry::make('name'),
-                    TextEntry::make('waitingList.name')->label('Waiting List'),
-                ])->columns(2),
-            Section::make('Schedule & Settings')
-                ->schema([
                     TextEntry::make('date')->date('d/m/Y'),
                     TextEntry::make('time_range')
                         ->label('Time')
@@ -133,8 +129,7 @@ class SeminarResource extends Resource
                             return "{$from} - {$to}";
                         }),
                     TextEntry::make('capacity'),
-                    TextEntry::make('invitation_expiry_hours')->label('Invitation Expiry (Hours)'),
-                ])->columns(4),
+                ])->columns(4)->columnSpanFull(),
         ]);
     }
 

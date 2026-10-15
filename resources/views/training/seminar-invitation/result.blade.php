@@ -6,14 +6,13 @@
 		<div class="panel-body">
 			@if ($result === 'accepted')
 				<div class="alert alert-success">
-					<strong>You're all set!</strong> Your place at the <strong>{{ $invitation->seminar->name }}</strong> has been
-					confirmed.
-					We look forward to seeing you on {{ $invitation->seminar->date->format('j F Y') }}.
+					<strong>You're all set!</strong> Your invitation to the <strong>{{ $invitation->seminar->name }}</strong> has been
+					accepted.
+					We look forward to seeing you on {{ $invitation->seminar->date->format('l jS \o\f F Y') }}.
 				</div>
 			@elseif($result === 'not_interested')
 				<div class="alert alert-danger">
-					<strong>Invitation declined.</strong> You have been removed from the waiting list for
-					<strong>{{ $invitation->seminar->name }}</strong>.
+					<strong>Invitation declined.</strong> You have been removed from the waiting list.
 					If you change your mind, you can rejoin the waiting list <a href="{{ route('mship.waiting-lists.index') }}">here</a>.
 				</div>
 			@elseif($result === 'cannot_attend')
