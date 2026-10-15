@@ -25,6 +25,15 @@
 							<i class="fa fa-plus mr-1 text-[9px]" aria-hidden="true"></i> Book
 						</button>
 					@endauth
+
+					<a href="{{ route('site.policy.division') }}#24-bookings-and-reservations" class="group no-underline!"
+						title="Read section 2.4 of the Division Policy">
+						<span
+							class="inline-flex items-center gap-1 px-2 py-0.5 text-[12px] font-semibold rounded-md bg-amber-400/15 text-amber-200 ring-1 ring-inset ring-amber-300/30 transition-colors group-hover:bg-amber-400/25 group-hover:text-amber-100 group-focus-visible:bg-amber-400/25 group-focus-visible:text-amber-100">
+							<i class="fa fa-book shrink-0 text-[10px]" aria-hidden="true"></i>
+							Bookings must adhere to Division Policy 2.4
+						</span>
+					</a>
 				</div>
 
 				<div class="flex flex-wrap items-center justify-center gap-2 w-full sm:w-auto sm:justify-end sm:ml-auto">
