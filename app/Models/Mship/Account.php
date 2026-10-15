@@ -8,7 +8,6 @@ use App\Jobs\UpdateMember;
 use App\Libraries\Discord;
 use App\Models\Model;
 use App\Models\Mship\Account\Note as AccountNoteData;
-use App\Models\Mship\Concerns\HasAvailabilitySettings;
 use App\Models\Mship\Concerns\HasBans;
 use App\Models\Mship\Concerns\HasCTSAccount;
 use App\Models\Mship\Concerns\HasDiscordAccount;
@@ -84,8 +83,6 @@ use Watson\Rememberable\Rememberable;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sys\Activity> $activityRecent
  * @property-read int|null $activity_recent_count
- * @property-read Account\AvailabilitySetting|null $availabilitySetting
- * @property-read array $availability_defaults
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Account\Ban> $bans
  * @property-read int|null $bans_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Account\Ban> $bansAsInstigator
@@ -232,7 +229,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 {
     use Authenticatable,
         Authorizable,
-        HasAvailabilitySettings,
         HasBans,
         HasCTSAccount,
         HasDiscordAccount,

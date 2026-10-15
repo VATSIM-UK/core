@@ -1,63 +1,30 @@
-<x-filament-panels::page x-data="{}" x-init="$watch('$wire.data.date_range', (value) => {
-    if (value?.start && !value?.end) {
-        $wire.set('data.date_range', { start: value.start, end: value.start })
-    }
-})">
-	<style>
-		.availability-grid {
-			display: grid;
-			grid-template-columns: 1fr;
-			gap: 2rem;
-			align-items: start;
-		}
+<x-filament-panels::page>
+	<x-filament::section>
+		<x-slot name="heading">My Availability</x-slot>
+		<x-slot name="description">
+			All times are in Zulu.
+		</x-slot>
 
-		@media (min-width: 1024px) {
-			.availability-grid {
-				grid-template-columns: 1fr 1fr;
-			}
-		}
+		<div class="mb-4 flex items-center gap-2">
+			<x-filament::icon-button icon="heroicon-m-chevron-left" color="gray" size="sm" label="Previous week"
+				wire:click="previousWeek" :disabled="$weekOffset === 0" />
 
-		.availability-col {
-			min-width: 0;
-		}
-	</style>
+			<span class="text-sm font-medium text-gray-700 dark:text-gray-200">
+				{{ $this->visibleWeekRange() }}
+			</span>
 
-	<div class="availability-grid">
-		<div class="availability-col">
-			<x-filament::section>
-				<x-slot name="heading">Add Availability</x-slot>
-				<x-slot name="description">
-					All times are in Zulu.
-				</x-slot>
-				<x-slot name="afterHeader">
-					<x-filament::icon-button color="gray" icon="heroicon-o-cog-6-tooth" label="Change default times"
-						tooltip="Change default times" wire:click="mountAction('defaultAvailabilityTimes')" />
-				</x-slot>
-
-				{{ $this->form }}
-
-				<div class="mt-6">
-					<x-filament::button wire:click="create" wire:loading.attr="disabled" size="lg" class="w-full"
-						icon="heroicon-m-plus">
-						<span wire:loading.remove wire:target="create">Add Availability</span>
-						<span wire:loading wire:target="create">Saving…</span>
-					</x-filament::button>
-				</div>
-			</x-filament::section>
+			<x-filament::icon-button icon="heroicon-m-chevron-right" color="gray" size="sm" label="Next week"
+				wire:click="nextWeek" />
 		</div>
-		<div class="availability-col">
-			<x-filament::section>
-				<x-slot name="heading">My Availability</x-slot>
-				<x-slot name="description">
-					All slots are shown in Zulu.
-				</x-slot>
 
-				{{ $this->table }}
-			</x-filament::section>
+		{{ $this->form }}
+
+		<div class="mt-4">
+			<x-filament::button wire:click="save">
+				Save availability
+			</x-filament::button>
 		</div>
-	</div>
-	<x-filament-actions::modals />
+	</x-filament::section>
 
 	@livewire(\App\Livewire\Training\MyAcceptedMentoringSessionsTable::class)
-
 </x-filament-panels::page>

@@ -2,40 +2,32 @@
 
 namespace App\Filament\Training\Pages\MyTraining;
 
+use App\Filament\Training\Forms\Components\AvailabilityGrid;
 use App\Filament\Training\Pages\MyTraining\Widgets\MyAvailabilityStats;
-use App\Models\Cts\Availability;
+use App\Livewire\Training\MyAcceptedMentoringSessionsTable;
 use App\Models\Cts\Member;
-use App\Models\Cts\Position;
 use App\Models\Cts\PositionValidation;
-use App\Models\Mship\Account\AvailabilitySetting;
 use App\Models\Training\TrainingPlace\TrainingPlace;
-use App\Services\Training\AvailabilityLogService;
+use App\Services\Training\Availability\AvailabilityPlanner;
 use App\Services\Training\AvailabilityService;
 use Carbon\Carbon;
-use CodeWithKyrian\FilamentDateRange\Forms\Components\DateRangePicker;
 use Filament\Actions\Action;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\EmbeddedSchema;
+use Filament\Schemas\Components\Livewire;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
+use Illuminate\Support\Collection;
+use Livewire\Attributes\Locked;
 
-class MyAvailability extends Page implements HasForms, HasTable
+class MyAvailability extends Page implements HasForms
 {
     use InteractsWithForms;
-    use InteractsWithTable;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
-
-    protected string $view = 'filament.training.pages.my-training.my-availability';
 
     protected static string|\UnitEnum|null $navigationGroup = 'My Training';
 
@@ -45,7 +37,28 @@ class MyAvailability extends Page implements HasForms, HasTable
 
     protected static ?int $navigationSort = 15;
 
+    /** Default visible hours, picked from when sessions actually happen. */
+    public const FROM_HOUR = 8;
+
+    public const TO_HOUR = 22;
+
     public ?array $data = [];
+
+    public int $weekOffset = 0;
+
+    #[Locked]
+    public array $visitedDates = [];
+
+    /** @var array<int, int> The saved row ids the current client state was seeded from. */
+    public array $seededRowIds = [];
+
+    private ?Collection $availabilityRowsCache = null;
+
+    private ?array $seedCache = null;
+
+    private bool $studentIdResolved = false;
+
+    private ?int $studentIdCache = null;
 
     public static function canAccess(): bool
     {
@@ -107,305 +120,335 @@ class MyAvailability extends Page implements HasForms, HasTable
 
     public function mount(): void
     {
-        $this->form->fill($this->getDefaultAvailabilityTimes());
+        $this->visitedDates = $this->weekDates(0);
+
+        $this->availabilityRowsCache = null;
+        $this->seedCache = null;
+
+        $existing = $this->data['availability'] ?? [];
+
+        $this->form->fill([
+            'availability' => $existing ?: $this->savedCells(),
+        ]);
+
+        $this->seededRowIds = $this->seededRowIdsForVisitedDates();
     }
 
-    protected function getDefaultAvailabilityTimes(): array
+    /**
+     * The seven Y-m-d dates of a Monday-based week, offset from the current week.
+     *
+     * @return array<int, string>
+     */
+    public function weekDates(int $offset): array
     {
-        return auth()->user()?->availability_defaults ?? [
-            'from' => AvailabilitySetting::DEFAULT_FROM,
-            'to' => AvailabilitySetting::DEFAULT_TO,
-        ];
+        $start = now()->utc()->startOfWeek()->addWeeks($offset);
+
+        return collect(range(0, 6))
+            ->map(fn (int $i) => $start->copy()->addDays($i)->toDateString())
+            ->all();
     }
 
-    public function defaultAvailabilityTimesAction(): Action
+    /**
+     * @return array<int, string>
+     */
+    public function visibleWeekDates(): array
     {
-        return Action::make('defaultAvailabilityTimes')
-            ->label('Change default times')
-            ->icon('heroicon-o-cog-6-tooth')
-            ->modalHeading('Default availability times')
-            ->modalDescription('These times are pre-filled on the Add Availability form.')
-            ->modalSubmitActionLabel('Save')
-            ->form([
-                Select::make('from')
-                    ->label('From')
-                    ->required()
-                    ->searchable()
-                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
-                    ->options($this->generateTimeOptions())
-                    ->optionsLimit(100),
-
-                Select::make('to')
-                    ->label('To')
-                    ->required()
-                    ->searchable()
-                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
-                    ->options($this->generateTimeOptions())
-                    ->optionsLimit(100),
-            ])
-            ->fillForm(fn () => $this->getDefaultAvailabilityTimes())
-            ->action(function (array $data): void {
-                $user = auth()->user();
-
-                if (! $user) {
-                    return;
-                }
-
-                $start = Carbon::parse($data['from']);
-                $end = Carbon::parse($data['to']);
-
-                if ($start->greaterThan($end)) {
-                    Notification::make()
-                        ->title('The "From" time must be before the "To" time.')
-                        ->danger()
-                        ->send();
-
-                    return;
-                }
-
-                if ($end->lessThanOrEqualTo($start) || ! $this->getAvailabilityService()->meetsMinimumDuration($start, $end)) {
-                    Notification::make()
-                        ->title('Default times must be at least '.AvailabilityService::MINIMUM_SLOT_DURATION_MINUTES.' minutes apart.')
-                        ->danger()
-                        ->send();
-
-                    return;
-                }
-
-                $user->setAvailabilityDefaults($data['from'], $data['to']);
-                $this->form->fill($this->getDefaultAvailabilityTimes());
-
-                Notification::make()->title('Default availability times saved')->success()->send();
-            });
+        return $this->weekDates($this->weekOffset);
     }
 
-    public function form(Schema $form): Schema
+    /**
+     * The visible week as a human-readable range for the week navigation header.
+     */
+    public function visibleWeekRange(): string
     {
-        return $form
-            ->schema([
-                DateRangePicker::make('date_range')
-                    ->label('Date(s)')
-                    ->required()
-                    ->minDate(now()->startOfDay()),
+        $dates = $this->visibleWeekDates();
 
-                Select::make('from')
-                    ->label('From')
-                    ->required()
-                    ->searchable()
-                    ->allowHtml(false)
-                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
-                    ->options($this->generateTimeOptions())
-                    ->optionsLimit(100),
-
-                Select::make('to')
-                    ->label('To')
-                    ->required()
-                    ->searchable()
-                    ->allowHtml(false)
-                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
-                    ->options($this->generateTimeOptions())
-                    ->optionsLimit(100),
-            ])
-            ->statePath('data');
+        return Carbon::parse($dates[0], 'UTC')->toPanelDate().' - '.Carbon::parse($dates[6], 'UTC')->toPanelDate();
     }
 
-    public function create(): void
+    public function nextWeek(): void
     {
-        $data = $this->form->getState();
+        $this->goToWeek($this->weekOffset + 1);
+    }
+
+    public function previousWeek(): void
+    {
+        if ($this->weekOffset === 0) {
+            return;
+        }
+
+        $this->goToWeek($this->weekOffset - 1);
+    }
+
+    /**
+     * Reconcile the painted grid against the saved rows and write the plan.
+     */
+    public function save(): void
+    {
         $studentId = $this->resolveStudentId();
 
         if (! $studentId) {
             return;
         }
 
-        $startDate = Carbon::parse($data['date_range']['start']);
-        $endDate = Carbon::parse($data['date_range']['end']);
+        $plan = app(AvailabilityPlanner::class)->plan(
+            $this->visitedDates,
+            $this->availabilityRows(),
+            $this->data['availability'] ?? [],
+            now()->utc(),
+            $this->seededRowIds,
+        );
 
-        $startTime = Carbon::parse("{$startDate->toDateString()} {$data['from']}", 'UTC');
-        $endTime = Carbon::parse("{$startDate->toDateString()} {$data['to']}", 'UTC');
+        $counts = app(AvailabilityService::class)->applyChanges($studentId, $plan->changes);
 
-        if (! $this->getAvailabilityService()->meetsMinimumDuration($startTime, $endTime)) {
+        $this->notifySave($counts, $plan->skippedShortRuns);
+
+        $this->availabilityRowsCache = null;
+        $this->seedCache = null;
+
+        $this->form->fill(['availability' => $this->savedCells()]);
+
+        $this->seededRowIds = $this->seededRowIdsForVisitedDates();
+    }
+
+    /**
+     * Editable saved cell keys across every date the student has opened.
+     *
+     * @return array<int, string>
+     */
+    public function savedCells(): array
+    {
+        return $this->seed()['cells'];
+    }
+
+    /**
+     * Saved cell keys the grid shows but refuses to paint.
+     *
+     * @return array<int, string>
+     */
+    public function lockedCells(): array
+    {
+        return $this->seed()['lockedCells'];
+    }
+
+    public function hasOvernightSlots(): bool
+    {
+        $from = sprintf('%02d:00', self::FROM_HOUR);
+        $to = sprintf('%02d:00', self::TO_HOUR);
+
+        foreach (array_merge($this->savedCells(), $this->lockedCells()) as $cell) {
+            $time = substr($cell, 11, 5);
+
+            if ($time < $from || $time >= $to) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Saved rows across every visited date, expanded by a day either side so a
+     * row anchored just outside the range can still be matched.
+     *
+     * @return Collection<int, \App\Models\Cts\Availability>
+     */
+    protected function availabilityRows(): Collection
+    {
+        if ($this->availabilityRowsCache !== null) {
+            return $this->availabilityRowsCache;
+        }
+
+        $memberId = $this->resolveStudentId();
+
+        if (! $memberId || $this->visitedDates === []) {
+            return $this->availabilityRowsCache = collect();
+        }
+
+        $from = Carbon::parse(min($this->visitedDates), 'UTC')->subDay();
+        $to = Carbon::parse(max($this->visitedDates), 'UTC')->addDay();
+
+        return $this->availabilityRowsCache = $this->getAvailabilityService()->availabilityRowsFor($memberId, $from, $to);
+    }
+
+    /**
+     * Run the planner's seeding over every visited date, once per request.
+     *
+     * @return array{cells: array<int, string>, lockedCells: array<int, string>}
+     */
+    protected function seed(): array
+    {
+        if ($this->seedCache !== null) {
+            return $this->seedCache;
+        }
+
+        if ($this->resolveStudentId() === null || $this->visitedDates === []) {
+            return $this->seedCache = ['cells' => [], 'lockedCells' => []];
+        }
+
+        return $this->seedCache = app(AvailabilityPlanner::class)->seed($this->visitedDates, $this->availabilityRows(), now()->utc());
+    }
+
+    /**
+     * The ids of every saved row the current client state was derived from. The
+     * planner treats a row outside this set as invisible to the student and never
+     * removes it, so a row added between seeding and saving survives the save.
+     *
+     * @return array<int, int>
+     */
+    private function seededRowIdsForVisitedDates(): array
+    {
+        return $this->availabilityRows()->pluck('id')->all();
+    }
+
+    private function resolveStudentId(): ?int
+    {
+        if ($this->studentIdResolved) {
+            return $this->studentIdCache;
+        }
+
+        $this->studentIdResolved = true;
+
+        return $this->studentIdCache = $this->getAvailabilityService()->resolveMemberId((int) auth()->id());
+    }
+
+    /**
+     * Move to a week, registering its dates and seeding any newly visible saved
+     * cells into state without discarding paint already made.
+     */
+    private function goToWeek(int $offset): void
+    {
+        $this->weekOffset = max(0, $offset);
+
+        $dates = $this->weekDates($this->weekOffset);
+        $newDates = array_values(array_diff($dates, $this->visitedDates));
+
+        $this->visitedDates = array_values(array_unique(array_merge($this->visitedDates, $dates)));
+
+        $this->availabilityRowsCache = null;
+        $this->seedCache = null;
+
+        if ($newDates === []) {
+            return;
+        }
+
+        $newCells = array_values(array_filter(
+            $this->seed()['cells'],
+            fn (string $cell) => in_array(substr($cell, 0, 10), $newDates, true),
+        ));
+
+        $existing = $this->data['availability'] ?? [];
+
+        $this->form->fill([
+            'availability' => array_values(array_unique(array_merge($existing, $newCells))),
+        ]);
+
+        $this->seededRowIds = $this->seededRowIdsForVisitedDates();
+    }
+
+    /**
+     * @param  array{added: int, edited: int, merged: int, removed: int, refused: bool}  $counts
+     */
+    private function notifySave(array $counts, int $skipped): void
+    {
+        if ($counts['refused']) {
             Notification::make()
-                ->title('Availability slots must be at least '.AvailabilityService::MINIMUM_SLOT_DURATION_MINUTES.' minutes long.')
+                ->title('Nothing was saved')
+                ->body('Some of this date changed while you were editing it. Refresh to see the latest availability, then try again.')
                 ->danger()
                 ->send();
 
             return;
         }
 
-        $addedCount = 0;
-        $mergedCount = 0;
+        $parts = [];
 
-        for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
-            $dateString = $date->toDateString();
-
-            $startUtc = Carbon::parse("{$dateString} {$data['from']}", 'UTC');
-            $endUtc = Carbon::parse("{$dateString} {$data['to']}", 'UTC');
-
-            $result = $this->getAvailabilityService()->addOrMergeSlot($studentId, $startUtc, $endUtc);
-
-            match ($result) {
-                'added' => $addedCount++,
-                'merged' => $mergedCount++,
-            };
+        if ($counts['added'] > 0) {
+            $parts[] = $counts['added'].' added';
         }
 
-        if ($addedCount > 0 && $mergedCount > 0) {
-            Notification::make()->title("Added {$addedCount} slot(s) and expanded {$mergedCount} existing slot(s)")->warning()->send();
-        } elseif ($mergedCount > 0) {
-            Notification::make()->title("Expanded {$mergedCount} existing slot(s) to cover the new time(s)")->warning()->send();
+        if ($counts['edited'] > 0) {
+            $parts[] = $counts['edited'].' updated';
+        }
+
+        if ($counts['merged'] > 0) {
+            $parts[] = $counts['merged'].' merged';
+        }
+
+        if ($counts['removed'] > 0) {
+            $parts[] = $counts['removed'].' removed';
+        }
+
+        if ($parts === [] && $skipped === 0) {
+            $title = 'No changes to save';
+        } elseif ($skipped === 1) {
+            $title = 'Availability saved - 1 selection was under 45 minutes';
+        } elseif ($skipped > 1) {
+            $title = "Availability saved - {$skipped} selections were under 45 minutes";
         } else {
-            Notification::make()->title("{$addedCount} availability slot(s) added")->success()->send();
+            $title = 'Availability saved';
         }
 
-        $this->form->fill($this->getDefaultAvailabilityTimes());
+        $notification = Notification::make()
+            ->title($title)
+            ->success();
+
+        if ($parts !== []) {
+            $notification->body(implode(', ', $parts));
+        }
+
+        $notification->send();
     }
 
-    public function table(Table $table): Table
+    public function form(Schema $form): Schema
     {
-        return $table
-            ->query($this->getAvailabilityService()->getFutureAvailabilityQuery(
-                $this->getAvailabilityService()->resolveMemberId(auth()->id()) ?? 0
-            ))
-            ->defaultSort('date')
-            ->columns([
-                TextColumn::make('date')
-                    ->label('Date')
-                    ->state(function (Availability $record) {
-                        return Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC')
-                            ->toPanelDateWithWeekday();
-                    }),
-
-                TextColumn::make('time_window')
-                    ->label('Time')
-                    ->state(function (Availability $record): string {
-                        $start = Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC');
-                        $end = Carbon::parse($record->date->format('Y-m-d').' '.$record->to->format('H:i:s'), 'UTC');
-
-                        if ($record->to->format('H:i:s') < $record->from->format('H:i:s')) {
-                            $end->addDay();
-                        }
-
-                        return $start->format('H:i').' - '.$end->format('H:i');
-                    }),
-
-                TextColumn::make('duration')
-                    ->label('Duration')
-                    ->state(fn (Availability $record) => $this->getAvailabilityService()->formatDuration(
-                        $record->date, $record->from, $record->to
-                    )),
-            ])
-            ->actions([
-                EditAction::make()
-                    ->iconButton()
-                    ->modalWidth('md')
-                    ->successNotification(null)
-                    ->modalSubmitActionLabel('Update')
-                    ->mutateRecordDataUsing(function (Availability $record): array {
-                        $start = Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC');
-                        $end = Carbon::parse($record->date->format('Y-m-d').' '.$record->to->format('H:i:s'), 'UTC');
-
-                        if ($record->to->format('H:i:s') < $record->from->format('H:i:s')) {
-                            $end->addDay();
-                        }
-
-                        return [
-                            'date' => $start->toDateString(),
-                            'from' => $start->format('H:i'),
-                            'to' => $end->format('H:i'),
-                        ];
-                    })
-                    ->form([
-                        DatePicker::make('date')->required()->native(false),
-                        Select::make('from')->options($this->generateTimeOptions())->required(),
-                        Select::make('to')->options($this->generateTimeOptions())->required(),
+        return $form
+            ->schema([
+                Section::make(fn () => $this->visibleWeekRange())
+                    ->description('Click and drag to paint the times you are free, drag over painted slots to erase them. All times are in Zulu.')
+                    ->afterHeader([
+                        Action::make('previousWeek')
+                            ->hiddenLabel()
+                            ->tooltip('Previous week')
+                            ->icon('heroicon-m-chevron-left')
+                            ->color('gray')
+                            ->disabled(fn () => $this->weekOffset === 0)
+                            ->action(fn () => $this->previousWeek()),
+                        Action::make('thisWeek')
+                            ->label('This week')
+                            ->color('gray')
+                            ->disabled(fn () => $this->weekOffset === 0)
+                            ->action(fn () => $this->goToWeek(0)),
+                        Action::make('nextWeek')
+                            ->hiddenLabel()
+                            ->tooltip('Next week')
+                            ->icon('heroicon-m-chevron-right')
+                            ->color('gray')
+                            ->action(fn () => $this->nextWeek()),
                     ])
-                    ->action(function (Availability $record, array $data): void {
-                        $startUtc = Carbon::parse("{$data['date']} {$data['from']}", 'UTC');
-                        $endUtc = Carbon::parse("{$data['date']} {$data['to']}", 'UTC');
-
-                        [$valid, $message] = $this->getAvailabilityService()->isSlotValid(
-                            $record->student_id, $startUtc, $endUtc, $record->id
-                        );
-
-                        if (! $valid) {
-                            Notification::make()->title($message)->danger()->send();
-
-                            return;
-                        }
-
-                        $oldFrom = Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC');
-                        $oldTo = Carbon::parse($record->date->format('Y-m-d').' '.$record->to->format('H:i:s'), 'UTC');
-
-                        $record->update([
-                            'date' => $startUtc->toDateString(),
-                            'from' => $startUtc->format('H:i:s'),
-                            'to' => $endUtc->format('H:i:s'),
-                        ]);
-
-                        $service = app(AvailabilityLogService::class);
-                        $service->recordEdited(
-                            $service->activeTrainingPlacesForAccount(auth()->id()),
-                            $oldFrom, $oldTo, $startUtc, $endUtc,
-                        );
-
-                        Notification::make()->title('Availability updated')->success()->send();
-                    }),
-                Action::make('delete')
-                    ->icon('heroicon-m-trash')
-                    ->color('danger')
-                    ->iconButton()
-                    ->requiresConfirmation(false)
-                    ->action(function (Availability $record): void {
-                        $from = Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC');
-                        $to = Carbon::parse($record->date->format('Y-m-d').' '.$record->to->format('H:i:s'), 'UTC');
-
-                        $record->delete();
-
-                        $service = app(AvailabilityLogService::class);
-                        $service->recordRemoved($service->activeTrainingPlacesForAccount(auth()->id()), $from, $to);
-                    }),
+                    ->footer([
+                        Action::make('save')
+                            ->label('Save availability')
+                            ->action(fn () => $this->save()),
+                    ])
+                    ->schema([
+                        AvailabilityGrid::make('availability')
+                            ->hiddenLabel()
+                            ->hours(self::FROM_HOUR, self::TO_HOUR)
+                            ->dates(fn () => $this->visibleWeekDates())
+                            ->lockedCells(fn () => $this->lockedCells())
+                            ->overnightOpen(fn () => $this->hasOvernightSlots())
+                            ->now(fn () => now()->utc()),
+                    ]),
             ])
-            ->bulkActions([
-                DeleteBulkAction::make()
-                    ->after(function (\Illuminate\Support\Collection $records): void {
-                        $service = app(AvailabilityLogService::class);
-                        $places = $service->activeTrainingPlacesForAccount(auth()->id());
-
-                        foreach ($records as $record) {
-                            if ($record->exists()) {
-                                continue;
-                            }
-
-                            $from = Carbon::parse($record->date->format('Y-m-d').' '.$record->from->format('H:i:s'), 'UTC');
-                            $to = Carbon::parse($record->date->format('Y-m-d').' '.$record->to->format('H:i:s'), 'UTC');
-
-                            $service->recordRemoved($places, $from, $to);
-                        }
-                    }),
-            ])
-            ->emptyStateHeading('No availability added yet')
-            ->emptyStateDescription('Use the form to add your availability slots.')
-            ->paginated([10, 25, 50])
-            ->defaultPaginationPageOption(25);
+            ->statePath('data');
     }
 
-    protected function generateTimeOptions(): array
+    public function content(Schema $schema): Schema
     {
-        $options = [];
-
-        for ($h = 0; $h < 24; $h++) {
-            for ($m = 0; $m < 60; $m += 15) {
-                $time = sprintf('%02d:%02d', $h, $m);
-                $options[$time] = $time;
-            }
-        }
-
-        return $options;
-    }
-
-    protected function resolveStudentId(): ?int
-    {
-        return $this->getAvailabilityService()->resolveMemberId(auth()->id());
+        return $schema->components([
+            EmbeddedSchema::make('form'),
+            Livewire::make(MyAcceptedMentoringSessionsTable::class),
+        ]);
     }
 }
