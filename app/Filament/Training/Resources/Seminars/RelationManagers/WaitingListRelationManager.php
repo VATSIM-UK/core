@@ -9,6 +9,8 @@ use App\Services\Training\SeminarInvitationService;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Components\Callout;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -34,7 +36,7 @@ class WaitingListRelationManager extends RelationManager
                 IconColumn::make('theory_exam_passed')->label('Theory Passed')->boolean(),
                 TextColumn::make('created_at')->label('Joined')->dateTime('d/m/Y H:i'),
                 TextColumn::make('invitation_status')
-                    ->label('Invitation')
+                    ->label('Status')
                     ->badge()
                     ->state(function (WaitingListAccount $record) {
                         if ($invitation = $this->invitationFor($record->account_id)) {
@@ -57,8 +59,17 @@ class WaitingListRelationManager extends RelationManager
                     ->icon('heroicon-o-user-plus')
                     ->modalHeading('Invite Member to Seminar')
                     ->modalDescription('Invite a member who is not on the waiting list.')
+                    ->modalSubmitActionLabel('Invite')
                     ->form([
-                        AccountSelect::make('account')->required(),
+                        AccountSelect::make('account')
+                            ->required()
+                            ->live(),
+                        Callout::make('Theory Exam Not Passed')
+                            ->description('This member has not passed the theory exam. Clicking "Invite" will still send the invitation anyway.')
+                            ->warning()
+                            ->icon('heroicon-o-exclamation-triangle')
+                            ->visible(fn (Get $get) => filled($get('account_id'))
+                                && ! $this->hasPassedTheory((int) $get('account_id'))),
                     ])
                     ->action(function (array $data): void {
                         $account = $data['account_id'];
@@ -162,6 +173,11 @@ class WaitingListRelationManager extends RelationManager
         return $this->invitationsByAccountId ??= $this->ownerRecord->invitations()
             ->get()
             ->keyBy('account_id');
+    }
+
+    private function hasPassedTheory(int $accountId): bool
+    {
+        return (bool) $this->waitingListAccountFor($accountId)?->theory_exam_passed;
     }
 
     private function refreshInvitations(): void
