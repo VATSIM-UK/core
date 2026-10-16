@@ -37,7 +37,7 @@
 							@continue(!$award->achievement)
 							<div class="flex flex-col items-center gap-1 text-center" title="{{ $award->achievement?->description }}">
 								@if ($award->achievement->image)
-									<img src="{{ Storage::disk('public')->url($award->achievement->image) }}" alt="{{ $award->achievement->name }}"
+									<img src="{{ asset('storage/' . $award->achievement->image) }}" alt="{{ $award->achievement->name }}"
 										class="h-10 w-10 rounded-full">
 								@endif
 								<span class="text-sm font-medium">{{ $award->achievement->name }}</span>
