@@ -391,4 +391,28 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             ->callMountedAction()
             ->assertDispatched('availability-paste-week');
     }
+
+    #[Test]
+    public function it_does_not_save_paint_beyond_the_future_window(): void
+    {
+        $component = Livewire::actingAs($this->studentAccount)->test(MyAvailability::class);
+
+        $component->call('nextWeek')->call('nextWeek')->call('nextWeek')->call('nextWeek')
+            ->assertSet('weekOffset', 4);
+
+        // The 2026-06-14 run is 60 minutes, so only the cap can drop it.
+        $painted = array_merge(
+            $component->get('data.availability'),
+            $this->cells('2026-06-13', '18:00', 4),
+            $this->cells('2026-06-14', '18:00', 4),
+        );
+
+        $component->set('data.availability', $painted)->call('save')->assertReturned(true);
+
+        $rows = Availability::where('student_id', $this->studentMember->id)->get();
+        $this->assertSame(1, $rows->count());
+        $this->assertSame('2026-06-13', $rows->first()->date->toDateString());
+        $this->assertSame('18:00:00', $rows->first()->getRawOriginal('from'));
+        $this->assertSame('19:00:00', $rows->first()->getRawOriginal('to'));
+    }
 }

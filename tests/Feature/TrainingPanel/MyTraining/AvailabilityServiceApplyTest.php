@@ -219,4 +219,38 @@ class AvailabilityServiceApplyTest extends BaseTrainingPanelTestCase
         $this->assertSame(1, $result['added']);
         $this->assertSame(2, Availability::where('student_id', $this->studentMember->id)->count());
     }
+
+    #[Test]
+    public function it_refuses_a_change_beyond_the_future_window(): void
+    {
+        $change = new AvailabilityChange(AvailabilityChangeType::Added, null, null, null, Carbon::parse('2026-06-14 18:00', 'UTC'), Carbon::parse('2026-06-14 21:00', 'UTC'));
+
+        $result = app(AvailabilityService::class)->applyChanges($this->studentMember->id, [$change]);
+
+        $this->assertTrue($result['refused']);
+        $this->assertSame(0, Availability::where('student_id', $this->studentMember->id)->count());
+    }
+
+    #[Test]
+    public function it_refuses_add_slots_where_a_range_ends_past_the_window(): void
+    {
+        $result = app(AvailabilityService::class)->addSlots($this->studentMember->id, [
+            [Carbon::parse('2026-06-13 18:00', 'UTC'), Carbon::parse('2026-06-13 21:00', 'UTC')],
+            [Carbon::parse('2026-06-14 18:00', 'UTC'), Carbon::parse('2026-06-14 21:00', 'UTC')],
+        ]);
+
+        $this->assertTrue($result['refused']);
+        $this->assertSame(0, Availability::where('student_id', $this->studentMember->id)->count());
+    }
+
+    #[Test]
+    public function it_accepts_a_slot_on_the_last_day_of_the_window(): void
+    {
+        $result = app(AvailabilityService::class)->addSlots($this->studentMember->id, [
+            [Carbon::parse('2026-06-13 18:00', 'UTC'), Carbon::parse('2026-06-13 21:00', 'UTC')],
+        ]);
+
+        $this->assertFalse($result['refused']);
+        $this->assertSame(1, Availability::where('student_id', $this->studentMember->id)->count());
+    }
 }

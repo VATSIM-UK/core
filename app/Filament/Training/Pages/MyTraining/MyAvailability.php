@@ -209,6 +209,18 @@ class MyAvailability extends Page implements HasForms, HasTable
         $this->goToWeek($this->weekOffset - 1);
     }
 
+    public function maxAllowedDate(): Carbon
+    {
+        return AvailabilityService::lastAllowedDate(now()->utc());
+    }
+
+    public function maxWeekOffset(): int
+    {
+        $weekStart = now()->utc()->startOfWeek();
+
+        return (int) floor($weekStart->diffInDays($this->maxAllowedDate()) / 7);
+    }
+
     public function save(): bool
     {
         $studentId = $this->resolveStudentId();
@@ -347,7 +359,7 @@ class MyAvailability extends Page implements HasForms, HasTable
     /** Only rows on newly opened dates join the seeded set; see seededRowIdsForVisitedDates(). */
     private function goToWeek(int $offset): void
     {
-        $this->weekOffset = max(self::MIN_WEEK_OFFSET, $offset);
+        $this->weekOffset = min($this->maxWeekOffset(), max(self::MIN_WEEK_OFFSET, $offset));
 
         $dates = $this->weekDates($this->weekOffset);
         $newDates = array_values(array_diff($dates, $this->visitedDates));
@@ -405,6 +417,7 @@ class MyAvailability extends Page implements HasForms, HasTable
                             ->tooltip('Next week')
                             ->icon('heroicon-m-chevron-right')
                             ->color('gray')
+                            ->disabled(fn () => $this->weekOffset >= $this->maxWeekOffset())
                             ->action(fn () => $this->nextWeek()),
                     ])
                     ->schema([
@@ -414,6 +427,7 @@ class MyAvailability extends Page implements HasForms, HasTable
                             ->dates(fn () => $this->visibleWeekDates())
                             ->lockedCells(fn () => $this->lockedCells())
                             ->overnightOpen(fn () => $this->hasOvernightSlots())
+                            ->lastAllowedDate(fn () => $this->maxAllowedDate())
                             ->now(fn () => now()->utc()),
                     ]),
             ])
@@ -506,7 +520,8 @@ class MyAvailability extends Page implements HasForms, HasTable
                 DateRangePicker::make('date_range')
                     ->label('Date(s)')
                     ->required()
-                    ->minDate(now()->startOfDay()),
+                    ->minDate(now()->startOfDay())
+                    ->maxDate(fn () => $this->maxAllowedDate()),
 
                 Select::make('from')
                     ->label('From')
@@ -540,6 +555,12 @@ class MyAvailability extends Page implements HasForms, HasTable
 
         $startDate = Carbon::parse($data['date_range']['start']);
         $endDate = Carbon::parse($data['date_range']['end']);
+
+        if ($endDate->copy()->startOfDay()->greaterThan($this->maxAllowedDate())) {
+            Notification::make()->title('You can only add availability up to '.AvailabilityService::MAX_FUTURE_DAYS.' days ahead.')->danger()->send();
+
+            return;
+        }
 
         $startTime = Carbon::parse("{$startDate->toDateString()} {$data['from']}", 'UTC');
         $endTime = Carbon::parse("{$startDate->toDateString()} {$data['to']}", 'UTC');
@@ -628,7 +649,7 @@ class MyAvailability extends Page implements HasForms, HasTable
                         ];
                     })
                     ->form([
-                        DatePicker::make('date')->required()->native(false),
+                        DatePicker::make('date')->required()->native(false)->maxDate(fn () => $this->maxAllowedDate()),
                         Select::make('from')->options($this->generateTimeOptions())->required(),
                         Select::make('to')->options($this->generateTimeOptions())->required(),
                     ])
