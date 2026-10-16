@@ -165,14 +165,14 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
             ->assertSuccessful()
-            ->assertSee('Save availability')
+            ->assertSee('All changes saved')
             ->assertDontSee('Date(s)')
             ->assertDontSee('No availability added yet')
             ->set('mode', 'form')
             ->assertSee('Date(s)')
             ->assertSee('Change default times')
             ->assertSee('No availability added yet')
-            ->assertDontSee('Save availability');
+            ->assertDontSee('All changes saved');
     }
 
     #[Test]

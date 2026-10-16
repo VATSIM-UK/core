@@ -209,13 +209,15 @@ class MyAvailability extends Page implements HasForms, HasTable
         $this->goToWeek($this->weekOffset - 1);
     }
 
-    public function save(): void
+    public function save(): bool
     {
         $studentId = $this->resolveStudentId();
 
         if (! $studentId) {
-            return;
+            return false;
         }
+
+        $before = $this->availabilityRows()->pluck('id')->all();
 
         $plan = app(AvailabilityPlanner::class)->plan(
             $this->visitedDates,
@@ -227,14 +229,27 @@ class MyAvailability extends Page implements HasForms, HasTable
 
         $counts = app(AvailabilityService::class)->applyChanges($studentId, $plan->changes);
 
-        $this->notifySave($counts, $plan->skippedShortRuns);
+        if ($counts['refused']) {
+            Notification::make()
+                ->title('Nothing was saved')
+                ->body('Some of this date changed while you were editing it. Refresh to see the latest availability, then try again.')
+                ->danger()
+                ->send();
+
+            return false;
+        }
 
         $this->availabilityRowsCache = null;
         $this->seedCache = null;
 
-        $this->form->fill(['availability' => $this->savedCells()]);
+        // No refill, so cells painted mid-save survive; only rows created here join the seeded set.
+        $this->seededRowIds = $this->availabilityRows()
+            ->pluck('id')
+            ->filter(fn (int $id) => in_array($id, $this->seededRowIds, true) || ! in_array($id, $before, true))
+            ->values()
+            ->all();
 
-        $this->seededRowIds = $this->seededRowIdsForVisitedDates();
+        return true;
     }
 
     /**
@@ -366,60 +381,6 @@ class MyAvailability extends Page implements HasForms, HasTable
         )));
     }
 
-    /**
-     * @param  array{added: int, edited: int, merged: int, removed: int, refused: bool}  $counts
-     */
-    private function notifySave(array $counts, int $skipped): void
-    {
-        if ($counts['refused']) {
-            Notification::make()
-                ->title('Nothing was saved')
-                ->body('Some of this date changed while you were editing it. Refresh to see the latest availability, then try again.')
-                ->danger()
-                ->send();
-
-            return;
-        }
-
-        $parts = [];
-
-        if ($counts['added'] > 0) {
-            $parts[] = $counts['added'].' added';
-        }
-
-        if ($counts['edited'] > 0) {
-            $parts[] = $counts['edited'].' updated';
-        }
-
-        if ($counts['merged'] > 0) {
-            $parts[] = $counts['merged'].' merged';
-        }
-
-        if ($counts['removed'] > 0) {
-            $parts[] = $counts['removed'].' removed';
-        }
-
-        if ($parts === [] && $skipped === 0) {
-            $title = 'No changes to save';
-        } elseif ($skipped === 1) {
-            $title = 'Availability saved - 1 selection was under '.AvailabilityService::MINIMUM_SLOT_DURATION_MINUTES.' minutes';
-        } elseif ($skipped > 1) {
-            $title = "Availability saved - {$skipped} selections were under ".AvailabilityService::MINIMUM_SLOT_DURATION_MINUTES.' minutes';
-        } else {
-            $title = 'Availability saved';
-        }
-
-        $notification = Notification::make()
-            ->title($title)
-            ->success();
-
-        if ($parts !== []) {
-            $notification->body(implode(', ', $parts));
-        }
-
-        $notification->send();
-    }
-
     public function form(Schema $form): Schema
     {
         return $form
@@ -446,11 +407,6 @@ class MyAvailability extends Page implements HasForms, HasTable
                             ->color('gray')
                             ->action(fn () => $this->nextWeek()),
                     ])
-                    ->footer([
-                        Action::make('save')
-                            ->label('Save availability')
-                            ->action(fn () => $this->save()),
-                    ])
                     ->schema([
                         AvailabilityGrid::make('availability')
                             ->hiddenLabel()
@@ -462,6 +418,16 @@ class MyAvailability extends Page implements HasForms, HasTable
                     ]),
             ])
             ->statePath('data');
+    }
+
+    public function pasteWeekAction(): Action
+    {
+        return Action::make('pasteWeek')
+            ->requiresConfirmation()
+            ->modalHeading('Paste over this week?')
+            ->modalDescription('The availability already painted in this week will be replaced by the copied week.')
+            ->modalSubmitActionLabel('Paste')
+            ->action(fn () => $this->dispatch('availability-paste-week'));
     }
 
     protected function getDefaultAvailabilityTimes(): array

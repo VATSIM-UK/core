@@ -70,7 +70,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             ->test(MyAvailability::class)
             ->set('data.availability', $this->cells($tomorrow, '18:00', 12))
             ->call('save')
-            ->assertNotified('Availability saved');
+            ->assertReturned(true);
 
         $row = Availability::where('student_id', $this->studentMember->id)->sole();
         $this->assertSame('18:00:00', $row->getRawOriginal('from'));
@@ -166,7 +166,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             ->test(MyAvailability::class)
             ->set('data.availability', $this->cells($tomorrow, '18:00', 2))
             ->call('save')
-            ->assertNotified('Availability saved - 1 selection was under 45 minutes');
+            ->assertReturned(true);
 
         $this->assertSame(0, Availability::where('student_id', $this->studentMember->id)->count());
     }
@@ -195,7 +195,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
             ->call('save')
-            ->assertNotified('No changes to save');
+            ->assertReturned(true);
 
         $this->assertSame(0, Availability::where('student_id', $this->studentMember->id)->count());
         $this->assertSame(0, AvailabilityLogEntry::count());
@@ -258,7 +258,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             'date' => $tomorrow, 'from' => '22:00:00', 'to' => '23:00:00', 'type' => 'S',
         ]);
 
-        $component->call('save')->assertNotified('No changes to save');
+        $component->call('save')->assertReturned(true);
 
         $this->assertSame(2, Availability::where('student_id', $this->studentMember->id)->count());
         $this->assertNotNull($late->fresh());
@@ -277,7 +277,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             ->test(MyAvailability::class)
             ->set('data.availability', $this->cells($tomorrow, '22:00', 4))
             ->call('save')
-            ->assertNotified('Availability saved');
+            ->assertReturned(true);
 
         $this->assertSame(2, Availability::where('student_id', $this->studentMember->id)->count());
         $this->assertNotNull($odd->fresh());
@@ -297,6 +297,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
         $component
             ->set('data.availability', $this->cells($tomorrow, '18:00', 12))
             ->call('save')
+            ->assertReturned(false)
             ->assertNotified(
                 Notification::make()
                     ->title('Nothing was saved')
@@ -344,5 +345,50 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
 
         $this->assertNotNull($past->fresh());
         $this->assertSame(1, Availability::where('student_id', $this->studentMember->id)->count());
+    }
+
+    #[Test]
+    public function it_does_not_delete_a_row_added_elsewhere_between_autosaves(): void
+    {
+        $tomorrow = now()->addDay()->toDateString();
+
+        $component = Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('data.availability', $this->cells($tomorrow, '10:00', 4))
+            ->call('save');
+
+        $other = Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => $tomorrow, 'from' => '18:00:00', 'to' => '20:00:00', 'type' => 'S',
+        ]);
+
+        $component->set('data.availability', $this->cells($tomorrow, '12:00', 4))->call('save');
+
+        $this->assertNotNull($other->fresh());
+        $remaining = Availability::where('student_id', $this->studentMember->id)->where('id', '!=', $other->id)->sole();
+        $this->assertSame('12:00:00', $remaining->getRawOriginal('from'));
+    }
+
+    #[Test]
+    public function it_keeps_unsaved_short_runs_painted_after_saving(): void
+    {
+        $tomorrow = now()->addDay()->toDateString();
+        $cells = $this->cells($tomorrow, '18:00', 2);
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('data.availability', $cells)
+            ->call('save')
+            ->assertSet('data.availability', $cells);
+    }
+
+    #[Test]
+    public function it_confirms_before_pasting_over_a_week(): void
+    {
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->mountAction('pasteWeek')
+            ->assertActionMounted('pasteWeek')
+            ->callMountedAction()
+            ->assertDispatched('availability-paste-week');
     }
 }

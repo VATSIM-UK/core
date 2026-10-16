@@ -20,9 +20,9 @@
     dates: @js($dates),
     now: @js($now->getTimestampMs()),
     hours: @js([sprintf('%02d:00', $field->getFromHour()), sprintf('%02d:00', $field->getToHour())]),
+    hasOvernight: false,
     painted: new Set(),
     warned: new Set(),
-    runs: [],
     has(slot) {
         return this.painted.has(slot)
     },
@@ -42,7 +42,14 @@
         if (changed) {
             this.state = [...current]
             this.recompute()
+            this.changed()
         }
+    },
+    changed() {
+        this.$store.availabilityAutosave.queue(this.$wire)
+    },
+    saveStatus() {
+        return this.$store.availabilityAutosave?.status ?? 'saved'
     },
     start(event) {
         {{-- Primary button only; touch and pen report 0 too. --}}
@@ -94,6 +101,7 @@
     clearWeek() {
         this.state = (this.state ?? []).filter((slot) => !this.inWeek(slot))
         this.recompute()
+        this.changed()
     },
     {{-- Kept in a store as weekday + time, since the grid re-initialises on every week change. --}}
     copyWeek() {
@@ -110,6 +118,15 @@
         this.$store.availabilityClipboard.cells = cells
         this.notify('Week copied, open another week and paste it there')
     },
+    requestPaste() {
+        if ((this.state ?? []).some((slot) => this.inWeek(slot))) {
+            this.$wire.mountAction('pasteWeek')
+
+            return
+        }
+
+        this.pasteWeek()
+    },
     pasteWeek() {
         const cells = this.$store.availabilityClipboard.cells ?? []
         const targets = cells.map((cell) => this.dates[cell.day] + ' ' + cell.time)
@@ -118,10 +135,7 @@
 
         this.state = [...(this.state ?? []).filter((slot) => !this.inWeek(slot)), ...pasted]
         this.recompute()
-
-        if (pasted.some((slot) => slot.slice(11) < this.hours[0] || slot.slice(11) >= this.hours[1])) {
-            this.overnight = true
-        }
+        this.changed()
 
         const skipped = targets.length - pasted.length
 
@@ -161,27 +175,53 @@
 
         this.painted = new Set(this.state ?? [])
         this.warned = warned
-        this.runs = runs
+        this.hasOvernight = [...this.painted, ...this.locked].some((slot) =>
+            this.inWeek(slot) && (slot.slice(11) < this.hours[0] || slot.slice(11) >= this.hours[1]))
+
+        if (this.hasOvernight) {
+            this.overnight = true
+        }
     },
     isShort(run) {
         return run.end - run.start < {{ $minimum }} * 60000
     },
-    clock(timestamp) {
-        return new Date(timestamp).toISOString().slice(11, 16)
-    },
-    day(timestamp) {
-        const date = new Date(timestamp)
-        const pad = (value) => String(value).padStart(2, '0')
-
-        return date.toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' }) +
-            ' ' + pad(date.getUTCDate()) + '. ' + pad(date.getUTCMonth() + 1) + '.'
-    },
-    runLabel(run) {
-        return this.day(run.start) + ' ' + this.clock(run.start) + ' - ' + this.clock(run.end)
-    },
     init() {
         if (!Alpine.store('availabilityClipboard')) {
             Alpine.store('availabilityClipboard', { cells: null })
+        }
+
+        {{-- Lives in a store so a pending save outlasts the grid re-initialising on week change. --}}
+        if (!Alpine.store('availabilityAutosave')) {
+            Alpine.store('availabilityAutosave', {
+                status: 'saved',
+                version: 0,
+                timer: null,
+                queue(wire) {
+                    this.version++
+                    this.status = 'pending'
+                    clearTimeout(this.timer)
+                    this.timer = setTimeout(() => this.flush(wire), 1000)
+                },
+                async flush(wire) {
+                    const version = this.version
+                    let saved = false
+                    this.status = 'saving'
+
+                    try {
+                        saved = await wire.save()
+                    } catch {}
+
+                    if (version === this.version) {
+                        this.status = saved ? 'saved' : 'error'
+                    }
+                },
+            })
+
+            window.addEventListener('beforeunload', (event) => {
+                if (Alpine.store('availabilityAutosave').status !== 'saved') {
+                    event.preventDefault()
+                }
+            })
         }
 
         this.recompute()
@@ -189,43 +229,51 @@
     },
 }"
 		data-overnight="{{ $field->isOvernightOpen() ? '1' : '0' }}"
-		x-effect="if ($el.dataset.overnight === '1') overnight = true"
+		x-effect="if ($el.dataset.overnight === '1') overnight = true" x-on:availability-paste-week.window="pasteWeek()"
 		{{ $getExtraAttributeBag()->class(['flex flex-col gap-4']) }}>
 		<div class="flex flex-wrap items-center justify-between gap-3">
-			<div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500 dark:!text-gray-400">
-				@foreach ([
-								'Available' => 'bg-success-500',
-								"Under {$minimum} minutes, not saved" => 'bg-warning-400 dark:bg-warning-500',
-								"Saved, can't be edited" => 'bg-success-500/40',
-								'Past' => 'bg-gray-100 ring-1 ring-gray-200 dark:bg-white/5 dark:ring-white/10',
-				] as $label => $swatch)
-					<span class="flex items-center gap-1.5">
-						<span class="size-3 rounded-sm {{ $swatch }}"></span>
-						{{ $label }}
-					</span>
-				@endforeach
-			</div>
+			<span class="flex items-center gap-1.5 text-sm text-gray-500 dark:!text-gray-400">
+				<x-filament::icon icon="heroicon-m-check-circle" class="size-4 text-success-500" x-show="saveStatus() === 'saved'" />
+				<x-filament::icon icon="heroicon-m-pencil" class="size-4" x-show="saveStatus() === 'pending'" x-cloak />
+				<x-filament::loading-indicator class="size-4" x-show="saveStatus() === 'saving'" x-cloak />
+				<x-filament::icon icon="heroicon-m-exclamation-circle" class="size-4 text-danger-500"
+					x-show="saveStatus() === 'error'" x-cloak />
+				<span
+					x-text="{ saved: 'All changes saved', pending: 'Unsaved changes', saving: 'Saving…', error: 'Not saved' }[saveStatus()]">All
+					changes saved</span>
+			</span>
 
 			<div class="flex items-center gap-2">
-				<x-filament::button size="sm" color="gray" x-on:click="overnight = ! overnight">
+				<x-filament::button size="sm" color="gray" x-on:click="overnight = ! overnight"
+					x-bind:disabled="hasOvernight">
 					<x-filament::icon icon="heroicon-m-moon" :size="\Filament\Support\Enums\IconSize::Small" x-show="! overnight" />
 					<x-filament::icon icon="heroicon-m-sun" :size="\Filament\Support\Enums\IconSize::Small" x-show="overnight" x-cloak />
 					<span x-show="! overnight">Show overnight</span>
 					<span x-show="overnight" x-cloak>Hide overnight</span>
 				</x-filament::button>
 
-				<x-filament::button size="sm" color="gray" icon="heroicon-m-document-duplicate" x-on:click="copyWeek()">
-					Copy week
-				</x-filament::button>
+				<x-filament::dropdown placement="bottom-end">
+					<x-slot name="trigger">
+						<x-filament::button size="sm" color="gray" icon="heroicon-m-chevron-down" icon-position="after">
+							Week
+						</x-filament::button>
+					</x-slot>
 
-				<x-filament::button size="sm" color="gray" icon="heroicon-m-clipboard-document" x-on:click="pasteWeek()"
-					x-bind:disabled="!$store.availabilityClipboard?.cells">
-					Paste week
-				</x-filament::button>
+					<x-filament::dropdown.list>
+						<x-filament::dropdown.list.item icon="heroicon-m-document-duplicate" x-on:click="close(); copyWeek()">
+							Copy week
+						</x-filament::dropdown.list.item>
 
-				<x-filament::button size="sm" color="gray" icon="heroicon-m-trash" x-on:click="clearWeek()">
-					Clear week
-				</x-filament::button>
+						<x-filament::dropdown.list.item icon="heroicon-m-clipboard-document" x-on:click="close(); requestPaste()"
+							x-bind:disabled="!$store.availabilityClipboard?.cells">
+							Paste week
+						</x-filament::dropdown.list.item>
+
+						<x-filament::dropdown.list.item icon="heroicon-m-trash" color="danger" x-on:click="close(); clearWeek()">
+							Clear week
+						</x-filament::dropdown.list.item>
+					</x-filament::dropdown.list>
+				</x-filament::dropdown>
 			</div>
 		</div>
 
@@ -316,31 +364,18 @@
 			</div>
 		</div>
 
-		<div class="flex flex-col gap-2">
-			<p class="text-sm font-medium text-gray-950 dark:text-white">To be saved</p>
-
-			<p class="text-sm text-gray-500 dark:!text-gray-400" x-show="runs.length === 0">
-				Nothing painted yet.
-			</p>
-
-			<div class="flex flex-wrap gap-2" x-show="runs.length > 0">
-				<template x-for="run in runs" :key="run.date + run.start">
-					<div>
-						<template x-if="! isShort(run)">
-							<x-filament::badge color="success" icon="heroicon-m-clock">
-								<span x-text="runLabel(run)"></span>
-							</x-filament::badge>
-						</template>
-
-						<template x-if="isShort(run)">
-							<x-filament::badge color="warning" icon="heroicon-m-exclamation-triangle"
-								x-tooltip="'Under {{ $minimum }} minutes, this will not be saved'">
-								<span x-text="runLabel(run)"></span>
-							</x-filament::badge>
-						</template>
-					</div>
-				</template>
-			</div>
+		<div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500 dark:!text-gray-400">
+			@foreach ([
+								'Available' => 'bg-success-500',
+								"Under {$minimum} minutes, not saved" => 'bg-warning-400 dark:bg-warning-500',
+								"Saved, can't be edited" => 'bg-success-500/40',
+								'Past' => 'bg-gray-100 ring-1 ring-gray-200 dark:bg-white/5 dark:ring-white/10',
+				] as $label => $swatch)
+				<span class="flex items-center gap-1.5">
+					<span class="size-3 rounded-sm {{ $swatch }}"></span>
+					{{ $label }}
+				</span>
+			@endforeach
 		</div>
 	</div>
 </x-dynamic-component>
