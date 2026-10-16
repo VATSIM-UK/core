@@ -122,7 +122,10 @@ class AchievementResource extends Resource
                     ->dateTime(),
                 ImageColumn::make('image')
                     ->label('Image')
-                    ->disk('public'),
+                    ->getStateUsing(fn ($record) => $record->image
+                        ? asset('storage/'.$record->image)
+                        : null
+                    ),
             ])->actions([
                 EditAction::make()->color('warning')->visible(fn (Achievement $record): bool => AchievementResource::canEdit($record)),
                 Action::make('awardedMembers')
