@@ -207,7 +207,9 @@
 			</div>
 
 			<div class="flex items-center gap-2">
-				<x-filament::button size="sm" color="gray" icon="heroicon-m-moon" x-on:click="overnight = ! overnight">
+				<x-filament::button size="sm" color="gray" x-on:click="overnight = ! overnight">
+					<x-filament::icon icon="heroicon-m-moon" :size="\Filament\Support\Enums\IconSize::Small" x-show="! overnight" />
+					<x-filament::icon icon="heroicon-m-sun" :size="\Filament\Support\Enums\IconSize::Small" x-show="overnight" x-cloak />
 					<span x-show="! overnight">Show overnight</span>
 					<span x-show="overnight" x-cloak>Hide overnight</span>
 				</x-filament::button>
