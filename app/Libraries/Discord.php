@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
+use Throwable;
 
 class Discord
 {
@@ -225,6 +226,60 @@ class Discord
 
             return $response->json();
         });
+    }
+
+    private function guildRolesCacheKey(): string
+    {
+        return "discord.guild_roles.{$this->guild_id}";
+    }
+
+    /**
+     * Fetch the guild's roles, cached for 24 hours.
+     */
+    public function getGuildRoles(): Collection
+    {
+        if (! $this->token || ! $this->guild_id) {
+            return collect();
+        }
+
+        $cached = Cache::get($this->guildRolesCacheKey());
+        if ($cached !== null) {
+            return collect($cached);
+        }
+
+        $endpoint = "{$this->base_url}/guilds/{$this->guild_id}/roles";
+        $context = [
+            'action' => 'getGuildRoles',
+            'guild_id' => $this->guild_id,
+        ];
+
+        try {
+            $response = $this->rateLimitedRequest(
+                fn () => Http::withHeaders($this->headers)->get($endpoint),
+                $context
+            );
+        } catch (Throwable $e) {
+            Log::warning('Discord guild roles fetch failed', ['exception' => $e]);
+
+            return collect();
+        }
+
+        if (! $response->successful()) {
+            return collect();
+        }
+
+        $roles = collect($response->json() ?? []);
+        Cache::put($this->guildRolesCacheKey(), $roles->all(), now()->addHours(24));
+
+        return $roles;
+    }
+
+    /**
+     * Forget the cached guild role list.
+     */
+    public function forgetGuildRolesCache(): void
+    {
+        Cache::forget($this->guildRolesCacheKey());
     }
 
     public function sendMessageToChannel(string $channelId, array $messageContents)
