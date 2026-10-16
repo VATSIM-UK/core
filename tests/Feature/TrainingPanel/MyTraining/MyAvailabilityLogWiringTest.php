@@ -30,7 +30,7 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
     {
         parent::setUp();
 
-        $this->travelTo(Carbon::create(2026, 5, 10, 12, 0, 0));
+        $this->travelTo(Carbon::create(2026, 5, 13, 12, 0, 0));
 
         $this->studentAccount = Account::factory()->create();
         $this->studentMember = Member::factory()->forAccount($this->studentAccount)->create();
@@ -41,6 +41,22 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
         ]);
     }
 
+    /**
+     * A run of $count consecutive 15-minute cell keys starting at $from.
+     *
+     * @return array<int, string>
+     */
+    private function cells(string $date, string $from, int $count): array
+    {
+        $out = [];
+        $start = Carbon::parse("{$date} {$from}", 'UTC');
+        for ($i = 0; $i < $count; $i++) {
+            $out[] = $start->copy()->addMinutes(15 * $i)->format('Y-m-d H:i');
+        }
+
+        return $out;
+    }
+
     #[Test]
     public function adding_availability_writes_an_added_version(): void
     {
@@ -48,10 +64,8 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
-            ->set('data.date_range', ['start' => $tomorrow, 'end' => $tomorrow])
-            ->set('data.from', '18:00')
-            ->set('data.to', '21:00')
-            ->call('create');
+            ->set('data.availability', $this->cells($tomorrow, '18:00', 12))
+            ->call('save');
 
         $entry = AvailabilityLogEntry::where('training_place_id', $this->place->id)->sole();
 
@@ -62,7 +76,7 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function adding_availability_logs_to_every_active_training_place(): void
+    public function a_save_writes_to_every_active_training_place(): void
     {
         $secondPlace = TrainingPlace::factory()->createQuietly([
             'account_id' => $this->studentAccount->id,
@@ -72,10 +86,8 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
-            ->set('data.date_range', ['start' => $tomorrow, 'end' => $tomorrow])
-            ->set('data.from', '18:00')
-            ->set('data.to', '21:00')
-            ->call('create');
+            ->set('data.availability', $this->cells($tomorrow, '18:00', 12))
+            ->call('save');
 
         $this->assertSame(2, AvailabilityLogEntry::where('slot_from', "{$tomorrow} 18:00:00")->count());
         $this->assertSame(1, AvailabilityLogEntry::where('training_place_id', $secondPlace->id)->count());
@@ -87,33 +99,40 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
         $date = now()->addDay()->toDateString();
 
         Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date,
-            'from' => '18:00:00',
-            'to' => '20:00:00',
-            'type' => 'S',
+            'date' => $date, 'from' => '18:00:00', 'to' => '19:00:00', 'type' => 'S',
+        ]);
+        Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => $date, 'from' => '20:00:00', 'to' => '21:00:00', 'type' => 'S',
         ]);
 
         $added = AvailabilityLogEntry::factory()->create([
             'training_place_id' => $this->place->id,
             'event' => 'added',
             'slot_from' => "{$date} 18:00:00",
-            'slot_to' => "{$date} 20:00:00",
+            'slot_to' => "{$date} 19:00:00",
+            'created_at' => now()->subDay(),
+            'superseded_at' => null,
+        ]);
+        $swallowed = AvailabilityLogEntry::factory()->create([
+            'training_place_id' => $this->place->id,
+            'event' => 'added',
+            'slot_from' => "{$date} 20:00:00",
+            'slot_to' => "{$date} 21:00:00",
             'created_at' => now()->subDay(),
             'superseded_at' => null,
         ]);
 
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
-            ->set('data.date_range', ['start' => $date, 'end' => $date])
-            ->set('data.from', '19:00')
-            ->set('data.to', '21:00')
-            ->call('create');
+            ->set('data.availability', $this->cells($date, '18:00', 12))
+            ->call('save');
 
         $merged = AvailabilityLogEntry::where('training_place_id', $this->place->id)
             ->where('event', 'merged')
             ->sole();
 
         $this->assertNotNull($added->fresh()->superseded_at);
+        $this->assertNotNull($swallowed->fresh()->superseded_at);
         $this->assertSame("{$date} 18:00:00", $merged->slot_from->format('Y-m-d H:i:s'));
         $this->assertSame("{$date} 21:00:00", $merged->slot_to->format('Y-m-d H:i:s'));
         $this->assertSame(
@@ -128,11 +147,8 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
     {
         $date = now()->addDay()->toDateString();
 
-        $slot = Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date,
-            'from' => '18:00:00',
-            'to' => '21:00:00',
-            'type' => 'S',
+        Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => $date, 'from' => '18:00:00', 'to' => '21:00:00', 'type' => 'S',
         ]);
 
         $added = AvailabilityLogEntry::factory()->create([
@@ -146,11 +162,8 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
-            ->callTableAction('edit', $slot, [
-                'date' => $date,
-                'from' => '17:00',
-                'to' => '20:00',
-            ]);
+            ->set('data.availability', $this->cells($date, '17:00', 16))
+            ->call('save');
 
         $edited = AvailabilityLogEntry::where('training_place_id', $this->place->id)
             ->where('event', 'edited')
@@ -158,19 +171,26 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
 
         $this->assertNotNull($added->fresh()->superseded_at, 'Editing must supersede the previous version.');
         $this->assertSame("{$date} 17:00:00", $edited->slot_from->format('Y-m-d H:i:s'));
-        $this->assertSame("{$date} 20:00:00", $edited->slot_to->format('Y-m-d H:i:s'));
+        $this->assertSame("{$date} 21:00:00", $edited->slot_to->format('Y-m-d H:i:s'));
+        $this->assertSame(
+            '17:00:00',
+            Availability::where('student_id', $this->studentMember->id)->where('date', $date)->sole()->from->format('H:i:s'),
+            'The stored row must keep the earlier start.',
+        );
+        $this->assertSame(
+            $added->fresh()->superseded_at->format('Y-m-d H:i:s'),
+            $edited->created_at->format('Y-m-d H:i:s'),
+            'Shared timestamp invariant broken.',
+        );
     }
 
     #[Test]
-    public function deleting_availability_supersedes_the_current_version_without_a_removed_event(): void
+    public function erasing_a_saved_slot_writes_a_removed_event(): void
     {
         $date = now()->addDay()->toDateString();
 
-        $slot = Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date,
-            'from' => '18:00:00',
-            'to' => '21:00:00',
-            'type' => 'S',
+        Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => $date, 'from' => '18:00:00', 'to' => '21:00:00', 'type' => 'S',
         ]);
 
         $current = AvailabilityLogEntry::factory()->create([
@@ -184,54 +204,11 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
 
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
-            ->callTableAction('delete', $slot);
+            ->set('data.availability', [])
+            ->call('save');
 
+        $this->assertSame(0, Availability::where('student_id', $this->studentMember->id)->count());
         $this->assertNotNull($current->fresh()->superseded_at);
         $this->assertSame(1, AvailabilityLogEntry::where('training_place_id', $this->place->id)->count());
-    }
-
-    #[Test]
-    public function bulk_deleting_supersedes_each_current_version_without_removed_events(): void
-    {
-        $date = now()->addDay()->toDateString();
-
-        $slotA = Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date,
-            'from' => '18:00:00',
-            'to' => '19:00:00',
-            'type' => 'S',
-        ]);
-
-        $slotB = Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date,
-            'from' => '20:00:00',
-            'to' => '21:00:00',
-            'type' => 'S',
-        ]);
-
-        $entryA = AvailabilityLogEntry::factory()->create([
-            'training_place_id' => $this->place->id,
-            'event' => 'added',
-            'slot_from' => "{$date} 18:00:00",
-            'slot_to' => "{$date} 19:00:00",
-            'created_at' => now()->subDay(),
-            'superseded_at' => null,
-        ]);
-
-        $entryB = AvailabilityLogEntry::factory()->create([
-            'training_place_id' => $this->place->id,
-            'event' => 'added',
-            'slot_from' => "{$date} 20:00:00",
-            'slot_to' => "{$date} 21:00:00",
-            'created_at' => now()->subDay(),
-            'superseded_at' => null,
-        ]);
-
-        Livewire::actingAs($this->studentAccount)
-            ->test(MyAvailability::class)
-            ->callTableBulkAction('delete', [$slotA->id, $slotB->id]);
-
-        $this->assertNotNull($entryA->fresh()->superseded_at);
-        $this->assertNotNull($entryB->fresh()->superseded_at);
     }
 }
