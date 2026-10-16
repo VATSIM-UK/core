@@ -30,6 +30,21 @@ class AvailabilityService
         return Member::where('cid', $cid)->value('id');
     }
 
+    public function getFutureAvailabilityQuery(int $memberId): Builder
+    {
+        return Availability::query()
+            ->where('student_id', $memberId)
+            ->where('type', 'S')
+            ->where(function (Builder $query) {
+                $now = now()->utc();
+                $query->whereDate('date', '>', $now->toDateString())
+                    ->orWhere(function ($q) use ($now) {
+                        $q->whereDate('date', $now->toDateString())
+                            ->whereTime('to', '>', $now->format('H:i:s'));
+                    });
+            });
+    }
+
     /**
      * @return Collection<int, Availability>
      */
@@ -150,6 +165,91 @@ class AvailabilityService
         }
 
         return $counts;
+    }
+
+    /**
+     * Add each range, merging it with every stored row it overlaps.
+     *
+     * @param  array<int, array{0: Carbon, 1: Carbon}>  $ranges
+     * @return array{added: int, edited: int, merged: int, removed: int, refused: bool}
+     */
+    public function addSlots(int $studentId, array $ranges): array
+    {
+        $changes = [];
+        $consumed = [];
+
+        foreach ($ranges as [$start, $end]) {
+            $overlapping = $this->rowsOverlapping($studentId, $start, $end)
+                ->reject(fn (Availability $row) => isset($consumed[$row->getKey()]))
+                ->values();
+
+            if ($overlapping->isEmpty()) {
+                $changes[] = new AvailabilityChange(AvailabilityChangeType::Added, null, null, null, $start, $end);
+
+                continue;
+            }
+
+            $from = $start->copy();
+            $to = $end->copy();
+
+            foreach ($overlapping as $row) {
+                $consumed[$row->getKey()] = true;
+                [$rowFrom, $rowTo] = $row->bounds();
+                $from = $from->min($rowFrom);
+                $to = $to->max($rowTo);
+            }
+
+            $target = $overlapping->shift();
+            [$oldFrom, $oldTo] = $target->bounds();
+
+            $changes[] = new AvailabilityChange(AvailabilityChangeType::Merged, $target, $oldFrom, $oldTo, $from, $to, $overlapping->all());
+        }
+
+        return $this->applyChanges($studentId, $changes);
+    }
+
+    /**
+     * @return array{added: int, edited: int, merged: int, removed: int, refused: bool}
+     */
+    public function editSlot(Availability $row, Carbon $start, Carbon $end): array
+    {
+        [$oldFrom, $oldTo] = $row->bounds();
+
+        return $this->applyChanges($row->student_id, [
+            new AvailabilityChange(AvailabilityChangeType::Edited, $row, $oldFrom, $oldTo, $start, $end),
+        ]);
+    }
+
+    /**
+     * @param  iterable<int, Availability>  $rows
+     * @return array{added: int, edited: int, merged: int, removed: int, refused: bool}
+     */
+    public function removeSlots(int $studentId, iterable $rows): array
+    {
+        $changes = [];
+
+        foreach ($rows as $row) {
+            [$from, $to] = $row->bounds();
+            $changes[] = new AvailabilityChange(AvailabilityChangeType::Removed, $row, $from, $to, null, null);
+        }
+
+        return $this->applyChanges($studentId, $changes);
+    }
+
+    /**
+     * @return Collection<int, Availability>
+     */
+    private function rowsOverlapping(int $studentId, Carbon $start, Carbon $end): Collection
+    {
+        return Availability::query()
+            ->where('student_id', $studentId)
+            ->where('type', 'S')
+            ->whereBetween('date', [$start->copy()->subDay()->toDateString(), $end->toDateString()])
+            ->orderBy('date')
+            ->orderBy('from')
+            ->get()
+            ->filter(fn (Availability $row) => $this->rangesOverlap([$start, $end], $row->bounds()))
+            ->values();
     }
 
     /**

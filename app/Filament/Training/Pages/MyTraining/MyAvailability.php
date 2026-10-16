@@ -4,30 +4,42 @@ namespace App\Filament\Training\Pages\MyTraining;
 
 use App\Filament\Training\Forms\Components\AvailabilityGrid;
 use App\Filament\Training\Pages\MyTraining\Widgets\MyAvailabilityStats;
-use App\Livewire\Training\MyAcceptedMentoringSessionsTable;
+use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
 use App\Models\Cts\PositionValidation;
+use App\Models\Mship\Account\AvailabilitySetting;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\Availability\AvailabilityPlanner;
 use App\Services\Training\AvailabilityService;
 use Carbon\Carbon;
+use CodeWithKyrian\FilamentDateRange\Forms\Components\DateRangePicker;
 use Filament\Actions\Action;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Schemas\Components\EmbeddedSchema;
-use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Locked;
+use Livewire\Attributes\Session;
 
-class MyAvailability extends Page implements HasForms
+class MyAvailability extends Page implements HasForms, HasTable
 {
     use InteractsWithForms;
+    use InteractsWithTable;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
+
+    protected string $view = 'filament.training.pages.my-training.my-availability';
 
     protected static string|\UnitEnum|null $navigationGroup = 'My Training';
 
@@ -44,6 +56,11 @@ class MyAvailability extends Page implements HasForms
     public const MIN_WEEK_OFFSET = -1;
 
     public ?array $data = [];
+
+    public ?array $slotData = [];
+
+    #[Session]
+    public string $mode = 'calendar';
 
     public int $weekOffset = 0;
 
@@ -131,6 +148,22 @@ class MyAvailability extends Page implements HasForms
         $this->form->fill([
             'availability' => $existing ?: $this->savedCells(),
         ]);
+
+        $this->seededRowIds = $this->seededRowIdsForVisitedDates();
+
+        $this->slotForm->fill($this->getDefaultAvailabilityTimes());
+    }
+
+    public function updatedMode(): void
+    {
+        if ($this->mode !== 'calendar') {
+            return;
+        }
+
+        $this->availabilityRowsCache = null;
+        $this->seedCache = null;
+
+        $this->form->fill(['availability' => $this->savedCells()]);
 
         $this->seededRowIds = $this->seededRowIdsForVisitedDates();
     }
@@ -239,7 +272,7 @@ class MyAvailability extends Page implements HasForms
     /**
      * Padded a day either side to catch rows crossing midnight.
      *
-     * @return Collection<int, \App\Models\Cts\Availability>
+     * @return Collection<int, Availability>
      */
     protected function availabilityRows(): Collection
     {
@@ -431,11 +464,258 @@ class MyAvailability extends Page implements HasForms
             ->statePath('data');
     }
 
-    public function content(Schema $schema): Schema
+    protected function getDefaultAvailabilityTimes(): array
     {
-        return $schema->components([
-            EmbeddedSchema::make('form'),
-            Livewire::make(MyAcceptedMentoringSessionsTable::class),
-        ]);
+        return auth()->user()?->availability_defaults ?? [
+            'from' => AvailabilitySetting::DEFAULT_FROM,
+            'to' => AvailabilitySetting::DEFAULT_TO,
+        ];
+    }
+
+    public function defaultAvailabilityTimesAction(): Action
+    {
+        return Action::make('defaultAvailabilityTimes')
+            ->label('Change default times')
+            ->icon('heroicon-o-cog-6-tooth')
+            ->modalHeading('Default availability times')
+            ->modalDescription('These times are pre-filled on the Add Availability form.')
+            ->modalSubmitActionLabel('Save')
+            ->form([
+                Select::make('from')
+                    ->label('From')
+                    ->required()
+                    ->searchable()
+                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
+                    ->options($this->generateTimeOptions())
+                    ->optionsLimit(100),
+
+                Select::make('to')
+                    ->label('To')
+                    ->required()
+                    ->searchable()
+                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
+                    ->options($this->generateTimeOptions())
+                    ->optionsLimit(100),
+            ])
+            ->fillForm(fn () => $this->getDefaultAvailabilityTimes())
+            ->action(function (array $data): void {
+                $user = auth()->user();
+
+                if (! $user) {
+                    return;
+                }
+
+                $start = Carbon::parse($data['from']);
+                $end = Carbon::parse($data['to']);
+
+                if ($start->greaterThan($end)) {
+                    Notification::make()
+                        ->title('The "From" time must be before the "To" time.')
+                        ->danger()
+                        ->send();
+
+                    return;
+                }
+
+                if ($end->lessThanOrEqualTo($start) || ! $this->getAvailabilityService()->meetsMinimumDuration($start, $end)) {
+                    Notification::make()
+                        ->title('Default times must be at least '.AvailabilityService::MINIMUM_SLOT_DURATION_MINUTES.' minutes apart.')
+                        ->danger()
+                        ->send();
+
+                    return;
+                }
+
+                $user->setAvailabilityDefaults($data['from'], $data['to']);
+                $this->slotForm->fill($this->getDefaultAvailabilityTimes());
+
+                Notification::make()->title('Default availability times saved')->success()->send();
+            });
+    }
+
+    public function slotForm(Schema $form): Schema
+    {
+        return $form
+            ->schema([
+                DateRangePicker::make('date_range')
+                    ->label('Date(s)')
+                    ->required()
+                    ->minDate(now()->startOfDay()),
+
+                Select::make('from')
+                    ->label('From')
+                    ->required()
+                    ->searchable()
+                    ->allowHtml(false)
+                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
+                    ->options($this->generateTimeOptions())
+                    ->optionsLimit(100),
+
+                Select::make('to')
+                    ->label('To')
+                    ->required()
+                    ->searchable()
+                    ->allowHtml(false)
+                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
+                    ->options($this->generateTimeOptions())
+                    ->optionsLimit(100),
+            ])
+            ->statePath('slotData');
+    }
+
+    public function create(): void
+    {
+        $data = $this->slotForm->getState();
+        $studentId = $this->resolveStudentId();
+
+        if (! $studentId) {
+            return;
+        }
+
+        $startDate = Carbon::parse($data['date_range']['start']);
+        $endDate = Carbon::parse($data['date_range']['end']);
+
+        $startTime = Carbon::parse("{$startDate->toDateString()} {$data['from']}", 'UTC');
+        $endTime = Carbon::parse("{$startDate->toDateString()} {$data['to']}", 'UTC');
+
+        if (! $this->getAvailabilityService()->meetsMinimumDuration($startTime, $endTime)) {
+            Notification::make()
+                ->title('Availability slots must be at least '.AvailabilityService::MINIMUM_SLOT_DURATION_MINUTES.' minutes long.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        $ranges = [];
+
+        for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
+            $dateString = $date->toDateString();
+
+            $ranges[] = [
+                Carbon::parse("{$dateString} {$data['from']}", 'UTC'),
+                Carbon::parse("{$dateString} {$data['to']}", 'UTC'),
+            ];
+        }
+
+        $counts = $this->getAvailabilityService()->addSlots($studentId, $ranges);
+
+        if ($counts['refused']) {
+            Notification::make()->title('Nothing was saved, the new slots would overlap existing availability')->danger()->send();
+
+            return;
+        }
+
+        $addedCount = $counts['added'];
+        $mergedCount = $counts['merged'];
+
+        if ($addedCount > 0 && $mergedCount > 0) {
+            Notification::make()->title("Added {$addedCount} slot(s) and expanded {$mergedCount} existing slot(s)")->warning()->send();
+        } elseif ($mergedCount > 0) {
+            Notification::make()->title("Expanded {$mergedCount} existing slot(s) to cover the new time(s)")->warning()->send();
+        } else {
+            Notification::make()->title("{$addedCount} availability slot(s) added")->success()->send();
+        }
+
+        $this->slotForm->fill($this->getDefaultAvailabilityTimes());
+    }
+
+    public function table(Table $table): Table
+    {
+        return $table
+            ->query($this->getAvailabilityService()->getFutureAvailabilityQuery(
+                $this->getAvailabilityService()->resolveMemberId(auth()->id()) ?? 0
+            ))
+            ->defaultSort('date')
+            ->columns([
+                TextColumn::make('date')
+                    ->label('Date')
+                    ->state(fn (Availability $record) => $record->bounds()[0]->toPanelDateWithWeekday()),
+
+                TextColumn::make('time_window')
+                    ->label('Time')
+                    ->state(function (Availability $record): string {
+                        [$start, $end] = $record->bounds();
+
+                        return $start->format('H:i').' - '.$end->format('H:i');
+                    }),
+
+                TextColumn::make('duration')
+                    ->label('Duration')
+                    ->state(fn (Availability $record) => $this->getAvailabilityService()->formatDuration(
+                        $record->date, $record->from, $record->to
+                    )),
+            ])
+            ->actions([
+                EditAction::make()
+                    ->iconButton()
+                    ->modalWidth('md')
+                    ->successNotification(null)
+                    ->modalSubmitActionLabel('Update')
+                    ->mutateRecordDataUsing(function (Availability $record): array {
+                        [$start, $end] = $record->bounds();
+
+                        return [
+                            'date' => $start->toDateString(),
+                            'from' => $start->format('H:i'),
+                            'to' => $end->format('H:i'),
+                        ];
+                    })
+                    ->form([
+                        DatePicker::make('date')->required()->native(false),
+                        Select::make('from')->options($this->generateTimeOptions())->required(),
+                        Select::make('to')->options($this->generateTimeOptions())->required(),
+                    ])
+                    ->action(function (Availability $record, array $data): void {
+                        $startUtc = Carbon::parse("{$data['date']} {$data['from']}", 'UTC');
+                        $endUtc = Carbon::parse("{$data['date']} {$data['to']}", 'UTC');
+
+                        [$valid, $message] = $this->getAvailabilityService()->isSlotValid(
+                            $record->student_id, $startUtc, $endUtc, $record->id
+                        );
+
+                        if (! $valid) {
+                            Notification::make()->title($message)->danger()->send();
+
+                            return;
+                        }
+
+                        if ($this->getAvailabilityService()->editSlot($record, $startUtc, $endUtc)['refused']) {
+                            Notification::make()->title('This availability slot overlaps with an existing entry.')->danger()->send();
+
+                            return;
+                        }
+
+                        Notification::make()->title('Availability updated')->success()->send();
+                    }),
+                Action::make('delete')
+                    ->icon('heroicon-m-trash')
+                    ->color('danger')
+                    ->iconButton()
+                    ->requiresConfirmation(false)
+                    ->action(fn (Availability $record) => $this->getAvailabilityService()->removeSlots($record->student_id, [$record])),
+            ])
+            ->bulkActions([
+                DeleteBulkAction::make()
+                    ->using(fn (Collection $records) => $this->getAvailabilityService()->removeSlots($this->resolveStudentId() ?? 0, $records)),
+            ])
+            ->emptyStateHeading('No availability added yet')
+            ->emptyStateDescription('Use the form to add your availability slots.')
+            ->paginated([10, 25, 50])
+            ->defaultPaginationPageOption(25);
+    }
+
+    protected function generateTimeOptions(): array
+    {
+        $options = [];
+
+        for ($h = 0; $h < 24; $h++) {
+            for ($m = 0; $m < 60; $m += 15) {
+                $time = sprintf('%02d:%02d', $h, $m);
+                $options[$time] = $time;
+            }
+        }
+
+        return $options;
     }
 }

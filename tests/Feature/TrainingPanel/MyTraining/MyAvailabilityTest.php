@@ -160,14 +160,19 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
-    public function it_does_not_render_the_old_form_or_table(): void
+    public function it_shows_the_calendar_by_default_and_the_form_when_toggled(): void
     {
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
             ->assertSuccessful()
+            ->assertSee('Save availability')
             ->assertDontSee('Date(s)')
-            ->assertDontSee('Change default times')
-            ->assertDontSee('No availability added yet');
+            ->assertDontSee('No availability added yet')
+            ->set('mode', 'form')
+            ->assertSee('Date(s)')
+            ->assertSee('Change default times')
+            ->assertSee('No availability added yet')
+            ->assertDontSee('Save availability');
     }
 
     #[Test]
