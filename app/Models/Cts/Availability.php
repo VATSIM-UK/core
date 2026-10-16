@@ -40,6 +40,25 @@ class Availability extends Model
         return $this->belongsTo(Member::class, 'student_id', 'id');
     }
 
+    /**
+     * UTC start and end; the end rolls to the next day when `to` is before `from`.
+     *
+     * @return array{0: Carbon, 1: Carbon}
+     */
+    public function bounds(): array
+    {
+        $date = $this->date->format('Y-m-d');
+
+        $start = Carbon::parse($date.' '.$this->from->format('H:i:s'), 'UTC');
+        $end = Carbon::parse($date.' '.$this->to->format('H:i:s'), 'UTC');
+
+        if ($this->to->format('H:i:s') < $this->from->format('H:i:s')) {
+            $end->addDay();
+        }
+
+        return [$start, $end];
+    }
+
     public function getFormattedTimeSlotAttribute(): string
     {
         return $this->date->format('Y-m-d').' from '.

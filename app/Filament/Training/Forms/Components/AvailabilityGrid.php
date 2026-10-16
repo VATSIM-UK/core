@@ -3,6 +3,7 @@
 namespace App\Filament\Training\Forms\Components;
 
 use App\Services\Training\Availability\AvailabilityPlanner;
+use App\Services\Training\AvailabilityService;
 use Carbon\Carbon;
 use Closure;
 use Filament\Forms\Components\Field;
@@ -23,9 +24,7 @@ class AvailabilityGrid extends Field
 
     protected Carbon|Closure|null $now = null;
 
-    /**
-     * The visible hour window the grid renders by default, 24 meaning midnight at the end of the day.
-     */
+    /** A $to of 24 is midnight at the end of the day. */
     public function hours(int $from, int $to): static
     {
         $this->fromHour = $from;
@@ -77,8 +76,6 @@ class AvailabilityGrid extends Field
     }
 
     /**
-     * Every quarter-hour clock time of the day, as H:i strings; those outside the window show only overnight.
-     *
      * @return array<int, string>
      */
     public function getTimes(): array
@@ -111,6 +108,11 @@ class AvailabilityGrid extends Field
     public function getStep(): int
     {
         return AvailabilityPlanner::STEP_MINUTES;
+    }
+
+    public function getMinimumSlotMinutes(): int
+    {
+        return AvailabilityService::MINIMUM_SLOT_DURATION_MINUTES;
     }
 
     /**

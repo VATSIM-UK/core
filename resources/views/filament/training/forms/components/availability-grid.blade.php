@@ -4,6 +4,7 @@
 	$lockedCells = $field->getLockedCells();
 	$now = $field->getNow();
 	$step = $field->getStep();
+	$minimum = $field->getMinimumSlotMinutes();
 	$today = $now->toDateString();
 	$nowSlot = $now->copy()->ceilMinutes($step)->format('Y-m-d H:i');
 @endphp
@@ -15,20 +16,22 @@
     mode: true,
     last: null,
     overnight: {{ $field->isOvernightOpen() ? 'true' : 'false' }},
-    locked: @js($lockedCells),
+    locked: new Set(@js($lockedCells)),
     dates: @js($dates),
     now: @js($now->getTimestampMs()),
     hours: @js([sprintf('%02d:00', $field->getFromHour()), sprintf('%02d:00', $field->getToHour())]),
-    warned: [],
+    painted: new Set(),
+    warned: new Set(),
+    runs: [],
     has(slot) {
-        return (this.state ?? []).includes(slot)
+        return this.painted.has(slot)
     },
     set(slots, value) {
         const current = new Set(this.state ?? [])
         let changed = false
 
         for (const slot of slots) {
-            if (this.locked.includes(slot) || current.has(slot) === value) {
+            if (this.locked.has(slot) || current.has(slot) === value) {
                 continue
             }
 
@@ -111,7 +114,7 @@
         const cells = this.$store.availabilityClipboard.cells ?? []
         const targets = cells.map((cell) => this.dates[cell.day] + ' ' + cell.time)
         const pasted = targets.filter((slot) =>
-            !this.locked.includes(slot) && Date.parse(slot.replace(' ', 'T') + ':00Z') >= this.now)
+            !this.locked.has(slot) && Date.parse(slot.replace(' ', 'T') + ':00Z') >= this.now)
 
         this.state = [...(this.state ?? []).filter((slot) => !this.inWeek(slot)), ...pasted]
         this.recompute()
@@ -147,18 +150,21 @@
         return runs
     },
     recompute() {
-        const warned = []
+        const runs = this.ranges()
+        const warned = new Set()
 
-        for (const run of this.ranges()) {
+        for (const run of runs) {
             if (this.isShort(run)) {
-                warned.push(...run.cells)
+                run.cells.forEach((slot) => warned.add(slot))
             }
         }
 
+        this.painted = new Set(this.state ?? [])
         this.warned = warned
+        this.runs = runs
     },
     isShort(run) {
-        return run.cells.length < 3
+        return run.end - run.start < {{ $minimum }} * 60000
     },
     clock(timestamp) {
         return new Date(timestamp).toISOString().slice(11, 16)
@@ -171,7 +177,7 @@
             ' ' + pad(date.getUTCDate()) + '. ' + pad(date.getUTCMonth() + 1) + '.'
     },
     runLabel(run) {
-        return this.day(run.start) + ' · ' + this.clock(run.start) + ' – ' + this.clock(run.end)
+        return this.day(run.start) + ', ' + this.clock(run.start) + ' - ' + this.clock(run.end)
     },
     init() {
         if (!Alpine.store('availabilityClipboard')) {
@@ -179,6 +185,7 @@
         }
 
         this.recompute()
+        this.$watch('state', () => this.recompute())
     },
 }"
 		data-overnight="{{ $field->isOvernightOpen() ? '1' : '0' }}"
@@ -188,7 +195,7 @@
 			<div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500 dark:!text-gray-400">
 				@foreach ([
 								'Available' => 'bg-success-500',
-								'Under 45 minutes, not saved' => 'bg-warning-400 dark:bg-warning-500',
+								"Under {$minimum} minutes, not saved" => 'bg-warning-400 dark:bg-warning-500',
 								"Saved, can't be edited" => 'bg-success-500/40',
 								'Past' => 'bg-gray-100 ring-1 ring-gray-200 dark:bg-white/5 dark:ring-white/10',
 				] as $label => $swatch)
@@ -293,8 +300,8 @@
 								@if ($isLocked) title="Saved availability that can't be edited here" @endif
 								@if ($isEditable) :class="{
 								    '{{ $paintedBorder }}': has('{{ $slot }}'),
-								    '!bg-success-500': has('{{ $slot }}') && !warned.includes('{{ $slot }}'),
-								    '!bg-warning-400 dark:!bg-warning-500': has('{{ $slot }}') && warned.includes('{{ $slot }}'),
+								    '!bg-success-500': has('{{ $slot }}') && !warned.has('{{ $slot }}'),
+								    '!bg-warning-400 dark:!bg-warning-500': has('{{ $slot }}') && warned.has('{{ $slot }}'),
 								    'hover:bg-success-100 dark:hover:bg-success-500/20': !has('{{ $slot }}'),
 								}" @endif>
 							</div>
@@ -307,12 +314,12 @@
 		<div class="flex flex-col gap-2">
 			<p class="text-sm font-medium text-gray-950 dark:text-white">To be saved</p>
 
-			<p class="text-sm text-gray-500 dark:!text-gray-400" x-show="ranges().length === 0">
+			<p class="text-sm text-gray-500 dark:!text-gray-400" x-show="runs.length === 0">
 				Nothing painted yet.
 			</p>
 
-			<div class="flex flex-wrap gap-2" x-show="ranges().length > 0">
-				<template x-for="run in ranges()" :key="run.date + run.start">
+			<div class="flex flex-wrap gap-2" x-show="runs.length > 0">
+				<template x-for="run in runs" :key="run.date + run.start">
 					<div>
 						<template x-if="! isShort(run)">
 							<x-filament::badge color="success" icon="heroicon-m-clock">
@@ -322,7 +329,7 @@
 
 						<template x-if="isShort(run)">
 							<x-filament::badge color="warning" icon="heroicon-m-exclamation-triangle"
-								x-tooltip="'Under 45 minutes, this will not be saved'">
+								x-tooltip="'Under {{ $minimum }} minutes, this will not be saved'">
 								<span x-text="runLabel(run)"></span>
 							</x-filament::badge>
 						</template>

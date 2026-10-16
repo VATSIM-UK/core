@@ -22,8 +22,6 @@ class AvailabilityPlanner
     private const ELIGIBLE = 'eligible';
 
     /**
-     * Cell keys the grid should show as painted, and those it must refuse to paint.
-     *
      * @param  array<int, string>  $dates  Y-m-d strings.
      * @return array{cells: array<int, string>, lockedCells: array<int, string>}
      */
@@ -35,7 +33,7 @@ class AvailabilityPlanner
         $lockedCells = [];
 
         foreach ($rows as $row) {
-            [$start, $end] = $this->boundsFor($row);
+            [$start, $end] = $row->bounds();
 
             if ($this->classifyRow($row, $start, $end, $boundary) === self::ELIGIBLE) {
                 $editableFrom = $start->greaterThan($boundary) ? $start : $boundary;
@@ -59,17 +57,15 @@ class AvailabilityPlanner
     }
 
     /**
-     * Decide, from the saved rows and the painted cells, what to add, edit, merge or remove.
-     *
      * @param  array<int, string>  $dates  Y-m-d strings.
-     * @param  array<int, string>  $paintedCells  Y-m-d H:i strings on step boundaries.
-     * @param  array<int, int>|null  $seededRowIds  The rows the client state was seeded from. When
-     *                                              null every row counts as seeded; when an array, a
-     *                                              row outside it is never emitted as removed.
+     * @param  array<int, mixed>  $paintedCells  Y-m-d H:i strings from the client.
+     * @param  array<int, int>|null  $seededRowIds  Rows outside it are never removed; null means all rows.
      */
     public function plan(array $dates, Collection $rows, array $paintedCells, Carbon $now, ?array $seededRowIds = null): AvailabilityPlan
     {
         $boundary = $this->firstCellBoundaryAtOrAfter($now);
+
+        $paintedCells = $this->usableCells($paintedCells, $rows, $boundary, $seededRowIds);
 
         $entries = [];
         $skippedShortRuns = 0;
@@ -95,8 +91,6 @@ class AvailabilityPlanner
     }
 
     /**
-     * Plan a single date: match its painted ranges against the eligible rows anchored to it.
-     *
      * @param  array<int, string>  $paintedCells
      * @param  array<int, int>|null  $seededRowIds
      * @return array{0: array<int, array{date: string, sort: Carbon, change: AvailabilityChange}>, 1: int}
@@ -110,7 +104,7 @@ class AvailabilityPlanner
                 continue;
             }
 
-            [$start, $end] = $this->boundsFor($row);
+            [$start, $end] = $row->bounds();
 
             if ($this->classifyRow($row, $start, $end, $boundary) !== self::ELIGIBLE) {
                 continue;
@@ -173,7 +167,7 @@ class AvailabilityPlanner
                 $match = $overlapping[0];
                 $consumed[spl_object_id($match['row'])] = true;
 
-                $newFrom = $match['start']->lessThan($match['refStart']) ? $match['start'] : $from;
+                $newFrom = $this->keepsPastStart($match, $from) ? $match['start'] : $from;
 
                 if ($newFrom->equalTo($match['start']) && $to->equalTo($match['end'])) {
                     $entries[] = $this->entry($date, $match['start'], new AvailabilityChange(
@@ -203,7 +197,7 @@ class AvailabilityPlanner
             $target = $overlapping[0];
             $consumed[spl_object_id($target['row'])] = true;
 
-            $newFrom = $target['start']->lessThan($target['refStart']) ? $target['start'] : $from;
+            $newFrom = $this->keepsPastStart($target, $from) ? $target['start'] : $from;
             $swallowed = [];
 
             foreach (array_slice($overlapping, 1) as $match) {
@@ -253,28 +247,54 @@ class AvailabilityPlanner
     }
 
     /**
-     * The row's UTC instants, anchored to its stored date, spanning into the
-     * next day whenever the stored end time is earlier than the stored start.
+     * A started row keeps its past start only while the paint begins at the first editable cell.
      *
-     * @return array{0: Carbon, 1: Carbon}
+     * @param  array{start: Carbon, refStart: Carbon}  $candidate
      */
-    private function boundsFor(Availability $row): array
+    private function keepsPastStart(array $candidate, Carbon $from): bool
     {
-        $date = $row->date->format('Y-m-d');
-
-        $start = Carbon::parse($date.' '.$row->from->format('H:i:s'), 'UTC');
-        $end = Carbon::parse($date.' '.$row->to->format('H:i:s'), 'UTC');
-
-        if ($row->to->format('H:i:s') < $row->from->format('H:i:s')) {
-            $end->addDay();
-        }
-
-        return [$start, $end];
+        return $candidate['start']->lessThan($candidate['refStart']) && $from->equalTo($candidate['refStart']);
     }
 
     /**
-     * Classify a row against its bounds and the first editable cell boundary.
+     * Drops malformed, unaligned and past cells, and cells over seeded rows that are no longer
+     * editable. Paint over unseen rows is kept so the overlap guard refuses it.
+     *
+     * @param  array<int, mixed>  $cells
+     * @param  array<int, int>|null  $seededRowIds
+     * @return array<int, string>
      */
+    private function usableCells(array $cells, Collection $rows, Carbon $boundary, ?array $seededRowIds): array
+    {
+        $locked = [];
+
+        foreach ($rows as $row) {
+            if ($seededRowIds !== null && ! in_array($row->getKey(), $seededRowIds, true)) {
+                continue;
+            }
+
+            [$start, $end] = $row->bounds();
+
+            if ($this->classifyRow($row, $start, $end, $boundary) !== self::ELIGIBLE) {
+                foreach ($this->intersectingCells($start, $end) as $cell) {
+                    $locked[$cell] = true;
+                }
+            }
+        }
+
+        return array_values(array_filter($cells, function (mixed $cell) use ($locked, $boundary): bool {
+            if (! is_string($cell) || isset($locked[$cell]) || ! preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $cell)) {
+                return false;
+            }
+
+            $instant = Carbon::createFromFormat('!Y-m-d H:i', $cell, 'UTC');
+
+            return $instant->format('Y-m-d H:i') === $cell
+                && $this->isAligned($instant)
+                && $instant->greaterThanOrEqualTo($boundary);
+        }));
+    }
+
     private function classifyRow(Availability $row, Carbon $start, Carbon $end, Carbon $boundary): string
     {
         $from = $row->from->format('H:i:s');
@@ -299,9 +319,6 @@ class AvailabilityPlanner
         return self::ELIGIBLE;
     }
 
-    /**
-     * The first cell boundary at or after the given instant.
-     */
     private function firstCellBoundaryAtOrAfter(Carbon $now): Carbon
     {
         $boundary = Carbon::parse($now->format('Y-m-d H:00'), 'UTC');
@@ -319,8 +336,6 @@ class AvailabilityPlanner
     }
 
     /**
-     * Cell keys covering the aligned, half-open range [start, end).
-     *
      * @return array<int, string>
      */
     private function cellsForRange(Carbon $start, Carbon $end): array
@@ -335,8 +350,6 @@ class AvailabilityPlanner
     }
 
     /**
-     * Every cell the half-open range [start, end) intersects, floored to a step boundary.
-     *
      * @return array<int, string>
      */
     private function intersectingCells(Carbon $start, Carbon $end): array
@@ -348,8 +361,6 @@ class AvailabilityPlanner
     }
 
     /**
-     * Merge consecutive cell keys into ranges; a range ends one step after its last cell.
-     *
      * @param  array<int, string>  $cells
      * @return array<int, array{0: Carbon, 1: Carbon}>
      */
@@ -395,8 +406,6 @@ class AvailabilityPlanner
     }
 
     /**
-     * Keep only cells on the requested dates, sorted and de-duplicated.
-     *
      * @param  array<int, string>  $cells
      * @param  array<int, string>  $dates
      * @return array<int, string>

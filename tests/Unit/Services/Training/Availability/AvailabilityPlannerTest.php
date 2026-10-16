@@ -229,12 +229,36 @@ class AvailabilityPlannerTest extends TestCase
     }
 
     #[Test]
-    public function it_reports_a_started_row_as_unchanged_when_an_erased_leading_cell_leaves_its_stored_bounds(): void
+    public function it_moves_a_started_row_start_when_its_first_editable_cell_is_erased(): void
     {
         $row = $this->row('2026-10-16', '16:00:00', '21:00:00');
         $plan = (new AvailabilityPlanner)->plan(['2026-10-16'], collect([$row]), $this->cells('2026-10-16', '17:15', 15), Carbon::parse('2026-10-16 16:50', 'UTC'));
         $this->assertCount(1, $plan->changes);
-        $this->assertSame(AvailabilityChangeType::Unchanged, $plan->changes[0]->type);
+        $this->assertSame(AvailabilityChangeType::Edited, $plan->changes[0]->type);
+        $this->assertSame('2026-10-16 17:15', $plan->changes[0]->newFrom->format('Y-m-d H:i'));
+        $this->assertSame('2026-10-16 21:00', $plan->changes[0]->newTo->format('Y-m-d H:i'));
+    }
+
+    #[Test]
+    public function it_drops_malformed_unaligned_and_past_cells(): void
+    {
+        $cells = ['x', ['nested'], '2026-10-16 25:00', '2026-10-16 18:07', '2026-10-16 09:00', ...$this->cells('2026-10-16', '18:00', 4)];
+        $plan = (new AvailabilityPlanner)->plan(['2026-10-16'], collect(), $cells, Carbon::parse('2026-10-16 10:00', 'UTC'));
+        $this->assertCount(1, $plan->changes);
+        $this->assertSame(AvailabilityChangeType::Added, $plan->changes[0]->type);
+        $this->assertSame('2026-10-16 18:00', $plan->changes[0]->newFrom->format('Y-m-d H:i'));
+        $this->assertSame('2026-10-16 19:00', $plan->changes[0]->newTo->format('Y-m-d H:i'));
+        $this->assertSame(0, $plan->skippedShortRuns);
+    }
+
+    #[Test]
+    public function it_leaves_a_row_that_became_uneditable_since_seeding_untouched(): void
+    {
+        $row = $this->row('2026-10-16', '10:00:00', '11:00:00');
+        $row->id = 7;
+        $seed = (new AvailabilityPlanner)->seed(['2026-10-16'], collect([$row]), Carbon::parse('2026-10-16 09:50', 'UTC'));
+        $plan = (new AvailabilityPlanner)->plan(['2026-10-16'], collect([$row]), $seed['cells'], Carbon::parse('2026-10-16 10:20', 'UTC'), [7]);
+        $this->assertSame([], $plan->changes);
     }
 
     #[Test]

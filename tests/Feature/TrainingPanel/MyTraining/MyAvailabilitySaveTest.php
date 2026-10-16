@@ -288,12 +288,13 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
     {
         $tomorrow = now()->addDay()->toDateString();
 
+        $component = Livewire::actingAs($this->studentAccount)->test(MyAvailability::class);
+
         Availability::factory()->forStudent($this->studentMember->id)->create([
             'date' => $tomorrow, 'from' => '18:05:00', 'to' => '21:00:00', 'type' => 'S',
         ]);
 
-        Livewire::actingAs($this->studentAccount)
-            ->test(MyAvailability::class)
+        $component
             ->set('data.availability', $this->cells($tomorrow, '18:00', 12))
             ->call('save')
             ->assertNotified(
@@ -304,5 +305,21 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             );
 
         $this->assertSame(1, Availability::where('student_id', $this->studentMember->id)->count());
+    }
+
+    #[Test]
+    public function it_keeps_a_row_added_elsewhere_on_an_open_date_after_switching_weeks(): void
+    {
+        $friday = now()->addDays(2)->toDateString();
+
+        $component = Livewire::actingAs($this->studentAccount)->test(MyAvailability::class);
+
+        $other = Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => $friday, 'from' => '18:00:00', 'to' => '20:00:00', 'type' => 'S',
+        ]);
+
+        $component->call('nextWeek')->call('save');
+
+        $this->assertNotNull($other->fresh());
     }
 }

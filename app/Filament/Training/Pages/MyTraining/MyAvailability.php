@@ -37,7 +37,6 @@ class MyAvailability extends Page implements HasForms
 
     protected static ?int $navigationSort = 15;
 
-    /** Default visible hours, picked from when sessions actually happen. */
     public const FROM_HOUR = 8;
 
     public const TO_HOUR = 22;
@@ -49,7 +48,7 @@ class MyAvailability extends Page implements HasForms
     #[Locked]
     public array $visitedDates = [];
 
-    /** @var array<int, int> The saved row ids the current client state was seeded from. */
+    /** @var array<int, int> */
     public array $seededRowIds = [];
 
     private ?Collection $availabilityRowsCache = null;
@@ -135,8 +134,6 @@ class MyAvailability extends Page implements HasForms
     }
 
     /**
-     * The seven Y-m-d dates of a Monday-based week, offset from the current week.
-     *
      * @return array<int, string>
      */
     public function weekDates(int $offset): array
@@ -156,9 +153,6 @@ class MyAvailability extends Page implements HasForms
         return $this->weekDates($this->weekOffset);
     }
 
-    /**
-     * The visible week as a human-readable range for the week navigation header.
-     */
     public function visibleWeekRange(): string
     {
         $dates = $this->visibleWeekDates();
@@ -180,9 +174,6 @@ class MyAvailability extends Page implements HasForms
         $this->goToWeek($this->weekOffset - 1);
     }
 
-    /**
-     * Reconcile the painted grid against the saved rows and write the plan.
-     */
     public function save(): void
     {
         $studentId = $this->resolveStudentId();
@@ -212,8 +203,6 @@ class MyAvailability extends Page implements HasForms
     }
 
     /**
-     * Editable saved cell keys across every date the student has opened.
-     *
      * @return array<int, string>
      */
     public function savedCells(): array
@@ -222,8 +211,6 @@ class MyAvailability extends Page implements HasForms
     }
 
     /**
-     * Saved cell keys the grid shows but refuses to paint.
-     *
      * @return array<int, string>
      */
     public function lockedCells(): array
@@ -248,8 +235,7 @@ class MyAvailability extends Page implements HasForms
     }
 
     /**
-     * Saved rows across every visited date, expanded by a day either side so a
-     * row anchored just outside the range can still be matched.
+     * Padded a day either side to catch rows crossing midnight.
      *
      * @return Collection<int, \App\Models\Cts\Availability>
      */
@@ -272,8 +258,6 @@ class MyAvailability extends Page implements HasForms
     }
 
     /**
-     * Run the planner's seeding over every visited date, once per request.
-     *
      * @return array{cells: array<int, string>, lockedCells: array<int, string>}
      */
     protected function seed(): array
@@ -290,9 +274,7 @@ class MyAvailability extends Page implements HasForms
     }
 
     /**
-     * The ids of every saved row the current client state was derived from. The
-     * planner treats a row outside this set as invisible to the student and never
-     * removes it, so a row added between seeding and saving survives the save.
+     * The planner never removes a row outside this set, so rows added after seeding survive a save.
      *
      * @return array<int, int>
      */
@@ -312,10 +294,7 @@ class MyAvailability extends Page implements HasForms
         return $this->studentIdCache = $this->getAvailabilityService()->resolveMemberId((int) auth()->id());
     }
 
-    /**
-     * Move to a week, registering its dates and seeding any newly visible saved
-     * cells into state without discarding paint already made.
-     */
+    /** Only rows on newly opened dates join the seeded set; see seededRowIdsForVisitedDates(). */
     private function goToWeek(int $offset): void
     {
         $this->weekOffset = max(0, $offset);
@@ -343,7 +322,13 @@ class MyAvailability extends Page implements HasForms
             'availability' => array_values(array_unique(array_merge($existing, $newCells))),
         ]);
 
-        $this->seededRowIds = $this->seededRowIdsForVisitedDates();
+        $this->seededRowIds = array_values(array_unique(array_merge(
+            $this->seededRowIds,
+            $this->availabilityRows()
+                ->filter(fn ($row) => in_array($row->date->format('Y-m-d'), $newDates, true))
+                ->pluck('id')
+                ->all(),
+        )));
     }
 
     /**
@@ -382,9 +367,9 @@ class MyAvailability extends Page implements HasForms
         if ($parts === [] && $skipped === 0) {
             $title = 'No changes to save';
         } elseif ($skipped === 1) {
-            $title = 'Availability saved - 1 selection was under 45 minutes';
+            $title = 'Availability saved - 1 selection was under '.AvailabilityService::MINIMUM_SLOT_DURATION_MINUTES.' minutes';
         } elseif ($skipped > 1) {
-            $title = "Availability saved - {$skipped} selections were under 45 minutes";
+            $title = "Availability saved - {$skipped} selections were under ".AvailabilityService::MINIMUM_SLOT_DURATION_MINUTES.' minutes';
         } else {
             $title = 'Availability saved';
         }
