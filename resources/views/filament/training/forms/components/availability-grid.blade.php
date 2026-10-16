@@ -177,7 +177,7 @@
             ' ' + pad(date.getUTCDate()) + '. ' + pad(date.getUTCMonth() + 1) + '.'
     },
     runLabel(run) {
-        return this.day(run.start) + ', ' + this.clock(run.start) + ' - ' + this.clock(run.end)
+        return this.day(run.start) + ' ' + this.clock(run.start) + ' - ' + this.clock(run.end)
     },
     init() {
         if (!Alpine.store('availabilityClipboard')) {
