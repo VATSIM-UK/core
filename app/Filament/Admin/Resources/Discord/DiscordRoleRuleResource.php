@@ -47,7 +47,7 @@ class DiscordRoleRuleResource extends Resource
                 TextInput::make('discord_id')
                     ->label('Discord role ID')
                     ->required()
-                    ->numeric()
+                    ->rule('digits_between:1,20')
                     ->helperText('The Discord role snowflake this rule manages.'),
                 Select::make('permission_id')
                     ->label('Requires permission')
@@ -165,16 +165,25 @@ class DiscordRoleRuleResource extends Resource
     {
         $role = $guildRoles->first(fn ($role) => is_array($role) && (int) ($role['id'] ?? 0) === (int) $discordId);
 
+        $idLine = sprintf('<span style="font-size:0.75rem;color:#6b7280">%s</span>', e($discordId));
+
         if (! $role) {
-            return e($discordId);
+            return sprintf(
+                '<span style="display:inline-flex;flex-direction:column;gap:0.15rem;line-height:1.15">'
+                .'<span style="display:inline-flex;align-items:center;gap:0.4rem;color:#dc2626;font-weight:600">'
+                .'<span>Not found on Discord</span></span>%s</span>',
+                $idLine,
+            );
         }
 
         return sprintf(
-            '<span style="display:inline-flex;align-items:center;gap:0.5rem">'
+            '<span style="display:inline-flex;flex-direction:column;gap:0.15rem;line-height:1.15">'
+            .'<span style="display:inline-flex;align-items:center;gap:0.5rem">'
             .'<span style="display:inline-block;width:0.85rem;height:0.85rem;border-radius:9999px;background:%s;border:1px solid rgba(0,0,0,0.15)"></span>'
-            .'<span>%s</span></span>',
+            .'<span>%s</span></span>%s</span>',
             static::discordColourHex((int) ($role['color'] ?? 0)),
             e((string) ($role['name'] ?? $discordId)),
+            $idLine,
         );
     }
 

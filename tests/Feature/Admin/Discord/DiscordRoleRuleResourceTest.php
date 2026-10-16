@@ -201,7 +201,20 @@ class DiscordRoleRuleResourceTest extends BaseAdminResourceTestCase
         DiscordRoleRule::factory()->create(['discord_id' => '111']);
 
         Livewire::test(ListDiscordRoleRules::class)
-            ->assertSee('Tower Student');
+            ->assertSee('Tower Student')
+            ->assertSee('111');
+    }
+
+    #[Test]
+    public function the_list_warns_when_the_discord_role_is_not_found(): void
+    {
+        $this->actingAsAdminUser(['discord.role-rule.view']);
+
+        DiscordRoleRule::factory()->create(['discord_id' => '1111111111111111111']);
+
+        Livewire::test(ListDiscordRoleRules::class)
+            ->assertSee('Not found on Discord')
+            ->assertSee('1111111111111111111');
     }
 
     #[Test]
@@ -218,5 +231,24 @@ class DiscordRoleRuleResourceTest extends BaseAdminResourceTestCase
 
         Queue::assertNotPushed(SyncDiscordRoleRuleMembers::class);
         Queue::assertNotPushed(SyncToDiscord::class);
+    }
+
+    #[Test]
+    public function it_stores_a_discord_snowflake_without_loss_of_precision(): void
+    {
+        $this->actingAsAdminUser(['discord.role-rule.view', 'discord.role-rule.edit']);
+
+        Livewire::test(CreateDiscordRoleRule::class)
+            ->fillForm([
+                'name' => 'Snowflake',
+                'discord_id' => '1032739175948099594',
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $this->assertSame(
+            '1032739175948099594',
+            DiscordRoleRule::where('name', 'Snowflake')->first()->discord_id,
+        );
     }
 }
