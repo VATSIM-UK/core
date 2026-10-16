@@ -59,4 +59,21 @@ class RemoveDiscordRoleFromMembersTest extends TestCase
             fn (RemoveDiscordRoleFromMembers $job) => $job->getRoleId() === 999,
         );
     }
+
+    #[Test]
+    public function a_member_no_longer_in_the_guild_does_not_abort_the_removal(): void
+    {
+        Http::fake([
+            'discord.com/api/v10/guilds/12345/members/111111111111111111/roles/999' => Http::response(['message' => 'Unknown Member'], 404),
+            'discord.com/api/v10/guilds/12345/members/222222222222222222/roles/999' => Http::response(null, 204),
+        ]);
+
+        Account::factory()->createQuietly(['discord_id' => '111111111111111111']);
+        $b = Account::factory()->createQuietly(['discord_id' => '222222222222222222']);
+
+        (new RemoveDiscordRoleFromMembers(999))->handle();
+
+        Http::assertSentCount(2);
+        Http::assertSent(fn ($request) => $request->url() === "https://discord.com/api/v10/guilds/12345/members/{$b->discord_id}/roles/999");
+    }
 }

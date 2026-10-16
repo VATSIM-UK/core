@@ -47,7 +47,7 @@ class DiscordRoleRuleResource extends Resource
                 TextInput::make('discord_id')
                     ->label('Discord role ID')
                     ->required()
-                    ->rule('digits_between:1,20')
+                    ->rule('digits_between:1,19')
                     ->helperText('The Discord role snowflake this rule manages.'),
                 Select::make('permission_id')
                     ->label('Requires permission')
