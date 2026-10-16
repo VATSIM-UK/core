@@ -10,16 +10,31 @@ use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use App\Models\Permission;
 use App\Models\Roster;
+use App\Observers\DiscordRoleRuleObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+#[ObservedBy([DiscordRoleRuleObserver::class])]
 class DiscordRoleRule extends Model
 {
     use HasFactory;
 
     public $timestamps = false;
+
+    protected $fillable = [
+        'name',
+        'discord_id',
+        'permission_id',
+        'qualification_id',
+        'state_id',
+        'cts_may_control_contains',
+        'endorsable_type',
+        'endorsable_id',
+        'position_type',
+    ];
 
     protected $casts = [
         'permission_id' => 'int',
@@ -75,6 +90,31 @@ class DiscordRoleRule extends Model
             && $this->accountSatisfiesSoloEndorsementPositionTypeRequirement($account);
     }
 
+    /**
+     * Superset of accounts to evaluate with accountSatisfies(), narrowed by the
+     * rule's most selective queryable condition.
+     *
+     * @return Builder<Account>
+     */
+    public function candidateAccountsQuery(): Builder
+    {
+        if ($this->permission_id) {
+            return Account::permission($this->permission)->whereNotNull('discord_id');
+        }
+
+        if ($this->qualification_id) {
+            return Account::whereHas('qualifications', fn ($query) => $query->whereKey($this->qualification_id))
+                ->whereNotNull('discord_id');
+        }
+
+        if ($this->state_id) {
+            return Account::whereHas('states', fn ($query) => $query->whereKey($this->state_id))
+                ->whereNotNull('discord_id');
+        }
+
+        return Account::whereNotNull('discord_id');
+    }
+
     protected function accountSatisfiesPermissionRequirement(Account $account): bool
     {
         return ! $this->permission_id || $account->hasPermissionTo($this->permission_id);
@@ -107,7 +147,7 @@ class DiscordRoleRule extends Model
     protected function accountSatisfiesCanControlOnRosterRequirement(Account $account): bool
     {
         if ($this->endorsable instanceof Position) {
-            return Roster::firstWhere('account_id', $account->getKey())
+            return (bool) Roster::firstWhere('account_id', $account->getKey())
                 ?->accountCanControl($this->endorsable);
         }
 

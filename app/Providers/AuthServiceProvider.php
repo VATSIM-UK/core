@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Atc\PositionGroup;
 use App\Models\Cts\Session;
+use App\Models\Discord\DiscordRoleRule;
 use App\Models\Mship\Account\Ban;
 use App\Models\Mship\Account\EndorsementRequest;
 use App\Models\Mship\Account\Note;
@@ -14,6 +15,7 @@ use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListRetentionCheck;
 use App\Models\VisitTransfer;
+use App\Policies\Discord\DiscordRoleRulePolicy;
 use App\Policies\FeedbackPolicy;
 use App\Policies\Mship\Account\BanPolicy;
 use App\Policies\Mship\Account\EndorsementRequestPolicy;
@@ -53,6 +55,7 @@ class AuthServiceProvider extends ServiceProvider
         Feedback::class => FeedbackPolicy::class,
         EndorsementRequest::class => EndorsementRequestPolicy::class,
         PositionGroup::class => PositionGroupPolicy::class,
+        DiscordRoleRule::class => DiscordRoleRulePolicy::class,
 
         Ban::class => BanPolicy::class,
         Role::class => RolePolicy::class,
