@@ -21,6 +21,8 @@ class AvailabilityPlanner
 
     private const ELIGIBLE = 'eligible';
 
+    private const BEYOND_WINDOW = 'beyond-window';
+
     /**
      * @param  array<int, string>  $dates  Y-m-d strings.
      * @return array{cells: array<int, string>, lockedCells: array<int, string>}
@@ -28,6 +30,7 @@ class AvailabilityPlanner
     public function seed(array $dates, Collection $rows, Carbon $now): array
     {
         $boundary = $this->firstCellBoundaryAtOrAfter($now);
+        $maxDate = AvailabilityService::lastAllowedDate($now);
 
         $cells = [];
         $lockedCells = [];
@@ -35,7 +38,7 @@ class AvailabilityPlanner
         foreach ($rows as $row) {
             [$start, $end] = $row->bounds();
 
-            if ($this->classifyRow($row, $start, $end, $boundary) === self::ELIGIBLE) {
+            if ($this->classifyRow($row, $start, $end, $boundary, $maxDate) === self::ELIGIBLE) {
                 $editableFrom = $start->greaterThan($boundary) ? $start : $boundary;
 
                 $cells = array_merge($cells, $this->cellsForRange($editableFrom, $end));
@@ -64,14 +67,15 @@ class AvailabilityPlanner
     public function plan(array $dates, Collection $rows, array $paintedCells, Carbon $now, ?array $seededRowIds = null): AvailabilityPlan
     {
         $boundary = $this->firstCellBoundaryAtOrAfter($now);
+        $maxDate = AvailabilityService::lastAllowedDate($now);
 
-        $paintedCells = $this->usableCells($paintedCells, $rows, $boundary, $seededRowIds);
+        $paintedCells = $this->usableCells($paintedCells, $rows, $boundary, $maxDate, $seededRowIds);
 
         $entries = [];
         $skippedShortRuns = 0;
 
         foreach ($dates as $date) {
-            [$dateEntries, $skipped] = $this->planDate($date, $rows, $paintedCells, $boundary, $seededRowIds);
+            [$dateEntries, $skipped] = $this->planDate($date, $rows, $paintedCells, $boundary, $maxDate, $seededRowIds);
             $skippedShortRuns += $skipped;
             $entries = array_merge($entries, $dateEntries);
         }
@@ -95,7 +99,7 @@ class AvailabilityPlanner
      * @param  array<int, int>|null  $seededRowIds
      * @return array{0: array<int, array{date: string, sort: Carbon, change: AvailabilityChange}>, 1: int}
      */
-    private function planDate(string $date, Collection $rows, array $paintedCells, Carbon $boundary, ?array $seededRowIds): array
+    private function planDate(string $date, Collection $rows, array $paintedCells, Carbon $boundary, Carbon $maxDate, ?array $seededRowIds): array
     {
         $eligible = [];
 
@@ -106,7 +110,7 @@ class AvailabilityPlanner
 
             [$start, $end] = $row->bounds();
 
-            if ($this->classifyRow($row, $start, $end, $boundary) !== self::ELIGIBLE) {
+            if ($this->classifyRow($row, $start, $end, $boundary, $maxDate) !== self::ELIGIBLE) {
                 continue;
             }
 
@@ -264,7 +268,7 @@ class AvailabilityPlanner
      * @param  array<int, int>|null  $seededRowIds
      * @return array<int, string>
      */
-    private function usableCells(array $cells, Collection $rows, Carbon $boundary, ?array $seededRowIds): array
+    private function usableCells(array $cells, Collection $rows, Carbon $boundary, Carbon $maxDate, ?array $seededRowIds): array
     {
         $locked = [];
 
@@ -275,14 +279,14 @@ class AvailabilityPlanner
 
             [$start, $end] = $row->bounds();
 
-            if ($this->classifyRow($row, $start, $end, $boundary) !== self::ELIGIBLE) {
+            if ($this->classifyRow($row, $start, $end, $boundary, $maxDate) !== self::ELIGIBLE) {
                 foreach ($this->intersectingCells($start, $end) as $cell) {
                     $locked[$cell] = true;
                 }
             }
         }
 
-        return array_values(array_filter($cells, function (mixed $cell) use ($locked, $boundary): bool {
+        return array_values(array_filter($cells, function (mixed $cell) use ($locked, $boundary, $maxDate): bool {
             if (! is_string($cell) || isset($locked[$cell]) || ! preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $cell)) {
                 return false;
             }
@@ -291,11 +295,12 @@ class AvailabilityPlanner
 
             return $instant->format('Y-m-d H:i') === $cell
                 && $this->isAligned($instant)
-                && $instant->greaterThanOrEqualTo($boundary);
+                && $instant->greaterThanOrEqualTo($boundary)
+                && $instant->copy()->startOfDay()->lessThanOrEqualTo($maxDate);
         }));
     }
 
-    private function classifyRow(Availability $row, Carbon $start, Carbon $end, Carbon $boundary): string
+    private function classifyRow(Availability $row, Carbon $start, Carbon $end, Carbon $boundary, Carbon $maxDate): string
     {
         $from = $row->from->format('H:i:s');
         $to = $row->to->format('H:i:s');
@@ -314,6 +319,10 @@ class AvailabilityPlanner
 
         if ($end->lessThan($boundary->copy()->addMinutes(AvailabilityService::MINIMUM_SLOT_DURATION_MINUTES))) {
             return self::STARTED_TOO_LONG_AGO;
+        }
+
+        if ($start->copy()->startOfDay()->greaterThan($maxDate)) {
+            return self::BEYOND_WINDOW;
         }
 
         return self::ELIGIBLE;
