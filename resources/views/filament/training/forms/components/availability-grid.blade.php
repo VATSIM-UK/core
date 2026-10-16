@@ -234,7 +234,10 @@
 				x-on:pointermove="move($event)" x-on:pointerup.window="painting = false"
 				x-on:pointercancel.window="painting = false">
 				<div class="flex border-b border-gray-200 bg-white dark:border-white/10 dark:!bg-gray-900">
-					<div class="sticky left-0 z-10 w-14 shrink-0 bg-white dark:!bg-gray-900"></div>
+					<div
+						class="sticky left-0 z-10 flex w-14 shrink-0 items-center justify-center bg-white text-xs font-medium text-gray-500 dark:!bg-gray-900 dark:!text-gray-400">
+						Z
+					</div>
 
 					@foreach ($dates as $date)
 						@php
