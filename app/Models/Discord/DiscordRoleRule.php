@@ -10,11 +10,14 @@ use App\Models\Mship\Qualification;
 use App\Models\Mship\State;
 use App\Models\Permission;
 use App\Models\Roster;
+use App\Observers\DiscordRoleRuleObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+#[ObservedBy([DiscordRoleRuleObserver::class])]
 class DiscordRoleRule extends Model
 {
     use HasFactory;

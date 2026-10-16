@@ -137,7 +137,7 @@ class DiscordRoleRuleResource extends Resource
                 EditAction::make(),
                 static::resyncAction(),
                 DeleteAction::make()
-                    ->modalDescription('Deleting a rule stops it managing the Discord role. Members who already have the role keep it, because an unmanaged role is no longer reconciled.'),
+                    ->modalDescription('Deleting this rule also removes the Discord role from every member who currently has it. This runs in the background.'),
             ])
             ->defaultSort('name');
     }
