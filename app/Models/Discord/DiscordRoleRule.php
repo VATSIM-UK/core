@@ -21,6 +21,18 @@ class DiscordRoleRule extends Model
 
     public $timestamps = false;
 
+    protected $fillable = [
+        'name',
+        'discord_id',
+        'permission_id',
+        'qualification_id',
+        'state_id',
+        'cts_may_control_contains',
+        'endorsable_type',
+        'endorsable_id',
+        'position_type',
+    ];
+
     protected $casts = [
         'permission_id' => 'int',
         'discord_id' => 'string',
