@@ -97,12 +97,12 @@
     },
     {{-- Kept in a store as weekday + time, since the grid re-initialises on every week change. --}}
     copyWeek() {
-        const cells = (this.state ?? [])
+        const cells = [...(this.state ?? []), ...this.locked]
             .filter((slot) => this.inWeek(slot))
             .map((slot) => ({ day: this.dates.indexOf(slot.slice(0, 10)), time: slot.slice(11) }))
 
         if (cells.length === 0) {
-            this.notify('Nothing painted this week to copy', 'warning')
+            this.notify('Nothing to copy this week', 'warning')
 
             return
         }

@@ -41,6 +41,8 @@ class MyAvailability extends Page implements HasForms
 
     public const TO_HOUR = 22;
 
+    public const MIN_WEEK_OFFSET = -1;
+
     public ?array $data = [];
 
     public int $weekOffset = 0;
@@ -167,7 +169,7 @@ class MyAvailability extends Page implements HasForms
 
     public function previousWeek(): void
     {
-        if ($this->weekOffset === 0) {
+        if ($this->weekOffset <= self::MIN_WEEK_OFFSET) {
             return;
         }
 
@@ -297,7 +299,7 @@ class MyAvailability extends Page implements HasForms
     /** Only rows on newly opened dates join the seeded set; see seededRowIdsForVisitedDates(). */
     private function goToWeek(int $offset): void
     {
-        $this->weekOffset = max(0, $offset);
+        $this->weekOffset = max(self::MIN_WEEK_OFFSET, $offset);
 
         $dates = $this->weekDates($this->weekOffset);
         $newDates = array_values(array_diff($dates, $this->visitedDates));
@@ -397,7 +399,7 @@ class MyAvailability extends Page implements HasForms
                             ->tooltip('Previous week')
                             ->icon('heroicon-m-chevron-left')
                             ->color('gray')
-                            ->disabled(fn () => $this->weekOffset === 0)
+                            ->disabled(fn () => $this->weekOffset <= self::MIN_WEEK_OFFSET)
                             ->action(fn () => $this->previousWeek()),
                         Action::make('thisWeek')
                             ->label('This week')

@@ -322,4 +322,27 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
 
         $this->assertNotNull($other->fresh());
     }
+
+    #[Test]
+    public function it_shows_one_past_week_read_only_and_keeps_its_rows_on_save(): void
+    {
+        $lastWeek = now()->subWeek()->toDateString();
+
+        $past = Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => $lastWeek, 'from' => '18:00:00', 'to' => '20:00:00', 'type' => 'S',
+        ]);
+
+        $component = Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->call('previousWeek')
+            ->call('previousWeek')
+            ->assertSet('weekOffset', -1);
+
+        $this->assertContains("{$lastWeek} 18:00", $component->instance()->lockedCells());
+
+        $component->set('data.availability', $this->cells($lastWeek, '10:00', 4))->call('save');
+
+        $this->assertNotNull($past->fresh());
+        $this->assertSame(1, Availability::where('student_id', $this->studentMember->id)->count());
+    }
 }
