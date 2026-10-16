@@ -107,7 +107,7 @@ class DiscordRoleRule extends Model
     protected function accountSatisfiesCanControlOnRosterRequirement(Account $account): bool
     {
         if ($this->endorsable instanceof Position) {
-            return Roster::firstWhere('account_id', $account->getKey())
+            return (bool) Roster::firstWhere('account_id', $account->getKey())
                 ?->accountCanControl($this->endorsable);
         }
 
