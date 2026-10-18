@@ -29,9 +29,9 @@ class InvitationsRelationManager extends RelationManager
                     ->label('Status')
                     ->formatStateUsing(fn ($state) => $state?->label())
                     ->color(fn ($state) => $state?->color()),
-                TextColumn::make('sent_at')->dateTime('d/m/Y H:i')->sortable(),
-                TextColumn::make('expires_at')->dateTime('d/m/Y H:i')->label('Expires')->sortable(),
-                TextColumn::make('responded_at')->dateTime('d/m/Y H:i')->sortable(),
+                TextColumn::make('sent_at')->dateTime()->sortable(),
+                TextColumn::make('expires_at')->dateTime()->label('Expires')->sortable(),
+                TextColumn::make('responded_at')->dateTime()->sortable(),
             ])
             ->filters([
                 TernaryFilter::make('is_short_notice')->label('Short Notice'),

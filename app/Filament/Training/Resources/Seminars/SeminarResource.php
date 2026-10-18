@@ -114,7 +114,7 @@ class SeminarResource extends Resource
             Section::make('Seminar Details')
                 ->schema([
                     TextEntry::make('name'),
-                    TextEntry::make('date')->date('d/m/Y'),
+                    TextEntry::make('date')->date(),
                     TextEntry::make('time_range')
                         ->label('Time')
                         ->state(fn ($record) => $record)
@@ -142,7 +142,7 @@ class SeminarResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('date')
-                    ->date('d/m/Y')
+                    ->date()
                     ->sortable(),
 
                 TextColumn::make('time_range')
