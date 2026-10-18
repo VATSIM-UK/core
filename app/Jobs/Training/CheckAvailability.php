@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Jobs\Training;
 
 use App\Enums\AvailabilityCheckStatus;
-use App\Models\Cts\Availability;
 use App\Models\Cts\Session;
 use App\Models\Training\TrainingPlace\AvailabilityCheck;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Notifications\Training\AvailabilityWarningCreated;
+use App\Services\Training\AvailabilityService;
 use App\Services\Training\AvailabilityWarnings;
 use App\Services\Training\TrainingPlaceService;
 use Carbon\Carbon;
@@ -30,7 +30,7 @@ class CheckAvailability implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(AvailabilityService $availabilityService): void
     {
         // During leave of absence, record the check as on leave but do not send any warnings
         if ($this->trainingPlace->isOnLeaveOfAbsence()) {
@@ -54,7 +54,9 @@ class CheckAvailability implements ShouldQueue
 
         $memberId = $account->member->id;
 
-        $hasAvailability = Availability::where('student_id', $memberId)->exists();
+        // Check if availability exists for the student inside the future window
+        $hasAvailability = $availabilityService->hasAvailabilityWithinWindow($memberId);
+
         $hasFutureBookedSession = $this->hasFutureBookedSession($memberId);
 
         $existingAvailabilityWarning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)->where('status', 'pending')->first();

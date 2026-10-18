@@ -20,6 +20,7 @@ use App\Models\Training\TrainingPlace\TrainingPlaceLeaveOfAbsence;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Notifications\Training\AvailabilityWarningCreated;
+use App\Services\Training\AvailabilityService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Notification;
@@ -81,7 +82,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: An availability check with status on leave is created
         $this->assertDatabaseHas('availability_checks', [
@@ -106,7 +107,7 @@ class CheckAvailabilityTest extends TestCase
         $this->trainingPlace->forceFill(['created_at' => now()])->saveQuietly();
 
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseMissing('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -129,7 +130,7 @@ class CheckAvailabilityTest extends TestCase
         Notification::fake();
 
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -144,7 +145,7 @@ class CheckAvailabilityTest extends TestCase
         Availability::factory()->forStudent($this->ctsMember->id)->create();
 
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -161,7 +162,7 @@ class CheckAvailabilityTest extends TestCase
         Availability::factory()->forStudent($this->ctsMember->id)->count(3)->create();
 
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -179,7 +180,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: A failed availability check should be created
         $this->assertDatabaseHas('availability_checks', [
@@ -195,7 +196,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: An availability warning should be created
         $this->assertDatabaseHas('availability_warnings', [
@@ -230,7 +231,7 @@ class CheckAvailabilityTest extends TestCase
             'created_at' => now()->subHours(TrainingPlace::AVAILABILITY_CHECK_GRACE_PERIOD_HOURS + 1),
         ])->saveQuietly();
 
-        (new CheckAvailability($pilotPlace->fresh(['trainable', 'account'])))->handle();
+        (new CheckAvailability($pilotPlace->fresh(['trainable', 'account'])))->handle(app(AvailabilityService::class));
 
         $warning = AvailabilityWarning::where('training_place_id', $pilotPlace->id)->first();
         $this->assertNotNull($warning);
@@ -270,7 +271,7 @@ class CheckAvailabilityTest extends TestCase
         ]);
 
         // Act: Run the job with no availability records at all
-        (new CheckAvailability($pilotPlace->fresh(['trainable', 'account'])))->handle();
+        (new CheckAvailability($pilotPlace->fresh(['trainable', 'account'])))->handle(app(AvailabilityService::class));
 
         // Assert: A passed availability check is created
         $this->assertDatabaseHas('availability_checks', [
@@ -330,7 +331,7 @@ class CheckAvailabilityTest extends TestCase
         ]);
 
         // Act: Run the job
-        (new CheckAvailability($pilotPlace->fresh(['trainable', 'account'])))->handle();
+        (new CheckAvailability($pilotPlace->fresh(['trainable', 'account'])))->handle(app(AvailabilityService::class));
 
         // Assert: A passed check was created
         $passedCheck = AvailabilityCheck::where('training_place_id', $pilotPlace->id)
@@ -379,7 +380,7 @@ class CheckAvailabilityTest extends TestCase
         ]);
 
         // Act: Run the job with no availability records at all
-        (new CheckAvailability($pilotPlace->fresh(['trainable', 'account'])))->handle();
+        (new CheckAvailability($pilotPlace->fresh(['trainable', 'account'])))->handle(app(AvailabilityService::class));
 
         // Assert: The check proceeds and fails as no availability exists
         $this->assertDatabaseHas('availability_checks', [
@@ -411,7 +412,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job with no availability records at all
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: The check still runs (7-day grace period applies to pilot places only) and fails
         $this->assertDatabaseHas('availability_checks', [
@@ -450,7 +451,7 @@ class CheckAvailabilityTest extends TestCase
         ]);
 
         // Act: Run the job with no availability records at all
-        (new CheckAvailability($pilotPlace->fresh(['trainable', 'account'])))->handle();
+        (new CheckAvailability($pilotPlace->fresh(['trainable', 'account'])))->handle(app(AvailabilityService::class));
 
         // Assert: The check proceeds and fails as no availability exists
         $this->assertDatabaseHas('availability_checks', [
@@ -469,7 +470,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: The warning should be linked to the failed check
         $failedCheck = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)
@@ -498,7 +499,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job again (still no availability)
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: Only one pending warning should exist
         $pendingWarnings = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)
@@ -530,7 +531,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job again (still no availability)
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: A new pending warning should be created
         $pendingWarnings = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)
@@ -562,7 +563,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job again (still no availability)
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: A new pending warning should be created
         $pendingWarnings = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)
@@ -598,7 +599,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job with failure conditions (no availability) - 4th failure
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: A failed check was recorded
         $this->assertDatabaseHas('availability_checks', [
@@ -642,7 +643,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job with failure conditions
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: A normal 5-day warning was created (not immediate removal)
         $thirdWarning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)
@@ -665,7 +666,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: Should create a failed check because the availability is for a different student
         $this->assertDatabaseHas('availability_checks', [
@@ -685,10 +686,10 @@ class CheckAvailabilityTest extends TestCase
     {
         // Arrange & Act: Run the job twice without availability
         $job1 = new CheckAvailability($this->trainingPlace);
-        $job1->handle();
+        $job1->handle(app(AvailabilityService::class));
 
         $job2 = new CheckAvailability($this->trainingPlace);
-        $job2->handle();
+        $job2->handle(app(AvailabilityService::class));
 
         // Assert: Two failed checks should be created
         $failedChecks = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)
@@ -710,7 +711,7 @@ class CheckAvailabilityTest extends TestCase
     {
         // Arrange & Act: First run without availability or session
         $job1 = new CheckAvailability($this->trainingPlace);
-        $job1->handle();
+        $job1->handle(app(AvailabilityService::class));
 
         // Assert: Failed check and pending warning should exist
         $this->assertDatabaseHas('availability_checks', [
@@ -732,7 +733,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job again
         $job2 = new CheckAvailability($this->trainingPlace);
-        $job2->handle();
+        $job2->handle(app(AvailabilityService::class));
 
         // Assert: A passed check should now exist
         $this->assertDatabaseHas('availability_checks', [
@@ -761,7 +762,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job without availability (which creates a warning)
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: The account should receive the notification
         Notification::assertSentTo(
@@ -793,7 +794,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job with availability and session (which passes)
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: No notification should be sent
         Notification::assertNothingSent();
@@ -807,7 +808,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job without availability
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: Both the warning and notification should exist
         $warning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)
@@ -838,7 +839,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: A passed availability check should be created
         $this->assertDatabaseHas('availability_checks', [
@@ -869,7 +870,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: A passed availability check should be created
         $this->assertDatabaseHas('availability_checks', [
@@ -898,7 +899,7 @@ class CheckAvailabilityTest extends TestCase
         ]);
         $this->trainingPlace->unsetRelation('trainable');
 
-        (new CheckAvailability($this->trainingPlace))->handle();
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -924,7 +925,7 @@ class CheckAvailabilityTest extends TestCase
         ]);
         $this->trainingPlace->unsetRelation('trainable');
 
-        (new CheckAvailability($this->trainingPlace))->handle();
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -950,7 +951,7 @@ class CheckAvailabilityTest extends TestCase
         ]);
         $this->trainingPlace->unsetRelation('trainable');
 
-        (new CheckAvailability($this->trainingPlace))->handle();
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
         // A failed exam is no longer pending, so the student is expected to be available again
         $this->assertDatabaseHas('availability_checks', [
@@ -984,7 +985,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: A passed check was created
         $passedCheck = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)
@@ -1017,7 +1018,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: No notification should be sent (check passed due to pending exam)
         Notification::assertNothingSent();
@@ -1038,7 +1039,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: Check fails (pending exam is for a different position)
         $this->assertDatabaseHas('availability_checks', [
@@ -1069,7 +1070,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: Passed check (pending exam matched via position->callsign fallback)
         $this->assertDatabaseHas('availability_checks', [
@@ -1100,7 +1101,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         // Assert: Check fails (pending exam position_1 does not match fallback position->callsign)
         $this->assertDatabaseHas('availability_checks', [
@@ -1123,7 +1124,7 @@ class CheckAvailabilityTest extends TestCase
             'session_done' => 0,
         ]);
 
-        (new CheckAvailability($this->trainingPlace))->handle();
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -1142,7 +1143,7 @@ class CheckAvailabilityTest extends TestCase
             'position' => 'EGLL_APP',
         ]);
 
-        (new CheckAvailability($this->trainingPlace))->handle();
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -1162,7 +1163,7 @@ class CheckAvailabilityTest extends TestCase
             'position' => 'EGKK_APP',
         ]);
 
-        (new CheckAvailability($this->trainingPlace))->handle();
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -1184,7 +1185,7 @@ class CheckAvailabilityTest extends TestCase
             'session_done' => 0,
         ]);
 
-        (new CheckAvailability($this->trainingPlace))->handle();
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -1205,7 +1206,7 @@ class CheckAvailabilityTest extends TestCase
             'position' => 'EGLL_APP',
         ]);
 
-        (new CheckAvailability($this->trainingPlace))->handle();
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -1222,7 +1223,7 @@ class CheckAvailabilityTest extends TestCase
         $this->trainingPosition->update(['cts_positions' => null]);
         Availability::factory()->forStudent($this->ctsMember->id)->create();
 
-        (new CheckAvailability($this->trainingPlace))->handle();
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -1239,7 +1240,7 @@ class CheckAvailabilityTest extends TestCase
         $this->trainingPlace->update(['trainable_type' => null, 'trainable_id' => null]);
         Availability::factory()->forStudent($this->ctsMember->id)->create();
 
-        (new CheckAvailability($this->trainingPlace))->handle();
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -1262,7 +1263,7 @@ class CheckAvailabilityTest extends TestCase
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
-        $job->handle();
+        $job->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -1282,7 +1283,7 @@ class CheckAvailabilityTest extends TestCase
             'position' => 'EGLL_APP',
         ]);
 
-        (new CheckAvailability($this->trainingPlace))->handle();
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -1304,7 +1305,7 @@ class CheckAvailabilityTest extends TestCase
             'session_done' => 0,
         ]);
 
-        (new CheckAvailability($this->trainingPlace))->handle();
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -1327,7 +1328,7 @@ class CheckAvailabilityTest extends TestCase
             'session_done' => 0,
         ]);
 
-        (new CheckAvailability($this->trainingPlace))->handle();
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -1349,7 +1350,7 @@ class CheckAvailabilityTest extends TestCase
             'session_done' => 0,
         ]);
 
-        (new CheckAvailability($this->trainingPlace))->handle();
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -1371,7 +1372,7 @@ class CheckAvailabilityTest extends TestCase
             'session_done' => 1,
         ]);
 
-        (new CheckAvailability($this->trainingPlace))->handle();
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
         $this->assertDatabaseHas('availability_checks', [
             'training_place_id' => $this->trainingPlace->id,
@@ -1379,6 +1380,57 @@ class CheckAvailabilityTest extends TestCase
         ]);
         $this->assertDatabaseHas('availability_warnings', [
             'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_fails_the_check_when_availability_is_only_beyond_the_window(): void
+    {
+        Availability::factory()->forStudent($this->ctsMember->id)->create([
+            'date' => now()->addDays(AvailabilityService::MAX_FUTURE_DAYS + 1)->toDateString(),
+        ]);
+
+        Session::factory()->create(['student_id' => $this->ctsMember->id, 'position' => 'EGLL_TWR', 'taken_time' => null]);
+
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
+
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Failed->value,
+        ]);
+    }
+
+    #[Test]
+    public function it_fails_the_check_when_availability_is_only_in_the_past(): void
+    {
+        Availability::factory()->forStudent($this->ctsMember->id)->create([
+            'date' => now()->subDay()->toDateString(),
+        ]);
+
+        Session::factory()->create(['student_id' => $this->ctsMember->id, 'position' => 'EGLL_TWR', 'taken_time' => null]);
+
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
+
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Failed->value,
+        ]);
+    }
+
+    #[Test]
+    public function it_passes_the_check_when_availability_is_on_the_last_day_of_the_window(): void
+    {
+        Availability::factory()->forStudent($this->ctsMember->id)->create([
+            'date' => now()->addDays(AvailabilityService::MAX_FUTURE_DAYS)->toDateString(),
+        ]);
+
+        Session::factory()->create(['student_id' => $this->ctsMember->id, 'position' => 'EGLL_TWR', 'taken_time' => null]);
+
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
+
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Passed->value,
         ]);
     }
 }

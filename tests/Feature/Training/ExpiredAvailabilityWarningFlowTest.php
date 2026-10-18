@@ -352,7 +352,7 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
 
     private function addAvailability(): void
     {
-        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Availability::factory()->forStudent($this->ctsMember->id)->create(['date' => now()->addDay()->toDateString()]);
     }
 
     private function removeAvailability(): void
