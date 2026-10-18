@@ -24,6 +24,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
+use Illuminate\Support\HtmlString;
 use Spatie\Permission\Models\Permission;
 
 class DiscordRoleRuleResource extends Resource
@@ -109,7 +110,6 @@ class DiscordRoleRuleResource extends Resource
                     ->sortable(),
                 TextColumn::make('discord_id')
                     ->label('Discord role')
-                    ->html()
                     ->formatStateUsing(fn ($state) => static::discordRoleLabel($guildRoles, (string) $state)),
                 TextColumn::make('permission.name')
                     ->label('Permission')
@@ -161,30 +161,15 @@ class DiscordRoleRuleResource extends Resource
             });
     }
 
-    public static function discordRoleLabel(Collection $guildRoles, string $discordId): string
+    public static function discordRoleLabel(Collection $guildRoles, string $discordId): HtmlString
     {
         $role = $guildRoles->first(fn ($role) => is_array($role) && (int) ($role['id'] ?? 0) === (int) $discordId);
 
-        $idLine = sprintf('<span style="font-size:0.75rem;color:#6b7280">%s</span>', e($discordId));
-
-        if (! $role) {
-            return sprintf(
-                '<span style="display:inline-flex;flex-direction:column;gap:0.15rem;line-height:1.15">'
-                .'<span style="display:inline-flex;align-items:center;gap:0.4rem;color:#dc2626;font-weight:600">'
-                .'<span>Not found on Discord</span></span>%s</span>',
-                $idLine,
-            );
-        }
-
-        return sprintf(
-            '<span style="display:inline-flex;flex-direction:column;gap:0.15rem;line-height:1.15">'
-            .'<span style="display:inline-flex;align-items:center;gap:0.5rem">'
-            .'<span style="display:inline-block;width:0.85rem;height:0.85rem;border-radius:9999px;background:%s;border:1px solid rgba(0,0,0,0.15)"></span>'
-            .'<span>%s</span></span>%s</span>',
-            static::discordColourHex((int) ($role['color'] ?? 0)),
-            e((string) ($role['name'] ?? $discordId)),
-            $idLine,
-        );
+        return new HtmlString(view('filament.admin.tables.discord-role-label', [
+            'name' => $role ? (string) ($role['name'] ?? $discordId) : 'Not found on Discord',
+            'discordId' => $discordId,
+            'colour' => $role ? static::discordColourHex((int) ($role['color'] ?? 0)) : null,
+        ])->render());
     }
 
     public static function discordColourHex(int $colour): string

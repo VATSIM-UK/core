@@ -218,6 +218,31 @@ class DiscordRoleRuleResourceTest extends BaseAdminResourceTestCase
     }
 
     #[Test]
+    public function it_renders_the_discord_role_colour_as_a_swatch(): void
+    {
+        $this->actingAsAdminUser(['discord.role-rule.view']);
+
+        DiscordRoleRule::factory()->create(['discord_id' => '111']);
+
+        Livewire::test(ListDiscordRoleRules::class)
+            ->assertSee('background-color: #ff0000', escape: false)
+            // The cell must render as markup, not escaped text.
+            ->assertDontSee('class=&quot;inline-block', escape: false);
+    }
+
+    #[Test]
+    public function it_marks_an_unknown_discord_role_as_danger(): void
+    {
+        $this->actingAsAdminUser(['discord.role-rule.view']);
+
+        DiscordRoleRule::factory()->create(['discord_id' => '1111111111111111111']);
+
+        Livewire::test(ListDiscordRoleRules::class)
+            ->assertSee('Not found on Discord')
+            ->assertSee('font-semibold text-danger-600 dark:text-danger-400', escape: false);
+    }
+
+    #[Test]
     public function saving_an_edit_does_not_dispatch_any_discord_sync(): void
     {
         $this->actingAsAdminUser(['discord.role-rule.view', 'discord.role-rule.edit']);
