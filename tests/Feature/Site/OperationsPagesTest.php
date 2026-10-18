@@ -14,8 +14,10 @@ class OperationsPagesTest extends TestCase
     }
 
     #[Test]
-    public function test_it_loads_the_sectors_page()
+    public function test_it_redirects_the_sectors_page()
     {
-        $this->get(route('site.operations.sectors'))->assertOk();
+        $this->get(route('site.operations.sectors'))
+            ->assertStatus(301)
+            ->assertRedirect('https://docs.vatsim.uk/Pilots/General/Who-to-Call/');
     }
 }

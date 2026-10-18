@@ -39,7 +39,9 @@ Route::group([
         'prefix' => 'operations',
     ], function () {
         Route::get('/')->uses('OperationsPagesController@viewLanding')->name('landing');
-        Route::get('/sectors')->uses('OperationsPagesController@viewSectors')->name('sectors');
+        Route::get('/sectors', function () {
+            return redirect()->away('https://docs.vatsim.uk/Pilots/General/Who-to-Call/', 301);
+        })->name('sectors');
     });
 
     Route::group([

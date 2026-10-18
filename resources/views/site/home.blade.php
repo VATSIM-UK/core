@@ -71,7 +71,7 @@
 								<a class="nav-link" href="{{ route('site.bookings.calendar') }}">ATC Bookings</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="{{ route('site.operations.sectors') }}">UK Area Sectors</a>
+								<a class="nav-link" href="https://docs.vatsim.uk/Pilots/General/Who-to-Call/">UK Area Sectors</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="{{ route('site.pilots.landing') }}">Pilot Training</a>

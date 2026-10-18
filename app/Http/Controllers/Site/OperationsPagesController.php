@@ -17,12 +17,4 @@ class OperationsPagesController extends \App\Http\Controllers\BaseController
 
         return $this->viewMake('site.operations.landing');
     }
-
-    public function viewSectors()
-    {
-        $this->setTitle('Area Sectors');
-        $this->addBreadcrumb('Area Sectors', route('site.operations.sectors'));
-
-        return $this->viewMake('site.operations.sectors');
-    }
 }
