@@ -49,7 +49,6 @@ class GenerateSitemap extends Command
             ['route' => route('site.pilots.stands'), 'priority' => 0.6, 'change_frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['route' => route('site.pilots.tfp'), 'priority' => 0.7, 'change_frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['route' => route('site.operations.landing'), 'priority' => 0.7, 'change_frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
-            ['route' => route('site.operations.sectors'), 'priority' => 0.6, 'change_frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['route' => route('site.community.teamspeak'), 'priority' => 0.5, 'change_frequency' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['route' => route('site.policy.division'), 'priority' => 0.5, 'change_frequency' => Url::CHANGE_FREQUENCY_YEARLY],
             ['route' => route('site.policy.visiting-and-transferring'), 'priority' => 0.5, 'change_frequency' => Url::CHANGE_FREQUENCY_YEARLY],

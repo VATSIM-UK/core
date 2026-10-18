@@ -140,7 +140,8 @@
 								<li><a href="https://ukcp.vatsim.uk/request-a-stand" class="nav-dropdown-link">Request a stand</a></li>
 								<li><a href="https://chartfox.org/" class="nav-dropdown-link">Chartfox</a></li>
 								<li><a href="{{ route('site.airports') }}" class="nav-dropdown-link">Airfield Information</a></li>
-								<li><a href="{{ route('site.operations.sectors') }}" class="nav-dropdown-link">UK Area Sectors</a></li>
+								<li><a href="https://docs.vatsim.uk/Pilots/General/Who-to-Call/" class="nav-dropdown-link">UK Area Sectors</a>
+								</li>
 								<li class="nav-dropdown-divider"></li>
 								<li class="nav-dropdown-header">Pilot Training</li>
 								<li><a href="{{ route('site.pilots.landing') }}" class="nav-dropdown-link">Welcome</a></li>
