@@ -265,4 +265,18 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
             ->call('nextWeek')->call('nextWeek')->call('nextWeek')->call('nextWeek')
             ->assertSeeHtml('title="Outside the window"');
     }
+
+    #[Test]
+    public function it_does_not_present_beyond_window_days_as_editable(): void
+    {
+        $html = Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->call('nextWeek')->call('nextWeek')->call('nextWeek')->call('nextWeek')
+            ->html();
+
+        preg_match('/<div data-slot="2026-06-14 18:00"[^>]*>/', $html, $matches);
+
+        $this->assertNotEmpty($matches, 'The beyond-window cell should render.');
+        $this->assertStringNotContainsString('cursor-pointer', $matches[0]);
+    }
 }

@@ -142,7 +142,7 @@ class AvailabilityGrid extends Field
 
     public function getLastAllowedDate(): Carbon
     {
-        return $this->evaluate($this->lastAllowedDate) ?? now()->utc();
+        return $this->evaluate($this->lastAllowedDate) ?? AvailabilityService::lastAllowedDate(now()->utc());
     }
 
     public function isOvernightOpen(): bool

@@ -142,7 +142,7 @@
         const skipped = targets.length - pasted.length
 
         this.notify(skipped > 0 ?
-            'Week pasted, ' + skipped + ' slots in the past or locked were skipped' :
+            'Week pasted, ' + skipped + ' slots in the past, locked or outside the window were skipped' :
             'Week pasted')
     },
     ranges() {
@@ -337,8 +337,8 @@
 								$slot = "{$date} {$time}";
 								$isLocked = in_array($slot, $lockedCells, true);
 								$isPast = !$isLocked && \Carbon\Carbon::parse($slot, 'UTC')->lessThan($now);
-								$isEditable = !$isLocked && !$isPast;
 								$isBeyond = !$isLocked && !$isPast && $date > $lastAllowedDate;
+								$isEditable = !$isLocked && !$isPast && !$isBeyond;
 
 								// Painted runs keep hour lines but hide half-hour ones.
 								$paintedBorder = $minutes === 0 ? '!border-t-black/15 dark:!border-t-black/40' : '!border-t-transparent';
