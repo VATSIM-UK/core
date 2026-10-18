@@ -5,6 +5,7 @@ use App\Models\Cts\Member;
 use App\Services\Training\AvailabilityLogService;
 use App\Services\Training\AvailabilityService;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Log;
 
 return new class extends Migration
 {
@@ -13,7 +14,9 @@ return new class extends Migration
      *
      * The cap is read from AvailabilityService so the boundary matches the frontend and
      * the availability check. Removals are written to the availability log first, so the
-     * admin "Availability as of" review does not keep showing deleted slots.
+     * admin "Availability as of" review does not keep showing deleted slots. Revoked
+     * places are reconciled too: their review page stays reachable, so their log must
+     * not keep listing rows this migration removes.
      */
     public function up(): void
     {
@@ -34,12 +37,16 @@ return new class extends Migration
             $cid = Member::where('id', $studentId)->value('cid');
 
             if (! $cid) {
+                Log::info('Availability cleanup: member has no account, log not reconciled', ['member_id' => $studentId]);
+
                 continue;
             }
 
-            $places = $logService->activeTrainingPlacesForAccount((int) $cid);
+            $places = $logService->allTrainingPlacesForAccount((int) $cid);
 
             if ($places->isEmpty()) {
+                Log::info('Availability cleanup: no training places to reconcile', ['cid' => $cid, 'member_id' => $studentId]);
+
                 continue;
             }
 

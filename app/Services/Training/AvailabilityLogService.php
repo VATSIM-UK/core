@@ -28,6 +28,20 @@ class AvailabilityLogService
     }
 
     /**
+     * Every place for the account, revoked ones included. Their review page is still
+     * reachable, so log reconciliation has to cover them too.
+     *
+     * @return Collection<int, TrainingPlace>
+     */
+    public function allTrainingPlacesForAccount(int $cid): Collection
+    {
+        return TrainingPlace::query()
+            ->where('account_id', $cid)
+            ->withTrashed()
+            ->get();
+    }
+
+    /**
      * @param  Collection<int, TrainingPlace>  $places
      */
     public function recordAdded(Collection $places, Carbon $from, Carbon $to): void

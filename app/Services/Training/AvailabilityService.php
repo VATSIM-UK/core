@@ -53,6 +53,7 @@ class AvailabilityService
 
         return Availability::query()
             ->where('student_id', $memberId)
+            ->where('type', 'S')
             ->where('date', '>=', static::firstAllowedDate($now)->toDateString())
             ->where('date', '<=', static::lastAllowedDate($now)->toDateString())
             ->exists();

@@ -181,4 +181,26 @@ class AvailabilityServiceTest extends TestCase
         $this->assertFalse($valid);
         $this->assertEquals('Availability cannot be more than '.AvailabilityService::MAX_FUTURE_DAYS.' days in the future.', $message);
     }
+
+    #[Test]
+    public function it_counts_student_availability_within_the_window(): void
+    {
+        Availability::factory()->forStudent($this->member->id)->create([
+            'date' => now()->addDay()->toDateString(),
+            'type' => 'S',
+        ]);
+
+        $this->assertTrue($this->service->hasAvailabilityWithinWindow($this->member->id));
+    }
+
+    #[Test]
+    public function it_ignores_non_student_availability_within_the_window(): void
+    {
+        Availability::factory()->forStudent($this->member->id)->create([
+            'date' => now()->addDay()->toDateString(),
+            'type' => 'M',
+        ]);
+
+        $this->assertFalse($this->service->hasAvailabilityWithinWindow($this->member->id));
+    }
 }

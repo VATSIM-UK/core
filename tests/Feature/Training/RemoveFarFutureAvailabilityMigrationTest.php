@@ -68,7 +68,7 @@ class RemoveFarFutureAvailabilityMigrationTest extends TestCase
     }
 
     #[Test]
-    public function it_deletes_for_students_without_a_training_place_and_writes_no_log(): void
+    public function it_still_deletes_rows_for_a_student_with_no_training_place(): void
     {
         $this->travelTo(Carbon::create(2026, 5, 13, 12, 0, 0));
 
@@ -80,6 +80,33 @@ class RemoveFarFutureAvailabilityMigrationTest extends TestCase
         $this->runMigration();
 
         $this->assertNull($row->fresh());
-        $this->assertSame(0, AvailabilityLogEntry::where('slot_from', '2026-07-01 18:00:00')->count());
+    }
+
+    #[Test]
+    public function it_supersedes_log_entries_for_a_revoked_training_place(): void
+    {
+        $this->travelTo(Carbon::create(2026, 5, 13, 12, 0, 0));
+
+        $account = Account::factory()->create();
+        $member = Member::factory()->recycle($account)->create(['cid' => $account->id]);
+        $place = TrainingPlace::factory()->createQuietly(['account_id' => $account->id]);
+        $place->delete();
+
+        $row = Availability::factory()->forStudent($member->id)->create([
+            'date' => '2026-07-01', 'from' => '18:00:00', 'to' => '21:00:00', 'type' => 'S',
+        ]);
+        $entry = AvailabilityLogEntry::factory()->create([
+            'training_place_id' => $place->id,
+            'event' => 'added',
+            'slot_from' => '2026-07-01 18:00:00',
+            'slot_to' => '2026-07-01 21:00:00',
+            'created_at' => now()->subDay(),
+            'superseded_at' => null,
+        ]);
+
+        $this->runMigration();
+
+        $this->assertNull($row->fresh());
+        $this->assertNotNull($entry->fresh()->superseded_at);
     }
 }
