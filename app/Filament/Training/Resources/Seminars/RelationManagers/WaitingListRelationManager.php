@@ -34,7 +34,7 @@ class WaitingListRelationManager extends RelationManager
                 TextColumn::make('account_id')->label('CID'),
                 TextColumn::make('account.name')->label('Name')->searchable(['name_first', 'name_last']),
                 IconColumn::make('theory_exam_passed')->label('Theory Passed')->boolean(),
-                TextColumn::make('created_at')->label('Joined')->dateTime('d/m/Y H:i'),
+                TextColumn::make('created_at')->label('Joined')->dateTime(),
                 TextColumn::make('invitation_status')
                     ->label('Status')
                     ->badge()
