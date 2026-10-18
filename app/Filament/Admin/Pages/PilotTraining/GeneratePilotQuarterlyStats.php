@@ -81,6 +81,9 @@ class GeneratePilotQuarterlyStats extends BasePage implements HasForms
                 ['name' => 'P3 OTS Sessions', 'value' => PilotTrainingStats::sessionCount($startDate, $endDate, 'P3_CMEL(A)_MEN')],
                 ['name' => 'P3 Exams (total / passes)', 'value' => PilotTrainingStats::examCount($startDate, $endDate, 'P3')],
             ],
+            'P4' => [
+                ['name' => 'P4 Sessions', 'value' => PilotTrainingStats::sessionCount($startDate, $endDate, 'P4_ATPL(A)')],
+            ],
             'TFP' => [
                 ['name' => 'TFP Sessions', 'value' => PilotTrainingStats::sessionCount($startDate, $endDate, 'TFP_FLIGHT')],
             ],
@@ -107,6 +110,18 @@ class GeneratePilotQuarterlyStats extends BasePage implements HasForms
                 ];
             })->values()->toArray(),
             'P2 Student Session Count' => PilotTrainingStats::studentStats($startDate, $endDate, 'P2_SEIR(A)')->map(function ($student) {
+                return [
+                    'name' => "{$student['name']} ({$student['cid']})",
+                    'value' => $student['session_count'],
+                ];
+            })->values()->toArray(),
+            'P4 Mentor Session Count' => PilotTrainingStats::mentorStats($startDate, $endDate, 'P4_ATPL(A)')->map(function ($mentor) {
+                return [
+                    'name' => "{$mentor['name']} ({$mentor['cid']})",
+                    'value' => $mentor['session_count'],
+                ];
+            })->values()->toArray(),
+            'P4 Student Session Count' => PilotTrainingStats::studentStats($startDate, $endDate, 'P4_ATPL(A)')->map(function ($student) {
                 return [
                     'name' => "{$student['name']} ({$student['cid']})",
                     'value' => $student['session_count'],
