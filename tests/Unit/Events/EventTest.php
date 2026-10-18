@@ -120,4 +120,19 @@ class EventTest extends TestCase
             $event->managers->pluck('id')->all(),
         );
     }
+
+    public function test_organiser_labels_abbreviate_managers_and_include_cid(): void
+    {
+        $manager = Account::factory()->create(['id' => 1234567, 'name_first' => 'Alex', 'name_last' => 'Smith']);
+        $event = Event::factory()->withManagers($manager)->create();
+
+        $this->assertSame(['Alex S. (1234567)'], $event->organiserLabels());
+    }
+
+    public function test_organiser_labels_are_empty_without_managers(): void
+    {
+        $event = Event::factory()->create();
+
+        $this->assertSame([], $event->organiserLabels());
+    }
 }

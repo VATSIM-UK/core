@@ -14,9 +14,9 @@ class PolicyPagesTest extends TestCase
     }
 
     #[Test]
-    public function test_it_loads_the_atc_training_policy()
+    public function test_the_legacy_atc_training_policy_url_redirects_to_the_policy_document()
     {
-        $this->get(route('site.policy.atc-training'))->assertOk();
+        $this->get(route('site.policy.atc-training'))->assertRedirect(__('atc.policy.url'));
     }
 
     #[Test]

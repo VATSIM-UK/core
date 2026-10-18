@@ -57,7 +57,20 @@ class VisitTransferStats
     {
         $avg = Application::query()
             ->when($type, fn (Builder $q) => $q->where('type', $type))
-            ->whereIn('status', [Application::STATUS_ACCEPTED, Application::STATUS_COMPLETED, Application::STATUS_REJECTED])
+            ->whereIn('status', [Application::STATUS_ACCEPTED, Application::STATUS_REJECTED])
+            ->whereBetween('updated_at', [$start, $end])
+            ->whereNotNull('submitted_at')
+            ->selectRaw('AVG(DATEDIFF(updated_at, submitted_at)) as avg_days')
+            ->value('avg_days');
+
+        return $avg !== null ? round((float) $avg, 1) : null;
+    }
+
+    public static function avgDaysToResolution(?int $type, Carbon $start, Carbon $end): ?float
+    {
+        $avg = Application::query()
+            ->when($type, fn (Builder $q) => $q->where('type', $type))
+            ->whereIn('status', [Application::STATUS_COMPLETED, Application::STATUS_CANCELLED])
             ->whereBetween('updated_at', [$start, $end])
             ->whereNotNull('submitted_at')
             ->selectRaw('AVG(DATEDIFF(updated_at, submitted_at)) as avg_days')
@@ -139,7 +152,11 @@ class VisitTransferStats
     {
         return \App\Models\Training\WaitingList\WaitingListAccount::query()
             ->whereNull('deleted_at')
-            ->when($type, fn ($q) => $q->whereHas('waitingList.facility', fn ($f) => $f->where('type', $type)))
+            ->when($type, fn ($q) => $q->whereIn('list_id', \App\Models\VisitTransfer\Facility::query()
+                ->select('waiting_list_id')
+                ->whereNotNull('waiting_list_id')
+                ->when($type === Application::TYPE_VISIT, fn ($f) => $f->where('can_visit', true))
+                ->when($type === Application::TYPE_TRANSFER, fn ($f) => $f->where('can_transfer', true))))
             ->with('account.qualifications')
             ->get()
             ->groupBy(fn ($wla) => $wla->account?->qualification_atc?->id ?? 'unknown')

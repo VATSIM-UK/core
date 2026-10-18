@@ -28,6 +28,18 @@ class EditEvent extends EditRecord
                     app(EventService::class)->publish($record, auth()->user());
                     $this->redirect($this->getResource()::getUrl('edit', ['record' => $record]));
                 }),
+            Action::make('unpublish')
+                ->label('Unpublish')
+                ->color('gray')
+                ->visible(fn (Event $record): bool => $record->isPublished())
+                ->requiresConfirmation()
+                ->modalHeading('Unpublish event')
+                ->modalDescription('This will hide the event from members until it is published again.')
+                ->successNotificationTitle('Event unpublished')
+                ->action(function (Event $record) {
+                    app(EventService::class)->unpublish($record);
+                    $this->redirect($this->getResource()::getUrl('edit', ['record' => $record]));
+                }),
         ];
     }
 

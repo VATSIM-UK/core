@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Bookings;
 
+use App\Exceptions\Bookings\PositionRosteredException;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
@@ -213,7 +214,7 @@ class Calendar extends Component
         $weekEnd = $weekStart->copy()->addDays(6);
         $filter = strtoupper($this->positionFilter);
 
-        $bookingsByDate = app(BookingRepository::class)->getBookingsForRange($weekStart, $weekEnd, hideEndedTrainingSessions: true);
+        $bookingsByDate = app(BookingRepository::class)->getBookingsForRange($weekStart, $weekEnd);
         $eventsByDate = app(EventRepository::class)->getEventsForRange($weekStart, $weekEnd)->groupBy('date');
 
         $this->weekBookings = collect(range(0, 6))
@@ -252,7 +253,7 @@ class Calendar extends Component
     private function mergedBookingsFor(Carbon $date): Collection
     {
         return app(BookingRepository::class)
-            ->getBookings($date, hideEndedTrainingSessions: true)
+            ->getBookings($date)
             ->reject(fn (object $booking): bool => $booking->type === 'EV')
             ->concat(app(EventRepository::class)->getEventsForDate($date))
             ->sortBy(fn (object $booking): string => $booking->from)
@@ -593,7 +594,10 @@ class Calendar extends Component
                 // Events carry their name rather than a callsign, and it is the only
                 // label the events row has to show. It is set by the repository as a
                 // dynamic property, so it is absent on every other booking type.
-                $events[] = $bookingData + ['event_name' => $booking->event_name ?? null];
+                $events[] = $bookingData + [
+                    'event_name' => $booking->event_name ?? null,
+                    'event_url' => $booking->event_url ?? null,
+                ];
 
                 continue;
             }
@@ -1048,6 +1052,8 @@ class Calendar extends Component
             ]);
             $this->refreshData();
             $this->dispatch('booking-created');
+        } catch (PositionRosteredException $e) {
+            $this->dispatch('booking-warning', message: $e->getMessage(), eventUrl: route('site.events.show', $e->event));
         } catch (RuntimeException $e) {
             $this->dispatch('booking-warning', message: $e->getMessage());
         } catch (InvalidArgumentException $e) {

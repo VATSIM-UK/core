@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Services\Bookings;
 
+use App\Exceptions\Bookings\PositionRosteredException;
 use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\Member as CtsMember;
+use App\Models\Events\Event;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use Carbon\Carbon;
@@ -70,6 +72,21 @@ class BookingPolicy
 
         if ($coreCount + $ctsCount >= $maxGatwick) {
             throw new \RuntimeException("You can have a maximum of {$maxGatwick} Gatwick Ground or Delivery bookings.");
+        }
+    }
+
+    public function validateNotRostered(int $positionId, Carbon $startsAt, Carbon $endsAt): void
+    {
+        $event = Event::published()
+            ->where('rostered', true)
+            ->where('start', '<', $endsAt)
+            ->where('end', '>', $startsAt)
+            ->whereHas('positions', fn (Builder $q) => $q->whereKey($positionId))
+            ->orderBy('start')
+            ->first();
+
+        if ($event !== null) {
+            throw new PositionRosteredException($event);
         }
     }
 

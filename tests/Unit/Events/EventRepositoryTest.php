@@ -6,6 +6,7 @@ use App\Models\Events\Event;
 use App\Repositories\Events\EventRepository;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Tests\TestCase;
 
 class EventRepositoryTest extends TestCase
@@ -75,5 +76,53 @@ class EventRepositoryTest extends TestCase
         $this->assertSame('2026-08-01', $event->date);
         $this->assertNull($event->position);
         $this->assertSame('Unknown', $event->member['display_name']);
+    }
+
+    public function test_get_upcoming_returns_published_events_not_yet_ended_soonest_first(): void
+    {
+        $soon = Event::factory()->create(['start' => now()->addDay(), 'end' => now()->addDay()->addHours(2), 'published_at' => now()]);
+        $later = Event::factory()->create(['start' => now()->addDays(3), 'end' => now()->addDays(3)->addHours(2), 'published_at' => now()]);
+        Event::factory()->create(['start' => now()->subDays(2), 'end' => now()->subDay(), 'published_at' => now()]); // past
+        Event::factory()->create(['start' => now()->addDay(), 'end' => now()->addDay()->addHours(2), 'published_at' => null]); // draft
+
+        $upcoming = $this->repository->getUpcoming();
+
+        $this->assertSame([$soon->id, $later->id], $upcoming->pluck('id')->all());
+    }
+
+    public function test_get_upcoming_includes_an_event_happening_right_now(): void
+    {
+        $inProgress = Event::factory()->create(['start' => now()->subHour(), 'end' => now()->addHour(), 'published_at' => now()]);
+
+        $this->assertSame([$inProgress->id], $this->repository->getUpcoming()->pluck('id')->all());
+    }
+
+    public function test_get_past_returns_published_ended_events_most_recent_first(): void
+    {
+        $recent = Event::factory()->create(['start' => now()->subDays(2), 'end' => now()->subDay(), 'published_at' => now()]);
+        $older = Event::factory()->create(['start' => now()->subDays(10), 'end' => now()->subDays(9), 'published_at' => now()]);
+        Event::factory()->create(['start' => now()->addDay(), 'end' => now()->addDay()->addHours(2), 'published_at' => now()]); // upcoming
+        Event::factory()->create(['start' => now()->subDays(3), 'end' => now()->subDays(3)->addHours(2), 'published_at' => null]); // draft
+
+        $past = $this->repository->getPast();
+
+        $this->assertSame([$recent->id, $older->id], $past->pluck('id')->all());
+    }
+
+    public function test_get_past_paginates_results_and_reports_the_total(): void
+    {
+        foreach (range(1, 15) as $i) {
+            Event::factory()->create([
+                'start' => now()->subDays($i + 1),
+                'end' => now()->subDays($i),
+                'published_at' => now(),
+            ]);
+        }
+
+        $past = $this->repository->getPast(10);
+
+        $this->assertInstanceOf(LengthAwarePaginator::class, $past);
+        $this->assertCount(10, $past);
+        $this->assertSame(15, $past->total());
     }
 }

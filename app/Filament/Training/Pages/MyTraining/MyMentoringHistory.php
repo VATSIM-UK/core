@@ -17,7 +17,9 @@ class MyMentoringHistory extends BaseMentoringHistoryPage
 
     protected static string|\UnitEnum|null $navigationGroup = 'My Training';
 
-    protected static ?string $navigationLabel = 'My Mentoring History';
+    protected static ?string $navigationLabel = 'My Training History';
+
+    protected static ?string $title = 'My Training History';
 
     protected static ?string $slug = 'my-training/mentoring-history';
 

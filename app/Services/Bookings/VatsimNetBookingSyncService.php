@@ -111,7 +111,7 @@ class VatsimNetBookingSyncService
         return match ($type) {
             Booking::TYPE_STANDARD => 'booking',
             Booking::TYPE_EXAM => 'exam',
-            Booking::TYPE_MENTORING => 'mentoring',
+            Booking::TYPE_MENTORING => 'training',
             default => 'booking',
         };
     }

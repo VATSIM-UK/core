@@ -425,6 +425,38 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function it_shows_forward_for_exam_action_for_pilot_training_places()
+    {
+        $trainingPlace = $this->createPilotTrainingPlace();
+        $this->panelUser->givePermissionTo('training.exams.setup');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->assertActionVisible('forwardForExam');
+    }
+
+    #[Test]
+    public function it_can_forward_member_for_pilot_exam()
+    {
+        $trainingPlace = $this->createPilotTrainingPlace('PPL');
+        $this->panelUser->givePermissionTo('training.exams.setup');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->assertStatus(200)
+            ->callAction('forwardForExam', data: ['pilot_exam_type' => 'P1'])
+            ->assertNotified();
+
+        $this->assertDatabaseHas('exam_setup', [
+            'student_id' => $trainingPlace->account->member->id,
+            'exam' => 'P1',
+            'position_1' => 'P1_PPL(A)',
+            'setup_by' => $this->panelUser->id,
+        ], 'cts');
+    }
+
+    #[Test]
     public function it_shows_error_when_member_lacks_atc_qualification()
     {
         $trainingPlace = $this->createTrainingPlace();
@@ -509,6 +541,20 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
             'account_id' => $student->id,
             'training_position_id' => $trainingPosition->id,
         ]);
+    }
+
+    private function createPilotTrainingPlace(string $qualificationCode = 'PPL'): TrainingPlace
+    {
+        $student = Account::factory()->create();
+        $student->addState(State::findByCode('DIVISION'));
+        Member::factory()->forAccount($student)->create();
+
+        $qualification = Qualification::firstWhere('code', $qualificationCode)
+            ?? Qualification::factory()->create(['code' => $qualificationCode, 'type' => 'pilot']);
+
+        return TrainingPlace::withoutEvents(fn () => TrainingPlace::factory()
+            ->forQualification($qualification)
+            ->create(['account_id' => $student->id]));
     }
 
     #[Test]

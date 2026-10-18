@@ -8,7 +8,6 @@ use App\Models\Cts\PracticalResult;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Endorsement;
-use App\Models\Mship\Qualification;
 use App\Models\Training\Mentoring\MentorTrainingPosition;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
@@ -192,6 +191,37 @@ class ATCTrainingStatsTest extends TestCase
         $this->assertContains(['name' => 'Total', 'value' => 0], $result);
     }
 
+    #[Test]
+    public function it_excludes_sessions_that_are_not_our_atc_training()
+    {
+        TrainingPosition::factory()->create([
+            'category' => 'S2 Training',
+            'cts_positions' => ['EGKK_TWR'],
+        ]);
+
+        Session::factory()->accepted()->create([
+            'position' => 'EGKK_TWR',
+            'taken_date' => '2026-02-01',
+        ]);
+        // Pilot training sessions live in the same CTS table, booked against pilot callsigns.
+        Session::factory()->accepted()->create([
+            'position' => 'P1_PPL(A)',
+            'taken_date' => '2026-02-01',
+        ]);
+        // Mentoring on a position that is not one of our training positions.
+        Session::factory()->accepted()->create([
+            'position' => 'EGLL_APP',
+            'taken_date' => '2026-02-01',
+        ]);
+
+        $result = ATCTrainingStats::completedMentoringSessionsByTG($this->startDate, $this->endDate);
+
+        $this->assertSame([
+            ['name' => 'S2 Training', 'value' => 1],
+            ['name' => 'Total', 'value' => 1],
+        ], $result);
+    }
+
     // examsConductedByTG
 
     #[Test]
@@ -281,33 +311,26 @@ class ATCTrainingStatsTest extends TestCase
     #[Test]
     public function it_excludes_pilot_exams()
     {
+        foreach (['P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9'] as $exam) {
+            PracticalResult::factory()->create([
+                'exam' => $exam,
+                'result' => 'P',
+                'date' => '2026-02-01',
+            ]);
+        }
+
         PracticalResult::factory()->create([
             'exam' => 'TWR',
-            'result' => 'P',
-            'date' => '2026-02-01',
-        ]);
-        PracticalResult::factory()->create([
-            'exam' => 'P1',
-            'result' => 'P',
-            'date' => '2026-02-01',
-        ]);
-        PracticalResult::factory()->create([
-            'exam' => 'P2',
-            'result' => 'P',
-            'date' => '2026-02-01',
-        ]);
-        PracticalResult::factory()->create([
-            'exam' => 'P3',
             'result' => 'P',
             'date' => '2026-02-01',
         ]);
 
         $result = ATCTrainingStats::examsConductedByTG($this->startDate, $this->endDate);
 
-        $this->assertNotContains(['name' => 'P1', 'value' => 1], $result);
-        $this->assertNotContains(['name' => 'P2', 'value' => 1], $result);
-        $this->assertNotContains(['name' => 'P3', 'value' => 1], $result);
-        $this->assertContains(['name' => 'Total', 'value' => 1], $result);
+        $this->assertSame([
+            ['name' => 'S2 Training', 'value' => 1],
+            ['name' => 'Total', 'value' => 1],
+        ], $result);
     }
 
     #[Test]
@@ -330,46 +353,37 @@ class ATCTrainingStatsTest extends TestCase
     }
 
     #[Test]
-    public function it_uses_raw_exam_name_when_no_tg_mapping_exists()
+    public function it_never_reports_legacy_or_unmapped_exam_codes_as_rows()
     {
-        PracticalResult::factory()->create([
-            'exam' => 'OBS',
-            'result' => 'P',
-            'date' => '2026-02-01',
-        ]);
+        foreach (['S3', 'C1', 'C3'] as $legacyExam) {
+            PracticalResult::factory()->create([
+                'exam' => $legacyExam,
+                'result' => 'P',
+                'date' => '2026-02-01',
+            ]);
+        }
 
         $result = ATCTrainingStats::examsConductedByTG($this->startDate, $this->endDate);
 
-        $this->assertContains(['name' => 'OBS to S1 Training', 'value' => 1], $result);
-        $this->assertContains(['name' => 'Total', 'value' => 1], $result);
+        $this->assertSame([
+            ['name' => 'Total', 'value' => 0],
+        ], $result);
     }
 
-    // ratingUpgradesByTG
-    private function makeQual(string $code, int $vatsim): Qualification
-    {
-        return Qualification::firstOrCreate(
-            ['code' => $code],
-            ['type' => 'atc', 'vatsim' => $vatsim, 'name_small' => $code, 'name_long' => $code, 'name_grp' => $code]
-        );
-    }
+    // examPassesByTG
 
     #[Test]
-    public function it_maps_qualification_codes_to_correct_tgs()
+    public function it_maps_exam_passes_to_correct_tgs()
     {
-        $account = Account::factory()->create();
-        $s1 = $this->makeQual('S1', 2);
-        $s2 = $this->makeQual('S2', 3);
-        $s3 = $this->makeQual('S3', 4);
-        $c1 = $this->makeQual('C1', 5);
+        foreach (['OBS', 'TWR', 'APP', 'CTR'] as $exam) {
+            PracticalResult::factory()->create([
+                'exam' => $exam,
+                'result' => 'P',
+                'date' => '2026-02-01',
+            ]);
+        }
 
-        DB::table('mship_account_qualification')->insert([
-            ['account_id' => $account->id, 'qualification_id' => $s1->id, 'created_at' => '2026-02-01', 'updated_at' => '2026-02-01'],
-            ['account_id' => $account->id, 'qualification_id' => $s2->id, 'created_at' => '2026-02-01', 'updated_at' => '2026-02-01'],
-            ['account_id' => $account->id, 'qualification_id' => $s3->id, 'created_at' => '2026-02-01', 'updated_at' => '2026-02-01'],
-            ['account_id' => $account->id, 'qualification_id' => $c1->id, 'created_at' => '2026-02-01', 'updated_at' => '2026-02-01'],
-        ]);
-
-        $result = ATCTrainingStats::ratingUpgradesByTG($this->startDate, $this->endDate);
+        $result = ATCTrainingStats::examPassesByTG($this->startDate, $this->endDate);
 
         $this->assertContains(['name' => 'OBS to S1 Training', 'value' => 1], $result);
         $this->assertContains(['name' => 'S2 Training', 'value' => 1], $result);
@@ -379,37 +393,73 @@ class ATCTrainingStatsTest extends TestCase
     }
 
     #[Test]
-    public function it_only_counts_atc_qualifications()
+    public function it_only_counts_passes()
     {
-        $account = Account::factory()->create();
-        $s2 = $this->makeQual('S2', 3);
-        $p1 = Qualification::factory()->pilot()->create();
-
-        DB::table('mship_account_qualification')->insert([
-            ['account_id' => $account->id, 'qualification_id' => $s2->id, 'created_at' => '2026-02-01', 'updated_at' => '2026-02-01'],
-            ['account_id' => $account->id, 'qualification_id' => $p1->id, 'created_at' => '2026-02-01', 'updated_at' => '2026-02-01'],
+        foreach (['F', 'N'] as $failedResult) {
+            PracticalResult::factory()->create([
+                'exam' => 'TWR',
+                'result' => $failedResult,
+                'date' => '2026-02-01',
+            ]);
+        }
+        PracticalResult::factory()->create([
+            'exam' => 'TWR',
+            'result' => 'P',
+            'date' => '2026-02-01',
+        ]);
+        // Partial passes are a pilot exam result and must not count for ATC.
+        PracticalResult::factory()->create([
+            'exam' => 'APP',
+            'result' => 'S',
+            'date' => '2026-02-01',
         ]);
 
-        $result = ATCTrainingStats::ratingUpgradesByTG($this->startDate, $this->endDate);
+        $result = ATCTrainingStats::examPassesByTG($this->startDate, $this->endDate);
 
-        $this->assertCount(2, $result);
-        $this->assertContains(['name' => 'S2 Training', 'value' => 1], $result);
-        $this->assertContains(['name' => 'Total', 'value' => 1], $result);
+        $this->assertSame([
+            ['name' => 'S2 Training', 'value' => 1],
+            ['name' => 'Total', 'value' => 1],
+        ], $result);
     }
 
     #[Test]
-    public function it_only_counts_upgrades_within_date_range()
+    public function it_only_counts_exam_passes_within_date_range()
     {
-        $account = Account::factory()->create();
-        $s2 = $this->makeQual('S2', 3);
-
-        DB::table('mship_account_qualification')->insert([
-            ['account_id' => $account->id, 'qualification_id' => $s2->id, 'created_at' => '2026-05-01', 'updated_at' => '2026-05-01'],
+        PracticalResult::factory()->create([
+            'exam' => 'TWR',
+            'result' => 'P',
+            'date' => '2026-02-01',
+        ]);
+        PracticalResult::factory()->create([
+            'exam' => 'TWR',
+            'result' => 'P',
+            'date' => '2026-05-01',
         ]);
 
-        $result = ATCTrainingStats::ratingUpgradesByTG($this->startDate, $this->endDate);
+        $result = ATCTrainingStats::examPassesByTG($this->startDate, $this->endDate);
 
-        $this->assertContains(['name' => 'Total', 'value' => 0], $result);
+        $this->assertSame([
+            ['name' => 'S2 Training', 'value' => 1],
+            ['name' => 'Total', 'value' => 1],
+        ], $result);
+    }
+
+    #[Test]
+    public function it_excludes_exams_that_are_not_our_atc_training()
+    {
+        foreach (['P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'S3', 'C1', 'C3'] as $exam) {
+            PracticalResult::factory()->create([
+                'exam' => $exam,
+                'result' => 'P',
+                'date' => '2026-02-01',
+            ]);
+        }
+
+        $result = ATCTrainingStats::examPassesByTG($this->startDate, $this->endDate);
+
+        $this->assertSame([
+            ['name' => 'Total', 'value' => 0],
+        ], $result);
     }
 
     // heathrowEndorsementsIssued

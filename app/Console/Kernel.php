@@ -56,6 +56,11 @@ class Kernel extends ConsoleKernel
             ->hourlyAt(30)
             ->graceTimeInMinutes(5);
 
+        $schedule->command('training:check-for-expired-seminar-invitations')
+            ->hourlyAt(35)
+            ->withoutOverlapping()
+            ->graceTimeInMinutes(5);
+
         $schedule->command('training-places:create-cts-session-requests')
             ->hourlyAt(5)
             ->graceTimeInMinutes(10);
@@ -95,6 +100,10 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('training:check-for-pending-mentoring-reports')
             ->dailyAt('9:00')
+            ->graceTimeInMinutes(15);
+
+        $schedule->command('training:remove-inactive-mentoring-permissions')
+            ->dailyAt('09:30')
             ->graceTimeInMinutes(15);
 
         $schedule->command('training-places:check-for-expired-availability-warnings')

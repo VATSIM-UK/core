@@ -176,13 +176,13 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             return false;
         }
 
-        if ($this->hasPendingExamForPlace($place)) {
-            return false;
-        }
-
         $member = Member::query()->where('cid', $place->account_id)->first();
 
         if (! $member) {
+            return false;
+        }
+
+        if ($this->hasPendingExamForPlace($place)) {
             return false;
         }
 
@@ -191,11 +191,6 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
     protected function hasPendingExamForPlace(TrainingPlace $place): bool
     {
-        // Pending exams are only modelled for ATC training positions today.
-        if (! $place->trainingPosition) {
-            return false;
-        }
-
         return app(TrainingPlaceService::class)->hasPendingExam($place);
     }
 

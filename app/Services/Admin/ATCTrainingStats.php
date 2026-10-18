@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Enums\ExamResultEnum;
 use App\Models\Mship\Account\Endorsement;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\RemovalReason;
@@ -11,6 +12,20 @@ use Illuminate\Support\Facades\DB;
 
 class ATCTrainingStats
 {
+    /**
+     * ATC practical exam code => the training group that exam completes.
+     *
+     * Only our own ATC training exams are listed: pilot exams (P1-P9) and the
+     * legacy rating codes are deliberately absent so they cannot leak into the
+     * ATC training group statistics.
+     */
+    public const ATC_EXAM_TO_TRAINING_GROUP = [
+        'OBS' => 'OBS to S1 Training',
+        'TWR' => 'S2 Training',
+        'APP' => 'S3 Training',
+        'CTR' => 'C1 Training',
+    ];
+
     public static function issuedPositionGroupEndorsements(Carbon $startDate, Carbon $endDate)
     {
         return Endorsement::with('endorsable')
@@ -160,13 +175,17 @@ class ATCTrainingStats
             ->whereBetween('taken_date', [$startDate, $endDate])
             ->whereNull('cancelled_datetime')
             ->where('noShow', '=', 0)
+            ->whereIn('position', array_keys($callsignToCategory))
             ->groupBy('position')
             ->get();
 
         $categoryCounts = [];
         foreach ($sessions as $session) {
-            $category = $callsignToCategory[$session->position] ?? 'Other';
-            $categoryCounts[$category] = ($categoryCounts[$category] ?? 0) + $session->total;
+            $category = $callsignToCategory[$session->position] ?? null;
+
+            if ($category) {
+                $categoryCounts[$category] = ($categoryCounts[$category] ?? 0) + $session->total;
+            }
         }
 
         ksort($categoryCounts);
@@ -182,25 +201,21 @@ class ATCTrainingStats
 
     public static function examsConductedByTG(Carbon $startDate, Carbon $endDate): array
     {
-        $examToCategory = [
-            'OBS' => 'OBS to S1 Training',
-            'TWR' => 'S2 Training',
-            'APP' => 'S3 Training',
-            'CTR' => 'C1 Training',
-        ];
-
         $results = DB::connection('cts')
             ->table('practical_results')
             ->select('exam', DB::raw('count(*) as total'))
+            ->whereIn('exam', array_keys(self::ATC_EXAM_TO_TRAINING_GROUP))
             ->whereBetween('date', [$startDate, $endDate])
-            ->whereNotIn('exam', ['P1', 'P2', 'P3'])
             ->groupBy('exam')
             ->get();
 
         $categoryCounts = [];
         foreach ($results as $result) {
-            $category = $examToCategory[$result->exam] ?? $result->exam;
-            $categoryCounts[$category] = ($categoryCounts[$category] ?? 0) + $result->total;
+            $category = self::ATC_EXAM_TO_TRAINING_GROUP[$result->exam] ?? null;
+
+            if ($category) {
+                $categoryCounts[$category] = ($categoryCounts[$category] ?? 0) + $result->total;
+            }
         }
 
         ksort($categoryCounts);
@@ -214,29 +229,23 @@ class ATCTrainingStats
         return $result;
     }
 
-    public static function ratingUpgradesByTG(Carbon $startDate, Carbon $endDate): array
+    public static function examPassesByTG(Carbon $startDate, Carbon $endDate): array
     {
-        $qualToCategory = [
-            'S1' => 'OBS to S1 Training',
-            'S2' => 'S2 Training',
-            'S3' => 'S3 Training',
-            'C1' => 'C1 Training',
-        ];
-
-        $upgrades = DB::table('mship_account_qualification')
-            ->join('mship_qualification', 'mship_qualification.id', '=', 'mship_account_qualification.qualification_id')
-            ->where('mship_qualification.type', '=', 'atc')
-            ->whereBetween('mship_account_qualification.created_at', [$startDate, $endDate])
-            ->whereNull('mship_account_qualification.deleted_at')
-            ->select('mship_qualification.code')
+        $passes = DB::connection('cts')
+            ->table('practical_results')
+            ->select('exam', DB::raw('count(*) as total'))
+            ->whereIn('exam', array_keys(self::ATC_EXAM_TO_TRAINING_GROUP))
+            ->where('result', ExamResultEnum::Pass->value)
+            ->whereBetween('date', [$startDate, $endDate])
+            ->groupBy('exam')
             ->get();
 
         $categoryCounts = [];
-        foreach ($upgrades as $upgrade) {
-            $category = $qualToCategory[$upgrade->code] ?? null;
+        foreach ($passes as $pass) {
+            $category = self::ATC_EXAM_TO_TRAINING_GROUP[$pass->exam] ?? null;
 
             if ($category) {
-                $categoryCounts[$category] = ($categoryCounts[$category] ?? 0) + 1;
+                $categoryCounts[$category] = ($categoryCounts[$category] ?? 0) + $pass->total;
             }
         }
 

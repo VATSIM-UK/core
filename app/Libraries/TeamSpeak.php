@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use DB;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use PlanetTeamSpeak\TeamSpeak3Framework\Adapter\Adapter;
 use PlanetTeamSpeak\TeamSpeak3Framework\Exception\ServerQueryException;
 use PlanetTeamSpeak\TeamSpeak3Framework\Exception\TeamSpeak3Exception;
 use PlanetTeamSpeak\TeamSpeak3Framework\Node\Client;
@@ -64,6 +65,27 @@ class TeamSpeak
         );
 
         return TeamSpeak3::factory($connectionUrl);
+    }
+
+    public static function close(?Server $server): void
+    {
+        if ($server === null) {
+            return;
+        }
+
+        try {
+            $server->request('quit');
+        } catch (\Throwable) {
+        }
+
+        try {
+            $adapter = $server->getParent()?->getParent();
+
+            if ($adapter instanceof Adapter) {
+                $adapter->getTransport()?->disconnect();
+            }
+        } catch (\Throwable) {
+        }
     }
 
     /**

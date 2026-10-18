@@ -12,6 +12,7 @@ use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member as CtsMember;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Support\MemberDisplayName;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -25,9 +26,9 @@ class BookingRepository
         Booking::TYPE_GROUP_SEMINAR => 'GS',
     ];
 
-    public function getBookings(Carbon $date, bool $hideEndedTrainingSessions = false): Collection
+    public function getBookings(Carbon $date): Collection
     {
-        return $this->getBookingsForRange($date, $date, $hideEndedTrainingSessions)
+        return $this->getBookingsForRange($date, $date)
             ->get($date->toDateString(), collect());
     }
 
@@ -36,7 +37,7 @@ class BookingRepository
      *
      * @return Collection<string, Collection<int, object>> keyed by Y-m-d date string
      */
-    public function getBookingsForRange(Carbon $start, Carbon $end, bool $hideEndedTrainingSessions = false): Collection
+    public function getBookingsForRange(Carbon $start, Carbon $end): Collection
     {
         $startDate = $start->toDateString();
         $endDate = $end->toDateString();
@@ -85,29 +86,7 @@ class BookingRepository
             ->concat($ctsOnly->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts, $examLookup, $sessionLookup)))
             ->concat($events->map(fn (Event $event) => $this->formatEvent($event)))
             ->groupBy(fn (object $b) => $b->date)
-            ->map(function (Collection $dayBookings, string $dateKey) use ($hideEndedTrainingSessions) {
-                $isToday = $dateKey === Carbon::today()->toDateString();
-
-                return $dayBookings
-                    ->reject(fn (object $b) => $hideEndedTrainingSessions && $isToday && $this->trainingSessionHasEnded($b))
-                    ->sortBy(fn (object $b) => $b->from)
-                    ->values();
-            });
-    }
-
-    private function trainingSessionHasEnded(object $booking): bool
-    {
-        if (! in_array($booking->type, ['ME', 'EX'], true)) {
-            return false;
-        }
-
-        $end = Carbon::parse($booking->date.' '.$booking->to);
-
-        if ($booking->to <= $booking->from) {
-            $end->addDay();
-        }
-
-        return $end->isPast();
+            ->map(fn (Collection $dayBookings) => $dayBookings->sortBy(fn (object $b) => $b->from)->values());
     }
 
     public function getTodaysBookings(): Collection
@@ -356,12 +335,9 @@ class BookingRepository
             return ['cid' => '', 'display_name' => 'Unknown'];
         }
 
-        $firstName = $account->name_preferred;
-        $lastInitial = mb_substr($account->name_last, 0, 1).'.';
-
         return [
             'cid' => (string) $account->id,
-            'display_name' => $firstName.' '.$lastInitial,
+            'display_name' => MemberDisplayName::abbreviated($account),
         ];
     }
 }

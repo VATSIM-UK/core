@@ -69,6 +69,17 @@ class EventServiceTest extends TestCase
         $this->assertNotNull($event->fresh()->published_at);
     }
 
+    public function test_unpublish_returns_the_event_to_draft(): void
+    {
+        $event = Event::factory()->published(Account::factory()->create())->create();
+
+        $this->service->unpublish($event);
+
+        $fresh = $event->fresh();
+        $this->assertTrue($fresh->isDraft());
+        $this->assertNull($fresh->published_by);
+    }
+
     public function test_sync_checklist_records_who_ticked_each_item(): void
     {
         $account = Account::factory()->create();

@@ -1,0 +1,334 @@
+<?php
+
+namespace Tests\Feature\TrainingPanel\MyTraining;
+
+use App\Filament\Training\Pages\MyTraining\MyAvailability;
+use App\Models\Cts\Availability;
+use App\Models\Cts\Member;
+use App\Models\Mship\Account;
+use App\Models\Training\TrainingPlace\TrainingPlace;
+use Carbon\Carbon;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
+
+class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
+{
+    use DatabaseTransactions;
+
+    protected Account $studentAccount;
+
+    protected Member $studentMember;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->travelTo(Carbon::create(2026, 5, 10, 12, 0, 0));
+
+        $this->studentAccount = Account::factory()->create();
+        $this->studentMember = Member::factory()->recycle($this->studentAccount)->create([
+            'cid' => $this->studentAccount->id,
+        ]);
+
+        $this->studentAccount->givePermissionTo('training.access');
+
+        TrainingPlace::factory()->createQuietly([
+            'account_id' => $this->studentAccount->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_only_shows_availability_for_the_authenticated_member(): void
+    {
+        Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => now()->addDay()->toDateString(),
+            'from' => '19:00:00',
+            'to' => '21:00:00',
+            'type' => 'S',
+        ]);
+
+        $otherAccount = Account::factory()->create();
+        $otherMember = Member::factory()->recycle($otherAccount)->create(['cid' => $otherAccount->id]);
+
+        Availability::factory()->forStudent($otherMember->id)->create([
+            'date' => now()->addDays(2)->toDateString(),
+            'from' => '19:30:00',
+            'to' => '21:30:00',
+            'type' => 'S',
+        ]);
+
+        $component = Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('mode', 'form')
+            ->assertSuccessful();
+
+        $this->assertCount(1, $component->instance()->getTable()->getRecords());
+    }
+
+    #[Test]
+    public function it_only_shows_future_availability_slots(): void
+    {
+        Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => now()->subDay()->toDateString(),
+            'from' => '19:00:00',
+            'to' => '21:00:00',
+            'type' => 'S',
+        ]);
+
+        Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => now()->toDateString(),
+            'from' => '09:00:00',
+            'to' => '11:00:00',
+            'type' => 'S',
+        ]);
+
+        Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => now()->addDay()->toDateString(),
+            'from' => '19:30:00',
+            'to' => '21:30:00',
+            'type' => 'S',
+        ]);
+
+        $component = Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('mode', 'form')
+            ->assertSuccessful();
+
+        $records = $component->instance()->getTable()->getRecords();
+
+        $this->assertCount(1, $records);
+        $this->assertEquals(now()->addDay()->toDateString(), $records->first()->date->toDateString());
+    }
+
+    #[Test]
+    public function it_adds_a_single_availability_slot(): void
+    {
+        $tomorrow = now()->addDay()->toDateString();
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('mode', 'form')
+            ->set('slotData.date_range', ['start' => $tomorrow, 'end' => $tomorrow])
+            ->set('slotData.from', '18:00')
+            ->set('slotData.to', '21:00')
+            ->call('create');
+
+        $this->assertCount(1, Availability::where('student_id', $this->studentMember->id)->get());
+    }
+
+    #[Test]
+    public function it_shows_notification_when_slot_is_shorter_than_minimum_duration(): void
+    {
+        $tomorrow = now()->addDay()->toDateString();
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('mode', 'form')
+            ->set('slotData.date_range', ['start' => $tomorrow, 'end' => $tomorrow])
+            ->set('slotData.from', '18:00')
+            ->set('slotData.to', '18:30')
+            ->call('create')
+            ->assertNotified();
+
+        $this->assertCount(0, Availability::where('student_id', $this->studentMember->id)->get());
+    }
+
+    #[Test]
+    public function it_adds_multiple_slots_across_a_date_range(): void
+    {
+        $start = now()->addDay()->toDateString();
+        $end = now()->addDays(5)->toDateString();
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('mode', 'form')
+            ->set('slotData.date_range', ['start' => $start, 'end' => $end])
+            ->set('slotData.from', '18:00')
+            ->set('slotData.to', '21:00')
+            ->call('create');
+
+        $this->assertCount(5, Availability::where('student_id', $this->studentMember->id)->get());
+    }
+
+    #[Test]
+    public function it_merges_a_new_slot_that_overlaps_an_existing_one(): void
+    {
+        $date = now()->addDay()->toDateString();
+
+        Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => $date,
+            'from' => '18:00:00',
+            'to' => '20:00:00',
+            'type' => 'S',
+        ]);
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('mode', 'form')
+            ->set('slotData.date_range', ['start' => $date, 'end' => $date])
+            ->set('slotData.from', '19:00')
+            ->set('slotData.to', '21:00')
+            ->call('create');
+
+        $slots = Availability::where('student_id', $this->studentMember->id)->get();
+
+        $this->assertCount(1, $slots, 'Should have merged into one slot, not created a second');
+        $this->assertEquals('18:00:00', $slots->first()->getRawOriginal('from'));
+        $this->assertEquals('21:00:00', $slots->first()->getRawOriginal('to'));
+    }
+
+    #[Test]
+    public function it_expands_an_existing_slot_when_new_slot_starts_earlier(): void
+    {
+        $date = now()->addDay()->toDateString();
+
+        Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => $date,
+            'from' => '19:00:00',
+            'to' => '21:00:00',
+            'type' => 'S',
+        ]);
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('mode', 'form')
+            ->set('slotData.date_range', ['start' => $date, 'end' => $date])
+            ->set('slotData.from', '17:00')
+            ->set('slotData.to', '20:00')
+            ->call('create');
+
+        $slots = Availability::where('student_id', $this->studentMember->id)->get();
+
+        $this->assertCount(1, $slots);
+        $this->assertEquals('17:00:00', $slots->first()->getRawOriginal('from'));
+        $this->assertEquals('21:00:00', $slots->first()->getRawOriginal('to'));
+    }
+
+    #[Test]
+    public function it_expands_an_existing_slot_when_new_slot_ends_later(): void
+    {
+        $date = now()->addDay()->toDateString();
+
+        Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => $date,
+            'from' => '17:00:00',
+            'to' => '19:00:00',
+            'type' => 'S',
+        ]);
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('mode', 'form')
+            ->set('slotData.date_range', ['start' => $date, 'end' => $date])
+            ->set('slotData.from', '18:00')
+            ->set('slotData.to', '22:00')
+            ->call('create');
+
+        $slots = Availability::where('student_id', $this->studentMember->id)->get();
+
+        $this->assertCount(1, $slots);
+        $this->assertEquals('17:00:00', $slots->first()->getRawOriginal('from'));
+        $this->assertEquals('22:00:00', $slots->first()->getRawOriginal('to'));
+    }
+
+    #[Test]
+    public function it_does_not_duplicate_when_new_slot_is_fully_contained_within_existing(): void
+    {
+        $date = now()->addDay()->toDateString();
+
+        Availability::factory()->forStudent($this->studentMember->id)->create([
+            'date' => $date,
+            'from' => '17:00:00',
+            'to' => '22:00:00',
+            'type' => 'S',
+        ]);
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('mode', 'form')
+            ->set('slotData.date_range', ['start' => $date, 'end' => $date])
+            ->set('slotData.from', '18:00')
+            ->set('slotData.to', '21:00')
+            ->call('create');
+
+        $slots = Availability::where('student_id', $this->studentMember->id)->get();
+
+        $this->assertCount(1, $slots);
+        $this->assertEquals('17:00:00', $slots->first()->getRawOriginal('from'));
+        $this->assertEquals('22:00:00', $slots->first()->getRawOriginal('to'));
+    }
+
+    #[Test]
+    public function it_does_not_merge_slots_belonging_to_other_members(): void
+    {
+        $date = now()->addDay()->toDateString();
+
+        $otherAccount = Account::factory()->create();
+        $otherMember = Member::factory()->recycle($otherAccount)->create(['cid' => $otherAccount->id]);
+
+        Availability::factory()->forStudent($otherMember->id)->create([
+            'date' => $date,
+            'from' => '18:00:00',
+            'to' => '20:00:00',
+            'type' => 'S',
+        ]);
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('mode', 'form')
+            ->set('slotData.date_range', ['start' => $date, 'end' => $date])
+            ->set('slotData.from', '19:00')
+            ->set('slotData.to', '21:00')
+            ->call('create');
+
+        $this->assertCount(1, Availability::where('student_id', $this->studentMember->id)->get());
+        $this->assertCount(1, Availability::where('student_id', $otherMember->id)->get());
+    }
+
+    #[Test]
+    public function it_stores_times_as_utc(): void
+    {
+        $date = now()->addDay()->toDateString();
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('mode', 'form')
+            ->set('slotData.date_range', ['start' => $date, 'end' => $date])
+            ->set('slotData.from', '12:00')
+            ->set('slotData.to', '14:00')
+            ->call('create');
+
+        $availability = Availability::where('student_id', $this->studentMember->id)->first();
+
+        $this->assertNotNull($availability);
+        $this->assertEquals('12:00:00', $availability->getRawOriginal('from'));
+        $this->assertEquals('14:00:00', $availability->getRawOriginal('to'));
+    }
+
+    #[Test]
+    public function it_merges_a_new_slot_that_bridges_two_existing_ones_into_one(): void
+    {
+        $date = now()->addDay()->toDateString();
+
+        foreach ([['17:00:00', '18:30:00'], ['20:00:00', '22:00:00']] as [$from, $to]) {
+            Availability::factory()->forStudent($this->studentMember->id)->create([
+                'date' => $date, 'from' => $from, 'to' => $to, 'type' => 'S',
+            ]);
+        }
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('mode', 'form')
+            ->set('slotData.date_range', ['start' => $date, 'end' => $date])
+            ->set('slotData.from', '18:00')
+            ->set('slotData.to', '21:00')
+            ->call('create');
+
+        $slot = Availability::where('student_id', $this->studentMember->id)->sole();
+
+        $this->assertEquals('17:00:00', $slot->getRawOriginal('from'));
+        $this->assertEquals('22:00:00', $slot->getRawOriginal('to'));
+    }
+}

@@ -312,4 +312,37 @@ class RenewTest extends TestCase
             ->call('nextPage')
             ->assertSet('page', 2);
     }
+
+    public function test_can_proceed_when_the_latest_session_is_still_open()
+    {
+        $account = $this->createEligibleAccount();
+
+        RosterHistory::create([
+            'account_id' => $account->id,
+            'original_created_at' => Carbon::now()->subMonths(12),
+            'original_updated_at' => Carbon::now()->subMonths(12),
+        ]);
+
+        $lastQuarterStart = Carbon::now()->copy()->startOfQuarter()->subMonths(3);
+        $this->createAtcSession($account, $lastQuarterStart->copy()->addWeeks(4)->addHours(12), 180);
+
+        $openSession = Atc::create([
+            'account_id' => $account->id,
+            'callsign' => 'EGCC_TWR',
+            'connected_at' => Carbon::now()->subMinutes(5),
+            'qualification_id' => 1,
+            'facility_type' => 4,
+        ]);
+        $openSession->created_at = Carbon::now()->addMinute();
+        $openSession->saveQuietly();
+
+        $this->mock(UKCP::class)
+            ->shouldReceive('getUnreadNotificationsForUser')
+            ->andReturn([]);
+
+        Livewire::actingAs($account)
+            ->test(Renew::class)
+            ->call('nextPage')
+            ->assertSet('page', 2);
+    }
 }

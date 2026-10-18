@@ -264,28 +264,12 @@ class TrainingPlaceService
         }
 
         $trainingPlace->unsetRelation('trainable');
-        $trainingPosition = $trainingPlace->trainingPosition;
+        $examCallsign = $trainingPlace->examCallsign();
 
-        if (! $trainingPosition) {
-            Log::error('Training position not found', [
-                'account_id' => $student->id,
-                'training_place_id' => $trainingPlace->id,
-            ]);
-
-            return false;
-        }
-
-        $trainingPosition->loadMissing('position');
-
-        $examPosition = $trainingPosition->exam_callsign
-            ?? $trainingPosition->position?->callsign
-            ?? null;
-
-        if (! $examPosition) {
+        if (! $examCallsign) {
             Log::error('Exam position not found', [
                 'account_id' => $student->id,
                 'training_place_id' => $trainingPlace->id,
-                'training_position_id' => $trainingPosition->id,
             ]);
 
             return false;
@@ -294,7 +278,7 @@ class TrainingPlaceService
         $now = now();
 
         return ExamBooking::where('student_id', $student->member->id)
-            ->where('position_1', $examPosition)
+            ->where('position_1', $examCallsign)
             ->where('finished', ExamBooking::NOT_FINISHED_FLAG)
             ->where(function ($query) use ($now) {
                 $query->whereNull('taken_date')

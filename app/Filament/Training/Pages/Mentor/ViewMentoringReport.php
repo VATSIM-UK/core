@@ -66,12 +66,14 @@ class ViewMentoringReport extends Page implements HasInfolists
 
         if (auth()->user()?->can('viewAny', Session::class)) {
             $url = MentoringHistory::getUrl(array_filter(['category' => $category]));
+            $label = 'Mentoring History';
         } else {
             $url = MyMentoringHistory::getUrl();
+            $label = 'My Training History';
         }
 
         return [
-            $url => 'Mentoring History',
+            $url => $label,
             '' => 'Session Report',
         ];
     }

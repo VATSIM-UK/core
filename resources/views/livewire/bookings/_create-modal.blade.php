@@ -17,6 +17,7 @@
     positionSearchToken: 0,
     positionSearchMinLength: @json($positionSearchMinLength),
     errorMessage: null,
+    errorEventUrl: null,
     submitting: false,
     get startDatetime() {
         if (!this.date || !this.startTime) return "";
@@ -119,13 +120,13 @@
             selectedPosition = d.prefillPositionId || '';
             selectedCallsign = d.prefillCallsign || '';
             resetPositionSearch();
-            errorMessage = null; submitting = false;
+            errorMessage = null; errorEventUrl = null; submitting = false;
             open = true;
         "
 		x-on:close-modal.window="open = false" x-on:booking-created.window="open = false"
 		x-on:keydown.escape.window="open = false"
-		x-on:booking-warning.window="errorMessage = $event.detail?.message || 'There is a scheduling conflict.'; submitting = false;"
-		x-on:booking-error.window="errorMessage = $event.detail?.message || 'An error occurred'; submitting = false;"
+		x-on:booking-warning.window="errorMessage = $event.detail?.message || 'There is a scheduling conflict.'; errorEventUrl = $event.detail?.eventUrl || null; submitting = false;"
+		x-on:booking-error.window="errorMessage = $event.detail?.message || 'An error occurred'; errorEventUrl = null; submitting = false;"
 		class="fixed inset-0 z-50 flex items-center justify-center" style="display: none;">
 		<div class="absolute inset-0 bg-black/50" x-on:click="open = false"></div>
 		<div
@@ -146,6 +147,7 @@
 						x-on:submit.prevent="
                         submitting = true;
                         errorMessage = null;
+                        errorEventUrl = null;
 
                         if (!startDatetime) {
                             errorMessage = 'Please enter a start time.';
@@ -276,6 +278,8 @@
 						<div x-show="errorMessage"
 							class="mb-5 bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-center leading-tight">
 							<span class="text-sm text-red-700" x-text="errorMessage"></span>
+							<a x-show="errorEventUrl" x-bind:href="errorEventUrl" target="_blank" rel="noopener"
+								class="block mt-1 text-sm font-semibold text-brand underline">View event</a>
 						</div>
 
 						{{-- Actions --}}

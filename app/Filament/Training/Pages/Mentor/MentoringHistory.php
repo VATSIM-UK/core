@@ -61,21 +61,9 @@ class MentoringHistory extends BaseMentoringHistoryPage
 
     public function mount(): void
     {
-        $this->rememberCategory();
+        $visibleCategories = $this->getVisibleCategories();
 
-        if ($this->category === MentorPermissionService::ALL_CATEGORIES) {
-            if (! $this->hasMultipleVisibleCategories()) {
-                $this->category = $this->firstVisibleCategory() ?? '';
-            }
-
-            return;
-        }
-
-        if (empty($this->category) || ! $this->canViewCategory($this->category)) {
-            $this->category = $this->defaultCategory();
-        }
-
-        $this->saveCategoryToSession();
+        $this->resolveRememberedCategory($visibleCategories, count($visibleCategories) > 1);
     }
 
     protected function getHeaderActions(): array
@@ -192,24 +180,5 @@ class MentoringHistory extends BaseMentoringHistoryPage
     private function hasMultipleVisibleCategories(): bool
     {
         return count($this->getVisibleCategories()) > 1;
-    }
-
-    private function defaultCategory(): string
-    {
-        if ($this->hasMultipleVisibleCategories()) {
-            return MentorPermissionService::ALL_CATEGORIES;
-        }
-
-        return $this->firstVisibleCategory() ?? '';
-    }
-
-    private function canViewCategory(string $category): bool
-    {
-        return in_array($category, $this->getVisibleCategories(), true);
-    }
-
-    private function firstVisibleCategory(): ?string
-    {
-        return collect($this->getVisibleCategories())->first();
     }
 }
