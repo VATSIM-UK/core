@@ -99,6 +99,34 @@ class QualificationTrainingPlaceTest extends TestCase
     }
 
     #[Test]
+    public function it_assigns_p4_session_request_access_for_an_atpl_training_place(): void
+    {
+        $ctsPosition = CtsPosition::firstOrCreate(['callsign' => 'P4_ATPL(A)']);
+        $qualification = Qualification::firstWhere('code', 'ATPL')
+            ?? Qualification::factory()->create(['code' => 'ATPL', 'type' => 'pilot', 'vatsim' => 15]);
+
+        $student = Account::factory()->create();
+        Member::factory()->create(['cid' => $student->id]);
+
+        $trainingPlace = TrainingPlace::withoutEvents(function () use ($qualification, $student) {
+            return TrainingPlace::factory()
+                ->forQualification($qualification)
+                ->create(['account_id' => $student->id]);
+        });
+
+        $this->assertSame('P4 Training', $trainingPlace->category);
+        $this->assertSame(['P4_ATPL(A)'], $trainingPlace->trainableCtsPositions());
+
+        (new TrainingPlaceService)->assignMentoringPermissions($trainingPlace);
+
+        $this->assertDatabaseHas('position_validations', [
+            'member_id' => $student->member->id,
+            'position_id' => $ctsPosition->id,
+            'status' => PositionValidationStatusEnum::Student->value,
+        ], 'cts');
+    }
+
+    #[Test]
     public function it_resolves_tfp_category_and_student_cts_callsign_for_virtual_qualification_places(): void
     {
         CtsPosition::firstOrCreate(['callsign' => 'TFP_FLIGHT']);

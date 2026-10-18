@@ -130,7 +130,9 @@ class MentorPermissionServiceTest extends TestCase
         $this->assertSame(['PPL'], $this->service->qualificationCodesForCtsCallsign('P1_PPL(A)'));
         $this->assertSame(['IR'], $this->service->qualificationCodesForCtsCallsign('P2_SEIR(A)'));
         $this->assertSame(['CMEL'], $this->service->qualificationCodesForCtsCallsign('P3_CMEL(A)'));
+        $this->assertSame(['ATPL'], $this->service->qualificationCodesForCtsCallsign('P4_ATPL(A)'));
         $this->assertSame(['TFP'], $this->service->qualificationCodesForCtsCallsign('TFP_FLIGHT'));
+        $this->assertSame('P4 Training', MentorPermissionService::categoryForQualificationCode('ATPL'));
 
         $this->assertSame([], $this->service->qualificationCodesForCtsCallsign('EGKK_TWR'));
     }
