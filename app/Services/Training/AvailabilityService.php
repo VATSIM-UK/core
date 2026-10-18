@@ -33,11 +33,29 @@ class AvailabilityService
         return $now->copy()->startOfDay()->addDays(self::MAX_FUTURE_DAYS);
     }
 
+    /** The first date a student may add availability for. */
+    public static function firstAllowedDate(Carbon $now): Carbon
+    {
+        return $now->copy()->startOfDay();
+    }
+
     public function isBeyondFutureWindow(Carbon $start, ?Carbon $now = null): bool
     {
         return $start->copy()->startOfDay()->greaterThan(
             static::lastAllowedDate($now ?? now()->utc())
         );
+    }
+
+    /** Whether the student holds availability inside the window the check counts. */
+    public function hasAvailabilityWithinWindow(int $memberId): bool
+    {
+        $now = now()->utc();
+
+        return Availability::query()
+            ->where('student_id', $memberId)
+            ->where('date', '>=', static::firstAllowedDate($now)->toDateString())
+            ->where('date', '<=', static::lastAllowedDate($now)->toDateString())
+            ->exists();
     }
 
     public function resolveMemberId(int $cid): ?int

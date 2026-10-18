@@ -20,6 +20,7 @@ use App\Models\Training\TrainingPlace\TrainingPlaceLeaveOfAbsence;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Notifications\Training\AvailabilityWarningCreated;
+use App\Services\Training\AvailabilityService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Notification;
@@ -1379,6 +1380,57 @@ class CheckAvailabilityTest extends TestCase
         ]);
         $this->assertDatabaseHas('availability_warnings', [
             'training_place_id' => $this->trainingPlace->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_fails_the_check_when_availability_is_only_beyond_the_window(): void
+    {
+        Availability::factory()->forStudent($this->ctsMember->id)->create([
+            'date' => now()->addDays(AvailabilityService::MAX_FUTURE_DAYS + 1)->toDateString(),
+        ]);
+
+        Session::factory()->create(['student_id' => $this->ctsMember->id, 'position' => 'EGLL_TWR', 'taken_time' => null]);
+
+        (new CheckAvailability($this->trainingPlace))->handle();
+
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Failed->value,
+        ]);
+    }
+
+    #[Test]
+    public function it_fails_the_check_when_availability_is_only_in_the_past(): void
+    {
+        Availability::factory()->forStudent($this->ctsMember->id)->create([
+            'date' => now()->subDay()->toDateString(),
+        ]);
+
+        Session::factory()->create(['student_id' => $this->ctsMember->id, 'position' => 'EGLL_TWR', 'taken_time' => null]);
+
+        (new CheckAvailability($this->trainingPlace))->handle();
+
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Failed->value,
+        ]);
+    }
+
+    #[Test]
+    public function it_passes_the_check_when_availability_is_on_the_last_day_of_the_window(): void
+    {
+        Availability::factory()->forStudent($this->ctsMember->id)->create([
+            'date' => now()->addDays(AvailabilityService::MAX_FUTURE_DAYS)->toDateString(),
+        ]);
+
+        Session::factory()->create(['student_id' => $this->ctsMember->id, 'position' => 'EGLL_TWR', 'taken_time' => null]);
+
+        (new CheckAvailability($this->trainingPlace))->handle();
+
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::Passed->value,
         ]);
     }
 }

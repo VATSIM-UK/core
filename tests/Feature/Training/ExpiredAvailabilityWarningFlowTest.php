@@ -329,7 +329,7 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
 
         // Recovery day: Member adds session request and availability → check passes, job resolves warning, training place maintained
         Carbon::setTestNow($this->dayZero->copy()->addDays($recoveryDay));
-        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Availability::factory()->forStudent($this->ctsMember->id)->create(['date' => now()->addDay()->toDateString()]);
         Session::factory()->create([
             'student_id' => $this->ctsMember->id,
             'position' => 'EGLL_APP',
@@ -357,7 +357,7 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
 
     private function addAvailabilityAndSession(): void
     {
-        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Availability::factory()->forStudent($this->ctsMember->id)->create(['date' => now()->addDay()->toDateString()]);
         $this->createPendingSession();
         $this->createTakenSession();
     }
