@@ -24,6 +24,8 @@ class AvailabilityGrid extends Field
 
     protected Carbon|Closure|null $now = null;
 
+    protected Carbon|Closure|null $lastAllowedDate = null;
+
     /** A $to of 24 is midnight at the end of the day. */
     public function hours(int $from, int $to): static
     {
@@ -63,6 +65,13 @@ class AvailabilityGrid extends Field
     public function now(Carbon|Closure $now): static
     {
         $this->now = $now;
+
+        return $this;
+    }
+
+    public function lastAllowedDate(Carbon|Closure $date): static
+    {
+        $this->lastAllowedDate = $date;
 
         return $this;
     }
@@ -129,6 +138,11 @@ class AvailabilityGrid extends Field
     public function getNow(): Carbon
     {
         return $this->evaluate($this->now) ?? now()->utc();
+    }
+
+    public function getLastAllowedDate(): Carbon
+    {
+        return $this->evaluate($this->lastAllowedDate) ?? AvailabilityService::lastAllowedDate(now()->utc());
     }
 
     public function isOvernightOpen(): bool

@@ -228,4 +228,55 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
         $this->assertSame([], $component->get('data.availability'));
         $this->assertContains("{$tomorrow} 18:00", $component->instance()->lockedCells());
     }
+
+    #[Test]
+    public function it_stops_forward_navigation_at_the_future_window(): void
+    {
+        $component = Livewire::actingAs($this->studentAccount)->test(MyAvailability::class);
+
+        $component->call('nextWeek')->call('nextWeek')->call('nextWeek')->call('nextWeek')
+            ->assertSet('weekOffset', 4)
+            ->call('nextWeek')
+            ->assertSet('weekOffset', 4);
+    }
+
+    #[Test]
+    public function it_reports_the_maximum_reachable_week(): void
+    {
+        $component = Livewire::actingAs($this->studentAccount)->test(MyAvailability::class);
+
+        $this->assertSame(4, $component->instance()->maxWeekOffset());
+    }
+
+    #[Test]
+    public function it_shows_the_outside_the_window_legend(): void
+    {
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->assertSuccessful()
+            ->assertSee('Outside the window');
+    }
+
+    #[Test]
+    public function it_marks_days_beyond_the_window_as_unpaintable(): void
+    {
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->call('nextWeek')->call('nextWeek')->call('nextWeek')->call('nextWeek')
+            ->assertSeeHtml('title="Outside the window"');
+    }
+
+    #[Test]
+    public function it_does_not_present_beyond_window_days_as_editable(): void
+    {
+        $html = Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->call('nextWeek')->call('nextWeek')->call('nextWeek')->call('nextWeek')
+            ->html();
+
+        preg_match('/<div data-slot="2026-06-14 18:00"[^>]*>/', $html, $matches);
+
+        $this->assertNotEmpty($matches, 'The beyond-window cell should render.');
+        $this->assertStringNotContainsString('cursor-pointer', $matches[0]);
+    }
 }

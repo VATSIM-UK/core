@@ -7,6 +7,7 @@
 	$minimum = $field->getMinimumSlotMinutes();
 	$today = $now->toDateString();
 	$nowSlot = $now->copy()->ceilMinutes($step)->format('Y-m-d H:i');
+	$lastAllowedDate = $field->getLastAllowedDate()->toDateString();
 @endphp
 
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
@@ -18,6 +19,7 @@
     overnight: {{ $field->isOvernightOpen() ? 'true' : 'false' }},
     locked: new Set(@js($lockedCells)),
     dates: @js($dates),
+    maxDate: @js($lastAllowedDate),
     now: @js($now->getTimestampMs()),
     hours: @js([sprintf('%02d:00', $field->getFromHour()), sprintf('%02d:00', $field->getToHour())]),
     hasOvernight: false,
@@ -131,7 +133,7 @@
         const cells = this.$store.availabilityClipboard.cells ?? []
         const targets = cells.map((cell) => this.dates[cell.day] + ' ' + cell.time)
         const pasted = targets.filter((slot) =>
-            !this.locked.has(slot) && Date.parse(slot.replace(' ', 'T') + ':00Z') >= this.now)
+            !this.locked.has(slot) && slot.slice(0, 10) <= this.maxDate && Date.parse(slot.replace(' ', 'T') + ':00Z') >= this.now)
 
         this.state = [...(this.state ?? []).filter((slot) => !this.inWeek(slot)), ...pasted]
         this.recompute()
@@ -140,7 +142,7 @@
         const skipped = targets.length - pasted.length
 
         this.notify(skipped > 0 ?
-            'Week pasted, ' + skipped + ' slots in the past or locked were skipped' :
+            'Week pasted, ' + skipped + ' slots in the past, locked or outside the window were skipped' :
             'Week pasted')
     },
     ranges() {
@@ -335,7 +337,8 @@
 								$slot = "{$date} {$time}";
 								$isLocked = in_array($slot, $lockedCells, true);
 								$isPast = !$isLocked && \Carbon\Carbon::parse($slot, 'UTC')->lessThan($now);
-								$isEditable = !$isLocked && !$isPast;
+								$isBeyond = !$isLocked && !$isPast && $date > $lastAllowedDate;
+								$isEditable = !$isLocked && !$isPast && !$isBeyond;
 
 								// Painted runs keep hour lines but hide half-hour ones.
 								$paintedBorder = $minutes === 0 ? '!border-t-black/15 dark:!border-t-black/40' : '!border-t-transparent';
@@ -346,11 +349,12 @@
 								$gridline,
 								'border-t-2 border-solid !border-t-danger-500' => $slot === $nowSlot,
 								'pointer-events-none bg-success-500/40' => $isLocked,
-								'pointer-events-none bg-gray-100 dark:bg-white/5' => $isPast,
+								'pointer-events-none bg-gray-100 dark:bg-white/5' => $isPast || $isBeyond,
 								'cursor-pointer' => $isEditable,
 								'bg-primary-50/50 dark:bg-primary-500/5' => $isEditable && $date === $today,
 							])
 								@if ($isLocked) title="Saved availability that can't be edited here" @endif
+								@if ($isBeyond) title="Outside the window" @endif
 								@if ($isEditable) :class="{
 								    '{{ $paintedBorder }}': has('{{ $slot }}'),
 								    '!bg-success-500': has('{{ $slot }}') && !warned.has('{{ $slot }}'),
@@ -369,6 +373,7 @@
 								'Available' => 'bg-success-500',
 								"Under {$minimum} minutes, not saved" => 'bg-warning-400 dark:bg-warning-500',
 								"Saved, can't be edited" => 'bg-success-500/40',
+								'Outside the window' => 'bg-gray-100 ring-1 ring-gray-200 dark:bg-white/5 dark:ring-white/10',
 								'Past' => 'bg-gray-100 ring-1 ring-gray-200 dark:bg-white/5 dark:ring-white/10',
 				] as $label => $swatch)
 				<span class="flex items-center gap-1.5">

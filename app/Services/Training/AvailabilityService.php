@@ -16,6 +16,8 @@ class AvailabilityService
 {
     public const MINIMUM_SLOT_DURATION_MINUTES = 45;
 
+    public const MAX_FUTURE_DAYS = 31;
+
     /** Removals and rewrites run before additions so freed space is available. */
     private const CHANGE_APPLICATION_ORDER = [
         AvailabilityChangeType::Removed->value => 0,
@@ -24,6 +26,19 @@ class AvailabilityService
         AvailabilityChangeType::Unchanged->value => 3,
         AvailabilityChangeType::Added->value => 4,
     ];
+
+    /** The last date a student may add availability for; the whole day is allowed. */
+    public static function lastAllowedDate(Carbon $now): Carbon
+    {
+        return $now->copy()->startOfDay()->addDays(self::MAX_FUTURE_DAYS);
+    }
+
+    public function isBeyondFutureWindow(Carbon $start, ?Carbon $now = null): bool
+    {
+        return $start->copy()->startOfDay()->greaterThan(
+            static::lastAllowedDate($now ?? now()->utc())
+        );
+    }
 
     public function resolveMemberId(int $cid): ?int
     {
@@ -79,6 +94,14 @@ class AvailabilityService
         $logs = [];
 
         $applied = DB::connection('cts')->transaction(function () use ($ordered, $studentId, &$counts, &$logs): bool {
+            foreach ($ordered as $change) {
+                if ($change->newFrom && $this->isBeyondFutureWindow($change->newFrom)) {
+                    Log::warning('Availability save refused, beyond the future window', ['student_id' => $studentId]);
+
+                    return false;
+                }
+            }
+
             if ($this->wouldOverlap($studentId, $ordered)) {
                 return false;
             }
@@ -177,6 +200,14 @@ class AvailabilityService
     {
         $changes = [];
         $consumed = [];
+
+        foreach ($ranges as [$start]) {
+            if ($this->isBeyondFutureWindow($start)) {
+                Log::warning('Availability add refused, beyond the future window', ['student_id' => $studentId]);
+
+                return ['added' => 0, 'edited' => 0, 'merged' => 0, 'removed' => 0, 'refused' => true];
+            }
+        }
 
         foreach ($ranges as [$start, $end]) {
             $overlapping = $this->rowsOverlapping($studentId, $start, $end)
@@ -420,6 +451,10 @@ class AvailabilityService
 
         if ($startUtc->isPast()) {
             return [false, 'Availability cannot be in the past.'];
+        }
+
+        if ($this->isBeyondFutureWindow($startUtc)) {
+            return [false, 'Availability cannot be more than '.self::MAX_FUTURE_DAYS.' days in the future.'];
         }
 
         $overlapExists = Availability::query()

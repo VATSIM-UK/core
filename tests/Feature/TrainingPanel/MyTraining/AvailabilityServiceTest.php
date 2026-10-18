@@ -25,7 +25,7 @@ class AvailabilityServiceTest extends TestCase
         $this->service = new AvailabilityService;
         $this->member = Member::factory()->create();
 
-        Carbon::setTestNow(Carbon::create(2026, 4, 18, 12, 0, 0, 'UTC'));
+        $this->travelTo(Carbon::create(2026, 4, 18, 12, 0, 0, 'UTC'));
     }
 
     #[Test]
@@ -142,5 +142,43 @@ class AvailabilityServiceTest extends TestCase
         [$valid] = $this->service->isSlotValid($this->member->id, $start, $end);
 
         $this->assertTrue($valid);
+    }
+
+    #[Test]
+    public function it_allows_the_last_day_of_the_window(): void
+    {
+        $this->assertFalse($this->service->isBeyondFutureWindow(Carbon::parse('2026-05-19 09:00', 'UTC')));
+    }
+
+    #[Test]
+    public function it_refuses_the_day_after_the_window(): void
+    {
+        $this->assertTrue($this->service->isBeyondFutureWindow(Carbon::parse('2026-05-20 09:00', 'UTC')));
+    }
+
+    #[Test]
+    public function it_ignores_the_time_of_day_when_comparing(): void
+    {
+        $this->assertFalse($this->service->isBeyondFutureWindow(Carbon::parse('2026-05-19 23:59', 'UTC')));
+        $this->assertTrue($this->service->isBeyondFutureWindow(Carbon::parse('2026-05-20 00:00', 'UTC')));
+    }
+
+    #[Test]
+    public function it_reports_the_last_allowed_date(): void
+    {
+        $this->assertSame('2026-05-19', AvailabilityService::lastAllowedDate(Carbon::parse('2026-04-18 12:00', 'UTC'))->toDateString());
+    }
+
+    #[Test]
+    public function it_returns_false_for_a_slot_after_the_window(): void
+    {
+        [$valid, $message] = $this->service->isSlotValid(
+            $this->member->id,
+            Carbon::parse('2026-05-20 18:00:00', 'UTC'),
+            Carbon::parse('2026-05-20 21:00:00', 'UTC'),
+        );
+
+        $this->assertFalse($valid);
+        $this->assertEquals('Availability cannot be more than '.AvailabilityService::MAX_FUTURE_DAYS.' days in the future.', $message);
     }
 }

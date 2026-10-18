@@ -331,4 +331,21 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
         $this->assertEquals('17:00:00', $slot->getRawOriginal('from'));
         $this->assertEquals('22:00:00', $slot->getRawOriginal('to'));
     }
+
+    #[Test]
+    public function it_refuses_adding_a_slot_beyond_the_future_window(): void
+    {
+        $beyond = now()->addDays(32)->toDateString();
+
+        Livewire::actingAs($this->studentAccount)
+            ->test(MyAvailability::class)
+            ->set('mode', 'form')
+            ->set('slotData.date_range', ['start' => $beyond, 'end' => $beyond])
+            ->set('slotData.from', '18:00')
+            ->set('slotData.to', '21:00')
+            ->call('create')
+            ->assertNotified('You can only add availability up to 31 days ahead.');
+
+        $this->assertCount(0, Availability::where('student_id', $this->studentMember->id)->get());
+    }
 }

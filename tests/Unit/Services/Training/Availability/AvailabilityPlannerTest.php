@@ -332,4 +332,43 @@ class AvailabilityPlannerTest extends TestCase
 
         $this->assertSame([], $plan->changes);
     }
+
+    #[Test]
+    public function it_drops_painted_cells_beyond_the_future_window(): void
+    {
+        $plan = (new AvailabilityPlanner)->plan(['2026-11-17'], collect(), $this->cells('2026-11-17', '18:00', 4), Carbon::parse('2026-10-16 00:00', 'UTC'));
+        $this->assertSame([], $plan->changes);
+    }
+
+    #[Test]
+    public function it_keeps_a_painted_run_on_the_last_day_of_the_window(): void
+    {
+        // $now 2026-10-16 => cap 2026-11-16.
+        $plan = (new AvailabilityPlanner)->plan(['2026-11-16'], collect(), $this->cells('2026-11-16', '18:00', 4), Carbon::parse('2026-10-16 00:00', 'UTC'));
+        $this->assertSame([AvailabilityChangeType::Added], array_map(fn ($c) => $c->type, $plan->changes));
+    }
+
+    #[Test]
+    public function it_never_removes_a_stored_row_beyond_the_future_window(): void
+    {
+        $row = $this->row('2026-12-16', '18:00:00', '21:00:00');
+        $plan = (new AvailabilityPlanner)->plan(['2026-12-16'], collect([$row]), [], Carbon::parse('2026-10-16 00:00', 'UTC'));
+        $this->assertSame([], $plan->changes);
+    }
+
+    #[Test]
+    public function it_keeps_a_cap_day_run_that_ends_at_midnight(): void
+    {
+        // The end rolls into 2026-11-17, but the cap binds the start date (2026-11-16).
+        $plan = (new AvailabilityPlanner)->plan(['2026-11-16'], collect(), $this->cells('2026-11-16', '22:00', 8), Carbon::parse('2026-10-16 00:00', 'UTC'));
+        $this->assertSame([AvailabilityChangeType::Added], array_map(fn ($c) => $c->type, $plan->changes));
+    }
+
+    #[Test]
+    public function it_locks_a_stored_row_beyond_the_future_window_when_seeding(): void
+    {
+        $plan = (new AvailabilityPlanner)->seed(['2026-12-16'], collect([$this->row('2026-12-16', '18:00:00', '21:00:00')]), Carbon::parse('2026-10-16 00:00', 'UTC'));
+        $this->assertSame([], $plan['cells']);
+        $this->assertContains('2026-12-16 18:00', $plan['lockedCells']);
+    }
 }
