@@ -30,7 +30,7 @@ class CheckAvailability implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(AvailabilityService $availabilityService): void
     {
         // During leave of absence, record the check as on leave but do not send any warnings
         if ($this->trainingPlace->isOnLeaveOfAbsence()) {
@@ -55,7 +55,7 @@ class CheckAvailability implements ShouldQueue
         $memberId = $account->member->id;
 
         // Check if availability exists for the student inside the future window
-        $hasAvailability = app(AvailabilityService::class)->hasAvailabilityWithinWindow($memberId);
+        $hasAvailability = $availabilityService->hasAvailabilityWithinWindow($memberId);
 
         $hasFutureBookedSession = $this->hasFutureBookedSession($memberId);
 
