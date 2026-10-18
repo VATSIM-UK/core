@@ -57,8 +57,7 @@ class CheckAvailability implements ShouldQueue
         // Check if availability exists for the student inside the future window
         $hasAvailability = app(AvailabilityService::class)->hasAvailabilityWithinWindow($memberId);
 
-        // Check if a session request exists for the training position
-        $hasSessionRequest = $this->checkSessionRequest($memberId);
+        $hasFutureBookedSession = $this->hasFutureBookedSession($memberId);
 
         $existingAvailabilityWarning = AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)->where('status', 'pending')->first();
 
@@ -94,8 +93,8 @@ class CheckAvailability implements ShouldQueue
             return;
         }
 
-        // Check passes only if BOTH availability and session request exist
-        if ($hasAvailability && $hasSessionRequest) {
+        // Availability or a future booked session is enough. Untaken session requests do not count.
+        if ($hasAvailability || $hasFutureBookedSession) {
             $availabilityCheck = AvailabilityCheck::create([
                 'training_place_id' => $this->trainingPlace->id,
                 'status' => AvailabilityCheckStatus::Passed,
@@ -149,33 +148,22 @@ class CheckAvailability implements ShouldQueue
     }
 
     /**
-     * Check if a session request exists for the student with a position matching
-     * any of the callsigns defined in the training position's cts_positions.
+     * A booked session that has not been completed still counts as compliant,
+     * even when the student has no open availability. Untaken requests are ignored.
      */
-    private function checkSessionRequest(int $memberId): bool
+    private function hasFutureBookedSession(int $memberId): bool
     {
-        // Get the trainable's CTS callsigns
         $ctsPositions = $this->trainingPlace->trainableCtsPositions();
 
         if ($ctsPositions === []) {
             return false;
         }
 
-        // Check if a session exists for this student with a matching callsign
-        $sessionExists = Session::where('student_id', $memberId)
-            ->whereIn('position', $ctsPositions)
-            ->whereNull('taken_time')
-            ->exists();
-
-        // If a session is pending, return true as they are committed to
-        // a session in the future.
-        $hasPendingSession = Session::where('student_id', $memberId)
+        return Session::where('student_id', $memberId)
             ->whereIn('position', $ctsPositions)
             ->whereNotNull('taken_time')
             ->where('taken_date', '>=', now()->toDateString())
             ->where('session_done', 0)
             ->exists();
-
-        return $hasPendingSession || $sessionExists;
     }
 }

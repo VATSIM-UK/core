@@ -1,11 +1,11 @@
 @extends('emails.messages.post')
 
 @section('body')
-	<p>Please could you check that you have both a session request and up-to-date availability entered into the CT System?
-		Without both, mentors will be unable to accept your mentoring sessions.</p>
+	<p>Please could you check that you have up-to-date availability entered into the CT System?
+		Without it, mentors will be unable to book your mentoring sessions.</p>
 
 	<p>To be fair to those students who are still waiting for training, if after three of these reminders, or after
-		{{ $availability_window }} of this email, you have no session request/availability in the CTS System, we will have to
+		{{ $availability_window }} of this email, you have no availability in the CTS System, we will have to
 		reassign your training place to the next person on the waiting list.</p>
 
 	<p>To continue your training, please submit your availability in the CTS System as soon as possible.

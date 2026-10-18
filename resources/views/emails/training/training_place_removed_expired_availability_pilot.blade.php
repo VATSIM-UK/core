@@ -2,15 +2,15 @@
 
 @section('body')
 	<p>In accordance with the <a href="{{ config('training.pilot.policy_url') }}">Pilot Training Policy</a>, as we’ve not
-		heard from you on the above and you still do not have either a Session Request or Availability in the CTS, your
+		heard from you on the above and you still do not have availability in the CTS, your
 		training place has been removed and will shortly be reallocated.</p>
 
-	<p>As no session request and availability were submitted within the seven-day period, your training place has been
+	<p>As no availability was submitted within the seven-day period, your training place has been
 		removed as of <strong>{{ $removal_date }}</strong>. This allows the next person on the waiting list to receive
 		training.</p>
 
-	<p>It is essential that you maintain a session request and up-to-date availability, as without it mentors are unable to
-		accept your mentoring sessions. Failure to do so delays the training process, both for you and others on the waiting
+	<p>It is essential that you maintain up-to-date availability, as without it mentors are unable to
+		book your mentoring sessions. Failure to do so delays the training process, both for you and others on the waiting
 		list and in order to ensure that training continues to move within the division, we enforce this policy strictly.
 	</p>
 

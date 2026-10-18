@@ -105,6 +105,7 @@ class MyAvailability extends Page implements HasForms, HasTable
             'P1_PPL(A)',
             'P2_SEIR(A)',
             'P3_CMEL(A)',
+            'P4_ATPL(A)',
             'P1_PPL(A)_MEN',
             'P2_SEIR(A)_MEN',
             'P3_CMEL(A)_MEN',

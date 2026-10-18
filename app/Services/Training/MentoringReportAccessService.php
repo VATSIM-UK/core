@@ -47,6 +47,7 @@ class MentoringReportAccessService
         'P1 Training' => ['TFP Training', 'P1 Training'],
         'P2 Training' => ['TFP Training', 'P1 Training', 'P2 Training'],
         'P3 Training' => ['TFP Training', 'P1 Training', 'P2 Training', 'P3 Training'],
+        'P4 Training' => ['TFP Training', 'P1 Training', 'P2 Training', 'P3 Training', 'P4 Training'],
     ];
 
     public const VIEW_ALL_PERMISSION = 'training.mentoring.reports.view-all';

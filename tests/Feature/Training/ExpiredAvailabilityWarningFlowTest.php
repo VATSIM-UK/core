@@ -7,7 +7,6 @@ namespace Tests\Feature\Training;
 use App\Enums\AvailabilityCheckStatus;
 use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
-use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\AvailabilityCheck;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
@@ -163,14 +162,14 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
         $this->assertNotNull($warning1);
 
         Carbon::setTestNow($this->dayZero->copy()->addDay());
-        $this->addAvailabilityAndSession();
+        $this->addAvailability();
         Artisan::call('training-places:check-availability');
         $passedCheck1 = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', AvailabilityCheckStatus::Passed)->latest()->first();
         $this->assertNotNull($passedCheck1);
         $warning1->refresh();
         $this->assertSame('resolved', $warning1->status, 'Job should resolve pending warning when check passes');
         $this->assertSame($passedCheck1->id, $warning1->resolved_availability_check_id);
-        $this->removeAvailabilityAndSession();
+        $this->removeAvailability();
 
         // Episode 2: Fail → warning, then resolve within window (job auto-resolves on pass)
         Carbon::setTestNow($this->dayZero->copy()->addDays(2));
@@ -179,14 +178,14 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
         $this->assertNotNull($warning2);
 
         Carbon::setTestNow($this->dayZero->copy()->addDays(3));
-        $this->addAvailabilityAndSession();
+        $this->addAvailability();
         Artisan::call('training-places:check-availability');
         $passedCheck2 = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', AvailabilityCheckStatus::Passed)->latest()->first();
         $this->assertNotNull($passedCheck2);
         $warning2->refresh();
         $this->assertSame('resolved', $warning2->status);
         $this->assertSame($passedCheck2->id, $warning2->resolved_availability_check_id);
-        $this->removeAvailabilityAndSession();
+        $this->removeAvailability();
 
         // Episode 3: Fail → warning, then resolve within window (job auto-resolves on pass)
         Carbon::setTestNow($this->dayZero->copy()->addDays(4));
@@ -195,14 +194,14 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
         $this->assertNotNull($warning3);
 
         Carbon::setTestNow($this->dayZero->copy()->addDays(5));
-        $this->addAvailabilityAndSession();
+        $this->addAvailability();
         Artisan::call('training-places:check-availability');
         $passedCheck3 = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', AvailabilityCheckStatus::Passed)->latest()->first();
         $this->assertNotNull($passedCheck3);
         $warning3->refresh();
         $this->assertSame('resolved', $warning3->status);
         $this->assertSame($passedCheck3->id, $warning3->resolved_availability_check_id);
-        $this->removeAvailabilityAndSession();
+        $this->removeAvailability();
 
         $this->assertSame(3, AvailabilityWarning::where('training_place_id', $this->trainingPlace->id)->where('status', 'resolved')->count());
 
@@ -306,7 +305,7 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
 
     #[DataProvider('recoveryDayProvider')]
     #[Test]
-    public function it_maintains_training_place_when_member_adds_availability_and_session_on_recovery_day(int $recoveryDay): void
+    public function it_maintains_training_place_when_member_adds_availability_on_recovery_day(int $recoveryDay): void
     {
         // Day 0: Availability check fails → warning created
         Artisan::call('training-places:check-availability');
@@ -327,13 +326,9 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
             $this->assertSame($day + 1, $this->availabilityCheckCount(), "After day {$day} should have ".($day + 1).' failed checks');
         }
 
-        // Recovery day: Member adds session request and availability → check passes, job resolves warning, training place maintained
+        // Recovery day: Member adds availability → check passes, job resolves warning, training place maintained
         Carbon::setTestNow($this->dayZero->copy()->addDays($recoveryDay));
-        Availability::factory()->forStudent($this->ctsMember->id)->create(['date' => now()->addDay()->toDateString()]);
-        Session::factory()->create([
-            'student_id' => $this->ctsMember->id,
-            'position' => 'EGLL_APP',
-        ]);
+        $this->addAvailability();
         Artisan::call('training-places:check-availability');
 
         $expectedCheckCount = $recoveryDay + 1;
@@ -347,7 +342,7 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
         $passedCheck = AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->where('status', AvailabilityCheckStatus::Passed)->first();
         $this->assertSame($passedCheck->id, $warning->resolved_availability_check_id);
         $this->trainingPlace->refresh();
-        $this->assertNull($this->trainingPlace->deleted_at, "Training place should be maintained when availability and session are added on day {$recoveryDay}");
+        $this->assertNull($this->trainingPlace->deleted_at, "Training place should be maintained when availability is added on day {$recoveryDay}");
     }
 
     private function availabilityCheckCount(): int
@@ -355,33 +350,13 @@ class ExpiredAvailabilityWarningFlowTest extends TestCase
         return AvailabilityCheck::where('training_place_id', $this->trainingPlace->id)->count();
     }
 
-    private function addAvailabilityAndSession(): void
+    private function addAvailability(): void
     {
         Availability::factory()->forStudent($this->ctsMember->id)->create(['date' => now()->addDay()->toDateString()]);
-        $this->createPendingSession();
-        $this->createTakenSession();
     }
 
-    private function removeAvailabilityAndSession(): void
+    private function removeAvailability(): void
     {
         Availability::where('student_id', $this->ctsMember->id)->delete();
-        Session::where('student_id', $this->ctsMember->id)->delete();
-    }
-
-    private function createPendingSession(): void
-    {
-        Session::factory()->create([
-            'student_id' => $this->ctsMember->id,
-            'position' => 'EGLL_APP',
-            'taken_date' => null,
-        ]);
-    }
-
-    private function createTakenSession(): void
-    {
-        Session::factory()->accepted()->create([
-            'student_id' => $this->ctsMember->id,
-            'position' => 'EGLL_APP',
-        ]);
     }
 }

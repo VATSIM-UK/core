@@ -44,6 +44,7 @@ class MentorPermissionService
         'P1 Training' => 'Pilot Mentor',
         'P2 Training' => 'Pilot Mentor',
         'P3 Training' => 'Pilot Mentor',
+        'P4 Training' => 'Pilot Mentor',
         'TFP Training' => 'Pilot Mentor',
     ];
 
@@ -61,6 +62,7 @@ class MentorPermissionService
         'P1 Training' => 'Pilot Instructor',
         'P2 Training' => 'Pilot Instructor',
         'P3 Training' => 'Pilot Instructor',
+        'P4 Training' => 'Pilot Instructor',
         'TFP Training' => 'Pilot Instructor',
     ];
 
@@ -68,6 +70,7 @@ class MentorPermissionService
         'P1 Training' => 'PPL',
         'P2 Training' => 'IR',
         'P3 Training' => 'CMEL',
+        'P4 Training' => 'ATPL',
         'TFP Training' => 'TFP',
     ];
 
@@ -75,6 +78,7 @@ class MentorPermissionService
         'PPL' => 'P1_PPL(A)',
         'IR' => 'P2_SEIR(A)',
         'CMEL' => 'P3_CMEL(A)',
+        'ATPL' => 'P4_ATPL(A)',
         'TFP' => 'TFP_FLIGHT',
     ];
 
