@@ -116,7 +116,7 @@ class SeminarStatisticsServiceTest extends TestCase
 
         $statistics = app(SeminarStatisticsService::class)->statisticsFor($this->seminar);
 
-        $this->assertSame(4, $statistics['theory_reminders']);
+        $this->assertSame(5, $statistics['theory_reminders']);
         $this->assertSame(2, $statistics['theory_removals']);
         $this->assertSame(2, $statistics['removed_from_waiting_list']);
     }
