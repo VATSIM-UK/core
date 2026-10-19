@@ -1151,6 +1151,11 @@ class SeminarInvitationServiceTest extends TestCase
             'account_id' => $waitingListAccount->account_id,
             'status' => SeminarInvitationStatus::Sent->value,
         ]);
+        $this->assertDatabaseHas('training_waiting_list_theory_reminders', [
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'status' => SeminarTheoryReminderStatus::Passed->value,
+            'actioned_seminar_id' => $this->seminar->id,
+        ]);
         $this->assertNull($waitingListAccount->fresh()->deleted_at);
     }
 
@@ -1170,6 +1175,11 @@ class SeminarInvitationServiceTest extends TestCase
         $this->assertDatabaseMissing('training_seminar_invitations', [
             'seminar_id' => $this->seminar->id,
             'account_id' => $waitingListAccount->account_id,
+        ]);
+        $this->assertDatabaseHas('training_waiting_list_theory_reminders', [
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'status' => SeminarTheoryReminderStatus::Passed->value,
+            'actioned_seminar_id' => $this->seminar->id,
         ]);
         $this->assertNull($waitingListAccount->fresh()->deleted_at);
     }

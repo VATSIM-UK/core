@@ -56,6 +56,8 @@ class SeminarInvitationService
             }
 
             if ($waitingListAccount->wasRemindedForSeminar($seminar->id)) {
+                $this->markTheoryReminderPassed($waitingListAccount, $seminar);
+
                 continue;
             }
 
@@ -79,6 +81,17 @@ class SeminarInvitationService
         }
 
         return $invited;
+    }
+
+    private function markTheoryReminderPassed(WaitingListAccount $waitingListAccount, Seminar $seminar): void
+    {
+        $reminder = $waitingListAccount->theoryReminder;
+
+        if ($reminder === null || ! $waitingListAccount->theory_exam_passed) {
+            return;
+        }
+
+        $reminder->markPassedAt($seminar);
     }
 
     private function handleMissingTheoryExam(Seminar $seminar, WaitingList $waitingList, WaitingListAccount $waitingListAccount): void
@@ -158,6 +171,10 @@ class SeminarInvitationService
         }
 
         return DB::transaction(function () use ($seminar, $account, $waitingListAccount): SeminarInvitation {
+            if ($waitingListAccount !== null) {
+                $this->markTheoryReminderPassed($waitingListAccount, $seminar);
+            }
+
             $sentAt = now();
             $isShortNotice = $seminar->isShortNotice();
 

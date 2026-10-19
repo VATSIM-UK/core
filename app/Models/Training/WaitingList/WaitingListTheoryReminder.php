@@ -49,6 +49,22 @@ class WaitingListTheoryReminder extends Model
         return $this->seminar_id !== null && (int) $this->seminar_id !== $seminarId;
     }
 
+    public function markPassedAt(Seminar $seminar): void
+    {
+        if ($this->status === SeminarTheoryReminderStatus::Removed) {
+            return;
+        }
+
+        if ($this->status === SeminarTheoryReminderStatus::Passed && $this->actioned_seminar_id !== null) {
+            return;
+        }
+
+        $this->update([
+            'status' => SeminarTheoryReminderStatus::Passed,
+            'actioned_seminar_id' => $seminar->id,
+        ]);
+    }
+
     public function markRemovedAt(Seminar $seminar): void
     {
         $this->update([
