@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Training\Seminar;
 
+use App\Libraries\Discord;
 use App\Models\Training\Seminar\Seminar;
 use App\Services\Training\SeminarMentorAnnouncementService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
