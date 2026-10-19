@@ -99,7 +99,7 @@ class VisitingControllerInactivityCheckTest extends TestCase
         Endorsement::createQuietly([
             'account_id' => $shanwickOnly->id,
             'endorsable_type' => PositionGroup::class,
-            'endorsable_id' => PositionGroup::factory()->create(['name' => VisitingControllerInactivity::SHANWICK_POSITION_GROUP])->id,
+            'endorsable_id' => PositionGroup::factory()->create(['name' => PositionGroup::SHANWICK_POSITION_GROUP])->id,
         ]);
 
         Artisan::call('visit-transfer:check-inactivity');

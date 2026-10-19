@@ -21,8 +21,6 @@ class UpdateRoster extends Command
 
     protected $description = 'Update the ATC roster based on ATC session data.';
 
-    protected const SHANWICK_POSITION_GROUP = 'Shanwick Oceanic (EGGX)';
-
     protected int $minimumHours = 3;
 
     protected Carbon $fromDate;
@@ -91,10 +89,11 @@ class UpdateRoster extends Command
         // and must never be removed from the roster.
         $shanwickOnlyAccountIds = $this->shanwickOnlyAccountIds();
 
+        $rosterMembers = $eligible->merge($shanwickOnlyAccountIds);
+
         // On the roster, do not need to be on...
         $removeFromRoster = Roster::withoutGlobalScopes()
-            ->whereNotIn('account_id', $eligible)
-            ->whereNotIn('account_id', $shanwickOnlyAccountIds);
+            ->whereNotIn('account_id', $rosterMembers);
 
         $homeRemovals = $removeFromRoster->whereHas('account', function ($query) {
             $query->whereHas('states', function ($query) {
@@ -125,7 +124,7 @@ class UpdateRoster extends Command
         // On an ATC waiting list, not on the roster, need to be removed...
         $removeFromWaitingList = WaitingListAccount::with('waitingList', 'account')
             ->whereIn('list_id', WaitingList::where('department', WaitingList::ATC_DEPARTMENT)->where('requires_roster_membership', true)->get('id'))
-            ->whereNotIn('account_id', $eligible)
+            ->whereNotIn('account_id', $rosterMembers)
             ->get();
 
         $removal = new WaitingList\Removal(WaitingList\RemovalReason::Inactivity, null, 'Triggered by roster removal');
@@ -180,9 +179,13 @@ class UpdateRoster extends Command
      */
     private function shanwickOnlyAccountIds(): Collection
     {
-        $shanwick = PositionGroup::where('name', self::SHANWICK_POSITION_GROUP)->first();
+        $shanwick = PositionGroup::where('name', PositionGroup::SHANWICK_POSITION_GROUP)->first();
 
         if (! $shanwick) {
+            Log::warning('Shanwick Oceanic position group not found; roster exemption not applied.', [
+                'position_group' => PositionGroup::SHANWICK_POSITION_GROUP,
+            ]);
+
             return collect();
         }
 

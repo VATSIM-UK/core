@@ -25,8 +25,6 @@ class VisitingControllerInactivity
 
     public const INSTANCE_WINDOW_YEARS = 2;
 
-    public const SHANWICK_POSITION_GROUP = 'Shanwick Oceanic (EGGX)';
-
     public static function reasonText(string $reason): string
     {
         return match ($reason) {
@@ -156,7 +154,7 @@ class VisitingControllerInactivity
      */
     protected function onlyHoldsShanwickEndorsement(Account $account): bool
     {
-        $shanwick = PositionGroup::where('name', self::SHANWICK_POSITION_GROUP)->first();
+        $shanwick = PositionGroup::where('name', PositionGroup::SHANWICK_POSITION_GROUP)->first();
 
         return $shanwick !== null && $account->onlyHoldsEndorsementsForPositionGroup($shanwick);
     }

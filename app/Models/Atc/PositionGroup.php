@@ -16,6 +16,8 @@ class PositionGroup extends Model implements Endorseable
     use HasFactory;
     use SoftDeletes;
 
+    public const SHANWICK_POSITION_GROUP = 'Shanwick Oceanic (EGGX)';
+
     protected $fillable = [
         'name',
     ];

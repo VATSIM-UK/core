@@ -46,8 +46,6 @@ class RemoveIneligibleVisitors implements ShouldQueue
 
     public function __construct(public bool $dryRun = false) {}
 
-    public const SHANWICK_POSITION_GROUP = 'Shanwick Oceanic (EGGX)';
-
     public const INACTIVE_MONTHS = 6;
 
     public const INSTANCE_WINDOW_YEARS = 2;
@@ -216,7 +214,7 @@ class RemoveIneligibleVisitors implements ShouldQueue
      */
     private function onlyHoldsShanwickEndorsement(Account $account): bool
     {
-        $shanwick = PositionGroup::where('name', self::SHANWICK_POSITION_GROUP)->first();
+        $shanwick = PositionGroup::where('name', PositionGroup::SHANWICK_POSITION_GROUP)->first();
 
         return $shanwick !== null && $account->onlyHoldsEndorsementsForPositionGroup($shanwick);
     }
