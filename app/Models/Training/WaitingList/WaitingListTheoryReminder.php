@@ -67,6 +67,10 @@ class WaitingListTheoryReminder extends Model
 
     public function markRemovedAt(Seminar $seminar): void
     {
+        if ($this->status === SeminarTheoryReminderStatus::Passed) {
+            return;
+        }
+    {
         $this->update([
             'status' => SeminarTheoryReminderStatus::Removed,
             'actioned_seminar_id' => $seminar->id,
