@@ -6,11 +6,15 @@ use App\Filament\Training\Resources\Seminars\SeminarResource;
 use App\Filament\Training\Resources\Seminars\Widgets\SeminarOutcomeStatsOverview;
 use App\Filament\Training\Resources\Seminars\Widgets\SeminarStatsOverview;
 use App\Services\Training\SeminarInvitationService;
+use App\Services\Training\SeminarMentorAnnouncementService;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\EditAction;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ViewSeminar extends ViewRecord
 {
@@ -55,6 +59,37 @@ class ViewSeminar extends ViewRecord
                     $this->record->update(['automatic_invitations_enabled' => false]);
                 })
                 ->visible(fn () => $this->record->automatic_invitations_enabled && auth()->user()->can('training.seminars.manage.*')),
+
+            Action::make('announceToMentors')
+                ->label('Announce to Mentors')
+                ->icon('heroicon-o-megaphone')
+                ->color('info')
+                ->requiresConfirmation()
+                ->modalHeading('Announce to Mentors?')
+                ->modalDescription('This will send a message to the training group mentors Discord channel announcing the seminar')
+                ->modalSubmitActionLabel('Send Message')
+                ->action(function (): void {
+                    try {
+                        app(SeminarMentorAnnouncementService::class)->announceToMentors($this->record);
+
+                        Notification::make()
+                            ->success()
+                            ->title('Message sent to the mentors channel')
+                            ->send();
+                    } catch (Throwable $e) {
+                        Log::error('Failed to send seminar announcement message', [
+                            'exception' => $e,
+                            'seminar_id' => $this->record->id,
+                        ]);
+
+                        Notification::make()
+                            ->danger()
+                            ->title('Unable to send the mentors channel message')
+                            ->body('Please try again or contact the Technology Team if the problem persists.')
+                            ->send();
+                    }
+                })
+                ->visible(fn () => ! $this->record->isClosed() && auth()->user()->can('training.seminars.manage.*')),
 
             Action::make('manualClose')
                 ->label(fn () => $this->record->closed_at ? 'Closed' : 'Close Seminar')

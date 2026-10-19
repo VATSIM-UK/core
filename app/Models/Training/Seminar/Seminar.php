@@ -22,6 +22,13 @@ class Seminar extends Model
 
     public const ADMISSIONS_CLOSE_MINUTES = 30;
 
+    /**
+     * TODO: This is currently hardcoded to the OBS > S1 mentors channel. If seminars are
+     *       created for other training groups, capture the mentors channel ID for each
+     *       training group and resolve the channel relevant to this seminar instead.
+     */
+    public const MENTORS_DISCORD_CHANNEL_ID = '705818534885720176'; // TGNC Mentors Channel
+
     protected $table = 'training_seminars';
 
     protected $guarded = [];
@@ -100,6 +107,11 @@ class Seminar extends Model
     public function startsAt()
     {
         return $this->date->copy()->setTimeFromTimeString($this->from);
+    }
+
+    public function mentorsDiscordChannelId(): string
+    {
+        return self::MENTORS_DISCORD_CHANNEL_ID;
     }
 
     public function spacesRemaining(): int
