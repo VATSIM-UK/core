@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Training\Seminar;
 
 use App\Enums\SeminarInvitationStatus;
+use App\Enums\SeminarTheoryReminderStatus;
 use App\Models\Cts\Member;
 use App\Models\Cts\TheoryResult;
 use App\Models\Mship\Account;
@@ -106,6 +107,7 @@ class SeminarInvitationServiceTest extends TestCase
             'account_id' => $waitingListAccount->account_id,
             'seminar_id' => $earlierSeminar->id,
             'reminded_at' => now()->subDays(7),
+            'status' => SeminarTheoryReminderStatus::Pending,
         ]);
     }
 
@@ -957,6 +959,8 @@ class SeminarInvitationServiceTest extends TestCase
             'waiting_list_account_id' => $waitingListAccount->id,
             'account_id' => $waitingListAccount->account_id,
             'seminar_id' => $this->seminar->id,
+            'status' => SeminarTheoryReminderStatus::Pending->value,
+            'actioned_seminar_id' => null,
         ]);
 
         Notification::assertSentTo(
@@ -1114,6 +1118,13 @@ class SeminarInvitationServiceTest extends TestCase
         $this->assertNotNull($removed->deleted_at);
         $this->assertEquals(RemovalReason::SeminarTheoryExamNotPassed, $removed->removal_type);
 
+        // The reminder records that it was actioned at this seminar so statistics can count it.
+        $this->assertDatabaseHas('training_waiting_list_theory_reminders', [
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'status' => SeminarTheoryReminderStatus::Removed->value,
+            'actioned_seminar_id' => $this->seminar->id,
+        ]);
+
         // The member's account is left with a note explaining the removal.
         $this->assertDatabaseHas('mship_account_note', [
             'account_id' => $waitingListAccount->account_id,
@@ -1140,6 +1151,11 @@ class SeminarInvitationServiceTest extends TestCase
             'account_id' => $waitingListAccount->account_id,
             'status' => SeminarInvitationStatus::Sent->value,
         ]);
+        $this->assertDatabaseHas('training_waiting_list_theory_reminders', [
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'status' => SeminarTheoryReminderStatus::Passed->value,
+            'actioned_seminar_id' => $this->seminar->id,
+        ]);
         $this->assertNull($waitingListAccount->fresh()->deleted_at);
     }
 
@@ -1159,6 +1175,11 @@ class SeminarInvitationServiceTest extends TestCase
         $this->assertDatabaseMissing('training_seminar_invitations', [
             'seminar_id' => $this->seminar->id,
             'account_id' => $waitingListAccount->account_id,
+        ]);
+        $this->assertDatabaseHas('training_waiting_list_theory_reminders', [
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'status' => SeminarTheoryReminderStatus::Passed->value,
+            'actioned_seminar_id' => $this->seminar->id,
         ]);
         $this->assertNull($waitingListAccount->fresh()->deleted_at);
     }

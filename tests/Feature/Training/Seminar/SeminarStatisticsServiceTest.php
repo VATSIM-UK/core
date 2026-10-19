@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Training\Seminar;
 
 use App\Enums\SeminarInvitationStatus;
+use App\Enums\SeminarTheoryReminderStatus;
 use App\Models\Mship\Account;
 use App\Models\Training\Seminar\Seminar;
 use App\Models\Training\Seminar\SeminarInvitation;
@@ -55,6 +56,7 @@ class SeminarStatisticsServiceTest extends TestCase
             'not_interested' => 0,
             'removed_from_waiting_list' => 0,
             'theory_reminders' => 0,
+            'theory_removals' => 0,
         ], $statistics);
     }
 
@@ -69,6 +71,11 @@ class SeminarStatisticsServiceTest extends TestCase
         $this->createInvitations(SeminarInvitationStatus::RemovedTwoCannotAttend, 1);
         $this->createInvitations(SeminarInvitationStatus::ShortNoticeNoResponse, 1);
 
+        $this->createTheoryReminder($this->seminar, [
+            'status' => SeminarTheoryReminderStatus::Removed,
+            'actioned_seminar_id' => $this->seminar->id,
+        ]);
+
         $statistics = app(SeminarStatisticsService::class)->statisticsFor($this->seminar);
 
         $this->assertSame(10, $statistics['invitations_sent']);
@@ -77,7 +84,41 @@ class SeminarStatisticsServiceTest extends TestCase
         $this->assertSame(3, $statistics['expired']);
         $this->assertSame(2, $statistics['cannot_attend']);
         $this->assertSame(1, $statistics['not_interested']);
-        $this->assertSame(4, $statistics['removed_from_waiting_list']);
+        $this->assertSame(5, $statistics['removed_from_waiting_list']);
+        $this->assertSame(1, $statistics['theory_removals']);
+    }
+
+    #[Test]
+    public function it_only_counts_theory_removals_actioned_at_this_seminar(): void
+    {
+        $otherSeminar = Seminar::factory()->create([
+            'waiting_list_id' => $this->seminar->waiting_list_id,
+            'created_by' => $this->privacc->id,
+        ]);
+
+        $this->createTheoryReminder($this->seminar, [
+            'status' => SeminarTheoryReminderStatus::Removed,
+            'actioned_seminar_id' => $this->seminar->id,
+        ]);
+        $this->createTheoryReminder($this->seminar, [
+            'status' => SeminarTheoryReminderStatus::Removed,
+            'actioned_seminar_id' => $this->seminar->id,
+        ]);
+        $this->createTheoryReminder($this->seminar, [
+            'status' => SeminarTheoryReminderStatus::Removed,
+            'actioned_seminar_id' => $otherSeminar->id,
+        ]);
+        $this->createTheoryReminder($this->seminar, [
+            'status' => SeminarTheoryReminderStatus::Passed,
+            'actioned_seminar_id' => $this->seminar->id,
+        ]);
+        $this->createTheoryReminder($this->seminar);
+
+        $statistics = app(SeminarStatisticsService::class)->statisticsFor($this->seminar);
+
+        $this->assertSame(5, $statistics['theory_reminders']);
+        $this->assertSame(2, $statistics['theory_removals']);
+        $this->assertSame(2, $statistics['removed_from_waiting_list']);
     }
 
     #[Test]
@@ -124,6 +165,23 @@ class SeminarStatisticsServiceTest extends TestCase
         $statistics = app(SeminarStatisticsService::class)->statisticsFor($this->seminar);
 
         $this->assertSame(2, $statistics['theory_reminders']);
+    }
+
+    private function createTheoryReminder(Seminar $issuedFor, array $attributes = []): WaitingListTheoryReminder
+    {
+        $waitingListAccount = $issuedFor->waitingList->addToWaitingList(
+            Account::factory()->create(),
+            $this->privacc,
+        );
+
+        return WaitingListTheoryReminder::create([
+            'waiting_list_account_id' => $waitingListAccount->id,
+            'account_id' => $waitingListAccount->account_id,
+            'seminar_id' => $issuedFor->id,
+            'reminded_at' => now(),
+            'status' => SeminarTheoryReminderStatus::Pending,
+            ...$attributes,
+        ]);
     }
 
     private function createInvitations(SeminarInvitationStatus $status, int $count): void
