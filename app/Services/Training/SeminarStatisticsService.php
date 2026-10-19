@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Training;
 
 use App\Enums\SeminarInvitationStatus;
+use App\Enums\SeminarTheoryReminderStatus;
 use App\Models\Training\Seminar\Seminar;
 use App\Models\Training\WaitingList\WaitingListTheoryReminder;
 use Illuminate\Support\Collection;
@@ -33,6 +34,18 @@ class SeminarStatisticsService
 
         $notInterested = $this->countInvitations($invitationCounts, SeminarInvitationStatus::NotInterested);
 
+        $theoryRemovals = WaitingListTheoryReminder::query()
+            ->where('status', SeminarTheoryReminderStatus::Removed->value)
+            ->where('actioned_seminar_id', $seminar->id)
+            ->count();
+
+        $removedFromWaitingList = $this->countInvitations(
+            $invitationCounts,
+            SeminarInvitationStatus::NotInterested,
+            SeminarInvitationStatus::RemovedNoResponse,
+            SeminarInvitationStatus::RemovedTwoCannotAttend,
+        ) + $theoryRemovals;
+
         return [
             'invitations_sent' => (int) $invitationCounts->sum(),
             'confirmed_attendees' => $seminar->attendees()->count(),
@@ -41,15 +54,11 @@ class SeminarStatisticsService
             'expired' => $expired,
             'cannot_attend' => $cannotAttend,
             'not_interested' => $notInterested,
-            'removed_from_waiting_list' => $this->countInvitations(
-                $invitationCounts,
-                SeminarInvitationStatus::NotInterested,
-                SeminarInvitationStatus::RemovedNoResponse,
-                SeminarInvitationStatus::RemovedTwoCannotAttend,
-            ),
+            'removed_from_waiting_list' => $removedFromWaitingList,
             'theory_reminders' => WaitingListTheoryReminder::query()
                 ->where('seminar_id', $seminar->id)
                 ->count(),
+            'theory_removals' => $theoryRemovals,
         ];
     }
 

@@ -3,6 +3,7 @@
 namespace App\Services\Training;
 
 use App\Enums\SeminarInvitationStatus;
+use App\Enums\SeminarTheoryReminderStatus;
 use App\Models\Mship\Account;
 use App\Models\Training\Seminar\Seminar;
 use App\Models\Training\Seminar\SeminarAttendee;
@@ -86,7 +87,7 @@ class SeminarInvitationService
 
         if ($reminder !== null) {
             if ($reminder->isForAnotherSeminar($seminar->id)) {
-                $this->removeForMissingTheoryExam($reminder, $waitingList, $waitingListAccount);
+                $this->removeForMissingTheoryExam($seminar, $reminder, $waitingList, $waitingListAccount);
             }
 
             return;
@@ -102,13 +103,14 @@ class SeminarInvitationService
                 'account_id' => $waitingListAccount->account_id,
                 'seminar_id' => $seminar->id,
                 'reminded_at' => now(),
+                'status' => SeminarTheoryReminderStatus::Pending,
             ]);
 
             $waitingListAccount->account->notify(new SeminarTheoryExamReminderNotification);
         });
     }
 
-    private function removeForMissingTheoryExam(WaitingListTheoryReminder $reminder, WaitingList $waitingList, WaitingListAccount $waitingListAccount): void
+    private function removeForMissingTheoryExam(Seminar $seminar, WaitingListTheoryReminder $reminder, WaitingList $waitingList, WaitingListAccount $waitingListAccount): void
     {
         if (! $waitingList->includesAccount($waitingListAccount->account_id)) {
             return;
@@ -120,6 +122,8 @@ class SeminarInvitationService
             $account,
             new Removal(RemovalReason::SeminarTheoryExamNotPassed, null)
         );
+
+        $reminder->markRemovedAt($seminar);
 
         $account->addNote(
             'training',
