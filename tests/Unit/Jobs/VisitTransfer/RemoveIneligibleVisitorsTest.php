@@ -77,7 +77,7 @@ class RemoveIneligibleVisitorsTest extends TestCase
     public function it_returns_a_completed_shanwick_only_visitor_to_the_roster(): void
     {
         $account = $this->makeVisitor(Application::STATUS_COMPLETED, now()->subYear());
-        $this->giveEndorsement($account, RemoveIneligibleVisitors::SHANWICK_POSITION_GROUP);
+        $this->giveEndorsement($account, PositionGroup::SHANWICK_POSITION_GROUP);
 
         $this->assertSame(0, (new RemoveIneligibleVisitors)->handle());
         $this->assertTrue($account->fresh()->hasState('VISITING'));
@@ -90,7 +90,7 @@ class RemoveIneligibleVisitorsTest extends TestCase
     public function it_returns_a_shanwick_only_visitor_without_an_application_to_the_roster(): void
     {
         $account = $this->makeVisitor(null);
-        $this->giveEndorsement($account, RemoveIneligibleVisitors::SHANWICK_POSITION_GROUP);
+        $this->giveEndorsement($account, PositionGroup::SHANWICK_POSITION_GROUP);
 
         $this->assertSame(0, (new RemoveIneligibleVisitors)->handle());
         $this->assertTrue($account->fresh()->hasState('VISITING'));
@@ -172,7 +172,7 @@ class RemoveIneligibleVisitorsTest extends TestCase
     public function it_removes_a_completed_visitor_who_holds_endorsements_beyond_shanwick(): void
     {
         $account = $this->makeVisitor(Application::STATUS_COMPLETED, now()->subYear());
-        $this->giveEndorsement($account, RemoveIneligibleVisitors::SHANWICK_POSITION_GROUP);
+        $this->giveEndorsement($account, PositionGroup::SHANWICK_POSITION_GROUP);
         $this->giveEndorsement($account, 'Heathrow');
         $this->recordRosterRemoval($account, now()->subMonths(7));
 

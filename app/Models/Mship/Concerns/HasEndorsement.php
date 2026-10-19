@@ -3,6 +3,7 @@
 namespace App\Models\Mship\Concerns;
 
 use App\Models\Atc\Position;
+use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account\Endorsement;
 
 trait HasEndorsement
@@ -20,6 +21,27 @@ trait HasEndorsement
     public function temporaryEndorsements()
     {
         return $this->endorsements()->whereNotNull('expires_at');
+    }
+
+    /**
+     * Whether every active endorsement the account holds is for the given position
+     * group, either as a group endorsement or as a position within that group.
+     */
+    public function onlyHoldsEndorsementsForPositionGroup(PositionGroup $positionGroup): bool
+    {
+        $endorsements = $this->endorsements->filter(fn (Endorsement $endorsement) => ! $endorsement->hasExpired());
+
+        if ($endorsements->isEmpty()) {
+            return false;
+        }
+
+        $positionIds = $positionGroup->positions->pluck('id');
+
+        return $endorsements->every(fn (Endorsement $endorsement) => match ($endorsement->endorsable_type) {
+            PositionGroup::class => (int) $endorsement->endorsable_id === (int) $positionGroup->id,
+            Position::class => $positionIds->contains((int) $endorsement->endorsable_id),
+            default => false,
+        });
     }
 
     public function daysSpentTemporarilyEndorsedOn(Position $endorsable): int

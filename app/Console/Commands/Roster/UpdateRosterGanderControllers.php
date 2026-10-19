@@ -56,7 +56,7 @@ class UpdateRosterGanderControllers extends Command
                 ['account_id']
             );
 
-            $positionGroup = PositionGroup::where('name', 'Shanwick Oceanic (EGGX)')->firstOrFail();
+            $positionGroup = PositionGroup::where('name', PositionGroup::SHANWICK_POSITION_GROUP)->firstOrFail();
 
             $ganderValidatedAccountIds->reject(function ($value) use ($positionGroup) {
                 return Endorsement::where([

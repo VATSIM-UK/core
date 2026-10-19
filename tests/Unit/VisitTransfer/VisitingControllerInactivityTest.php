@@ -183,7 +183,7 @@ class VisitingControllerInactivityTest extends TestCase
         $account = $this->makeVisitingController(now()->subYear());
         $this->recordRosterRemoval($account, now()->subMonths(7));
 
-        $shanwick = PositionGroup::factory()->create(['name' => VisitingControllerInactivity::SHANWICK_POSITION_GROUP]);
+        $shanwick = PositionGroup::factory()->create(['name' => PositionGroup::SHANWICK_POSITION_GROUP]);
 
         Endorsement::createQuietly([
             'account_id' => $account->id,
@@ -200,7 +200,7 @@ class VisitingControllerInactivityTest extends TestCase
         $account = $this->makeVisitingController(now()->subYear());
         $this->recordRosterRemoval($account, now()->subMonths(7));
 
-        $shanwick = PositionGroup::factory()->create(['name' => VisitingControllerInactivity::SHANWICK_POSITION_GROUP]);
+        $shanwick = PositionGroup::factory()->create(['name' => PositionGroup::SHANWICK_POSITION_GROUP]);
         $heathrow = PositionGroup::factory()->create(['name' => 'Heathrow']);
 
         foreach ([$shanwick, $heathrow] as $positionGroup) {

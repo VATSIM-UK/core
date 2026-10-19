@@ -17,7 +17,7 @@ class AnnounceTierEndorsement implements ShouldQueue
     {
         $endorsement = $event->getEndorsement();
 
-        if ($endorsement->endorsable instanceof PositionGroup && $endorsement->endorsable->name !== 'Shanwick Oceanic (EGGX)') {
+        if ($endorsement->endorsable instanceof PositionGroup && $endorsement->endorsable->name !== PositionGroup::SHANWICK_POSITION_GROUP) {
             $this->announcementService->announceTierEndorsement($event->getAccount(), $endorsement->endorsable);
         }
     }

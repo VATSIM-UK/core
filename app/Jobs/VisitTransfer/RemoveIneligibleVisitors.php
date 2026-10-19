@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Jobs\VisitTransfer;
 
-use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
-use App\Models\Mship\Account\Endorsement;
 use App\Models\Roster;
 use App\Models\RosterHistory;
 use App\Models\VisitTransfer\Application;
@@ -47,8 +45,6 @@ class RemoveIneligibleVisitors implements ShouldQueue
     public array $summary = [];
 
     public function __construct(public bool $dryRun = false) {}
-
-    public const SHANWICK_POSITION_GROUP = 'Shanwick Oceanic (EGGX)';
 
     public const INACTIVE_MONTHS = 6;
 
@@ -218,31 +214,9 @@ class RemoveIneligibleVisitors implements ShouldQueue
      */
     private function onlyHoldsShanwickEndorsement(Account $account): bool
     {
-        $endorsements = $account->endorsements->filter(fn (Endorsement $endorsement) => ! $endorsement->hasExpired());
+        $shanwick = PositionGroup::where('name', PositionGroup::SHANWICK_POSITION_GROUP)->first();
 
-        if ($endorsements->isEmpty()) {
-            return false;
-        }
-
-        $shanwick = PositionGroup::where('name', self::SHANWICK_POSITION_GROUP)->first();
-
-        if (! $shanwick) {
-            return false;
-        }
-
-        $shanwickPositions = $shanwick->positions()->pluck('positions.id');
-
-        return $endorsements->every(function (Endorsement $endorsement) use ($shanwick, $shanwickPositions) {
-            if ($endorsement->endorsable_type === PositionGroup::class) {
-                return (int) $endorsement->endorsable_id === (int) $shanwick->id;
-            }
-
-            if ($endorsement->endorsable_type === Position::class) {
-                return $shanwickPositions->contains((int) $endorsement->endorsable_id);
-            }
-
-            return false;
-        });
+        return $shanwick !== null && $account->onlyHoldsEndorsementsForPositionGroup($shanwick);
     }
 
     /**
