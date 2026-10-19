@@ -63,7 +63,7 @@
 					</div>
 					<div class="panel-body">
 						<h4 class="text-center">Operations Director (VATUK9)</h4><br />
-						<p class="text-center">Archie Middlefell</p>
+						<p class="text-center"><em>Vacant</em></p>
 						<h4 class="text-center">Operations Team</h4>
 						<table class="table">
 							<tr>
@@ -88,7 +88,7 @@
 							</tr>
 							<tr>
 								<td>Events Manager</td>
-								<td>Vacant</td>
+								<td><em>Vacant</em></td>
 							</tr>
 							<tr>
 								<td>Events Assistant</td>
@@ -112,7 +112,7 @@
 							</tr>
 							<tr>
 								<td>Operations Assistant</td>
-								<td>Sonny Nixon</td>
+								<td><em>Vacant</em></td>
 							</tr>
 							<tr>
 								<td>Operations Assistant</td>
@@ -180,13 +180,12 @@
 									<td>James Bradford</td>
 								</tr>
 								<tr>
-									<td>TG Instructor (ENR) & <br />
-										Division Instructor</td>
-									<td>Kye Taylor</td>
+									<td>TG Instructor (ENR)</td>
+									<td><em>Vacant</em></td>
 								</tr>
 								<tr>
 									<td>TG Instructor (Heathrow)</td>
-									<td><em>Vacant</em></td>
+									<td>Noam Lavie</td>
 								</tr>
 							</table>
 						</div>
@@ -202,7 +201,7 @@
 								</tr>
 								<tr>
 									<td>Initial Flight Instructor</td>
-									<td><em>Vacant</em></td>
+									<td>Andy White</td>
 								</tr>
 								<tr>
 									<td>VFR Flight Instructor</td>
@@ -276,8 +275,11 @@
 						<table class="table">
 							<tr>
 								<td>Outreach Manager</td>
-								<td>Kye Taylor</td>
+								<td><em>Vacant</em></td>
 							</tr>
+							<tr>
+								<td>Outreach Assistant</td>
+								<td>Callum Hicks</td>
 							<tr>
 								<td>Outreach Assistant</td>
 								<td>Charles Newman</td>
