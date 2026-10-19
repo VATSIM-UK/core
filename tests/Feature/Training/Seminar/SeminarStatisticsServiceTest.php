@@ -108,6 +108,10 @@ class SeminarStatisticsServiceTest extends TestCase
             'status' => SeminarTheoryReminderStatus::Removed,
             'actioned_seminar_id' => $otherSeminar->id,
         ]);
+        $this->createTheoryReminder($this->seminar, [
+            'status' => SeminarTheoryReminderStatus::Passed,
+            'actioned_seminar_id' => $this->seminar->id,
+        ]);
         $this->createTheoryReminder($this->seminar);
 
         $statistics = app(SeminarStatisticsService::class)->statisticsFor($this->seminar);
