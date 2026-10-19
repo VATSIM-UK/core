@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Roster;
 
+use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\NetworkData\Atc;
 use App\Models\Roster;
@@ -10,6 +11,7 @@ use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -18,6 +20,8 @@ class UpdateRoster extends Command
     protected $signature = 'roster:update {fromDate} {toDate}';
 
     protected $description = 'Update the ATC roster based on ATC session data.';
+
+    protected const SHANWICK_POSITION_GROUP = 'Shanwick Oceanic (EGGX)';
 
     protected int $minimumHours = 3;
 
@@ -83,9 +87,14 @@ class UpdateRoster extends Command
 
         $eligible = $eligible->flatten()->unique();
 
+        // Visitors who only control Shanwick are exempt from the currency requirements
+        // and must never be removed from the roster.
+        $shanwickOnlyAccountIds = $this->shanwickOnlyAccountIds();
+
         // On the roster, do not need to be on...
         $removeFromRoster = Roster::withoutGlobalScopes()
-            ->whereNotIn('account_id', $eligible);
+            ->whereNotIn('account_id', $eligible)
+            ->whereNotIn('account_id', $shanwickOnlyAccountIds);
 
         $homeRemovals = $removeFromRoster->whereHas('account', function ($query) {
             $query->whereHas('states', function ($query) {
@@ -161,5 +170,27 @@ class UpdateRoster extends Command
         ]);
 
         $this->comment('✅ Roster updated!');
+    }
+
+    /**
+     * Visitors whose only active endorsements are for Shanwick Oceanic, who are
+     * exempt from the roster currency requirements.
+     *
+     * @return Collection<int, int>
+     */
+    private function shanwickOnlyAccountIds(): Collection
+    {
+        $shanwick = PositionGroup::where('name', self::SHANWICK_POSITION_GROUP)->first();
+
+        if (! $shanwick) {
+            return collect();
+        }
+
+        return Account::query()
+            ->whereHas('states', fn ($query) => $query->where('mship_state.code', 'VISITING'))
+            ->with('endorsements')
+            ->get()
+            ->filter(fn (Account $account) => $account->onlyHoldsEndorsementsForPositionGroup($shanwick))
+            ->pluck('id');
     }
 }

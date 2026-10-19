@@ -2,10 +2,8 @@
 
 namespace App\Services\VisitTransfer;
 
-use App\Models\Atc\Position;
 use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
-use App\Models\Mship\Account\Endorsement;
 use App\Models\Roster;
 use App\Models\RosterHistory;
 use App\Models\VisitTransfer\Application;
@@ -158,31 +156,9 @@ class VisitingControllerInactivity
      */
     protected function onlyHoldsShanwickEndorsement(Account $account): bool
     {
-        $endorsements = $account->endorsements->filter(fn (Endorsement $endorsement) => ! $endorsement->hasExpired());
-
-        if ($endorsements->isEmpty()) {
-            return false;
-        }
-
         $shanwick = PositionGroup::where('name', self::SHANWICK_POSITION_GROUP)->first();
 
-        if (! $shanwick) {
-            return false;
-        }
-
-        $shanwickPositions = $shanwick->positions()->pluck('positions.id');
-
-        return $endorsements->every(function (Endorsement $endorsement) use ($shanwick, $shanwickPositions) {
-            if ($endorsement->endorsable_type === PositionGroup::class) {
-                return (int) $endorsement->endorsable_id === (int) $shanwick->id;
-            }
-
-            if ($endorsement->endorsable_type === Position::class) {
-                return $shanwickPositions->contains((int) $endorsement->endorsable_id);
-            }
-
-            return false;
-        });
+        return $shanwick !== null && $account->onlyHoldsEndorsementsForPositionGroup($shanwick);
     }
 
     /**
