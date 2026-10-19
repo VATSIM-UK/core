@@ -3,6 +3,7 @@
 namespace App\Filament\Training\Resources\Seminars\Pages;
 
 use App\Filament\Training\Resources\Seminars\SeminarResource;
+use App\Filament\Training\Resources\Seminars\Widgets\SeminarOutcomeStatsOverview;
 use App\Filament\Training\Resources\Seminars\Widgets\SeminarStatsOverview;
 use App\Services\Training\SeminarInvitationService;
 use Filament\Actions\Action;
@@ -94,6 +95,7 @@ class ViewSeminar extends ViewRecord
     {
         return [
             SeminarStatsOverview::class,
+            SeminarOutcomeStatsOverview::class,
         ];
     }
 }

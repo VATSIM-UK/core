@@ -2,14 +2,18 @@
 
 namespace App\Filament\Training\Resources\Seminars\Widgets;
 
-use App\Enums\SeminarInvitationStatus;
 use App\Models\Training\Seminar\Seminar;
+use App\Services\Training\SeminarStatisticsService;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class SeminarStatsOverview extends StatsOverviewWidget
 {
     public ?Seminar $record = null;
+
+    protected static bool $isLazy = false;
+
+    protected int|array|null $columns = ['default' => 1, 'sm' => 2, 'lg' => 4];
 
     protected function getStats(): array
     {
@@ -19,31 +23,24 @@ class SeminarStatsOverview extends StatsOverviewWidget
             return [];
         }
 
-        $attendees = $seminar->attendees()->count();
-        $invitationsSent = $seminar->invitations()->count();
-        $pending = $seminar->invitations()->where('status', SeminarInvitationStatus::Sent->value)->count();
-        $declined = $seminar->invitations()
-            ->whereIn('status', [
-                SeminarInvitationStatus::NotInterested->value,
-                SeminarInvitationStatus::CannotAttend->value,
-                SeminarInvitationStatus::RemovedNoResponse->value,
-                SeminarInvitationStatus::RemovedTwoCannotAttend->value,
-                SeminarInvitationStatus::ShortNoticeNoResponse->value,
-            ])->count();
+        $statistics = app(SeminarStatisticsService::class)->statisticsFor($seminar);
 
         return [
-            Stat::make('Total Invitations Sent', $invitationsSent)
+            Stat::make('Total Invitations Sent', $statistics['invitations_sent'])
                 ->icon('heroicon-o-paper-airplane'),
 
-            Stat::make('Confirmed Attendees', (string) $attendees)
+            Stat::make('Confirmed Attendees', $statistics['confirmed_attendees'])
                 ->icon('heroicon-o-user-group')
-                ->description("{$attendees} / {$seminar->capacity}"),
+                ->color('success')
+                ->description("{$statistics['confirmed_attendees']} / {$seminar->capacity} places filled"),
 
-            Stat::make('Pending Responses', $pending)
-                ->icon('heroicon-o-clock'),
+            Stat::make('Pending Invitations', $statistics['pending_responses'])
+                ->icon('heroicon-o-clock')
+                ->color($statistics['pending_responses'] > 0 ? 'info' : 'gray'),
 
-            Stat::make('Declined', $declined)
-                ->icon('heroicon-o-x-circle'),
+            Stat::make('Declined Invitations', $statistics['declined_invitations'])
+                ->icon('heroicon-o-hand-thumb-down')
+                ->color($statistics['declined_invitations'] > 0 ? 'danger' : 'gray'),
         ];
     }
 }
