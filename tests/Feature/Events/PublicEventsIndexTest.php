@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\Events;
 
 use App\Models\Events\Event;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -79,10 +78,12 @@ class PublicEventsIndexTest extends TestCase
     #[Test]
     public function it_marks_event_times_as_zulu_on_the_card(): void
     {
+        $start = now('UTC')->addWeek()->setTime(18, 0);
+
         Event::factory()->published()->create([
             'name' => 'Zulu Time Event',
-            'start' => Carbon::parse('2026-10-18 18:00:00', 'UTC'),
-            'end' => Carbon::parse('2026-10-18 22:00:00', 'UTC'),
+            'start' => $start,
+            'end' => $start->copy()->addHours(4),
         ]);
 
         $this->get(route('site.events.index'))
