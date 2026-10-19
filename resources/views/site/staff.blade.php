@@ -201,7 +201,7 @@
 								</tr>
 								<tr>
 									<td>Initial Flight Instructor</td>
-									<td><em>Vacant</em></td>
+									<td>Andy White</td>
 								</tr>
 								<tr>
 									<td>VFR Flight Instructor</td>
