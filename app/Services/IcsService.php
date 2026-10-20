@@ -131,21 +131,27 @@ class IcsService
     }
 
     /**
-     * Fold lines longer than 75 octets
+     * Fold lines to 75 octets, backing off to a character boundary so a
+     * multi-byte character is never split across two physical lines.
      */
     private static function foldLines(string $content): string
     {
-        $lines = explode("\r\n", $content);
-        $foldedLines = [];
+        $folded = [];
 
-        foreach ($lines as $line) {
-            if (strlen($line) > 75) {
-                $foldedLines[] = rtrim(chunk_split($line, 74, "\r\n "));
-            } else {
-                $foldedLines[] = $line;
+        foreach (explode("\r\n", $content) as $line) {
+            $continuation = false;
+
+            while (strlen($line) > ($continuation ? 74 : 75)) {
+                $chunk = mb_strcut($line, 0, $continuation ? 74 : 75, 'UTF-8');
+
+                $folded[] = ($continuation ? ' ' : '').$chunk;
+                $line = substr($line, strlen($chunk));
+                $continuation = true;
             }
+
+            $folded[] = ($continuation ? ' ' : '').$line;
         }
 
-        return implode("\r\n", $foldedLines)."\r\n";
+        return implode("\r\n", $folded)."\r\n";
     }
 }
