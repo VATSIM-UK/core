@@ -6,6 +6,7 @@ use App\Enums\EmailType;
 use App\Models\Cts\ExamBooking;
 use App\Notifications\Contracts\HasEmailType;
 use App\Services\IcsService;
+use App\Support\Calendar\CalendarUid;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -52,7 +53,7 @@ class ExamAcceptedExaminerNotification extends Notification implements HasEmailT
 
         $sessionDate = Carbon::parse($examBooking->taken_date)->format('Y-m-d');
         $icsContent = IcsService::generate(
-            uid: "exam-{$examBooking->id}@vatsim.uk",
+            uid: CalendarUid::forExam((int) $examBooking->id),
             summary: "Practical Exam - {$examType}",
             description: "Student: {$studentName} ({$studentCid})\nExam Type: {$examType}\nPosition: {$position}\nPrimary Examiner: {$primaryExaminer}",
             start: Carbon::parse("{$sessionDate} {$examBooking->taken_from}"),

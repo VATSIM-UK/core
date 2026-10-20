@@ -9,6 +9,7 @@ use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Services\IcsService;
+use App\Support\Calendar\CalendarUid;
 use App\Support\Calendar\IcsEvent;
 use App\Support\MemberDisplayName;
 use Carbon\Carbon;
@@ -63,7 +64,7 @@ class BookingCalendarFeedService
         $position = $this->position($booking);
 
         return new IcsEvent(
-            uid: 'booking-'.$booking->getKey().'@vatsim.uk',
+            uid: CalendarUid::forBooking($booking),
             summary: $this->summary($booking, $position),
             startsAt: $booking->starts_at,
             endsAt: $booking->ends_at,
