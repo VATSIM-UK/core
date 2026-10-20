@@ -1,9 +1,18 @@
 <?php
 
+use App\Http\Controllers\Bookings\CalendarFeedController;
+
 Route::get('validations')->uses('Api\ValidationsController@view')->name('api.validations');
 Route::get('metar/{airportIcao}')->uses('Site\MetarController@get')->name('api.metar');
 Route::get('/bookings')->uses('Api\CtsController@getBookings')->name('api.cts.bookings');
 Route::get('trackaudio-latest')->uses('Api\TrackAudioController@getLatest')->name('api.trackaudio.latest');
+
+// Read-only iCal feed; the URL token is the credential, as clients cannot authenticate.
+Route::get('calendar/feed/{token}.ics', CalendarFeedController::class)
+    ->where('token', '[A-Za-z0-9]{48}')
+    ->withoutMiddleware('throttle:60,1')
+    ->middleware('throttle:calendar-feed')
+    ->name('api.bookings.calendar.feed');
 
 Route::group([
     'middleware' => 'api_auth',

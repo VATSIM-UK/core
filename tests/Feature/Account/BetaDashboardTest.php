@@ -33,6 +33,17 @@ class BetaDashboardTest extends TestCase
             ->assertSee('Pilot rating', false);
     }
 
+    public function test_default_dashboard_shows_calendar_subscription_panel(): void
+    {
+        $this->actingAs($this->user)
+            ->get(route('mship.manage.dashboard'))
+            ->assertOk()
+            ->assertSee('Calendar subscription')
+            ->assertSee(route('api.bookings.calendar.feed', [
+                'token' => $this->user->fresh()->calendar_feed_token,
+            ]));
+    }
+
     public function test_default_dashboard_shows_current_atc_rating(): void
     {
         $this->actingAs($this->user)

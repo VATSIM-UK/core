@@ -125,6 +125,29 @@ class IcsServiceTest extends TestCase
     }
 
     #[Test]
+    public function it_folds_long_lines_without_splitting_multibyte_characters(): void
+    {
+        // The two-byte "é" starts at octet 73, straddling the old 74-byte chunk boundary.
+        $description = str_repeat('a', 61).'é'.str_repeat('b', 100);
+
+        $ics = IcsService::generate(
+            uid: 'fold-1@vatsim.uk',
+            summary: 'Folding',
+            description: $description,
+            start: Carbon::parse('2026-06-20 12:00:00', 'UTC'),
+            end: Carbon::parse('2026-06-20 13:00:00', 'UTC'),
+        );
+
+        $this->assertTrue(mb_check_encoding($ics, 'UTF-8'));
+
+        foreach (explode("\r\n", rtrim($ics, "\r\n")) as $line) {
+            $this->assertLessThanOrEqual(75, strlen($line));
+        }
+
+        $this->assertStringContainsString($description, str_replace("\r\n ", '', $ics));
+    }
+
+    #[Test]
     public function it_includes_dtstamp(): void
     {
         $start = Carbon::parse('2026-06-20 12:00:00', 'UTC');
