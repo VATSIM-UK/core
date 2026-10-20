@@ -187,6 +187,9 @@ class CalendarFeedTest extends TestCase
         $secondaryAccount = Account::factory()->create();
         $secondary = CtsMember::factory()->forAccount($secondaryAccount)->create();
 
+        $traineeAccount = Account::factory()->create();
+        $trainee = CtsMember::factory()->forAccount($traineeAccount)->create();
+
         $exam = ExamBooking::factory()->create([
             'student_id' => $student->id,
             'position_1' => 'EGKK_TWR',
@@ -199,6 +202,7 @@ class CalendarFeedTest extends TestCase
             'examid' => $exam->id,
             'senior' => $primary->id,
             'other' => $secondary->id,
+            'trainee' => $trainee->id,
         ]);
 
         Booking::create([
@@ -212,13 +216,69 @@ class CalendarFeedTest extends TestCase
 
         $uid = 'UID:exam-'.$exam->id.'@vatsim.uk';
 
-        foreach ([$primaryAccount, $secondaryAccount] as $examinerAccount) {
+        foreach ([$primaryAccount, $secondaryAccount, $traineeAccount] as $examinerAccount) {
             $body = (string) $this->get($this->feedUrl($examinerAccount))->getContent();
 
             $this->assertStringContainsString($uid, $body);
             $this->assertStringContainsString('SUMMARY:EGKK_TWR - Practical exam', $body);
             $this->assertStringContainsString('Student: ', $body);
         }
+    }
+
+    #[Test]
+    public function an_examiner_does_not_see_exams_they_are_not_assigned_to(): void
+    {
+        $examinerAccount = Account::factory()->create();
+        CtsMember::factory()->forAccount($examinerAccount)->create();
+
+        $studentAccount = Account::factory()->create();
+        $student = CtsMember::factory()->forAccount($studentAccount)->create();
+
+        $otherExaminerAccount = Account::factory()->create();
+        $otherExaminer = CtsMember::factory()->forAccount($otherExaminerAccount)->create();
+
+        $exam = ExamBooking::factory()->create([
+            'student_id' => $student->id,
+            'position_1' => 'EGKK_TWR',
+            'taken_date' => Carbon::tomorrow()->toDateString(),
+            'taken_from' => '10:00:00',
+            'taken_to' => '11:00:00',
+        ]);
+
+        PracticalExaminers::create([
+            'examid' => $exam->id,
+            'senior' => $otherExaminer->id,
+        ]);
+
+        Booking::create([
+            'member_id' => $studentAccount->id,
+            'type' => Booking::TYPE_EXAM,
+            'starts_at' => Carbon::tomorrow()->setTime(10, 0),
+            'ends_at' => Carbon::tomorrow()->setTime(11, 0),
+            'bookable_type' => ExamBooking::class,
+            'bookable_id' => $exam->id,
+        ]);
+
+        $body = (string) $this->get($this->feedUrl($examinerAccount))->getContent();
+
+        $this->assertStringNotContainsString('UID:exam-'.$exam->id.'@vatsim.uk', $body);
+        $this->assertStringNotContainsString('BEGIN:VEVENT', $body);
+    }
+
+    #[Test]
+    public function an_account_without_a_cts_member_still_gets_its_own_bookings(): void
+    {
+        $account = Account::factory()->create();
+
+        $booking = Booking::factory()->create([
+            'member_id' => $account->id,
+            'starts_at' => Carbon::tomorrow()->setTime(10, 0),
+            'ends_at' => Carbon::tomorrow()->setTime(12, 0),
+        ]);
+
+        $body = (string) $this->get($this->feedUrl($account))->getContent();
+
+        $this->assertStringContainsString('UID:booking-'.$booking->id.'@vatsim.uk', $body);
     }
 
     #[Test]

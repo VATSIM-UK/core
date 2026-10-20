@@ -51,7 +51,7 @@ class BookingCalendarFeedService
         $sessionIds = $this->mentoredSessionIds($ctsMemberId, $from, $to);
         $examIds = $this->examinedExamIds($ctsMemberId, $from, $to);
 
-        return Booking::query()
+        $bookings = Booking::query()
             ->where(function (Builder $query) use ($account, $sessionIds, $examIds) {
                 $query->where('member_id', $account->getKey());
 
@@ -78,12 +78,16 @@ class BookingCalendarFeedService
                 ]),
             ])
             ->orderBy('starts_at')
-            ->get()
-            ->map(fn (Booking $booking): IcsEvent => $this->toEvent($booking, $account))
+            ->get();
+
+        $counterparts = $this->counterpartAccounts($bookings, $account);
+
+        return $bookings
+            ->map(fn (Booking $booking): IcsEvent => $this->toEvent($booking, $account, $counterparts))
             ->values();
     }
 
-    private function toEvent(Booking $booking, Account $account): IcsEvent
+    private function toEvent(Booking $booking, Account $account, Collection $counterparts): IcsEvent
     {
         $position = $this->position($booking);
         $viewerIsInstructor = $this->isInstructor($booking, $account);
@@ -95,7 +99,7 @@ class BookingCalendarFeedService
             endsAt: $booking->ends_at,
             description: $this->description(
                 $position,
-                $this->counterpart($booking, $viewerIsInstructor),
+                $this->counterpart($booking, $viewerIsInstructor, $counterparts),
             ),
             location: $position ?? '',
         );
@@ -135,26 +139,70 @@ class BookingCalendarFeedService
             && (int) $booking->member_id !== (int) $account->getKey();
     }
 
-    private function counterpart(Booking $booking, bool $viewerIsInstructor): ?string
+    private function counterpart(Booking $booking, bool $viewerIsInstructor, Collection $counterparts): ?string
+    {
+        $member = $this->counterpartMember($booking, $viewerIsInstructor);
+
+        if ($member === null) {
+            return null;
+        }
+
+        $account = $counterparts->get((int) $member->cid);
+
+        if (! $account instanceof Account) {
+            return null;
+        }
+
+        $label = $viewerIsInstructor
+            ? 'Student'
+            : ($booking->bookable instanceof ExamBooking ? 'Examiner' : 'Mentor');
+
+        return $label.': '.MemberDisplayName::abbreviated($account);
+    }
+
+    private function counterpartMember(Booking $booking, bool $viewerIsInstructor): ?CtsMember
     {
         if ($booking->type === Booking::TYPE_EXAM && $booking->bookable instanceof ExamBooking) {
             return $viewerIsInstructor
-                ? $this->labelled('Student', $booking->bookable->student?->account)
-                : $this->labelled('Examiner', $booking->bookable->examiners?->primaryExaminer?->account);
+                ? $booking->bookable->student
+                : $booking->bookable->examiners?->primaryExaminer;
         }
 
         if ($booking->type === Booking::TYPE_MENTORING && $booking->bookable instanceof Session) {
             return $viewerIsInstructor
-                ? $this->labelled('Student', $booking->bookable->student?->account)
-                : $this->labelled('Mentor', $booking->bookable->mentor?->account);
+                ? $booking->bookable->student
+                : $booking->bookable->mentor;
         }
 
         return null;
     }
 
-    private function labelled(string $label, ?Account $account): ?string
+    /**
+     * Resolve every counterpart account in one query instead of one per event.
+     *
+     * @param  Collection<int, Booking>  $bookings
+     * @return Collection<int, Account>
+     */
+    private function counterpartAccounts(Collection $bookings, Account $viewer): Collection
     {
-        return $account === null ? null : $label.': '.MemberDisplayName::abbreviated($account);
+        $cids = $bookings
+            ->map(fn (Booking $booking) => $this->counterpartMember(
+                $booking,
+                $this->isInstructor($booking, $viewer),
+            )?->cid)
+            ->filter()
+            ->map(fn ($cid): int => (int) $cid)
+            ->unique()
+            ->values();
+
+        if ($cids->isEmpty()) {
+            return collect();
+        }
+
+        return Account::query()
+            ->whereIn('id', $cids)
+            ->get()
+            ->keyBy(fn (Account $account): int => (int) $account->getKey());
     }
 
     /**
