@@ -426,6 +426,8 @@
 					</div>
 				</x-mship.dashboard.card>
 
+				<livewire:bookings.calendar-subscription />
+
 				<x-mship.dashboard.card title="UK Controller Plugin" icon="fa fa-signal">
 					<div class="px-5 py-4 space-y-3">
 						@if (count($pluginKeys) > 0)
