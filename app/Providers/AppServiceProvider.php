@@ -12,6 +12,7 @@ use App\Support\DateFormat;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Filament\Support\Facades\FilamentColor;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -78,6 +79,15 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(100)
                 ->perHour(1000)
                 ->by('discord-api-call');
+        });
+
+        // Calendar clients fetch from shared egress, so the feed is limited per
+        // token rather than per IP. The IP cap still bounds token guessing.
+        RateLimiter::for('calendar-feed', function (Request $request) {
+            return [
+                Limit::perMinute(60)->by('calendar-feed:token:'.$request->route('token')),
+                Limit::perMinute(600)->by('calendar-feed:ip:'.$request->ip()),
+            ];
         });
 
         Livewire::component('filament.livewire.global-search', GlobalSearch::class);

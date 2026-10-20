@@ -10,6 +10,8 @@ Route::get('trackaudio-latest')->uses('Api\TrackAudioController@getLatest')->nam
 // Read-only iCal feed; the URL token is the credential, as clients cannot authenticate.
 Route::get('calendar/feed/{token}.ics', CalendarFeedController::class)
     ->where('token', '[A-Za-z0-9]{48}')
+    ->withoutMiddleware('throttle:60,1')
+    ->middleware('throttle:calendar-feed')
     ->name('api.bookings.calendar.feed');
 
 Route::group([
