@@ -25,10 +25,7 @@ class RequirePasswordConfirmation
     {
         $user = $request->user();
 
-        // Accounts without a secondary password have nothing to confirm. Without
-        // this, a passwordless account in a role that mandates two-factor
-        // authentication is trapped: setup is mandatory, but the confirmation
-        // prompt can never be satisfied.
+        // Accounts without a secondary password have nothing to confirm. We skip
         if ($user instanceof Account && ! $user->hasPassword()) {
             return true;
         }
