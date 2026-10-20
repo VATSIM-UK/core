@@ -4,6 +4,25 @@
     booking: null,
     confirmDelete: false,
     ended: false,
+    isAuthenticated: {{ auth()->check() ? 'true' : 'false' }},
+    currentCid: '{{ auth()->check() ? auth()->id() : '' }}',
+    get canBookAdjacent() {
+        if (!this.isAuthenticated || !this.booking || this.ended) return false;
+        if (this.booking.type === 'EV') return false;
+        return (this.booking.member?.cid || '') !== this.currentCid;
+    },
+    bookAdjacent() {
+        window.dispatchEvent(new CustomEvent('open-create-modal', {
+            detail: {
+                startDate: this.booking.date,
+                startTime: this.booking.from,
+                endTime: this.booking.to,
+                prefillPositionId: '',
+                prefillCallsign: '',
+            },
+        }));
+        this.open = false;
+    },
     computeEnded(b) {
         if (!b || !b.date || !b.to) return false;
         let endDate = b.date;
@@ -116,6 +135,10 @@
 					<button type="button"
 						x-on:click="$wire.viewBookingFromWeek(booking.date, booking.source, booking.id ? Number(booking.id) : null, booking.ctsBookingId); open = false"
 						class="px-4 py-2 text-sm font-medium text-white bg-brand rounded-md hover:bg-brand/90">Jump to day</button>
+				</template>
+				<template x-if="canBookAdjacent">
+					<button type="button" x-on:click="bookAdjacent()"
+						class="px-4 py-2 text-sm font-medium text-white bg-brand rounded-md hover:bg-brand/90">Book adjacent</button>
 				</template>
 				<button type="button" x-on:click="open = false"
 					class="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-100 border border-gray-300 shadow-sm">Close</button>
