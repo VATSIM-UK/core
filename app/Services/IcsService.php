@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Support\Calendar\IcsEvent;
 use Carbon\Carbon;
 
 class IcsService
@@ -25,12 +26,39 @@ class IcsService
         Carbon $end,
         string $location = ''
     ): string {
-        $dtStart = self::formatUtc($start);
-        $dtEnd = self::formatUtc($end);
-        $dtStamp = self::formatUtc(Carbon::now('UTC'));
+        $lines = [
+            'BEGIN:VCALENDAR',
+            'VERSION:2.0',
+            'PRODID:-//VATSIM UK//Core//EN',
+            'CALSCALE:GREGORIAN',
+            'METHOD:PUBLISH',
+            ...self::eventLines(
+                new IcsEvent(
+                    uid: $uid,
+                    summary: $summary,
+                    startsAt: $start,
+                    endsAt: $end,
+                    description: $description,
+                    location: $location,
+                ),
+                self::formatUtc(Carbon::now('UTC')),
+                'VATSIM UK Training Department',
+            ),
+            'END:VCALENDAR',
+        ];
 
-        $escapedSummary = self::escapeText($summary);
-        $escapedDescription = self::escapeText($description);
+        return self::foldLines(implode("\r\n", $lines));
+    }
+
+    /**
+     * Generate an iCal feed containing multiple events.
+     *
+     * @param  iterable<int, IcsEvent>  $events
+     * @return string Raw ICS content
+     */
+    public static function calendar(string $name, iterable $events): string
+    {
+        $dtStamp = self::formatUtc(Carbon::now('UTC'));
 
         $lines = [
             'BEGIN:VCALENDAR',
@@ -38,27 +66,44 @@ class IcsService
             'PRODID:-//VATSIM UK//Core//EN',
             'CALSCALE:GREGORIAN',
             'METHOD:PUBLISH',
-            'BEGIN:VEVENT',
-            "UID:{$uid}",
-            "DTSTAMP:{$dtStamp}",
-            "DTSTART:{$dtStart}",
-            "DTEND:{$dtEnd}",
-            "SUMMARY:{$escapedSummary}",
-            "DESCRIPTION:{$escapedDescription}",
+            'X-WR-CALNAME:'.self::escapeText($name),
+            'X-WR-TIMEZONE:UTC',
+            'X-PUBLISHED-TTL:PT1H',
+            'REFRESH-INTERVAL;VALUE=DURATION:PT1H',
         ];
 
-        if (! empty($location)) {
-            $escapedLocation = self::escapeText($location);
-            $lines[] = "LOCATION:{$escapedLocation}";
+        foreach ($events as $event) {
+            $lines = [...$lines, ...self::eventLines($event, $dtStamp, 'VATSIM UK')];
         }
 
-        $lines[] = 'ORGANIZER;CN=VATSIM UK Training Department:mailto:no-reply@vatsim.uk';
-        $lines[] = 'END:VEVENT';
         $lines[] = 'END:VCALENDAR';
 
-        $icsContent = implode("\r\n", $lines);
+        return self::foldLines(implode("\r\n", $lines));
+    }
 
-        return self::foldLines($icsContent);
+    /**
+     * @return array<int, string>
+     */
+    private static function eventLines(IcsEvent $event, string $dtStamp, string $organizerName): array
+    {
+        $lines = [
+            'BEGIN:VEVENT',
+            "UID:{$event->uid}",
+            "DTSTAMP:{$dtStamp}",
+            'DTSTART:'.self::formatUtc($event->startsAt),
+            'DTEND:'.self::formatUtc($event->endsAt),
+            'SUMMARY:'.self::escapeText($event->summary),
+            'DESCRIPTION:'.self::escapeText($event->description),
+        ];
+
+        if (! empty($event->location)) {
+            $lines[] = 'LOCATION:'.self::escapeText($event->location);
+        }
+
+        $lines[] = "ORGANIZER;CN={$organizerName}:mailto:no-reply@vatsim.uk";
+        $lines[] = 'END:VEVENT';
+
+        return $lines;
     }
 
     /**
