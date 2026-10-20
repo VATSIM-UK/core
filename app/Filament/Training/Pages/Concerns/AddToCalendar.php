@@ -77,6 +77,17 @@ trait AddToCalendar
     }
 
     /**
+     * Build the ICS download, carrying the UID shared with the calendar feed.
+     */
+    protected function buildCalendarIcs(mixed $record): string
+    {
+        return $this->buildCalendarLinkObject($record)->ics(
+            ['UID' => $this->buildCalendarUid($record)],
+            ['format' => 'file'],
+        );
+    }
+
+    /**
      * Get an ActionGroup containing "Add to Calendar" dropdown actions
      */
     protected function getCalendarActionGroup(): ActionGroup
@@ -106,11 +117,7 @@ trait AddToCalendar
                 ->label('Apple/Outlook (ICS)')
                 ->icon('heroicon-m-arrow-down-tray')
                 ->action(function (mixed $record) {
-                    $link = $this->buildCalendarLinkObject($record);
-                    $icsContent = $link->ics(
-                        ['UID' => $this->buildCalendarUid($record)],
-                        ['format' => 'file'],
-                    );
+                    $icsContent = $this->buildCalendarIcs($record);
                     $filename = $this->getCalendarIcsFilename($record).'.ics';
 
                     return response()->streamDownload(function () use ($icsContent) {

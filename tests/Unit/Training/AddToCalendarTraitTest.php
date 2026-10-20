@@ -65,6 +65,18 @@ class AddToCalendarTraitTest extends TestCase
         $this->assertSame('heroicon-m-calendar-days', $actionGroup->getIcon());
     }
 
+    #[Test]
+    public function it_includes_the_shared_uid_in_the_ics_download(): void
+    {
+        $instance = $this->createTraitInstance();
+        $record = $this->createTestRecord();
+
+        $ics = $instance->publicBuildCalendarIcs($record);
+
+        $this->assertStringContainsString('BEGIN:VCALENDAR', $ics);
+        $this->assertStringContainsString('UID:'.$record->icsUid, $ics);
+    }
+
     /** Create a test double that uses the trait */
     private function createTraitInstance(): object
     {
@@ -80,6 +92,18 @@ class AddToCalendarTraitTest extends TestCase
             public function publicGetCalendarActionGroup(): ActionGroup
             {
                 return $this->getCalendarActionGroup();
+            }
+
+            public function publicBuildCalendarIcs(mixed $record): string
+            {
+                return $this->buildCalendarIcs($record);
+            }
+
+            protected function buildCalendarUid(mixed $record): string
+            {
+                \assert($record instanceof \stdClass);
+
+                return $record->icsUid;
             }
 
             protected function buildCalendarLinkObject(mixed $record): Link
@@ -110,6 +134,7 @@ class AddToCalendarTraitTest extends TestCase
             'description' => 'Test description',
             'location' => 'EGLL_TWR',
             'icsFilename' => 'test-event',
+            'icsUid' => 'test-event@vatsim.uk',
         ];
     }
 }
