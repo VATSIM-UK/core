@@ -6,6 +6,7 @@ use App\Enums\EmailType;
 use App\Models\Cts\Session;
 use App\Notifications\Contracts\HasEmailType;
 use App\Services\IcsService;
+use App\Support\Calendar\CalendarUid;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -41,7 +42,7 @@ class MentoringSessionRescheduledMentorNotification extends Notification impleme
 
         $sessionDate = Carbon::parse($session->taken_date)->format('Y-m-d');
         $icsContent = IcsService::generate(
-            uid: "session-{$session->id}@vatsim.uk",
+            uid: CalendarUid::forSession((int) $session->id),
             summary: "Mentoring Session - {$session->position}",
             description: "Student: {$studentName} ({$studentCid})\nPosition: {$session->position}\n\nThis session has been rescheduled from its original time.",
             start: Carbon::parse("{$sessionDate} {$session->taken_from}"),

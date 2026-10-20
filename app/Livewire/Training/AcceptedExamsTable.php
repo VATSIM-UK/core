@@ -7,6 +7,7 @@ use App\Filament\Training\Pages\Exam\ConductExam;
 use App\Models\Cts\ExamBooking;
 use App\Services\Training\CancelPendingExamService;
 use App\Services\Training\ExamAnnouncementService;
+use App\Support\Calendar\CalendarUid;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -169,6 +170,13 @@ class AcceptedExamsTable extends Component implements HasActions, HasForms, HasT
             $record->position_1,
             "Exam Type: {$record->exam}\nPosition: {$record->position_1}\nStudent: ".($record->student?->name ?? 'Unknown')
         );
+    }
+
+    protected function buildCalendarUid(mixed $record): string
+    {
+        \assert($record instanceof ExamBooking);
+
+        return CalendarUid::forExam((int) $record->id);
     }
 
     protected function getCalendarIcsFilename(mixed $record): string

@@ -12,6 +12,7 @@ use App\Services\Training\MentoringAnnouncementService;
 use App\Services\Training\MentoringReportService;
 use App\Services\Training\MentoringSessionsService;
 use App\Services\Training\MentorPermissionService;
+use App\Support\Calendar\CalendarUid;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -571,6 +572,13 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
             $record->position,
             "Position: {$record->position}\nMentor: {$mentorName}"
         );
+    }
+
+    protected function buildCalendarUid(mixed $record): string
+    {
+        \assert($record instanceof Session);
+
+        return CalendarUid::forSession((int) $record->id);
     }
 
     protected function getCalendarIcsFilename(mixed $record): string

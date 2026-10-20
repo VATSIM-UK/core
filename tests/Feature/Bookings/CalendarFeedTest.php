@@ -129,6 +129,8 @@ class CalendarFeedTest extends TestCase
 
         $this->assertStringContainsString('SUMMARY:EGKK_TWR - Practical exam', $body);
         $this->assertStringContainsString('SUMMARY:EGKK_APP - Mentoring session', $body);
+        $this->assertStringContainsString('UID:exam-'.$exam->id.'@vatsim.uk', $body);
+        $this->assertStringContainsString('UID:session-'.$session->id.'@vatsim.uk', $body);
         $this->assertStringContainsString('Examiner: ', $body);
         $this->assertStringContainsString('Mentor: ', $body);
     }
