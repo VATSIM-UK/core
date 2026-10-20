@@ -226,6 +226,62 @@ class TwoFactorAuthTest extends TestCase
     }
 
     #[Test]
+    public function setup_does_not_require_password_confirmation_when_no_secondary_password_is_set(): void
+    {
+        $account = Account::factory()->create(['password' => null]);
+        $role = factory(Role::class)->create(['two_factor_mandatory' => true]);
+        $account->assignRole($role);
+
+        $response = $this->actingAs($account)
+            ->post(route('two-factor.enable'));
+
+        $response->assertRedirect();
+        $this->assertStringNotContainsString(
+            'auth/two-factor/confirm-password',
+            (string) $response->headers->get('Location')
+        );
+        $this->assertNotNull($account->fresh()->two_factor_secret);
+    }
+
+    #[Test]
+    public function passwordless_account_can_complete_two_factor_setup(): void
+    {
+        $account = Account::factory()->create(['password' => null]);
+        $role = factory(Role::class)->create(['two_factor_mandatory' => true]);
+        $account->assignRole($role);
+
+        $this->actingAs($account)->post(route('two-factor.enable'));
+
+        $this->assertNotNull($account->fresh()->two_factor_secret);
+
+        $secret = Fortify::currentEncrypter()->decrypt($account->fresh()->two_factor_secret);
+        $code = app(Google2FA::class)->getCurrentOtp($secret);
+
+        $this->actingAs($account)
+            ->post(route('two-factor.confirm'), ['code' => $code])
+            ->assertRedirect(route('two-factor.backup-codes'));
+
+        $this->assertNotNull($account->fresh()->two_factor_confirmed_at);
+    }
+
+    #[Test]
+    public function setup_still_requires_password_confirmation_when_a_secondary_password_is_set(): void
+    {
+        $role = factory(Role::class)->create(['two_factor_mandatory' => true]);
+        $this->account->assignRole($role);
+
+        $response = $this->actingAs($this->account)
+            ->post(route('two-factor.enable'));
+
+        $response->assertRedirect();
+        $this->assertStringContainsString(
+            'auth/two-factor/confirm-password',
+            (string) $response->headers->get('Location')
+        );
+        $this->assertNull($this->account->fresh()->two_factor_secret);
+    }
+
+    #[Test]
     public function confirm_password_redirect_accepts_same_host_urls(): void
     {
         $redirect = route('site.home');

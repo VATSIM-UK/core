@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Mship\Account;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -22,6 +23,16 @@ class RequirePasswordConfirmation
 
     protected function passwordConfirmedRecently(Request $request): bool
     {
+        $user = $request->user();
+
+        // Accounts without a secondary password have nothing to confirm. Without
+        // this, a passwordless account in a role that mandates two-factor
+        // authentication is trapped: setup is mandatory, but the confirmation
+        // prompt can never be satisfied.
+        if ($user instanceof Account && ! $user->hasPassword()) {
+            return true;
+        }
+
         $confirmedAt = $request->session()->get('auth.password_confirmed_at', 0);
 
         return $confirmedAt >= now()->subSeconds(10800)->unix();
