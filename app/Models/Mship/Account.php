@@ -10,6 +10,7 @@ use App\Models\Model;
 use App\Models\Mship\Account\Note as AccountNoteData;
 use App\Models\Mship\Concerns\HasAvailabilitySettings;
 use App\Models\Mship\Concerns\HasBans;
+use App\Models\Mship\Concerns\HasCalendarFeed;
 use App\Models\Mship\Concerns\HasCTSAccount;
 use App\Models\Mship\Concerns\HasDiscordAccount;
 use App\Models\Mship\Concerns\HasEmails;
@@ -234,6 +235,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         Authorizable,
         HasAvailabilitySettings,
         HasBans,
+        HasCalendarFeed,
         HasCTSAccount,
         HasDiscordAccount,
         HasEmails,
@@ -291,7 +293,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'last_login_ip' => '0.0.0.0',
     ];
 
-    protected $untracked = ['cert_checked_at', 'last_login', 'remember_token', 'password', 'updated_at'];
+    protected $untracked = ['calendar_feed_token', 'cert_checked_at', 'last_login', 'remember_token', 'password', 'updated_at'];
 
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
 
@@ -310,6 +312,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
     ];
 
     protected $hidden = [
+        'calendar_feed_token',
         'password',
         'remember_token',
         'two_factor_secret',
