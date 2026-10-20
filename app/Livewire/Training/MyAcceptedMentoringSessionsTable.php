@@ -5,6 +5,7 @@ namespace App\Livewire\Training;
 use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Models\Cts\Session;
 use App\Services\Training\MentoringSessionsService;
+use App\Support\Calendar\CalendarUid;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -99,6 +100,13 @@ class MyAcceptedMentoringSessionsTable extends Component implements HasActions, 
             $record->position,
             "Position: {$record->position}\nMentor: {$mentorName}"
         );
+    }
+
+    protected function buildCalendarUid(mixed $record): string
+    {
+        \assert($record instanceof Session);
+
+        return CalendarUid::forSession((int) $record->id);
     }
 
     protected function getCalendarIcsFilename(mixed $record): string

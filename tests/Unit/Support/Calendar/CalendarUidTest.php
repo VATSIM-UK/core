@@ -54,6 +54,19 @@ class CalendarUidTest extends TestCase
     }
 
     #[Test]
+    public function it_falls_back_to_the_booking_id_when_the_bookable_id_is_missing(): void
+    {
+        $booking = Booking::factory()->make([
+            'id' => 99,
+            'type' => Booking::TYPE_EXAM,
+            'bookable_type' => ExamBooking::class,
+            'bookable_id' => null,
+        ]);
+
+        $this->assertSame('booking-99@vatsim.uk', CalendarUid::forBooking($booking));
+    }
+
+    #[Test]
     public function it_falls_back_to_the_booking_id_for_legacy_cts_imports(): void
     {
         // CTS booking ids share a numeric space with exam and session ids, so

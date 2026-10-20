@@ -21,6 +21,11 @@ trait AddToCalendar
     abstract protected function getCalendarIcsFilename(mixed $record): string;
 
     /**
+     * Shared with the calendar feed so an event keeps one identity.
+     */
+    abstract protected function buildCalendarUid(mixed $record): string;
+
+    /**
      * Helper to build ExamBooking calendar links
      */
     protected function buildExamBookingLink(mixed $record, string $title, ?string $position, ?string $description = null): Link
@@ -102,7 +107,10 @@ trait AddToCalendar
                 ->icon('heroicon-m-arrow-down-tray')
                 ->action(function (mixed $record) {
                     $link = $this->buildCalendarLinkObject($record);
-                    $icsContent = $link->ics([], ['format' => 'file']);
+                    $icsContent = $link->ics(
+                        ['UID' => $this->buildCalendarUid($record)],
+                        ['format' => 'file'],
+                    );
                     $filename = $this->getCalendarIcsFilename($record).'.ics';
 
                     return response()->streamDownload(function () use ($icsContent) {

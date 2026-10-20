@@ -6,6 +6,7 @@ use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamSetup;
 use App\Services\Training\CancelPendingExamService;
+use App\Support\Calendar\CalendarUid;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -119,6 +120,13 @@ class MyPendingExamsTable extends Component implements HasActions, HasForms, Has
             $record->position_1,
             "Exam Type: {$record->exam}\nPosition: {$record->position_1}"
         );
+    }
+
+    protected function buildCalendarUid(mixed $record): string
+    {
+        \assert($record instanceof ExamBooking);
+
+        return CalendarUid::forExam((int) $record->id);
     }
 
     protected function getCalendarIcsFilename(mixed $record): string

@@ -14,6 +14,7 @@ use App\Models\Cts\Session;
 use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\MentoringSessionsService;
 use App\Services\Training\MentorPermissionService;
+use App\Support\Calendar\CalendarUid;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\Select;
@@ -234,6 +235,13 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
             $record->position,
             "Position: {$record->position}\nMentor: {$mentorName}"
         );
+    }
+
+    protected function buildCalendarUid(mixed $record): string
+    {
+        \assert($record instanceof Session);
+
+        return CalendarUid::forSession((int) $record->id);
     }
 
     protected function getCalendarIcsFilename(mixed $record): string
