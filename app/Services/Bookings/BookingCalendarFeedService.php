@@ -6,6 +6,8 @@ namespace App\Services\Bookings;
 
 use App\Models\Booking;
 use App\Models\Cts\ExamBooking;
+use App\Models\Cts\Member as CtsMember;
+use App\Models\Cts\PracticalExaminers;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Services\IcsService;
@@ -13,6 +15,7 @@ use App\Support\Calendar\CalendarUid;
 use App\Support\Calendar\IcsEvent;
 use App\Support\MemberDisplayName;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
 
@@ -26,7 +29,7 @@ class BookingCalendarFeedService
     ];
 
     /**
-     * Exam and mentoring rows key on the student, so this is the student side of both.
+     * Bookings the member owns, plus sessions they mentor and exams they examine.
      */
     public function forAccount(Account $account): string
     {
@@ -41,34 +44,63 @@ class BookingCalendarFeedService
      */
     public function events(Account $account): Collection
     {
-        return Booking::query()
-            ->where('member_id', $account->getKey())
-            ->where('starts_at', '>=', Carbon::now()->subDays((int) config('bookings.feed_past_days')))
-            ->where('starts_at', '<=', Carbon::now()->addDays((int) config('bookings.feed_future_days')))
+        $from = Carbon::now()->subDays((int) config('bookings.feed_past_days'));
+        $to = Carbon::now()->addDays((int) config('bookings.feed_future_days'));
+
+        $ctsMemberId = $this->ctsMemberId($account);
+        $sessionIds = $this->mentoredSessionIds($ctsMemberId, $from, $to);
+        $examIds = $this->examinedExamIds($ctsMemberId, $from, $to);
+
+        $bookings = Booking::query()
+            ->where(function (Builder $query) use ($account, $sessionIds, $examIds) {
+                $query->where('member_id', $account->getKey());
+
+                if ($sessionIds->isNotEmpty()) {
+                    $query->orWhere(fn (Builder $query) => $query
+                        ->where('bookable_type', Session::class)
+                        ->whereIn('bookable_id', $sessionIds));
+                }
+
+                if ($examIds->isNotEmpty()) {
+                    $query->orWhere(fn (Builder $query) => $query
+                        ->where('bookable_type', ExamBooking::class)
+                        ->whereIn('bookable_id', $examIds));
+                }
+            })
+            ->where('starts_at', '>=', $from)
+            ->where('starts_at', '<=', $to)
             ->with([
                 'position',
                 'ctsBooking',
                 'bookable' => fn (MorphTo $morphTo) => $morphTo->morphWith([
-                    Session::class => ['mentor'],
-                    ExamBooking::class => ['examiners.primaryExaminer'],
+                    Session::class => ['mentor', 'student'],
+                    ExamBooking::class => ['examiners.primaryExaminer', 'student'],
                 ]),
             ])
             ->orderBy('starts_at')
-            ->get()
-            ->map(fn (Booking $booking): IcsEvent => $this->toEvent($booking))
+            ->get();
+
+        $counterparts = $this->counterpartAccounts($bookings, $account);
+
+        return $bookings
+            ->map(fn (Booking $booking): IcsEvent => $this->toEvent($booking, $account, $counterparts))
             ->values();
     }
 
-    private function toEvent(Booking $booking): IcsEvent
+    private function toEvent(Booking $booking, Account $account, Collection $counterparts): IcsEvent
     {
         $position = $this->position($booking);
+        $viewerIsInstructor = $this->isInstructor($booking, $account);
 
         return new IcsEvent(
             uid: CalendarUid::forBooking($booking),
             summary: $this->summary($booking, $position),
             startsAt: $booking->starts_at,
             endsAt: $booking->ends_at,
-            description: $this->description($position, $this->counterpart($booking)),
+            description: $this->description(
+                $position,
+                $this->counterpart($booking, $viewerIsInstructor, $counterparts),
+            ),
             location: $position ?? '',
         );
     }
@@ -97,21 +129,80 @@ class BookingCalendarFeedService
         return implode("\n", $lines);
     }
 
-    private function counterpart(Booking $booking): ?string
+    /**
+     * Exam and mentoring bookings key on the student, so the viewer is the
+     * instructor when they are not the booking's member.
+     */
+    private function isInstructor(Booking $booking, Account $account): bool
+    {
+        return $booking->type !== Booking::TYPE_STANDARD
+            && (int) $booking->member_id !== (int) $account->getKey();
+    }
+
+    private function counterpart(Booking $booking, bool $viewerIsInstructor, Collection $counterparts): ?string
+    {
+        $member = $this->counterpartMember($booking, $viewerIsInstructor);
+
+        if ($member === null) {
+            return null;
+        }
+
+        $account = $counterparts->get((int) $member->cid);
+
+        if (! $account instanceof Account) {
+            return null;
+        }
+
+        $label = $viewerIsInstructor
+            ? 'Student'
+            : ($booking->bookable instanceof ExamBooking ? 'Examiner' : 'Mentor');
+
+        return $label.': '.MemberDisplayName::abbreviated($account);
+    }
+
+    private function counterpartMember(Booking $booking, bool $viewerIsInstructor): ?CtsMember
     {
         if ($booking->type === Booking::TYPE_EXAM && $booking->bookable instanceof ExamBooking) {
-            $account = $booking->bookable->examiners?->primaryExaminer?->account;
-
-            return $account === null ? null : 'Examiner: '.MemberDisplayName::abbreviated($account);
+            return $viewerIsInstructor
+                ? $booking->bookable->student
+                : $booking->bookable->examiners?->primaryExaminer;
         }
 
         if ($booking->type === Booking::TYPE_MENTORING && $booking->bookable instanceof Session) {
-            $account = $booking->bookable->mentor?->account;
-
-            return $account === null ? null : 'Mentor: '.MemberDisplayName::abbreviated($account);
+            return $viewerIsInstructor
+                ? $booking->bookable->student
+                : $booking->bookable->mentor;
         }
 
         return null;
+    }
+
+    /**
+     * Resolve every counterpart account in one query instead of one per event.
+     *
+     * @param  Collection<int, Booking>  $bookings
+     * @return Collection<int, Account>
+     */
+    private function counterpartAccounts(Collection $bookings, Account $viewer): Collection
+    {
+        $cids = $bookings
+            ->map(fn (Booking $booking) => $this->counterpartMember(
+                $booking,
+                $this->isInstructor($booking, $viewer),
+            )?->cid)
+            ->filter()
+            ->map(fn ($cid): int => (int) $cid)
+            ->unique()
+            ->values();
+
+        if ($cids->isEmpty()) {
+            return collect();
+        }
+
+        return Account::query()
+            ->whereIn('id', $cids)
+            ->get()
+            ->keyBy(fn (Account $account): int => (int) $account->getKey());
     }
 
     /**
@@ -130,5 +221,49 @@ class BookingCalendarFeedService
         }
 
         return blank($callsign) ? null : (string) $callsign;
+    }
+
+    private function ctsMemberId(Account $account): ?int
+    {
+        $id = CtsMember::query()->where('cid', $account->getKey())->value('id');
+
+        return $id === null ? null : (int) $id;
+    }
+
+    /**
+     * @return Collection<int, int>
+     */
+    private function mentoredSessionIds(?int $ctsMemberId, Carbon $from, Carbon $to): Collection
+    {
+        if ($ctsMemberId === null) {
+            return collect();
+        }
+
+        return Session::query()
+            ->where('mentor_id', $ctsMemberId)
+            ->whereBetween('taken_date', [$from->toDateString(), $to->toDateString()])
+            ->pluck('id');
+    }
+
+    /**
+     * @return Collection<int, int>
+     */
+    private function examinedExamIds(?int $ctsMemberId, Carbon $from, Carbon $to): Collection
+    {
+        if ($ctsMemberId === null) {
+            return collect();
+        }
+
+        return PracticalExaminers::query()
+            ->where(fn (Builder $query) => $query
+                ->where('senior', $ctsMemberId)
+                ->orWhere('other', $ctsMemberId)
+                ->orWhere('trainee', $ctsMemberId))
+            ->whereIn('examid', function ($query) use ($from, $to) {
+                $query->select('id')
+                    ->from('exam_book')
+                    ->whereBetween('taken_date', [$from->toDateString(), $to->toDateString()]);
+            })
+            ->pluck('examid');
     }
 }
