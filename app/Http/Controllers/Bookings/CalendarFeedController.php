@@ -10,12 +10,6 @@ use Illuminate\Http\Response;
 
 class CalendarFeedController
 {
-    /**
-     * Serve the member's bookings as a read-only iCal feed.
-     *
-     * The token is the only credential: calendar clients cannot authenticate,
-     * so the URL itself must remain secret and revocable.
-     */
     public function __invoke(string $token, BookingCalendarFeedService $feed): Response
     {
         $account = Account::query()

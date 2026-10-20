@@ -60,8 +60,7 @@ class CalendarFeedTest extends TestCase
 
         $body = (string) $response->getContent();
 
-        // Long description lines are folded for transport; clients unfold them,
-        // so assertions run against the unfolded payload.
+        // Clients unfold long lines; assert against the unfolded payload.
         $unfolded = str_replace("\r\n ", '', $body);
 
         $this->assertStringContainsString('BEGIN:VCALENDAR', $body);
@@ -222,8 +221,7 @@ class CalendarFeedTest extends TestCase
 
         $body = (string) $this->get($this->feedUrl($account))->getContent();
 
-        // The manage link is part of the description and must be escaped from
-        // ICS text, not left as raw URL punctuation.
+        // Newlines in the description are escaped as \n.
         $this->assertStringContainsString('DESCRIPTION:Position: EGKK_APP\n', $body);
     }
 

@@ -8,10 +8,6 @@ use Illuminate\Support\Str;
 
 trait HasCalendarFeed
 {
-    /**
-     * Return the member's calendar feed token, creating one if they have never
-     * subscribed before.
-     */
     public function ensureCalendarFeedToken(): string
     {
         if (blank($this->calendar_feed_token)) {
@@ -22,11 +18,8 @@ trait HasCalendarFeed
     }
 
     /**
-     * Replace the calendar feed token, invalidating every existing subscription.
-     *
-     * The token is a bearer credential carried in a URL, so it is kept out of
-     * the model event pipeline: saveQuietly() avoids AccountAltered, tracked
-     * attribute changes and activity rows that could otherwise record it.
+     * Rotate the token, invalidating existing subscriptions. saveQuietly()
+     * keeps it out of the event pipeline, which would otherwise record it.
      */
     public function regenerateCalendarFeedToken(): string
     {

@@ -25,10 +25,7 @@ class BookingCalendarFeedService
     ];
 
     /**
-     * Build the iCal feed for every booking the member is the booking owner of.
-     *
-     * Exam and mentoring bookings key on the student, so this covers the
-     * student side of both. Sessions taught by the member are not included yet.
+     * Exam and mentoring rows key on the student, so this is the student side of both.
      */
     public function forAccount(Account $account): string
     {
@@ -99,9 +96,6 @@ class BookingCalendarFeedService
         return implode("\n", $lines);
     }
 
-    /**
-     * The examiner or mentor, as shown to the student who owns the booking.
-     */
     private function counterpart(Booking $booking): ?string
     {
         if ($booking->type === Booking::TYPE_EXAM && $booking->bookable instanceof ExamBooking) {
@@ -120,8 +114,7 @@ class BookingCalendarFeedService
     }
 
     /**
-     * The CTS booking is the source of truth for training callsigns, because
-     * training positions may not exist in the core positions table.
+     * CTS is the source of truth for training callsigns.
      */
     private function position(Booking $booking): ?string
     {

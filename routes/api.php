@@ -7,8 +7,7 @@ Route::get('metar/{airportIcao}')->uses('Site\MetarController@get')->name('api.m
 Route::get('/bookings')->uses('Api\CtsController@getBookings')->name('api.cts.bookings');
 Route::get('trackaudio-latest')->uses('Api\TrackAudioController@getLatest')->name('api.trackaudio.latest');
 
-// Read-only iCal feed of a member's bookings. Consumed by calendar clients,
-// which cannot authenticate, so the URL token is the credential.
+// Read-only iCal feed; the URL token is the credential, as clients cannot authenticate.
 Route::get('calendar/feed/{token}.ics', CalendarFeedController::class)
     ->where('token', '[A-Za-z0-9]{48}')
     ->name('api.bookings.calendar.feed');
