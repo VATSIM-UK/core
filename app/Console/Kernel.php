@@ -61,10 +61,6 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping()
             ->graceTimeInMinutes(5);
 
-        $schedule->command('training-places:create-cts-session-requests')
-            ->hourlyAt(5)
-            ->graceTimeInMinutes(10);
-
         $schedule->command('teamspeak:sync-atc-groups')
             ->hourlyAt(45)
             ->withoutOverlapping();
