@@ -132,13 +132,26 @@
 		<div
 			class="relative bg-white rounded-xl shadow-xl ring-1 ring-black/5 overflow-hidden w-full max-w-sm mx-2 sm:mx-4 max-h-[90vh] overflow-y-auto"
 			@click.outside="open = false">
-			<div class="bg-uknavy text-white px-5 py-3 flex items-center justify-between">
-				<div class="flex items-center gap-2">
-					<i class="fa fa-calendar-check shrink-0 text-sm" aria-hidden="true"></i>
-					<span class="text-base font-semibold">New Booking</span>
+			<div class="bg-uknavy text-white px-5 py-3">
+				<div class="flex items-center justify-between">
+					<div class="flex items-center gap-2">
+						<i class="fa fa-calendar-check shrink-0 text-sm" aria-hidden="true"></i>
+						<span class="text-base font-semibold">New Booking</span>
+					</div>
+					<button type="button" x-on:click="open = false"
+						class="text-white/60 hover:text-white text-lg leading-none">&times;</button>
 				</div>
-				<button type="button" x-on:click="open = false"
-					class="text-white/60 hover:text-white text-lg leading-none">&times;</button>
+
+				@auth
+					<a href="{{ route('site.policy.division') }}#24-bookings-and-reservations" target="_blank" rel="noopener"
+						class="group no-underline! inline-block mt-2" title="Read section 2.4 of the Division Policy">
+						<span
+							class="inline-flex items-center gap-1 px-2 py-0.5 text-[12px] font-semibold rounded-md bg-amber-400/15 text-amber-200 ring-1 ring-inset ring-amber-300/30 transition-colors group-hover:bg-amber-400/25 group-hover:text-amber-100 group-focus-visible:bg-amber-400/25 group-focus-visible:text-amber-100">
+							<i class="fa fa-book shrink-0 text-[10px]" aria-hidden="true"></i>
+							Bookings must adhere to Division Policy 2.4
+						</span>
+					</a>
+				@endauth
 			</div>
 
 			<div class="px-5 py-5">
