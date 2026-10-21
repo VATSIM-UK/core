@@ -2,5 +2,6 @@ User-agent: *
 Disallow: /admin
 Disallow: /training
 Disallow: /mship
+Allow: /api/calendar/feed/
 Disallow: /api
 Disallow: /external
