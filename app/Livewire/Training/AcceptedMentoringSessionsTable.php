@@ -5,6 +5,7 @@ namespace App\Livewire\Training;
 use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Filament\Training\Pages\Mentor\ConductMentoringSession;
 use App\Filament\Training\Pages\Mentor\MentoringHistory;
+use App\Models\Atc\Position as AtcPosition;
 use App\Models\Cts\Availability;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Session;
@@ -299,6 +300,29 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                 Checkbox::make('ping_controller')
                     ->label('Ping: Controller Role')
                     ->default(false),
+
+                Select::make('position')
+                    ->label('Position')
+                    ->required()
+                    ->searchable()
+                    ->options(function (Session $record): array {
+                        $bookedType = AtcPosition::inferTypeFromCallsign($record->position);
+
+                        $positions = AtcPosition::query()
+                            ->where('type', $bookedType)
+                            ->where('virtual', false)
+                            ->orderBy('callsign')
+                            ->pluck('callsign', 'callsign')
+                            ->all();
+
+                        $positions[$record->position] = $record->position;
+
+                        return $positions;
+                    })->default(fn (Session $record) => $record->position)->visible(function (Session $record): bool {
+                        $category = app(MentorPermissionService::class)->resolveCategoryForCtsCallsign($record->position);
+
+                        return $category === 'C1 Training';
+                    }),
 
                 Textarea::make('notes')
                     ->label('Additional notes')
