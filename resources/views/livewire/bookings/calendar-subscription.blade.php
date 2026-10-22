@@ -24,14 +24,11 @@
 			</div>
 
 			<div class="flex flex-wrap items-center gap-2">
-				<a href="https://calendar.google.com/calendar/render?cid={{ urlencode($feedUrl) }}" target="_blank"
-					rel="noopener noreferrer"
+				<a href="{{ $googleUrl }}" target="_blank" rel="noopener noreferrer"
 					class="rounded-md px-3 py-1.5 text-sm font-semibold text-brand ring-1 ring-inset ring-brand/40 hover:bg-brand/5 no-underline">
 					Google Calendar
 				</a>
-				<a
-					href="https://outlook.live.com/calendar/0/addfromweb?url={{ urlencode($feedUrl) }}&name={{ urlencode('VATSIM UK bookings') }}"
-					target="_blank" rel="noopener noreferrer"
+				<a href="{{ $outlookUrl }}" target="_blank" rel="noopener noreferrer"
 					class="rounded-md px-3 py-1.5 text-sm font-semibold text-brand ring-1 ring-inset ring-brand/40 hover:bg-brand/5 no-underline">
 					Outlook
 				</a>
