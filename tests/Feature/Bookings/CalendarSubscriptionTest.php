@@ -66,4 +66,47 @@ class CalendarSubscriptionTest extends TestCase
             ->assertSee('Sign in to subscribe to your bookings.')
             ->assertDontSee('Copy link');
     }
+
+    #[Test]
+    public function it_links_google_calendar_with_the_webcal_scheme(): void
+    {
+        $account = Account::factory()->create();
+
+        $feedUrl = route('api.bookings.calendar.feed', [
+            'token' => $account->ensureCalendarFeedToken(),
+        ]);
+
+        $html = Livewire::actingAs($account)
+            ->test(CalendarSubscription::class)
+            ->html();
+
+        $this->assertStringContainsString(
+            'https://calendar.google.com/calendar/render?cid=webcal%3A%2F%2F',
+            $html
+        );
+        $this->assertStringContainsString(rawurlencode($feedUrl), $html);
+        $this->assertStringNotContainsString('cid=https', $html);
+    }
+
+    #[Test]
+    public function it_subscribes_to_outlook_with_the_add_subscription_deeplink(): void
+    {
+        $account = Account::factory()->create();
+
+        $feedUrl = route('api.bookings.calendar.feed', [
+            'token' => $account->ensureCalendarFeedToken(),
+        ]);
+
+        $html = Livewire::actingAs($account)
+            ->test(CalendarSubscription::class)
+            ->html();
+
+        $this->assertStringContainsString(
+            'https://outlook.live.com/owa/?path=%2Fcalendar%2Faction%2Fcompose',
+            $html
+        );
+        $this->assertStringContainsString('rru=addsubscription', $html);
+        $this->assertStringContainsString(rawurlencode($feedUrl), $html);
+        $this->assertStringNotContainsString('addfromweb', $html);
+    }
 }
