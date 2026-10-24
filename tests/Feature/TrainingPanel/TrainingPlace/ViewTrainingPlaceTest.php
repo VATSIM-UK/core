@@ -51,9 +51,8 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
     public function test_page_returns_404_for_invalid_training_place_id()
     {
-        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
-
-        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => 'non-existent-id']);
+        Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => 'non-existent-id'])
+            ->assertNotFound();
     }
 
     public function test_page_cannot_be_accessed_without_permission()

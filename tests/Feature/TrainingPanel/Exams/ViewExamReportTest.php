@@ -125,10 +125,9 @@ class ViewExamReportTest extends BaseTrainingPanelTestCase
         $examId = 9999; // Assuming this ID does not exist
         $this->panelUser->givePermissionTo(['training.exams.access', 'training.exams.conduct.twr']);
 
-        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
-
         Livewire::actingAs($this->panelUser)
-            ->test(ViewExamReport::class, ['examId' => $examId]);
+            ->test(ViewExamReport::class, ['examId' => $examId])
+            ->assertNotFound();
     }
 
     #[Test]
@@ -144,10 +143,9 @@ class ViewExamReportTest extends BaseTrainingPanelTestCase
 
         $this->panelUser->givePermissionTo(['training.exams.access', 'training.exams.conduct.twr']);
 
-        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
-
         Livewire::actingAs($this->panelUser)
-            ->test(ViewExamReport::class, ['examId' => $examWithoutResult->id]);
+            ->test(ViewExamReport::class, ['examId' => $examWithoutResult->id])
+            ->assertNotFound();
     }
 
     #[Test]

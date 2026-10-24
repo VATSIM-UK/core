@@ -25,6 +25,8 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
         $memberRole = Role::findByName('member');
         $memberRole->permissions()->detach();
 
+        $this->user->givePermissionTo('account.view-insensitive.*');
+
         $this->service = new DelegateRoleManagementService;
         $this->role = Role::create(['name' => 'Test Role', 'guard_name' => 'web']);
         $this->delegateAccount = Account::factory()->createQuietly();
