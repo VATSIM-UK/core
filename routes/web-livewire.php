@@ -24,6 +24,9 @@ Route::group([
 Route::get('mship/waiting-lists/retention/success', Success::class)->name('mship.waiting-lists.retention.success');
 Route::get('mship/waiting-lists/retention/fail', Fail::class)->name('mship.waiting-lists.retention.fail');
 
+Route::get('calendar/subscribe', fn () => redirect()->to(route('mship.manage.dashboard').'#calendar-subscription'))
+    ->name('site.bookings.calendar.subscribe');
+
 Route::get('calendar/{year?}/{month?}', BookingsCalendar::class)
     ->name('site.bookings.calendar');
 

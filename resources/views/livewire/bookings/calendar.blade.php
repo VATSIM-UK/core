@@ -21,9 +21,13 @@
                                     prefillPositionId: '', prefillCallsign: '',
                                 }
                             }))"
-							class="px-2.5 py-1 text-xs font-semibold text-brand border border-brand/60 rounded-md hover:bg-brand hover:text-white transition-colors">
+							class="flex items-center px-2.5 py-1 text-xs font-semibold text-brand border border-brand/60 rounded-md hover:bg-brand hover:text-white transition-colors">
 							<i class="fa fa-plus mr-1 text-[9px]" aria-hidden="true"></i> Book
 						</button>
+						<a href="{{ route('site.bookings.calendar.subscribe') }}"
+							class="flex items-center px-2.5 py-1 [font:inherit]! [color:inherit]! no-underline! border border-brand/60 rounded-md hover:bg-brand transition-colors">
+							<i class="fa fa-rss mr-1 text-[9px]" aria-hidden="true"></i> Subscribe to your bookings
+						</a>
 					@endauth
 				</div>
 
@@ -387,6 +391,12 @@
 						</div>
 					@endforeach
 				@endif
+
+				<div class="px-3 sm:px-4 py-2.5 text-xs text-gray-500">
+					Get your bookings in Google Calendar, Outlook or Apple Calendar.
+					<a href="{{ route('site.bookings.calendar.subscribe') }}"
+						class="font-semibold text-brand hover:underline">Subscribe</a>
+				</div>
 			</section>
 		@endauth
 
