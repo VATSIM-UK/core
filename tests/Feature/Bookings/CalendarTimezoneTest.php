@@ -135,21 +135,24 @@ class CalendarTimezoneTest extends TestCase
     }
 
     #[Test]
-    public function it_accepts_legacy_timezone_aliases(): void
+    public function it_falls_back_to_utc_for_a_legacy_timezone_name(): void
     {
         Livewire::test(Calendar::class)
+            ->call('setTimezone', 'Europe/Prague')
             ->call('setTimezone', 'Asia/Calcutta')
-            ->assertSet('timezone', 'Asia/Calcutta');
+            ->assertSet('timezone', 'UTC');
+
+        $this->assertSame('UTC', session('bookings.timezone'));
     }
 
     #[Test]
-    public function it_rejects_an_unknown_timezone(): void
+    public function it_falls_back_to_utc_for_an_unknown_timezone(): void
     {
         Livewire::test(Calendar::class)
             ->call('setTimezone', 'Mars/Olympus_Mons')
             ->assertSet('timezone', 'UTC');
 
-        $this->assertNull(session('bookings.timezone'));
+        $this->assertSame('UTC', session('bookings.timezone'));
     }
 
     #[Test]

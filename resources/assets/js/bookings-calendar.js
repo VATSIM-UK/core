@@ -332,7 +332,7 @@ document.addEventListener('alpine:init', () => {
         },
     }));
 
-    window.Alpine.data('bookingsTimezonePicker', ({ current, chosen }) => ({
+    window.Alpine.data('bookingsTimezonePicker', ({ current, chosen, zones }) => ({
         current,
         browser: Intl.DateTimeFormat().resolvedOptions().timeZone,
         zones: [],
@@ -344,7 +344,7 @@ document.addEventListener('alpine:init', () => {
 
         init() {
             window.bookingsTimezone = current;
-            this.zones = timezoneEntries(current);
+            this.zones = timezoneEntries(zones);
 
             if (!chosen && this.browser && this.browser !== current) {
                 this.$wire.setTimezone(this.browser);
@@ -419,15 +419,8 @@ document.addEventListener('alpine:init', () => {
     }));
 });
 
-function timezoneEntries(current) {
-    // Etc/GMT±N names have POSIX's inverted signs, so they would read backwards here.
-    const zones = new Set([
-        ...Intl.supportedValuesOf('timeZone').filter((zone) => !zone.startsWith('Etc/')),
-        'UTC',
-        current,
-    ]);
-
-    return [...zones]
+function timezoneEntries(zones) {
+    return zones
         .map(timezoneEntry)
         .sort((a, b) => a.offset - b.offset || a.name.localeCompare(b.name));
 }

@@ -187,13 +187,14 @@ class Calendar extends Component
             'today' => $this->localToday(),
             'now' => Carbon::now($this->timezone),
             'timezoneChosen' => session()->has(self::TIMEZONE_SESSION_KEY),
+            'timezones' => DateTimeZone::listIdentifiers(),
         ]);
     }
 
     public function setTimezone(string $timezone): void
     {
-        if (! in_array($timezone, DateTimeZone::listIdentifiers(DateTimeZone::ALL_WITH_BC), true)) {
-            return;
+        if (! in_array($timezone, DateTimeZone::listIdentifiers(), true)) {
+            $timezone = 'UTC';
         }
 
         $wasToday = $this->selectedDate->isSameDay($this->localToday());

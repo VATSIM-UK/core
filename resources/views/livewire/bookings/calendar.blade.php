@@ -114,7 +114,7 @@
 						class="w-full pl-7 pr-3 py-1.5 rounded-md border-0 bg-white/10 text-sm text-white placeholder-white/40 ring-1 ring-inset ring-white/15 focus:ring-2 focus:ring-white/40 focus:outline-none focus:bg-white/15 transition-all">
 				</div>
 				<div class="relative flex-1 sm:flex-none sm:w-72" wire:key="timezone-{{ $timezone }}" wire:ignore
-					x-data="bookingsTimezonePicker(@js(['current' => $timezone, 'chosen' => $timezoneChosen]))" x-on:resize.window="open && position()" x-on:scroll.window="open && position()">
+					x-data="bookingsTimezonePicker(@js(['current' => $timezone, 'chosen' => $timezoneChosen, 'zones' => $timezones]))" x-on:resize.window="open && position()" x-on:scroll.window="open && position()">
 					<button type="button" x-ref="button" x-on:click="toggle()" aria-haspopup="listbox" :aria-expanded="open"
 						aria-label="Timezone"
 						class="w-full flex items-baseline gap-2 pl-2.5 pr-2.5 py-1.5 rounded-md border-0 bg-white/10 text-sm text-white text-left ring-1 ring-inset ring-white/15 hover:bg-white/15 focus:ring-2 focus:ring-white/40 focus:outline-none">
