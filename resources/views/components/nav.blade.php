@@ -5,7 +5,9 @@
 			You are in a <b>NON-PRODUCTION</b> environment
 		</div>
 	@endif
-	@include('components.top-notification')
+	@unless (app()->environment('local'))
+		@include('components.top-notification')
+	@endunless
 
 	{{-- Top section: Logo and Account Dropdown --}}
 	<div class="border-b-[5px] border-nav-accent">
