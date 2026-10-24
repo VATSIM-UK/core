@@ -5,8 +5,8 @@
 			@php
 				$day = $weekStart->copy()->addDays($i);
 				$blocks = $this->buildWeekDayBlocks($day->toDateString());
-				$isPast = $day->lt(\Carbon\Carbon::today());
-				$dayState = $isPast ? 'past' : ($day->isToday() ? 'today' : 'future');
+				$isPast = $day->lt($today);
+				$dayState = $isPast ? 'past' : ($day->isSameDay($today) ? 'today' : 'future');
 			@endphp
 			<div class="flex flex-col border-r border-gray-200 last:border-r-0 min-w-0">
 				<button type="button" wire:click="viewDayFromWeek('{{ $day->toDateString() }}')" data-day-state="{{ $dayState }}"
@@ -16,8 +16,8 @@
 						{{ $day->format('D') }}
 					</p>
 					<p
-						class="text-[11px] {{ $day->isToday() ? 'text-brand font-semibold' : ($isPast ? 'text-gray-400' : 'text-gray-500') }} m-0">
-						{{ $day->isToday() ? 'Today' : $day->format('d M') }}
+						class="text-[11px] {{ $day->isSameDay($today) ? 'text-brand font-semibold' : ($isPast ? 'text-gray-400' : 'text-gray-500') }} m-0">
+						{{ $day->isSameDay($today) ? 'Today' : $day->format('d M') }}
 					</p>
 				</button>
 
@@ -25,7 +25,7 @@
 					@forelse ($blocks as $block)
 						@php $legend = $typeLegend[$block['type']] ?? null; @endphp
 						<button type="button" x-data='{ booking: @json($block['raw']) }'
-							@if ($block['count'] === 1) @click="window.dispatchEvent(new CustomEvent('open-detail-modal', { detail: { booking: { id: booking.id, source: booking.source, ctsBookingId: booking.cts_booking_id, type: booking.type, position: booking.position, date: booking.date, from: booking.from, to: booking.to, member: booking.member, event_name: booking.event_name, event_url: booking.event_url, fromWeek: true } } }))"
+							@if ($block['count'] === 1) @click="window.dispatchEvent(new CustomEvent('open-detail-modal', { detail: { booking: { id: booking.id, source: booking.source, ctsBookingId: booking.cts_booking_id, type: booking.type, position: booking.position, date: booking.starts_on, from: booking.time_from, to: booking.time_to, member: booking.member, event_name: booking.event_name, event_url: booking.event_url, fromWeek: true } } }))"
 							@else
 								wire:click="viewDayFromWeek('{{ $day->toDateString() }}')" @endif
 							class="w-full text-left rounded-md border border-gray-200 hover:border-brand/60 hover:bg-brand/5 transition-colors px-2 py-1.5 {{ $block['isOwn'] ? 'ring-2 ring-yellow-300 ring-inset' : '' }}">
@@ -36,8 +36,15 @@
 										@svg($legend['icon'], 'w-3 h-3')
 									@endif
 								</span>
-								<span
-									class="text-[11px] font-mono tabular-nums text-gray-500 whitespace-nowrap">{{ $block['from'] }}-{{ $block['to'] }}</span>
+								<span class="text-[11px] font-mono tabular-nums text-gray-500 whitespace-nowrap">
+									@if ($block['continuesBefore'])
+										<span title="Continues from the previous day">&lsaquo;</span>
+									@endif
+									{{ $block['from'] }}-{{ $block['to'] }}
+									@if ($block['continuesAfter'])
+										<span title="Continues into the next day">&rsaquo;</span>
+									@endif
+								</span>
 							</span>
 							<span class="flex items-center gap-1 mt-0.5 min-w-0">
 								<span class="text-[12px] font-semibold text-gray-700 truncate">

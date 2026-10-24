@@ -41,17 +41,18 @@
 		{{-- Booking blocks --}}
 		<template x-for="booking in pos.bookings" :key="booking.source + '-' + (booking.id || booking.cts_booking_id)">
 			<div
-				class="absolute rounded px-2 flex items-center gap-1.5 cursor-pointer
+				class="absolute px-2 flex items-center gap-1.5 cursor-pointer
                 text-white text-xs font-medium shadow-sm
                 hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap"
 				data-booking-block :data-booking-key="booking.source + '-' + (booking.id || booking.cts_booking_id)"
 				:class="{
+				    [$bookingEdges(booking)]: true,
 				    'bg-uknavy': booking.type === 'BK',
-				    'bg-purple-700': booking.type === 'ME',
-				    'bg-amber-800': booking.type === 'EX',
-				    'bg-red-600': booking.type === 'EV',
-				    'bg-orange-500': booking.type === 'GS',
-				    'ring-2 ring-yellow-300 ring-inset font-bold z-[6]': isOwnBooking(booking),
+				        'bg-purple-700': booking.type === 'ME',
+				        'bg-amber-800': booking.type === 'EX',
+				        'bg-red-600': booking.type === 'EV',
+				        'bg-orange-500': booking.type === 'GS',
+				        'ring-2 ring-yellow-300 ring-inset font-bold z-[6]': isOwnBooking(booking),
 				}"
 				:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%; top: ' + bookingTop(pos,
 				    booking) + '; height: ' + blockHeight(pos)"
@@ -59,10 +60,16 @@
 				    (booking.member?.display_name || 'Unknown') +
 				    (booking.member?.cid ? ' (' + booking.member.cid + ')' : '') +
 				    (isOwnBooking(booking) ? ' \u00b7 your booking' : '') +
-				    ' \u00b7 ' + booking.from + ' \u2013 ' + booking.to"
+				    ' \u00b7 ' + booking.time_from + ' \u2013 ' + booking.time_to"
 				@click.stop="openDetailModal(pos, booking)">
 				{{-- Shape cue, not colour alone. First and shrink-0, so a narrow block clips
 					the label rather than this. --}}
+				<template x-if="booking.continues_before">
+					<span class="shrink-0 -ml-1 flex items-center">
+						@svg('heroicon-m-chevron-double-left', 'w-3 h-3')
+						<span class="sr-only">Continues from the previous day</span>
+					</span>
+				</template>
 				<template x-if="booking.type === 'ME'">
 					@svg('heroicon-m-academic-cap', 'w-3.5 h-3.5 shrink-0')
 				</template>
@@ -74,9 +81,15 @@
 				</template>
 				{{-- The icons are aria-hidden, so the type reaches assistive tech here. --}}
 				<span class="sr-only" x-text="$bookingTypeLabel(booking.type)"></span>
-				<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]" x-text="booking.from"></span>
+				<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]" x-text="booking.time_from"></span>
 				<span class="truncate"
 					x-text="(booking.member?.display_name || 'Unknown') + (booking.member?.cid ? ' (' + booking.member.cid + ')' : '')"></span>
+				<template x-if="booking.continues_after">
+					<span class="shrink-0 ml-auto -mr-1 flex items-center">
+						@svg('heroicon-m-chevron-double-right', 'w-3 h-3')
+						<span class="sr-only">Continues into the next day</span>
+					</span>
+				</template>
 			</div>
 		</template>
 	</div>

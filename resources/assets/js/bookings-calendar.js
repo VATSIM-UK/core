@@ -32,6 +32,13 @@ document.addEventListener('alpine:init', () => {
     // the body, so they sit outside the timeline's scope but still need this.
     window.Alpine.magic('bookingTypeLabel', () => (type) => BOOKING_TYPE_LABELS[type] || type || 'Booking');
 
+    window.Alpine.magic('bookingEdges', () => (booking) => {
+        if (booking.continues_before && booking.continues_after) return 'rounded-none';
+        if (booking.continues_before) return 'rounded-r';
+        if (booking.continues_after) return 'rounded-l';
+        return 'rounded';
+    });
+
     window.Alpine.data('bookingsTimeline', (config) => ({
         selectedDate: config.selectedDate,
         isAuthenticated: config.isAuthenticated,
@@ -119,7 +126,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         nowMinutes() {
-            // The timeline is in Zulu. Anchor to the server-rendered Zulu time and
+            // The timeline is in the selected timezone. Anchor to the server-rendered time and
             // advance it by wall-clock elapsed time. This keeps the line accurate
             // even if the page sits open or the device clock is offset, since the
             // elapsed difference is monotonic regardless of the clock's absolute value.
@@ -218,8 +225,8 @@ document.addEventListener('alpine:init', () => {
         },
 
         addDay(dateString) {
-            const dt = new Date(dateString + 'T00:00:00');
-            dt.setDate(dt.getDate() + 1);
+            const dt = new Date(dateString + 'T00:00:00Z');
+            dt.setUTCDate(dt.getUTCDate() + 1);
             return dt.toISOString().split('T')[0];
         },
 
@@ -313,9 +320,9 @@ document.addEventListener('alpine:init', () => {
                         ctsBookingId: booking.cts_booking_id,
                         type: booking.type,
                         position: pos.callsign,
-                        date: this.selectedDate,
-                        from: booking.from,
-                        to: booking.to,
+                        date: booking.starts_on,
+                        from: booking.time_from,
+                        to: booking.time_to,
                         member: booking.member,
                         event_name: booking.event_name,
                         event_url: booking.event_url,
@@ -324,7 +331,141 @@ document.addEventListener('alpine:init', () => {
             }));
         },
     }));
+
+    window.Alpine.data('bookingsTimezonePicker', ({ current, chosen, zones }) => ({
+        current,
+        browser: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        zones: [],
+        open: false,
+        query: '',
+        active: 0,
+        panelStyle: '',
+        switching: false,
+
+        init() {
+            window.bookingsTimezone = current;
+            this.zones = timezoneEntries(zones);
+
+            if (!chosen && this.browser && this.browser !== current) {
+                this.$wire.setTimezone(this.browser);
+            }
+        },
+
+        get currentEntry() {
+            return this.zones.find((entry) => entry.zone === this.current) || timezoneEntry(this.current);
+        },
+
+        get results() {
+            const pinned = [...new Set(['UTC', this.browser])].filter(Boolean);
+            const ordered = [
+                ...pinned.map((zone) => this.zones.find((entry) => entry.zone === zone)).filter(Boolean),
+                ...this.zones.filter((entry) => !pinned.includes(entry.zone)),
+            ];
+
+            return ordered.filter(timezoneMatcher(this.query));
+        },
+
+        toggle() {
+            this.open ? this.close() : this.show();
+        },
+
+        show() {
+            this.position();
+            this.query = '';
+            this.active = Math.max(0, this.results.findIndex((entry) => entry.zone === this.current));
+            this.open = true;
+
+            this.$nextTick(() => {
+                this.$refs.search.focus();
+                this.scrollToActive();
+            });
+        },
+
+        position() {
+            const rect = this.$refs.button.getBoundingClientRect();
+            const width = Math.min(Math.max(rect.width, 320), window.innerWidth - 16);
+            const left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8));
+
+            this.panelStyle = `top: ${rect.bottom + 4}px; left: ${left}px; width: ${width}px;`;
+        },
+
+        close() {
+            this.open = false;
+        },
+
+        move(step) {
+            const count = this.results.length;
+            if (count === 0) return;
+
+            this.active = (this.active + step + count) % count;
+            this.$nextTick(() => this.scrollToActive());
+        },
+
+        scrollToActive() {
+            this.$refs.list?.querySelector(`[data-index="${this.active}"]`)?.scrollIntoView({ block: 'nearest' });
+        },
+
+        choose(zone) {
+            this.close();
+            this.$refs.button.focus();
+
+            if (zone && zone !== this.current) {
+                this.switching = true;
+                this.$wire.setTimezone(zone).finally(() => {
+                    this.switching = false;
+                });
+            }
+        },
+    }));
 });
+
+function timezoneEntries(zones) {
+    return zones
+        .map(timezoneEntry)
+        .sort((a, b) => a.offset - b.offset || a.name.localeCompare(b.name));
+}
+
+function timezoneEntry(zone) {
+    const raw = new Intl.DateTimeFormat('en-GB', { timeZone: zone, timeZoneName: 'longOffset' })
+        .formatToParts(new Date())
+        .find((part) => part.type === 'timeZoneName')?.value || 'GMT';
+    const match = raw.match(/([+\-\u2212])(\d{2}):(\d{2})/);
+    const offset = match ? (match[1] === '+' ? 1 : -1) * (Number(match[2]) * 60 + Number(match[3])) : 0;
+    const name = zone.replaceAll('_', ' ');
+
+    return {
+        zone,
+        name,
+        offset,
+        offsetLabel: match ? `UTC${match[1] === '+' ? '+' : '-'}${match[2]}:${match[3]}` : 'UTC+00:00',
+        haystack: name.toLowerCase(),
+    };
+}
+
+function timezoneMatcher(query) {
+    const term = query.trim().toLowerCase().replaceAll('_', ' ');
+    if (term === '') return () => true;
+
+    const offset = term.replace(/\s+/g, '').match(/^(?:utc|gmt)?([+\-\u2212])(\d{1,2})(?::?(\d{2}))?$/);
+    if (offset) {
+        const minutes = (offset[1] === '+' ? 1 : -1) * (Number(offset[2]) * 60 + Number(offset[3] || 0));
+
+        return (entry) => entry.offset === minutes;
+    }
+
+    return (entry) => entry.haystack.includes(term) || (/^(utc|gmt)$/.test(term) && entry.offset === 0);
+}
+
+// "YYYY-MM-DDTHH:MM" in the given timezone, comparable with the modals' local date-time strings.
+window.bookingsNowIn = (zone) => new Intl.DateTimeFormat('sv-SE', {
+    timeZone: zone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+}).format(new Date()).replace(' ', 'T');
 
 // Registered globally: the event can arrive before the target day's timeline exists.
 window.addEventListener('scroll-to-booking', (event) => {

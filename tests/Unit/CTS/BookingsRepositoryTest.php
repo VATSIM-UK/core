@@ -158,6 +158,7 @@ class BookingsRepositoryTest extends TestCase
             'date' => $this->today,
             'from' => '17:00',
             'to' => '19:00',
+            'ends_on' => $this->today,
             'position' => 'EGKK_APP',
             'type' => 'BK',
             'member' => [
@@ -173,6 +174,7 @@ class BookingsRepositoryTest extends TestCase
             'date' => $this->today,
             'from' => '18:00',
             'to' => '20:00',
+            'ends_on' => $this->today,
             'position' => 'EGKK_APP',
             'type' => 'ME',
             'member' => [

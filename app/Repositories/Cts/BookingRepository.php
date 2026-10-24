@@ -12,6 +12,7 @@ use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member as CtsMember;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Support\Bookings\BookingDays;
 use App\Support\MemberDisplayName;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -26,24 +27,33 @@ class BookingRepository
         Booking::TYPE_GROUP_SEMINAR => 'GS',
     ];
 
-    public function getBookings(Carbon $date): Collection
+    public function getBookings(Carbon $date, string $timezone = 'UTC', bool $splitAcrossDays = false): Collection
     {
-        return $this->getBookingsForRange($date, $date)
+        return $this->getBookingsForRange($date, $date, $timezone, $splitAcrossDays)
             ->get($date->toDateString(), collect());
     }
 
     /**
      * Same merge as getBookings(), batched across a date range.
      *
+     * @param  string  $timezone  Timezone the dates are in and the returned times are expressed in
+     * @param  bool  $splitAcrossDays  List a booking on every day it covers, clipped to that day (see BookingDays::split), rather than only on its start day
      * @return Collection<string, Collection<int, object>> keyed by Y-m-d date string
      */
-    public function getBookingsForRange(Carbon $start, Carbon $end): Collection
+    public function getBookingsForRange(Carbon $start, Carbon $end, string $timezone = 'UTC', bool $splitAcrossDays = false): Collection
     {
         $startDate = $start->toDateString();
         $endDate = $end->toDateString();
+        $rangeStart = Carbon::parse($startDate, $timezone)->utc();
+        $rangeEnd = Carbon::parse($endDate, $timezone)->addDay()->utc();
+        $ctsFrom = $splitAcrossDays ? $rangeStart->copy()->subDay() : $rangeStart;
 
-        $core = Booking::whereDate('starts_at', '>=', $startDate)
-            ->whereDate('starts_at', '<=', $endDate)
+        $core = Booking::where('starts_at', '<', $rangeEnd)
+            ->when(
+                $splitAcrossDays,
+                fn ($q) => $q->where('ends_at', '>', $rangeStart),
+                fn ($q) => $q->where('starts_at', '>=', $rangeStart),
+            )
             ->with('member', 'position', 'ctsBooking')
             ->with(['bookable' => fn ($morphTo) => $morphTo->morphWith([
                 Session::class => ['mentor'],
@@ -55,8 +65,8 @@ class BookingRepository
         $importedIds = $core->pluck('cts_booking_id')->filter()->map(fn ($id) => (int) $id)->values()->all();
 
         $ctsOnly = CtsBooking::query()
-            ->whereDate('date', '>=', $startDate)
-            ->whereDate('date', '<=', $endDate)
+            ->whereDate('date', '>=', $ctsFrom->toDateString())
+            ->whereDate('date', '<=', $rangeEnd->toDateString())
             ->when(! empty($importedIds), fn ($q) => $q->whereNotIn('id', $importedIds))
             ->orderBy('date')
             ->orderBy('from')
@@ -76,15 +86,18 @@ class BookingRepository
 
         // Events live in the CTS events table (not cts.bookings), so they must be
         // pulled in separately or they never appear on the calendar.
-        $events = Event::whereDate('date', '>=', $startDate)
-            ->whereDate('date', '<=', $endDate)
+        $events = Event::whereDate('date', '>=', $ctsFrom->toDateString())
+            ->whereDate('date', '<=', $rangeEnd->toDateString())
             ->orderBy('date')
             ->orderBy('from')
             ->get();
 
-        return $this->formatBookings($core)
-            ->concat($ctsOnly->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts, $examLookup, $sessionLookup)))
-            ->concat($events->map(fn (Event $event) => $this->formatEvent($event)))
+        return $this->formatBookings($core, $timezone)
+            ->concat($ctsOnly->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts, $examLookup, $sessionLookup, $timezone)))
+            ->concat($events->map(fn (Event $event) => $this->formatEvent($event, $timezone)))
+            ->flatMap(fn (object $b) => $splitAcrossDays
+                ? BookingDays::split($b, $startDate, $endDate)
+                : ($b->date >= $startDate && $b->date <= $endDate ? [$b] : []))
             ->groupBy(fn (object $b) => $b->date)
             ->map(fn (Collection $dayBookings) => $dayBookings->sortBy(fn (object $b) => $b->from)->values());
     }
@@ -117,9 +130,10 @@ class BookingRepository
         return $this->formatBookings($bookings);
     }
 
-    public function getMemberUpcomingBookings(Account $account): Collection
+    public function getMemberUpcomingBookings(Account $account, string $timezone = 'UTC'): Collection
     {
-        $today = Carbon::today();
+        $localToday = Carbon::today($timezone);
+        $today = $localToday->copy()->utc();
 
         $core = Booking::where('member_id', $account->getKey())
             ->where('starts_at', '>=', $today)
@@ -131,7 +145,7 @@ class BookingRepository
         $ctsMember = CtsMember::where('cid', $account->getKey())->first();
 
         if ($ctsMember === null) {
-            return $this->formatBookings($core)->values();
+            return $this->formatBookings($core, $timezone)->values();
         }
 
         $importedIds = $core->pluck('cts_booking_id')->filter()->map(fn ($id) => (int) $id)->values()->all();
@@ -153,13 +167,14 @@ class BookingRepository
         $ctsAccounts = Account::whereIn('id', [$account->getKey()])->get()->keyBy('id');
 
         // Type 'BK' only, so never exam/mentoring.
-        return $this->formatBookings($core)
-            ->concat($cts->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts, collect(), collect())))
+        return $this->formatBookings($core, $timezone)
+            ->concat($cts->map(fn (CtsBooking $c) => $this->formatCtsBooking($c, $ctsPositions, $ctsMembers, $ctsAccounts, collect(), collect(), $timezone)))
+            ->filter(fn (object $b) => $b->date >= $localToday->toDateString())
             ->sortBy(fn (object $b) => $b->date.' '.$b->from)
             ->values();
     }
 
-    public function getUpcomingMentoringAndExamBookings(int $limit = 10): Collection
+    public function getUpcomingMentoringAndExamBookings(int $limit = 10, string $timezone = 'UTC'): Collection
     {
         $bookings = Booking::whereIn('type', [Booking::TYPE_MENTORING, Booking::TYPE_EXAM])
             ->where('ends_at', '>=', Carbon::now())
@@ -172,12 +187,14 @@ class BookingRepository
             ->limit($limit)
             ->get();
 
-        return $this->formatBookings($bookings)->values();
+        return $this->formatBookings($bookings, $timezone)->values();
     }
 
-    private function formatBookings(Collection $bookings): Collection
+    private function formatBookings(Collection $bookings, string $timezone = 'UTC'): Collection
     {
-        return $bookings->map(function (Booking $booking) {
+        return $bookings->map(function (Booking $booking) use ($timezone) {
+            $starts = $booking->starts_at->copy()->setTimezone($timezone);
+            $ends = $booking->ends_at->copy()->setTimezone($timezone);
             $type = self::TYPE_MAP[$booking->type] ?? 'BK';
 
             return $this->makeBooking(
@@ -189,9 +206,10 @@ class BookingRepository
                 // positions may not exist in the core positions table, so prefer the
                 // CTS position and only fall back to the core position relationship.
                 positionCallsign: $booking->ctsBooking?->position ?? $booking->position?->callsign,
-                date: $booking->starts_at->format('Y-m-d'),
-                from: $booking->starts_at->format('H:i'),
-                to: $booking->ends_at->format('H:i'),
+                date: $starts->format('Y-m-d'),
+                from: $starts->format('H:i'),
+                to: $ends->format('H:i'),
+                endsOn: $ends->format('Y-m-d'),
                 type: $type,
                 member: $this->formatMember($this->resolveOwner($booking)),
             );
@@ -215,8 +233,10 @@ class BookingRepository
         return $booking->member;
     }
 
-    private function formatCtsBooking(CtsBooking $cts, Collection $positions, Collection $members, Collection $accounts, Collection $examLookup, Collection $sessionLookup): object
+    private function formatCtsBooking(CtsBooking $cts, Collection $positions, Collection $members, Collection $accounts, Collection $examLookup, Collection $sessionLookup, string $timezone = 'UTC'): object
     {
+        [$date, $from, $to, $endsOn] = $this->localTimes((string) $cts->date, (string) $cts->from, (string) $cts->to, $timezone);
+
         $type = (string) $cts->type;
         $position = $positions->get($cts->position);
         $member = $members->get((int) $cts->member_id);
@@ -233,9 +253,10 @@ class BookingRepository
             ctsBookingId: (int) $cts->id,
             positionId: $position?->id,
             positionCallsign: $cts->position,
-            date: Carbon::parse($cts->date)->format('Y-m-d'),
-            from: substr((string) $cts->from, 0, 5),
-            to: substr((string) $cts->to, 0, 5),
+            date: $date,
+            from: $from,
+            to: $to,
+            endsOn: $endsOn,
             type: $type,
             member: $this->formatMember($owner),
         );
@@ -288,17 +309,20 @@ class BookingRepository
         return $studentId.'|'.$date.'|'.$from.'|'.$position;
     }
 
-    private function formatEvent(Event $event): object
+    private function formatEvent(Event $event, string $timezone = 'UTC'): object
     {
+        [$date, $from, $to, $endsOn] = $this->localTimes((string) $event->date, (string) $event->from, (string) $event->to, $timezone);
+
         $booking = $this->makeBooking(
             id: (string) $event->id,
             source: 'event',
             ctsBookingId: null,
             positionId: null,
             positionCallsign: null,
-            date: $event->date->format('Y-m-d'),
-            from: substr((string) $event->from, 0, 5),
-            to: substr((string) $event->to, 0, 5),
+            date: $date,
+            from: $from,
+            to: $to,
+            endsOn: $endsOn,
             type: 'EV',
             member: $this->formatMember(null),
         );
@@ -308,7 +332,26 @@ class BookingRepository
         return $booking;
     }
 
-    private function makeBooking(?string $id, string $source, ?int $ctsBookingId, ?int $positionId, ?string $positionCallsign, string $date, string $from, string $to, string $type, array $member): object
+    /**
+     * @return array{0: string, 1: string, 2: string, 3: string} Local start date, start time, end time and end date
+     */
+    private function localTimes(string $date, string $from, string $to, string $timezone): array
+    {
+        $day = Carbon::parse($date)->toDateString();
+        $start = Carbon::parse($day.' '.substr($from, 0, 5), 'UTC');
+        $end = Carbon::parse($day.' '.substr($to, 0, 5), 'UTC');
+
+        if ($end->lte($start)) {
+            $end->addDay();
+        }
+
+        $start->setTimezone($timezone);
+        $end->setTimezone($timezone);
+
+        return [$start->format('Y-m-d'), $start->format('H:i'), $end->format('H:i'), $end->format('Y-m-d')];
+    }
+
+    private function makeBooking(?string $id, string $source, ?int $ctsBookingId, ?int $positionId, ?string $positionCallsign, string $date, string $from, string $to, string $endsOn, string $type, array $member): object
     {
         return (object) [
             'id' => $id,
@@ -319,6 +362,7 @@ class BookingRepository
             'date' => $date,
             'from' => $from,
             'to' => $to,
+            'ends_on' => $endsOn,
             'type' => $type,
             'member' => $member,
         ];

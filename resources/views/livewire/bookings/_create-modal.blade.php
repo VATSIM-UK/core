@@ -6,6 +6,7 @@
 	<div
 		x-data='{
     open: false,
+    timezone: "UTC",
     date: "",
     startTime: "",
     endTime: "",
@@ -21,8 +22,7 @@
     submitting: false,
     get startDatetime() {
         if (!this.date || !this.startTime) return "";
-        const ed = this.endDate;
-        return (ed || this.date) + "T" + this.startTime;
+        return this.date + "T" + this.startTime;
     },
     get endDatetime() {
         if (!this.date || !this.endTime) return "";
@@ -71,8 +71,8 @@
         this.positionSearchToken++;
     },
     addDay(d) {
-        const dt = new Date(d + "T00:00:00");
-        dt.setDate(dt.getDate() + 1);
+        const dt = new Date(d + "T00:00:00Z");
+        dt.setUTCDate(dt.getUTCDate() + 1);
         return dt.toISOString().split("T")[0];
     },
     timeSlots: @json($timeSlots),
@@ -93,12 +93,15 @@
     get validEndTimes() {
         if (!this.startTime) return this.timeSlots;
         const min = this.timeMinutes(this.startTime);
-        return this.timeSlots.filter((t) => this.timeMinutes(t) > min);
+        return [
+            ...this.timeSlots.filter((t) => this.timeMinutes(t) > min),
+            ...this.timeSlots.filter((t) => this.timeMinutes(t) < min),
+        ];
     },
     ensureValidEndTime() {
         if (!this.startTime) return;
         if (this.endTime && this.validEndTimes.includes(this.endTime)) return;
-        const preferred = this.timeMinutes(this.startTime) + 60;
+        const preferred = (this.timeMinutes(this.startTime) + 60) % 1440;
         const preferredSlot = this.timeSlots.find((t) => this.timeMinutes(t) === preferred);
         this.endTime = preferredSlot && this.validEndTimes.includes(preferredSlot)
             ? preferredSlot
@@ -113,6 +116,7 @@
 		x-show="open" x-cloak
 		x-on:open-create-modal.window="
             const d = $event.detail || {};
+            timezone = window.bookingsTimezone || 'UTC';
             date = d.startDate || '';
             startTime = snapToTimeSlot(d.startTime || '');
             endTime = snapToTimeSlot(d.endTime || '');
@@ -170,7 +174,7 @@
                             errorMessage = 'Please enter an end time.';
                             submitting = false; return;
                         }
-                        if (new Date(startDatetime + 'Z') < new Date()) {
+                        if (startDatetime < window.bookingsNowIn(timezone)) {
                             errorMessage = 'Bookings cannot start in the past.';
                             submitting = false; return;
                         }
@@ -203,7 +207,9 @@
 
 						{{-- Time pickers --}}
 						<div class="mb-5">
-							<label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Time</label>
+							<label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+								Time <span class="normal-case font-normal" x-text="'(' + timezone + ')'"></span>
+							</label>
 							<div class="grid grid-cols-2 gap-3">
 								<div>
 									<div class="text-[10px] text-gray-400 font-medium uppercase tracking-wide mb-1.5">Start</div>
@@ -227,7 +233,7 @@
 											x-on:keydown="if (!['ArrowUp', 'ArrowDown', 'Enter', 'Escape', 'Tab'].includes($event.key)) $event.preventDefault()"
 											class="block w-full rounded-lg border-gray-300 bg-white shadow-sm focus:border-brand focus:ring-brand text-sm px-3 py-2.5 appearance-none pr-8">
 											<template x-for="slot in validEndTimes" :key="slot">
-												<option :value="slot" x-text="slot"></option>
+												<option :value="slot" x-text="slot <= startTime ? slot + ' (+1 day)' : slot"></option>
 											</template>
 										</select>
 										<i

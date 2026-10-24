@@ -57,6 +57,33 @@ class CtsBookingsApiTest extends TestCase
     }
 
     #[Test]
+    public function it_does_not_list_a_booking_over_midnight_on_the_following_day(): void
+    {
+        $date = Carbon::today()->addYears(5);
+        $booking = $this->overnightBooking($date);
+
+        $response = $this->getJson(route('api.cts.bookings', ['date' => $date->copy()->addDay()->toDateString()]));
+
+        $response->assertOk();
+        $this->assertNull(collect($response->json('bookings'))->firstWhere('id', $booking->id));
+    }
+
+    #[Test]
+    public function it_keeps_the_existing_booking_fields(): void
+    {
+        $date = Carbon::today()->addYears(5);
+        $booking = $this->overnightBooking($date);
+
+        $response = $this->getJson(route('api.cts.bookings', ['date' => $date->toDateString()]));
+
+        $response->assertOk();
+        $this->assertEqualsCanonicalizing(
+            ['id', 'source', 'cts_booking_id', 'position_id', 'position', 'from', 'to', 'type', 'owner'],
+            array_keys(collect($response->json('bookings'))->firstWhere('id', $booking->id)),
+        );
+    }
+
+    #[Test]
     public function it_returns_a_cts_only_booking_alongside_a_core_booking(): void
     {
         $date = Carbon::today()->addYears(5);
@@ -299,5 +326,14 @@ class CtsBookingsApiTest extends TestCase
         $row = collect($response->json('bookings'))->firstWhere('type', 'EV');
 
         $this->assertNull($row['owner']);
+    }
+
+    private function overnightBooking(Carbon $date): Booking
+    {
+        return Booking::factory()->create([
+            'position_id' => Position::factory()->create(['callsign' => 'EGKK_APP'])->id,
+            'starts_at' => $date->copy()->setTime(23, 0),
+            'ends_at' => $date->copy()->addDay()->setTime(1, 0),
+        ]);
     }
 }

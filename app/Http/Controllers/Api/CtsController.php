@@ -54,7 +54,7 @@ class CtsController
             'bookings' => $bookings->map(function ($booking) {
                 // display_name stays private; owner is the resolved CID (member's
                 // cid already carries the calendar's exam/mentoring-owner rules).
-                $row = collect($booking)->except(['member', 'date'])->toArray();
+                $row = collect($booking)->except(['member', 'date', 'ends_on'])->toArray();
                 $row['id'] = $booking->id !== null ? (int) $booking->id : null;
                 $row['owner'] = $booking->member['cid'] !== '' ? (int) $booking->member['cid'] : null;
                 [$row['from'], $row['to']] = $this->toIsoRange($booking->date, $booking->from, $booking->to);
