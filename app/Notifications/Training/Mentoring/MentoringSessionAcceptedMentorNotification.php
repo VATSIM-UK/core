@@ -6,6 +6,7 @@ use App\Enums\EmailType;
 use App\Models\Cts\Session;
 use App\Notifications\Contracts\HasEmailType;
 use App\Services\IcsService;
+use App\Support\Calendar\CalendarSequence;
 use App\Support\Calendar\CalendarUid;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -45,6 +46,7 @@ class MentoringSessionAcceptedMentorNotification extends Notification implements
             start: Carbon::parse("{$sessionDate} {$session->taken_from}"),
             end: Carbon::parse("{$sessionDate} {$session->taken_to}"),
             location: $session->position,
+            sequence: CalendarSequence::forSession($session),
         );
 
         return (new MailMessage)

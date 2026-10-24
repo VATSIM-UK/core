@@ -16,6 +16,7 @@ class IcsService
      * @param  Carbon  $start  Event start date/time (will be treated as UTC)
      * @param  Carbon  $end  Event end date/time (will be treated as UTC)
      * @param  string  $location  Optional location (e.g. ATC position)
+     * @param  int  $sequence  Event revision; increase it to replace a previously sent copy
      * @return string Raw ICS content
      */
     public static function generate(
@@ -24,7 +25,8 @@ class IcsService
         string $description,
         Carbon $start,
         Carbon $end,
-        string $location = ''
+        string $location = '',
+        int $sequence = 0,
     ): string {
         $lines = [
             'BEGIN:VCALENDAR',
@@ -40,6 +42,7 @@ class IcsService
                     endsAt: $end,
                     description: $description,
                     location: $location,
+                    sequence: $sequence,
                 ),
                 self::formatUtc(Carbon::now('UTC')),
                 'VATSIM UK Training Department',
@@ -90,6 +93,7 @@ class IcsService
             'BEGIN:VEVENT',
             "UID:{$event->uid}",
             "DTSTAMP:{$dtStamp}",
+            "SEQUENCE:{$event->sequence}",
             'DTSTART:'.self::formatUtc($event->startsAt),
             'DTEND:'.self::formatUtc($event->endsAt),
             'SUMMARY:'.self::escapeText($event->summary),

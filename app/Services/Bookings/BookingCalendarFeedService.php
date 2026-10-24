@@ -11,6 +11,7 @@ use App\Models\Cts\PracticalExaminers;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Services\IcsService;
+use App\Support\Calendar\CalendarSequence;
 use App\Support\Calendar\CalendarUid;
 use App\Support\Calendar\IcsEvent;
 use App\Support\MemberDisplayName;
@@ -102,6 +103,7 @@ class BookingCalendarFeedService
                 $this->counterpart($booking, $viewerIsInstructor, $counterparts),
             ),
             location: $position ?? '',
+            sequence: $booking->bookable instanceof Session ? CalendarSequence::forSession($booking->bookable) : 0,
         );
     }
 

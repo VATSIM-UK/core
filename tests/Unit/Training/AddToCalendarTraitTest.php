@@ -75,6 +75,9 @@ class AddToCalendarTraitTest extends TestCase
 
         $this->assertStringContainsString('BEGIN:VCALENDAR', $ics);
         $this->assertStringContainsString('UID:'.$record->icsUid, $ics);
+        $this->assertStringContainsString('SEQUENCE:0', $ics);
+        $this->assertStringContainsString('DTSTART:20260620T100000Z', $ics);
+        $this->assertStringContainsString('LOCATION:EGLL_TWR', $ics);
     }
 
     /** Create a test double that uses the trait */
