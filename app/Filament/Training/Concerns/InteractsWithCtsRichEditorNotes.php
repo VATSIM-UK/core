@@ -90,7 +90,7 @@ trait InteractsWithCtsRichEditorNotes
         }
 
         if (! $this->ctsNotesContainHtmlMarkup($html)) {
-            return trim($html) !== '' ? $html : null;
+            $html = $this->ctsRichEditorHtmlForHydration($html);
         }
 
         $sanitized = $this->ctsSanitizeNotesHtml($html);
