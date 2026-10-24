@@ -11,6 +11,7 @@ use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Notifications\Training\Exams\ExamAcceptedStudentNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedStudentNotification;
+use App\Notifications\Training\Mentoring\MentoringSessionRescheduledStudentNotification;
 use App\Services\Bookings\BookingCalendarFeedService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -86,10 +87,62 @@ class CalendarUidParityTest extends TestCase
         $this->assertSame($this->uidFrom($mail->rawAttachments[0]['data']), $this->uidFrom($feed));
     }
 
+    #[Test]
+    public function a_rescheduled_session_supersedes_the_accepted_one_in_the_email_and_feed(): void
+    {
+        $studentAccount = Account::factory()->create();
+        $student = CtsMember::factory()->forAccount($studentAccount)->create();
+        $mentor = CtsMember::factory()->forAccount(Account::factory()->create())->create();
+
+        $session = Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => $mentor->id,
+            'position' => 'EGKK_APP',
+            'taken' => 1,
+            'taken_time' => Carbon::now()->subDay(),
+            'taken_date' => Carbon::tomorrow()->toDateString(),
+            'taken_from' => '13:00:00',
+            'taken_to' => '15:00:00',
+        ]);
+
+        Booking::create([
+            'member_id' => $studentAccount->id,
+            'type' => Booking::TYPE_MENTORING,
+            'starts_at' => Carbon::tomorrow()->setTime(13, 0),
+            'ends_at' => Carbon::tomorrow()->setTime(15, 0),
+            'bookable_type' => Session::class,
+            'bookable_id' => $session->id,
+        ]);
+
+        $accepted = (new MentoringSessionAcceptedStudentNotification($session))->toMail($studentAccount);
+
+        $session->update(['taken_time' => Carbon::now(), 'taken_from' => '16:00:00', 'taken_to' => '18:00:00']);
+
+        $rescheduled = (new MentoringSessionRescheduledStudentNotification($session, 'Monday 19th May 2026, 13:00 - 15:00'))
+            ->toMail($studentAccount);
+        $feed = app(BookingCalendarFeedService::class)->forAccount($studentAccount);
+
+        $rescheduledSequence = $this->sequenceFrom($rescheduled->rawAttachments[0]['data']);
+
+        $this->assertGreaterThan($this->sequenceFrom($accepted->rawAttachments[0]['data']), $rescheduledSequence);
+        $this->assertSame($rescheduledSequence, $this->sequenceFrom($feed));
+        $this->assertStringContainsString(
+            'Rescheduled from Monday 19th May 2026\, 13:00 - 15:00.',
+            str_replace("\r\n ", '', $rescheduled->rawAttachments[0]['data']),
+        );
+    }
+
     private function uidFrom(string $ics): ?string
     {
         preg_match('/^UID:([^\r\n]+)/m', str_replace("\r\n ", '', $ics), $matches);
 
         return $matches[1] ?? null;
+    }
+
+    private function sequenceFrom(string $ics): ?int
+    {
+        preg_match('/^SEQUENCE:(\d+)/m', $ics, $matches);
+
+        return isset($matches[1]) ? (int) $matches[1] : null;
     }
 }

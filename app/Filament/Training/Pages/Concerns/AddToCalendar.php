@@ -2,6 +2,10 @@
 
 namespace App\Filament\Training\Pages\Concerns;
 
+use App\Models\Cts\Session;
+use App\Services\IcsService;
+use App\Support\Calendar\CalendarSequence;
+use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Spatie\CalendarLinks\Link;
@@ -30,9 +34,9 @@ trait AddToCalendar
      */
     protected function buildExamBookingLink(mixed $record, string $title, ?string $position, ?string $description = null): Link
     {
-        $sessionDate = \Carbon\Carbon::parse($record->taken_date)->format('Y-m-d');
-        $start = \Carbon\Carbon::parse("{$sessionDate} {$record->taken_from}");
-        $end = \Carbon\Carbon::parse("{$sessionDate} {$record->taken_to}");
+        $sessionDate = Carbon::parse($record->taken_date)->format('Y-m-d');
+        $start = Carbon::parse("{$sessionDate} {$record->taken_from}");
+        $end = Carbon::parse("{$sessionDate} {$record->taken_to}");
 
         return Link::create($title, $start, $end)
             ->description($description ?? "Position: {$position}")
@@ -44,9 +48,9 @@ trait AddToCalendar
      */
     protected function buildSessionLink(mixed $record, string $title, ?string $position, ?string $description = null): Link
     {
-        $sessionDate = \Carbon\Carbon::parse($record->taken_date)->format('Y-m-d');
-        $start = \Carbon\Carbon::parse("{$sessionDate} {$record->taken_from}");
-        $end = \Carbon\Carbon::parse("{$sessionDate} {$record->taken_to}");
+        $sessionDate = Carbon::parse($record->taken_date)->format('Y-m-d');
+        $start = Carbon::parse("{$sessionDate} {$record->taken_from}");
+        $end = Carbon::parse("{$sessionDate} {$record->taken_to}");
 
         if ($end->lte($start)) {
             $end->addDay();
@@ -81,9 +85,16 @@ trait AddToCalendar
      */
     protected function buildCalendarIcs(mixed $record): string
     {
-        return $this->buildCalendarLinkObject($record)->ics(
-            ['UID' => $this->buildCalendarUid($record)],
-            ['format' => 'file'],
+        $link = $this->buildCalendarLinkObject($record);
+
+        return IcsService::generate(
+            uid: $this->buildCalendarUid($record),
+            summary: $link->title,
+            description: $link->description,
+            start: Carbon::instance($link->from),
+            end: Carbon::instance($link->to),
+            location: $link->address,
+            sequence: $record instanceof Session ? CalendarSequence::forSession($record) : 0,
         );
     }
 

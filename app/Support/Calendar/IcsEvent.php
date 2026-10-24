@@ -15,5 +15,6 @@ final readonly class IcsEvent
         public Carbon $endsAt,
         public string $description = '',
         public string $location = '',
+        public int $sequence = 0,
     ) {}
 }
