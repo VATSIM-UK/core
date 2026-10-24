@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Training;
 
+use App\Enums\CalendarViewer;
 use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Filament\Training\Pages\Mentor\ConductMentoringSession;
 use App\Filament\Training\Pages\Mentor\MentoringHistory;
@@ -13,7 +14,8 @@ use App\Services\Training\MentoringAnnouncementService;
 use App\Services\Training\MentoringReportService;
 use App\Services\Training\MentoringSessionsService;
 use App\Services\Training\MentorPermissionService;
-use App\Support\Calendar\CalendarUid;
+use App\Support\Calendar\CalendarEventFactory;
+use App\Support\Calendar\IcsEvent;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -38,7 +40,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
-use Spatie\CalendarLinks\Link;
 
 class AcceptedMentoringSessionsTable extends Component implements HasActions, HasForms, HasTable
 {
@@ -584,25 +585,11 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
             });
     }
 
-    protected function buildCalendarLinkObject(mixed $record): Link
+    protected function buildCalendarEvent(mixed $record): IcsEvent
     {
         \assert($record instanceof Session);
 
-        $mentorName = $record->mentor?->name ?? 'Unknown';
-
-        return $this->buildSessionLink(
-            $record,
-            "Mentoring Session - {$record->position}",
-            $record->position,
-            "Position: {$record->position}\nMentor: {$mentorName}"
-        );
-    }
-
-    protected function buildCalendarUid(mixed $record): string
-    {
-        \assert($record instanceof Session);
-
-        return CalendarUid::forSession((int) $record->id);
+        return CalendarEventFactory::forSession($record, CalendarViewer::Instructor);
     }
 
     protected function getCalendarIcsFilename(mixed $record): string

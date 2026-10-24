@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\TrainingPanel\MyTraining;
 
+use App\Filament\Training\Pages\MyTraining\MyAvailability;
 use App\Livewire\Training\MyAcceptedMentoringSessionsTable;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
@@ -172,10 +173,11 @@ class MyAcceptedMentoringSessionsTableTest extends BaseTrainingPanelTestCase
         $link = $method->invoke($component, $this->acceptedSession);
 
         $this->assertInstanceOf(Link::class, $link);
-        $this->assertSame('Mentoring Session - EGLL_APP', $link->title);
+        $this->assertSame('EGLL_APP - Mentoring session', $link->title);
         $this->assertSame($this->acceptedSession->taken_date.' 10:00:00', $link->from->format('Y-m-d H:i:s'));
         $this->assertSame($this->acceptedSession->taken_date.' 12:00:00', $link->to->format('Y-m-d H:i:s'));
         $this->assertStringContainsString('Position: EGLL_APP', $link->description);
+        $this->assertStringEndsWith('Manage: '.MyAvailability::getUrl(panel: 'training'), $link->description);
         $this->assertSame('EGLL_APP', $link->address);
     }
 

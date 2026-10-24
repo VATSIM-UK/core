@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\TrainingPanel\Mentor;
 
+use App\Filament\Training\Pages\Mentor\Mentoring;
 use App\Filament\Training\Pages\Mentor\UpcomingMentoringSessions;
 use App\Livewire\Training\PendingMentoringReportsTable;
 use App\Models\Cts\Member;
@@ -402,10 +403,11 @@ class UpcomingMentoringSessionsTest extends BaseTrainingPanelTestCase
         $link = $method->invoke($page, $session);
 
         $this->assertInstanceOf(Link::class, $link);
-        $this->assertSame('Mentoring Session - EGLL_APP', $link->title);
+        $this->assertSame('EGLL_APP - Mentoring session', $link->title);
         $this->assertSame($session->taken_date.' 10:00:00', $link->from->format('Y-m-d H:i:s'));
         $this->assertSame($session->taken_date.' 12:00:00', $link->to->format('Y-m-d H:i:s'));
         $this->assertStringContainsString('Position: EGLL_APP', $link->description);
+        $this->assertStringEndsWith('Manage: '.Mentoring::getUrl(panel: 'training'), $link->description);
         $this->assertSame('EGLL_APP', $link->address);
     }
 

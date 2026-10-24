@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Bookings;
 
+use App\Enums\CalendarViewer;
 use App\Models\Booking;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member as CtsMember;
@@ -11,10 +12,8 @@ use App\Models\Cts\PracticalExaminers;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Services\IcsService;
-use App\Support\Calendar\CalendarSequence;
-use App\Support\Calendar\CalendarUid;
+use App\Support\Calendar\CalendarEventFactory;
 use App\Support\Calendar\IcsEvent;
-use App\Support\MemberDisplayName;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -22,13 +21,6 @@ use Illuminate\Support\Collection;
 
 class BookingCalendarFeedService
 {
-    private const TYPE_LABELS = [
-        Booking::TYPE_STANDARD => 'ATC booking',
-        Booking::TYPE_EXAM => 'Practical exam',
-        Booking::TYPE_MENTORING => 'Mentoring session',
-        Booking::TYPE_GROUP_SEMINAR => 'Group seminar',
-    ];
-
     /**
      * Bookings the member owns, plus sessions they mentor and exams they examine.
      */
@@ -81,54 +73,23 @@ class BookingCalendarFeedService
             ->orderBy('starts_at')
             ->get();
 
-        $counterparts = $this->counterpartAccounts($bookings, $account);
+        $names = $this->participantNames($bookings);
 
         return $bookings
-            ->map(fn (Booking $booking): IcsEvent => $this->toEvent($booking, $account, $counterparts))
+            ->map(fn (Booking $booking): IcsEvent => $this->toEvent($booking, $account, $names))
             ->values();
     }
 
-    private function toEvent(Booking $booking, Account $account, Collection $counterparts): IcsEvent
+    private function toEvent(Booking $booking, Account $account, Collection $names): IcsEvent
     {
-        $position = $this->position($booking);
-        $viewerIsInstructor = $this->isInstructor($booking, $account);
+        $viewer = $this->isInstructor($booking, $account) ? CalendarViewer::Instructor : CalendarViewer::Student;
+        $nameOf = fn (CtsMember $member): ?string => $names->get((int) $member->cid);
 
-        return new IcsEvent(
-            uid: CalendarUid::forBooking($booking),
-            summary: $this->summary($booking, $position),
-            startsAt: $booking->starts_at,
-            endsAt: $booking->ends_at,
-            description: $this->description(
-                $position,
-                $this->counterpart($booking, $viewerIsInstructor, $counterparts),
-            ),
-            location: $position ?? '',
-            sequence: $booking->bookable instanceof Session ? CalendarSequence::forSession($booking->bookable) : 0,
-        );
-    }
-
-    private function summary(Booking $booking, ?string $position): string
-    {
-        $label = self::TYPE_LABELS[$booking->type] ?? 'Booking';
-
-        return $position === null ? $label : $position.' - '.$label;
-    }
-
-    private function description(?string $position, ?string $counterpart): string
-    {
-        $lines = [];
-
-        if ($position !== null) {
-            $lines[] = 'Position: '.$position;
-        }
-
-        if ($counterpart !== null) {
-            $lines[] = $counterpart;
-        }
-
-        $lines[] = 'Manage your bookings: '.route('site.bookings.calendar');
-
-        return implode("\n", $lines);
+        return match (true) {
+            $booking->bookable instanceof Session => CalendarEventFactory::forSession($booking->bookable, $viewer, $nameOf),
+            $booking->bookable instanceof ExamBooking => CalendarEventFactory::forExam($booking->bookable, $viewer, $nameOf),
+            default => CalendarEventFactory::forBooking($booking),
+        };
     }
 
     /**
@@ -141,59 +102,22 @@ class BookingCalendarFeedService
             && (int) $booking->member_id !== (int) $account->getKey();
     }
 
-    private function counterpart(Booking $booking, bool $viewerIsInstructor, Collection $counterparts): ?string
-    {
-        $member = $this->counterpartMember($booking, $viewerIsInstructor);
-
-        if ($member === null) {
-            return null;
-        }
-
-        $account = $counterparts->get((int) $member->cid);
-
-        if (! $account instanceof Account) {
-            return null;
-        }
-
-        $label = $viewerIsInstructor
-            ? 'Student'
-            : ($booking->bookable instanceof ExamBooking ? 'Examiner' : 'Mentor');
-
-        return $label.': '.MemberDisplayName::abbreviated($account);
-    }
-
-    private function counterpartMember(Booking $booking, bool $viewerIsInstructor): ?CtsMember
-    {
-        if ($booking->type === Booking::TYPE_EXAM && $booking->bookable instanceof ExamBooking) {
-            return $viewerIsInstructor
-                ? $booking->bookable->student
-                : $booking->bookable->examiners?->primaryExaminer;
-        }
-
-        if ($booking->type === Booking::TYPE_MENTORING && $booking->bookable instanceof Session) {
-            return $viewerIsInstructor
-                ? $booking->bookable->student
-                : $booking->bookable->mentor;
-        }
-
-        return null;
-    }
-
     /**
-     * Resolve every counterpart account in one query instead of one per event.
+     * Resolve every participant's name in one query instead of one per event.
      *
      * @param  Collection<int, Booking>  $bookings
-     * @return Collection<int, Account>
+     * @return Collection<int, string>
      */
-    private function counterpartAccounts(Collection $bookings, Account $viewer): Collection
+    private function participantNames(Collection $bookings): Collection
     {
         $cids = $bookings
-            ->map(fn (Booking $booking) => $this->counterpartMember(
-                $booking,
-                $this->isInstructor($booking, $viewer),
-            )?->cid)
+            ->flatMap(fn (Booking $booking): array => match (true) {
+                $booking->bookable instanceof Session => [$booking->bookable->student, $booking->bookable->mentor],
+                $booking->bookable instanceof ExamBooking => [$booking->bookable->student, $booking->bookable->examiners?->primaryExaminer],
+                default => [],
+            })
             ->filter()
-            ->map(fn ($cid): int => (int) $cid)
+            ->map(fn (CtsMember $member): int => (int) $member->cid)
             ->unique()
             ->values();
 
@@ -204,25 +128,7 @@ class BookingCalendarFeedService
         return Account::query()
             ->whereIn('id', $cids)
             ->get()
-            ->keyBy(fn (Account $account): int => (int) $account->getKey());
-    }
-
-    /**
-     * CTS is the source of truth for training callsigns.
-     */
-    private function position(Booking $booking): ?string
-    {
-        $callsign = $booking->ctsBooking?->position ?? $booking->position?->callsign;
-
-        if (blank($callsign) && $booking->bookable instanceof ExamBooking) {
-            $callsign = $booking->bookable->position_1;
-        }
-
-        if (blank($callsign) && $booking->bookable instanceof Session) {
-            $callsign = $booking->bookable->position;
-        }
-
-        return blank($callsign) ? null : (string) $callsign;
+            ->mapWithKeys(fn (Account $account): array => [(int) $account->getKey() => $account->name]);
     }
 
     private function ctsMemberId(Account $account): ?int
