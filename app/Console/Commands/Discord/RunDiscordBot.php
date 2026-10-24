@@ -9,6 +9,7 @@ use App\Models\Discord\DiscordTag;
 use App\Models\NetworkData\Atc;
 use App\Services\Discord\CidLookupService;
 use App\Services\Discord\CidLookupStatus;
+use App\Services\Discord\HoneypotService;
 use Discord\Builders\MessageBuilder;
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
@@ -256,6 +257,8 @@ class RunDiscordBot extends Command
                 ], null);
             }
         }
+
+        app(HoneypotService::class)->refreshMessage();
     }
 
     /**
