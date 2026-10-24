@@ -507,7 +507,7 @@ class DiscordTest extends TestCase
                     'honeypot-123',
                     'bot-msg-1',
                     Mockery::on(fn (array $content) => isset($content['embeds'][0])
-                    )
+                        && str_starts_with($content['content'], "[\u{2800}](https://"))
                 );
         });
 
@@ -544,6 +544,30 @@ class DiscordTest extends TestCase
             discordUsername: 'honeypotUser',
             messageId: '67890',
         );
+    }
+
+    #[Test]
+    public function test_honeypot_refresh_message_updates_the_cached_bot_message()
+    {
+        Cache::put('discord:honeypot:bot_message', [
+            'channel_id' => 'honeypot-123',
+            'message_id' => 'bot-msg-1',
+        ], null);
+
+        HoneypotStat::factory()->count(2)->create();
+
+        $discord = Mockery::mock(Discord::class, function (MockInterface $mock) {
+            $mock->shouldReceive('editMessage')
+                ->once()
+                ->with(
+                    'honeypot-123',
+                    'bot-msg-1',
+                    Mockery::on(fn (array $content) => str_starts_with($content['content'], "[\u{2800}](https://")
+                        && $content['embeds'][0]['footer']['text'] === "So far I've baited 2 people")
+                );
+        });
+
+        (new HoneypotService($discord))->refreshMessage();
     }
 
     #[Test]

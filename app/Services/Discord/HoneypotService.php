@@ -68,6 +68,14 @@ class HoneypotService
             ],
         );
 
+        $this->refreshMessage();
+    }
+
+    /**
+     * Rewrite the bot's warning message in the honeypot channel with the current victim count.
+     */
+    public function refreshMessage(): void
+    {
         $honeypotMessageData = Cache::get('discord:honeypot:bot_message');
 
         if (! $honeypotMessageData) {
@@ -82,7 +90,7 @@ class HoneypotService
             channelId: $honeypotMessageData['channel_id'],
             messageId: $honeypotMessageData['message_id'],
             newContent: [
-                'content' => null,
+                'content' => "[\u{2800}](https://static.klipy.com/ii/a8ada81afc59159ea5c8927feffa2e31/79/35/02vy1m8lbpIlGJt.mp4)",
                 'embeds' => [
                     [
                         'title' => 'DO NOT SEND MESSAGES HERE',
