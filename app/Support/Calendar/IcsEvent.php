@@ -16,5 +16,6 @@ final readonly class IcsEvent
         public string $description = '',
         public string $location = '',
         public int $sequence = 0,
+        public string $url = '',
     ) {}
 }

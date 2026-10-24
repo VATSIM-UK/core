@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\TrainingPanel\MyTraining;
 
+use App\Filament\Training\Pages\MyTraining\MyExams;
 use App\Livewire\Training\MyPendingExamsTable;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamSetup;
@@ -243,10 +244,11 @@ class MyPendingExamsTest extends BaseTrainingPanelTestCase
         $link = $method->invoke($page, $this->examBooking);
 
         $this->assertInstanceOf(Link::class, $link);
-        $this->assertSame("Practical Exam - {$this->examBooking->exam}", $link->title);
+        $this->assertSame("{$this->examBooking->position_1} - Practical exam", $link->title);
         $this->assertSame('2026-07-15 14:00:00', $link->from->format('Y-m-d H:i:s'));
         $this->assertSame('2026-07-15 16:00:00', $link->to->format('Y-m-d H:i:s'));
-        $this->assertStringContainsString("Exam Type: {$this->examBooking->exam}", $link->description);
+        $this->assertStringContainsString("Exam: {$this->examBooking->exam}", $link->description);
+        $this->assertStringEndsWith('Manage: '.MyExams::getUrl(panel: 'training'), $link->description);
         $this->assertStringContainsString('EGKK_TWR', $link->address);
     }
 }

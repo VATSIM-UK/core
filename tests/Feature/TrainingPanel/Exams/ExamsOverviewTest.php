@@ -256,6 +256,7 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
     public function test_accepted_exams_table_builds_calendar_link_object()
     {
         $examBooking = ExamBooking::factory()->create([
+            'exam' => 'TWR',
             'taken_date' => '2026-07-15',
             'taken_from' => '14:00:00',
             'taken_to' => '16:00:00',
@@ -266,10 +267,11 @@ class ExamsOverviewTest extends BaseTrainingPanelTestCase
         $link = $method->invoke($component, $examBooking);
 
         $this->assertInstanceOf(Link::class, $link);
-        $this->assertSame("Practical Exam - {$examBooking->exam}", $link->title);
+        $this->assertSame("{$examBooking->position_1} - Practical exam", $link->title);
         $this->assertSame('2026-07-15 14:00:00', $link->from->format('Y-m-d H:i:s'));
         $this->assertSame('2026-07-15 16:00:00', $link->to->format('Y-m-d H:i:s'));
-        $this->assertStringContainsString("Exam Type: {$examBooking->exam}", $link->description);
+        $this->assertStringContainsString("Exam: {$examBooking->exam}", $link->description);
+        $this->assertStringEndsWith('Manage: '.Exams::getUrl(panel: 'training'), $link->description);
         $this->assertStringContainsString($examBooking->position_1, $link->address);
     }
 }

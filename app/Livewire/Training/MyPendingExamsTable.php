@@ -2,11 +2,13 @@
 
 namespace App\Livewire\Training;
 
+use App\Enums\CalendarViewer;
 use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamSetup;
 use App\Services\Training\CancelPendingExamService;
-use App\Support\Calendar\CalendarUid;
+use App\Support\Calendar\CalendarEventFactory;
+use App\Support\Calendar\IcsEvent;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -21,7 +23,6 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
-use Spatie\CalendarLinks\Link;
 
 class MyPendingExamsTable extends Component implements HasActions, HasForms, HasTable
 {
@@ -110,23 +111,11 @@ class MyPendingExamsTable extends Component implements HasActions, HasForms, Has
             ->emptyStateDescription('You have no pending exam requests.');
     }
 
-    protected function buildCalendarLinkObject(mixed $record): Link
+    protected function buildCalendarEvent(mixed $record): IcsEvent
     {
         \assert($record instanceof ExamBooking);
 
-        return $this->buildExamBookingLink(
-            $record,
-            "Practical Exam - {$record->exam}",
-            $record->position_1,
-            "Exam Type: {$record->exam}\nPosition: {$record->position_1}"
-        );
-    }
-
-    protected function buildCalendarUid(mixed $record): string
-    {
-        \assert($record instanceof ExamBooking);
-
-        return CalendarUid::forExam((int) $record->id);
+        return CalendarEventFactory::forExam($record, CalendarViewer::Student);
     }
 
     protected function getCalendarIcsFilename(mixed $record): string

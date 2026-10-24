@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Unit\Training;
 
 use App\Filament\Training\Pages\Concerns\AddToCalendar;
+use App\Support\Calendar\IcsEvent;
 use Carbon\Carbon;
 use Filament\Actions\ActionGroup;
 use PHPUnit\Framework\Attributes\Test;
-use Spatie\CalendarLinks\Link;
 use Tests\TestCase;
 
 class AddToCalendarTraitTest extends TestCase
@@ -102,20 +102,18 @@ class AddToCalendarTraitTest extends TestCase
                 return $this->buildCalendarIcs($record);
             }
 
-            protected function buildCalendarUid(mixed $record): string
+            protected function buildCalendarEvent(mixed $record): IcsEvent
             {
                 \assert($record instanceof \stdClass);
 
-                return $record->icsUid;
-            }
-
-            protected function buildCalendarLinkObject(mixed $record): Link
-            {
-                \assert($record instanceof \stdClass);
-
-                return Link::create($record->title, $record->start, $record->end)
-                    ->description($record->description)
-                    ->address($record->location);
+                return new IcsEvent(
+                    uid: $record->icsUid,
+                    summary: $record->title,
+                    startsAt: $record->start,
+                    endsAt: $record->end,
+                    description: $record->description,
+                    location: $record->location,
+                );
             }
 
             protected function getCalendarIcsFilename(mixed $record): string

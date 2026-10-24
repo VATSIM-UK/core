@@ -2,12 +2,14 @@
 
 namespace App\Livewire\Training;
 
+use App\Enums\CalendarViewer;
 use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Filament\Training\Pages\Exam\ConductExam;
 use App\Models\Cts\ExamBooking;
 use App\Services\Training\CancelPendingExamService;
 use App\Services\Training\ExamAnnouncementService;
-use App\Support\Calendar\CalendarUid;
+use App\Support\Calendar\CalendarEventFactory;
+use App\Support\Calendar\IcsEvent;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -23,7 +25,6 @@ use Filament\Tables\Table;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Str;
 use Livewire\Component;
-use Spatie\CalendarLinks\Link;
 
 class AcceptedExamsTable extends Component implements HasActions, HasForms, HasTable
 {
@@ -160,23 +161,11 @@ class AcceptedExamsTable extends Component implements HasActions, HasForms, HasT
         return view('livewire.training.accepted-exams-table');
     }
 
-    protected function buildCalendarLinkObject(mixed $record): Link
+    protected function buildCalendarEvent(mixed $record): IcsEvent
     {
         \assert($record instanceof ExamBooking);
 
-        return $this->buildExamBookingLink(
-            $record,
-            "Practical Exam - {$record->exam}",
-            $record->position_1,
-            "Exam Type: {$record->exam}\nPosition: {$record->position_1}\nStudent: ".($record->student?->name ?? 'Unknown')
-        );
-    }
-
-    protected function buildCalendarUid(mixed $record): string
-    {
-        \assert($record instanceof ExamBooking);
-
-        return CalendarUid::forExam((int) $record->id);
+        return CalendarEventFactory::forExam($record, CalendarViewer::Instructor);
     }
 
     protected function getCalendarIcsFilename(mixed $record): string
