@@ -1,4 +1,4 @@
-<x-mship.dashboard.card title="Calendar subscription" icon="fa fa-calendar">
+<x-mship.dashboard.card id="calendar-subscription" class="scroll-mt-4" title="Calendar subscription" icon="fa fa-calendar">
 	@if ($feedUrl === null)
 		<div class="px-5 py-4 text-base text-gray-500">
 			Sign in to subscribe to your bookings.

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Training\Pages\Exam;
 
+use App\Filament\Training\Actions\SubscribeToCalendarAction;
 use App\Models\Cts\ExamBooking;
 use Carbon\Carbon;
 use Filament\Actions\Action;
@@ -98,6 +99,7 @@ class UpcomingExams extends Page implements HasTable
                 ->icon('heroicon-m-chevron-down')
                 ->color('gray')
                 ->button(),
+            SubscribeToCalendarAction::make(),
         ];
     }
 
