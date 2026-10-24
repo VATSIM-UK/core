@@ -37,10 +37,37 @@ class CalendarSubscription extends Component
     public function render(): View
     {
         return view('livewire.bookings.calendar-subscription', [
-            'webcalUrl' => $this->feedUrl === null
-                ? null
-                : preg_replace('/^https?:\/\//', 'webcal://', $this->feedUrl),
+            'googleUrl' => $this->googleUrl(),
+            'outlookUrl' => $this->outlookUrl(),
+            'webcalUrl' => $this->webcalUrl(),
         ]);
+    }
+
+    private function googleUrl(): ?string
+    {
+        $webcalUrl = $this->webcalUrl();
+
+        return $webcalUrl === null
+            ? null
+            : 'https://calendar.google.com/calendar/render?cid='.rawurlencode($webcalUrl);
+    }
+
+    private function outlookUrl(): ?string
+    {
+        if ($this->feedUrl === null) {
+            return null;
+        }
+
+        return 'https://outlook.live.com/owa/?path=%2Fcalendar%2Faction%2Fcompose&rru=addsubscription'
+            .'&url='.rawurlencode($this->feedUrl)
+            .'&name='.rawurlencode('VATSIM UK bookings');
+    }
+
+    private function webcalUrl(): ?string
+    {
+        return $this->feedUrl === null
+            ? null
+            : preg_replace('/^https?:\/\//', 'webcal://', $this->feedUrl);
     }
 
     private function account(): ?Account

@@ -54,9 +54,11 @@ class MentoringAnnouncementService
     {
         [$unix, $mentions, $notesBlock] = $this->buildSharedParts($session, $data);
 
+        $position = $data['position'] ?? $session->position;
+
         return ($mentions !== '' ? $mentions."\n" : '')
             ."**Upcoming ATC Mentoring Session**\n"
-            ."There will be a mentoring session on **{$session->position}** on **<t:{$unix}:F>** (<t:{$unix}:R>)"
+            ."There will be a mentoring session on **{$position}** on **<t:{$unix}:F>** (<t:{$unix}:R>)"
             .$notesBlock;
     }
 
