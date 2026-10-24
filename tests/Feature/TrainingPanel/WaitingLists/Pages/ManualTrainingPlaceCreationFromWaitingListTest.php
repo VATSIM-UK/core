@@ -156,8 +156,10 @@ class ManualTrainingPlaceCreationFromWaitingListTest extends BaseTrainingPanelTe
         Member::factory()->create(['cid' => $student->id]);
         $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
 
-        // User without permission
+        // User who can view the waiting list (required to mount the relation
+        // manager), but who cannot manually set up training places.
         $userWithoutPermission = Account::factory()->create();
+        $userWithoutPermission->givePermissionTo('waiting-lists.view.atc');
 
         // Act & Assert - Action should be hidden without permission
         Livewire::actingAs($userWithoutPermission)

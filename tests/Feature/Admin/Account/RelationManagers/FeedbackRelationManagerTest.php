@@ -13,12 +13,12 @@ class FeedbackRelationManagerTest extends BaseAdminTestCase
 {
     public function test_it_renders()
     {
-        $this->actingAsAdminUser();
+        $this->actingAsAdminUser(['feedback.access']);
 
         $account = Account::factory()->create();
         factory(Feedback::class)->create(['account_id' => $account->id]);
 
-        Livewire::test(FeedbackRelationManager::class, ['ownerRecord' => $account, 'pageClass' => ViewRecord::class])
+        Livewire::test(FeedbackRelationManager::class, ['ownerRecord' => $account, 'pageClass' => ViewAccount::class])
             ->assertSuccessful()
             ->assertCanSeeTableRecords($account->feedback);
     }
