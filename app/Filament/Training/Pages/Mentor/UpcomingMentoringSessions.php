@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Training\Pages\Mentor;
 
+use App\Enums\CalendarViewer;
 use App\Filament\Training\Actions\SubscribeToCalendarAction;
 use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
@@ -15,7 +16,8 @@ use App\Models\Cts\Session;
 use App\Repositories\Cts\SessionRepository;
 use App\Services\Training\MentoringSessionsService;
 use App\Services\Training\MentorPermissionService;
-use App\Support\Calendar\CalendarUid;
+use App\Support\Calendar\CalendarEventFactory;
+use App\Support\Calendar\IcsEvent;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\Select;
@@ -27,7 +29,6 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Url;
-use Spatie\CalendarLinks\Link;
 
 class UpcomingMentoringSessions extends BaseMentoringHistoryPage
 {
@@ -225,25 +226,11 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
         return fn ($record) => MentoringTrainingGroupBadgeColor::forCtsCallsign($record->position);
     }
 
-    protected function buildCalendarLinkObject(mixed $record): Link
+    protected function buildCalendarEvent(mixed $record): IcsEvent
     {
         \assert($record instanceof Session);
 
-        $mentorName = $record->mentor?->name ?? 'TBD';
-
-        return $this->buildSessionLink(
-            $record,
-            "Mentoring Session - {$record->position}",
-            $record->position,
-            "Position: {$record->position}\nMentor: {$mentorName}"
-        );
-    }
-
-    protected function buildCalendarUid(mixed $record): string
-    {
-        \assert($record instanceof Session);
-
-        return CalendarUid::forSession((int) $record->id);
+        return CalendarEventFactory::forSession($record, CalendarViewer::Instructor);
     }
 
     protected function getCalendarIcsFilename(mixed $record): string

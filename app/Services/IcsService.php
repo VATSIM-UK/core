@@ -28,25 +28,31 @@ class IcsService
         string $location = '',
         int $sequence = 0,
     ): string {
+        return self::event(new IcsEvent(
+            uid: $uid,
+            summary: $summary,
+            startsAt: $start,
+            endsAt: $end,
+            description: $description,
+            location: $location,
+            sequence: $sequence,
+        ));
+    }
+
+    /**
+     * Generate an ICS calendar attachment string for a single event.
+     *
+     * @return string Raw ICS content
+     */
+    public static function event(IcsEvent $event): string
+    {
         $lines = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
             'PRODID:-//VATSIM UK//Core//EN',
             'CALSCALE:GREGORIAN',
             'METHOD:PUBLISH',
-            ...self::eventLines(
-                new IcsEvent(
-                    uid: $uid,
-                    summary: $summary,
-                    startsAt: $start,
-                    endsAt: $end,
-                    description: $description,
-                    location: $location,
-                    sequence: $sequence,
-                ),
-                self::formatUtc(Carbon::now('UTC')),
-                'VATSIM UK Training Department',
-            ),
+            ...self::eventLines($event, self::formatUtc(Carbon::now('UTC'))),
             'END:VCALENDAR',
         ];
 
@@ -76,7 +82,7 @@ class IcsService
         ];
 
         foreach ($events as $event) {
-            $lines = [...$lines, ...self::eventLines($event, $dtStamp, 'VATSIM UK')];
+            $lines = [...$lines, ...self::eventLines($event, $dtStamp)];
         }
 
         $lines[] = 'END:VCALENDAR';
@@ -87,7 +93,7 @@ class IcsService
     /**
      * @return array<int, string>
      */
-    private static function eventLines(IcsEvent $event, string $dtStamp, string $organizerName): array
+    private static function eventLines(IcsEvent $event, string $dtStamp): array
     {
         $lines = [
             'BEGIN:VEVENT',
@@ -104,7 +110,11 @@ class IcsService
             $lines[] = 'LOCATION:'.self::escapeText($event->location);
         }
 
-        $lines[] = "ORGANIZER;CN={$organizerName}:mailto:no-reply@vatsim.uk";
+        if (! empty($event->url)) {
+            $lines[] = 'URL:'.$event->url;
+        }
+
+        $lines[] = 'ORGANIZER;CN=VATSIM UK:mailto:no-reply@vatsim.uk';
         $lines[] = 'END:VEVENT';
 
         return $lines;

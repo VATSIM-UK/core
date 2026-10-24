@@ -2,10 +2,8 @@
 
 namespace App\Filament\Training\Pages\Concerns;
 
-use App\Models\Cts\Session;
 use App\Services\IcsService;
-use App\Support\Calendar\CalendarSequence;
-use Carbon\Carbon;
+use App\Support\Calendar\IcsEvent;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Spatie\CalendarLinks\Link;
@@ -13,11 +11,11 @@ use Spatie\CalendarLinks\Link;
 trait AddToCalendar
 {
     /**
-     * Build a Spatie CalendarLinks Link object for the given record.
+     * Build the calendar event for the given record.
      *
      * @param  mixed  $record  The table record (e.g. ExamBooking, Session)
      */
-    abstract protected function buildCalendarLinkObject(mixed $record): Link;
+    abstract protected function buildCalendarEvent(mixed $record): IcsEvent;
 
     /**
      * Get the ICS download filename (without extension) for the given record.
@@ -25,40 +23,15 @@ trait AddToCalendar
     abstract protected function getCalendarIcsFilename(mixed $record): string;
 
     /**
-     * Shared with the calendar feed so an event keeps one identity.
+     * Build a Spatie CalendarLinks Link object for the given record.
      */
-    abstract protected function buildCalendarUid(mixed $record): string;
-
-    /**
-     * Helper to build ExamBooking calendar links
-     */
-    protected function buildExamBookingLink(mixed $record, string $title, ?string $position, ?string $description = null): Link
+    protected function buildCalendarLinkObject(mixed $record): Link
     {
-        $sessionDate = Carbon::parse($record->taken_date)->format('Y-m-d');
-        $start = Carbon::parse("{$sessionDate} {$record->taken_from}");
-        $end = Carbon::parse("{$sessionDate} {$record->taken_to}");
+        $event = $this->buildCalendarEvent($record);
 
-        return Link::create($title, $start, $end)
-            ->description($description ?? "Position: {$position}")
-            ->address($position ?? '');
-    }
-
-    /**
-     * Helper to build Session (mentoring) calendar links
-     */
-    protected function buildSessionLink(mixed $record, string $title, ?string $position, ?string $description = null): Link
-    {
-        $sessionDate = Carbon::parse($record->taken_date)->format('Y-m-d');
-        $start = Carbon::parse("{$sessionDate} {$record->taken_from}");
-        $end = Carbon::parse("{$sessionDate} {$record->taken_to}");
-
-        if ($end->lte($start)) {
-            $end->addDay();
-        }
-
-        return Link::create($title, $start, $end)
-            ->description($description ?? "Position: {$position}")
-            ->address($position ?? '');
+        return Link::create($event->summary, $event->startsAt, $event->endsAt)
+            ->description($event->description)
+            ->address($event->location);
     }
 
     /**
@@ -85,17 +58,7 @@ trait AddToCalendar
      */
     protected function buildCalendarIcs(mixed $record): string
     {
-        $link = $this->buildCalendarLinkObject($record);
-
-        return IcsService::generate(
-            uid: $this->buildCalendarUid($record),
-            summary: $link->title,
-            description: $link->description,
-            start: Carbon::instance($link->from),
-            end: Carbon::instance($link->to),
-            location: $link->address,
-            sequence: $record instanceof Session ? CalendarSequence::forSession($record) : 0,
-        );
+        return IcsService::event($this->buildCalendarEvent($record));
     }
 
     /**
