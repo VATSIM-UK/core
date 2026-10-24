@@ -15,9 +15,11 @@ use App\Repositories\Events\EventRepository;
 use App\Services\BookingService;
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidFormatException;
+use DateTimeZone;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use RuntimeException;
@@ -91,7 +93,15 @@ class Calendar extends Component
 
     private const GAP_SHORT_LABEL_WIDTH = 20;
 
+    private const TIMEZONE_SESSION_KEY = 'bookings.timezone';
+
     public Carbon $selectedDate;
+
+    #[Locked]
+    public string $timezone = 'UTC';
+
+    #[Locked]
+    public ?int $focusBookingId = null;
 
     public string $positionFilter = '';
 
@@ -127,7 +137,8 @@ class Calendar extends Component
 
     public function mount(?int $year = null, ?int $month = null): void
     {
-        $this->selectedDate = Carbon::today();
+        $this->timezone = session(self::TIMEZONE_SESSION_KEY, 'UTC');
+        $this->selectedDate = $this->localToday();
 
         $isoWeek = request()->input('week');
         $this->viewMode = $isoWeek !== null ? 'week' : 'day';
@@ -136,9 +147,10 @@ class Calendar extends Component
         $booking = ctype_digit((string) $bookingId) ? Booking::find((int) $bookingId) : null;
 
         if ($booking) {
-            $this->selectedDate = $booking->starts_at->copy()->startOfDay();
+            $this->selectedDate = $this->localDate($booking->starts_at);
+            $this->focusBookingId = $booking->id;
         } elseif ($isoWeek !== null) {
-            $this->selectedDate = Carbon::today()->setISODate($year ?? $this->selectedDate->isoWeekYear(), (int) $isoWeek);
+            $this->selectedDate = $this->localToday()->setISODate($year ?? $this->selectedDate->isoWeekYear(), (int) $isoWeek);
         } elseif ($year) {
             $day = request()->input('day', 1);
             $this->selectedDate = Carbon::create($year, $month ?? $this->selectedDate->month, (int) $day);
@@ -172,7 +184,47 @@ class Calendar extends Component
             'typeLegend' => self::TYPE_LEGEND,
             'viewMode' => $this->viewMode,
             'weekBookings' => $this->weekBookings,
+            'today' => $this->localToday(),
+            'now' => Carbon::now($this->timezone),
+            'timezoneChosen' => session()->has(self::TIMEZONE_SESSION_KEY),
         ]);
+    }
+
+    public function setTimezone(string $timezone): void
+    {
+        if (! in_array($timezone, DateTimeZone::listIdentifiers(DateTimeZone::ALL_WITH_BC), true)) {
+            return;
+        }
+
+        $wasToday = $this->selectedDate->isSameDay($this->localToday());
+
+        $this->timezone = $timezone;
+        session([self::TIMEZONE_SESSION_KEY => $timezone]);
+
+        $booking = $this->focusBookingId !== null ? Booking::find($this->focusBookingId) : null;
+
+        if ($booking !== null) {
+            $this->selectedDate = $this->localDate($booking->starts_at);
+        } elseif ($wasToday) {
+            $this->selectedDate = $this->localToday();
+        }
+
+        $this->refreshData();
+        $this->syncHistory(false);
+
+        if ($booking !== null) {
+            $this->dispatch('scroll-to-booking', source: 'core', id: $booking->id, ctsBookingId: null, instant: true);
+        }
+    }
+
+    public function localToday(): Carbon
+    {
+        return Carbon::parse(Carbon::now($this->timezone)->toDateString());
+    }
+
+    private function localDate(Carbon $instant): Carbon
+    {
+        return Carbon::parse($instant->copy()->setTimezone($this->timezone)->toDateString());
     }
 
     private function refreshData(): void
@@ -200,10 +252,10 @@ class Calendar extends Component
         }
 
         $this->upcomingBookings = auth()->check() && ! auth()->user()->is_banned
-            ? app(BookingRepository::class)->getMemberUpcomingBookings(auth()->user())
+            ? app(BookingRepository::class)->getMemberUpcomingBookings(auth()->user(), $this->timezone)
             : collect();
 
-        $this->upcomingMentoringExamBookings = app(BookingRepository::class)->getUpcomingMentoringAndExamBookings();
+        $this->upcomingMentoringExamBookings = app(BookingRepository::class)->getUpcomingMentoringAndExamBookings(timezone: $this->timezone);
     }
 
     // Cast to plain arrays: this is a public Livewire property, and must
@@ -214,8 +266,8 @@ class Calendar extends Component
         $weekEnd = $weekStart->copy()->addDays(6);
         $filter = strtoupper($this->positionFilter);
 
-        $bookingsByDate = app(BookingRepository::class)->getBookingsForRange($weekStart, $weekEnd);
-        $eventsByDate = app(EventRepository::class)->getEventsForRange($weekStart, $weekEnd)->groupBy('date');
+        $bookingsByDate = app(BookingRepository::class)->getBookingsForRange($weekStart, $weekEnd, $this->timezone, splitAcrossDays: true);
+        $eventsByDate = app(EventRepository::class)->getEventsForRange($weekStart, $weekEnd, $this->timezone)->groupBy('date');
 
         $this->weekBookings = collect(range(0, 6))
             ->map(fn (int $offset): Carbon => $weekStart->copy()->addDays($offset))
@@ -253,9 +305,9 @@ class Calendar extends Component
     private function mergedBookingsFor(Carbon $date): Collection
     {
         return app(BookingRepository::class)
-            ->getBookings($date)
+            ->getBookings($date, $this->timezone, splitAcrossDays: true)
             ->reject(fn (object $booking): bool => $booking->type === 'EV')
-            ->concat(app(EventRepository::class)->getEventsForDate($date))
+            ->concat(app(EventRepository::class)->getEventsForDate($date, $this->timezone))
             ->sortBy(fn (object $booking): string => $booking->from)
             ->values();
     }
@@ -269,6 +321,7 @@ class Calendar extends Component
     public function jumpToDate(string $date, bool $push = true): void
     {
         $this->selectedDate = Carbon::parse($date);
+        $this->focusBookingId = null;
         $this->refreshData();
         $this->syncHistory($push);
     }
@@ -314,7 +367,7 @@ class Calendar extends Component
         $this->viewMode = $mode === 'week' ? 'week' : 'day';
 
         if ($this->viewMode === 'day') {
-            $this->selectedDate = Carbon::today();
+            $this->selectedDate = $this->localToday();
         }
 
         $this->loadData();
@@ -327,12 +380,14 @@ class Calendar extends Component
         $this->viewMode = $week !== null ? 'week' : 'day';
 
         $booking = $bookingId ? Booking::find($bookingId) : null;
+        $today = $this->localToday();
 
+        $this->focusBookingId = $booking?->id;
         $this->selectedDate = match (true) {
-            $booking !== null => $booking->starts_at->copy()->startOfDay(),
-            $week !== null => Carbon::today()->setISODate($year ?? now()->isoWeekYear(), $week),
-            $year !== null => Carbon::create($year, $month ?? now()->month, $day ?? 1),
-            default => Carbon::today(),
+            $booking !== null => $this->localDate($booking->starts_at),
+            $week !== null => $today->copy()->setISODate($year ?? $today->isoWeekYear(), $week),
+            $year !== null => Carbon::create($year, $month ?? $today->month, $day ?? 1),
+            default => $today,
         };
 
         $this->refreshData();
@@ -357,7 +412,7 @@ class Calendar extends Component
      * compact block; different aerodromes are never merged. Events always
      * sort before bookings; within each group, sorted by start.
      *
-     * @return list<array{label: string, from: string, to: string, count: int, type: string, id: ?int, source: ?string, cts_booking_id: ?int, startMin: int, raw: ?array<string, mixed>, positionCodes: list<string>, isOwn: bool}>
+     * @return list<array{label: string, from: string, to: string, count: int, type: string, id: ?int, source: ?string, cts_booking_id: ?int, startMin: int, raw: ?array<string, mixed>, positionCodes: list<string>, isOwn: bool, continuesBefore: bool, continuesAfter: bool}>
      */
     public function buildWeekDayBlocks(string $dateKey): array
     {
@@ -374,8 +429,8 @@ class Calendar extends Component
                 // Merged: show the aerodrome. Unmerged: show the full position name.
                 $blocks[] = [
                     'label' => $cluster['count'] > 1 ? $groupKey : $cluster['label'],
-                    'from' => $cluster['from'],
-                    'to' => $cluster['to'],
+                    'from' => $cluster['count'] === 1 ? $cluster['booking']['time_from'] : $cluster['from'],
+                    'to' => $cluster['count'] === 1 ? $cluster['booking']['time_to'] : $cluster['to'],
                     'count' => $cluster['count'],
                     'type' => $cluster['type'],
                     'id' => $cluster['count'] === 1 ? $cluster['id'] : null,
@@ -385,6 +440,8 @@ class Calendar extends Component
                     'raw' => $cluster['count'] === 1 ? $cluster['booking'] : null,
                     'positionCodes' => $cluster['positionCodes'],
                     'isOwn' => $cluster['isOwn'],
+                    'continuesBefore' => $cluster['count'] === 1 && $cluster['booking']['continues_before'],
+                    'continuesAfter' => $cluster['count'] === 1 && $cluster['booking']['continues_after'],
                 ];
             }
         }
@@ -588,6 +645,11 @@ class Calendar extends Component
                 'width_pct' => $this->scaleWidth($start, $end),
                 'member' => $booking->member,
                 'type' => $booking->type,
+                'time_from' => $booking->time_from,
+                'time_to' => $booking->time_to,
+                'starts_on' => $booking->starts_on,
+                'continues_before' => $booking->continues_before,
+                'continues_after' => $booking->continues_after,
             ];
 
             if ($isEvent) {
@@ -1016,8 +1078,8 @@ class Calendar extends Component
         }
 
         try {
-            $startsAt = Carbon::parse($startsAtInput);
-            $endsAt = Carbon::parse($endsAtInput);
+            $startsAt = Carbon::parse($startsAtInput, $this->timezone)->utc();
+            $endsAt = Carbon::parse($endsAtInput, $this->timezone)->utc();
         } catch (InvalidFormatException) {
             $this->dispatch('booking-error', message: 'Please provide a valid start and end time.');
 

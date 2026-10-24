@@ -1,6 +1,16 @@
 <div
 	class="max-w-full mx-auto px-2 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-5 text-base leading-normal text-gray-900">
-	<section class="bg-white rounded-xl shadow-sm ring-1 ring-gray-200/80 overflow-hidden">
+	<section class="relative bg-white rounded-xl shadow-sm ring-1 ring-gray-200/80 overflow-hidden">
+		<div wire:loading.delay wire:target="setTimezone" class="absolute inset-0 z-40">
+			<div class="h-full flex justify-center items-start pt-28 bg-white/70">
+				<div role="status"
+					class="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-600 shadow-md ring-1 ring-gray-200">
+					@svg('heroicon-m-arrow-path', 'w-4 h-4 animate-spin text-brand')
+					Updating times&hellip;
+				</div>
+			</div>
+		</div>
+
 		{{-- Header --}}
 		<div class="bg-uknavy text-white">
 			<div class="px-3 sm:px-4 py-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5">
@@ -15,9 +25,9 @@
 							x-on:click="window.dispatchEvent(new CustomEvent('open-create-modal', {
                                 detail: {
                                     startDate: '{{ $selectedDate->format('Y-m-d') }}',
-                                    startTime: '{{ now()->format('H:00') }}',
+                                    startTime: '{{ $now->format('H:00') }}',
                                     endDate: '{{ $selectedDate->format('Y-m-d') }}',
-                                    endTime: '{{ now()->addHour()->format('H:00') }}',
+                                    endTime: '{{ $now->copy()->addHour()->format('H:00') }}',
                                     prefillPositionId: '', prefillCallsign: '',
                                 }
                             }))"
@@ -40,7 +50,7 @@
 						</button>
 						<span class="text-sm font-medium text-white/90 min-w-[140px] sm:min-w-[200px] text-center whitespace-nowrap">
 							{{ $selectedDate->format('l, d. m. Y') }}
-							@if ($selectedDate->isToday())
+							@if ($selectedDate->isSameDay($today))
 								<span class="text-brand/90 text-xs font-normal">· today</span>
 							@endif
 						</span>
@@ -52,7 +62,7 @@
 						<input type="date" value="{{ $selectedDate->format('Y-m-d') }}" wire:change="jumpToDate($event.target.value)"
 							class="ml-1 w-[130px] rounded-md border-0 bg-white/10 px-2 py-1 text-xs text-white ring-1 ring-inset ring-white/15 focus:ring-2 focus:ring-white/40 focus:outline-none [color-scheme:dark]"
 							title="Jump to date">
-						<button type="button" wire:click="jumpToDate('{{ \Carbon\Carbon::today()->toDateString() }}')"
+						<button type="button" wire:click="jumpToDate('{{ $today->toDateString() }}')"
 							class="px-2.5 py-1 rounded-md bg-white/15 hover:bg-white/25 transition-colors text-[11px] font-medium text-white">
 							Today
 						</button>
@@ -76,7 +86,7 @@
 						<input type="date" value="{{ $selectedDate->format('Y-m-d') }}" wire:change="jumpToDate($event.target.value)"
 							class="ml-1 w-[130px] rounded-md border-0 bg-white/10 px-2 py-1 text-xs text-white ring-1 ring-inset ring-white/15 focus:ring-2 focus:ring-white/40 focus:outline-none [color-scheme:dark]"
 							title="Jump to the week containing this date">
-						<button type="button" wire:click="jumpToDate('{{ \Carbon\Carbon::today()->toDateString() }}')"
+						<button type="button" wire:click="jumpToDate('{{ $today->toDateString() }}')"
 							class="px-2.5 py-1 rounded-md bg-white/15 hover:bg-white/25 transition-colors text-[11px] font-medium text-white">
 							This week
 						</button>
@@ -103,6 +113,52 @@
 						x-on:input.debounce.250ms="$wire.set('positionFilter', filter)" placeholder="Search callsign..."
 						class="w-full pl-7 pr-3 py-1.5 rounded-md border-0 bg-white/10 text-sm text-white placeholder-white/40 ring-1 ring-inset ring-white/15 focus:ring-2 focus:ring-white/40 focus:outline-none focus:bg-white/15 transition-all">
 				</div>
+				<div class="relative flex-1 sm:flex-none sm:w-72" wire:key="timezone-{{ $timezone }}" wire:ignore
+					x-data="bookingsTimezonePicker(@js(['current' => $timezone, 'chosen' => $timezoneChosen]))" x-on:resize.window="open && position()" x-on:scroll.window="open && position()">
+					<button type="button" x-ref="button" x-on:click="toggle()" aria-haspopup="listbox" :aria-expanded="open"
+						aria-label="Timezone"
+						class="w-full flex items-baseline gap-2 pl-2.5 pr-2.5 py-1.5 rounded-md border-0 bg-white/10 text-sm text-white text-left ring-1 ring-inset ring-white/15 hover:bg-white/15 focus:ring-2 focus:ring-white/40 focus:outline-none">
+						<i class="fa fa-globe self-center text-white/40 text-[10px] shrink-0" aria-hidden="true"></i>
+						<span class="truncate" x-text="currentEntry.name">{{ $timezone }}</span>
+						<span class="shrink-0 font-mono tabular-nums text-[11px] text-white/60" x-text="currentEntry.offsetLabel"></span>
+						<i x-show="!switching" class="fa fa-chevron-down self-center ml-auto text-white/50 text-[9px] shrink-0"
+							aria-hidden="true"></i>
+						@svg('heroicon-m-arrow-path', 'w-3.5 h-3.5 self-center ml-auto text-white/70 shrink-0 animate-spin', ['x-show' => 'switching', 'x-cloak' => true, 'aria-hidden' => 'true'])
+					</button>
+
+					<template x-teleport="body">
+						<div x-show="open" x-cloak :style="panelStyle"
+							x-on:click.outside="if (!$refs.button.contains($event.target)) close()"
+							x-on:keydown.escape.prevent.stop="close(); $refs.button.focus()"
+							class="fixed z-50 bg-white rounded-lg shadow-lg ring-1 ring-gray-200 overflow-hidden text-base leading-normal">
+							<input type="text" x-ref="search" x-model="query" x-on:input="active = 0"
+								x-on:keydown.arrow-down.prevent="move(1)" x-on:keydown.arrow-up.prevent="move(-1)"
+								x-on:keydown.enter.prevent="choose(results[active]?.zone)" role="combobox" aria-autocomplete="list"
+								aria-controls="bookings-timezone-list" :aria-expanded="open"
+								:aria-activedescendant="results[active] ? 'bookings-timezone-' + active : null" aria-label="Search timezones"
+								placeholder="City or offset, e.g. Prague or +2"
+								class="block w-full border-0 border-b border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:ring-0 focus:border-gray-300">
+							<ul id="bookings-timezone-list" x-ref="list" role="listbox" aria-label="Timezones"
+								class="max-h-72 overflow-y-auto py-1 m-0 list-none">
+								<template x-for="(entry, index) in results" :key="entry.zone">
+									<li :id="'bookings-timezone-' + index" :data-index="index" role="option"
+										:aria-selected="entry.zone === current" x-on:click="choose(entry.zone)" x-on:mousemove="active = index"
+										:class="index === active ? 'bg-brand/10' : ''"
+										class="flex items-baseline gap-2 px-3 py-1.5 text-sm text-gray-700 cursor-pointer">
+										<span class="w-[4.75rem] shrink-0 font-mono tabular-nums text-xs text-gray-500"
+											x-text="entry.offsetLabel"></span>
+										<span class="truncate" x-text="entry.name"></span>
+										<span x-show="entry.zone === browser" class="shrink-0 text-[10px] text-gray-400">your browser</span>
+										@svg('heroicon-m-check', 'w-3.5 h-3.5 self-center ml-auto text-brand shrink-0', ['x-show' => 'entry.zone === current', 'aria-hidden' => 'true'])
+									</li>
+								</template>
+								<li x-show="results.length === 0" class="px-3 py-4 text-sm text-gray-400 text-center">
+									No matching timezones
+								</li>
+							</ul>
+						</div>
+					</template>
+				</div>
 			</div>
 		</div>
 
@@ -114,8 +170,8 @@
 					    'selectedDate' => $selectedDate->format('Y-m-d'),
 					    'isAuthenticated' => auth()->check(),
 					    'currentMemberCid' => auth()->check() ? (string) auth()->id() : null,
-					    'isToday' => $selectedDate->isToday(),
-					    'nowMinutes' => (int) now()->format('H') * 60 + (int) now()->format('i'),
+					    'isToday' => $selectedDate->isSameDay($today),
+					    'nowMinutes' => (int) $now->format('H') * 60 + (int) $now->format('i'),
 					    'scale' => $timelineScale,
 					];
 				@endphp
@@ -188,14 +244,28 @@
 											<div x-data='{ events: @json($events) }'>
 												<template x-for="booking in events" :key="booking.source + '-' + (booking.id || booking.cts_booking_id)">
 													<div
-														class="absolute rounded px-2 flex items-center gap-1.5 cursor-pointer text-white text-xs font-medium shadow-sm hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap bg-red-600"
+														class="absolute px-2 flex items-center gap-1.5 cursor-pointer text-white text-xs font-medium shadow-sm hover:brightness-110 hover:shadow-md transition-all z-[5] overflow-hidden whitespace-nowrap bg-red-600"
+														:class="$bookingEdges(booking)"
 														:data-booking-key="booking.source + '-' + (booking.id || booking.cts_booking_id)"
 														:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%; top: ' + bookingTop(pos,
 														    booking) + '; height: ' + blockHeight(pos)"
-														:title="(booking.event_name || 'Events') + ' \u00b7 ' + booking.from + ' \u2013 ' + booking.to"
+														:title="(booking.event_name || 'Events') + ' \u00b7 ' + booking.time_from + ' \u2013 ' + booking.time_to"
 														@click.stop="openDetailModal({ callsign: booking.event_name || 'Events' }, booking)">
-														<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]" x-text="booking.from"></span>
+														<template x-if="booking.continues_before">
+															<span class="shrink-0 -ml-1 flex items-center">
+																@svg('heroicon-m-chevron-double-left', 'w-3 h-3')
+																<span class="sr-only">Continues from the previous day</span>
+															</span>
+														</template>
+														<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]"
+															x-text="booking.time_from"></span>
 														<span class="truncate" x-text="booking.event_name || 'Events'"></span>
+														<template x-if="booking.continues_after">
+															<span class="shrink-0 ml-auto -mr-1 flex items-center">
+																@svg('heroicon-m-chevron-double-right', 'w-3 h-3')
+																<span class="sr-only">Continues into the next day</span>
+															</span>
+														</template>
 													</div>
 												</template>
 											</div>

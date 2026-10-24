@@ -31,7 +31,7 @@
             d.setUTCDate(d.getUTCDate() + 1);
             endDate = d.toISOString().split('T')[0];
         }
-        return new Date(endDate + 'T' + b.to + ':00Z') < new Date();
+        return endDate + 'T' + b.to < window.bookingsNowIn(window.bookingsTimezone || 'UTC');
     },
     formatDate(iso) {
         if (!iso) return '';
