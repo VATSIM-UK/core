@@ -10,7 +10,7 @@
 	</div>
 
 	{{-- Timeline bar --}}
-	<div class="flex-1 relative cursor-crosshair" :style="'height: ' + rowHeight(pos)"
+	<div class="flex-1 relative cursor-crosshair" data-timeline-bar :style="'height: ' + rowHeight(pos)"
 		@mousedown.prevent="handleTimelineMouseDown($event, pos)">
 		{{-- Empty state hint --}}
 		<template x-if="pos.bookings.length === 0">
@@ -53,15 +53,24 @@
 				        'bg-red-600': booking.type === 'EV',
 				        'bg-orange-500': booking.type === 'GS',
 				        'ring-2 ring-yellow-300 ring-inset font-bold z-[6]': isOwnBooking(booking),
+				        'opacity-80 z-[9]': isResizing(booking),
+				        'ring-red-500!': resizeProblem(pos, booking),
 				}"
-				:style="'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%; top: ' + bookingTop(pos,
-				    booking) + '; height: ' + blockHeight(pos)"
+				:style="blockSpan(booking) + '; top: ' + bookingTop(pos, booking) + '; height: ' + blockHeight(pos)"
 				:title="$bookingTypeLabel(booking.type) + ' \u00b7 ' +
 				    (booking.member?.display_name || 'Unknown') +
 				    (booking.member?.cid ? ' (' + booking.member.cid + ')' : '') +
 				    (isOwnBooking(booking) ? ' \u00b7 your booking' : '') +
 				    ' \u00b7 ' + booking.time_from + ' \u2013 ' + booking.time_to"
 				@click.stop="openDetailModal(pos, booking)">
+				<template x-if="booking.can_resize_start">
+					<div class="absolute inset-y-0 left-0 w-2 cursor-ew-resize hover:bg-white/40 z-[1]"
+						@mousedown.stop.prevent="startResize($event, booking, 'start')"></div>
+				</template>
+				<template x-if="booking.can_resize_end">
+					<div class="absolute inset-y-0 right-0 w-2 cursor-ew-resize hover:bg-white/40 z-[1]"
+						@mousedown.stop.prevent="startResize($event, booking, 'end')"></div>
+				</template>
 				{{-- Shape cue, not colour alone. First and shrink-0, so a narrow block clips
 					the label rather than this. --}}
 				<template x-if="booking.continues_before">
@@ -81,7 +90,8 @@
 				</template>
 				{{-- The icons are aria-hidden, so the type reaches assistive tech here. --}}
 				<span class="sr-only" x-text="$bookingTypeLabel(booking.type)"></span>
-				<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]" x-text="booking.time_from"></span>
+				<span class="shrink-0 text-white/70 font-mono tabular-nums text-[11px]"
+					x-text="isResizing(booking) ? resizeLabel(pos, booking) : booking.time_from"></span>
 				<span class="truncate"
 					x-text="(booking.member?.display_name || 'Unknown') + (booking.member?.cid ? ' (' + booking.member.cid + ')' : '')"></span>
 				<template x-if="booking.continues_after">

@@ -173,6 +173,9 @@
 					    'isToday' => $selectedDate->isSameDay($today),
 					    'nowMinutes' => (int) $now->format('H') * 60 + (int) $now->format('i'),
 					    'scale' => $timelineScale,
+					    'minAdvanceHours' => $minAdvanceHours,
+					    'noticeCutoffMinutes' => $noticeCutoffMinutes,
+					    'controllingCallsign' => $controllingCallsign,
 					];
 				@endphp
 
@@ -552,6 +555,21 @@
 
 	@include('livewire.bookings._create-modal')
 	@include('livewire.bookings._detail-modal')
+
+	<div x-data="{ open: false, message: '', timer: null }"
+		x-on:booking-resize-failed.window="message = $event.detail.message; open = true; clearTimeout(timer); timer = setTimeout(() => open = false, 6000)"
+		x-show="open" x-cloak x-transition.opacity
+		class="fixed bottom-4 inset-x-4 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-50 flex justify-center">
+		<div role="alert"
+			class="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white shadow-lg">
+			@svg('heroicon-m-exclamation-triangle', 'w-4 h-4 shrink-0')
+			<span x-text="message"></span>
+			<button type="button" x-on:click="open = false; clearTimeout(timer)"
+				class="ml-1 shrink-0 text-white/80 hover:text-white" aria-label="Dismiss">
+				@svg('heroicon-m-x-mark', 'w-4 h-4')
+			</button>
+		</div>
+	</div>
 </div>
 
 <script>

@@ -9,6 +9,7 @@ use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\Member as CtsMember;
+use App\Models\NetworkData\Atc;
 use App\Models\Roster;
 use App\Repositories\Cts\BookingRepository;
 use App\Repositories\Events\EventRepository;
@@ -189,6 +190,10 @@ class Calendar extends Component
             'now' => Carbon::now($this->timezone),
             'timezoneChosen' => session()->has(self::TIMEZONE_SESSION_KEY),
             'timezones' => DateTimeZone::listIdentifiers(),
+            'minAdvanceHours' => (int) config('bookings.min_advance_hours', 2),
+            'noticeCutoffMinutes' => (int) floor(Carbon::parse($this->selectedDate->toDateString(), $this->timezone)
+                ->diffInMinutes(Carbon::now()->addHours((int) config('bookings.min_advance_hours', 2)))),
+            'controllingCallsign' => auth()->check() ? Atc::forAccountId(auth()->id())->online()->value('callsign') : null,
         ]);
     }
 
@@ -653,6 +658,7 @@ class Calendar extends Component
         $events = [];
 
         $filter = strtoupper($this->positionFilter);
+        $editorCid = auth()->check() && ! auth()->user()->is_banned ? (string) auth()->id() : null;
 
         foreach ($this->bookings as $booking) {
             $isEvent = $booking->type === 'EV';
@@ -684,6 +690,7 @@ class Calendar extends Component
                 'starts_on' => $booking->starts_on,
                 'continues_before' => $booking->continues_before,
                 'continues_after' => $booking->continues_after,
+                ...$this->resizableEdges($booking, $start, $end, $editorCid),
             ];
 
             if ($isEvent) {
@@ -757,6 +764,25 @@ class Calendar extends Component
         $this->events = $eventRow['bookings'];
         $this->eventLaneCount = $eventRow['laneCount'];
         $this->timelinePositions = $result;
+    }
+
+    /**
+     * @return array{can_resize_start: bool, can_resize_end: bool}
+     */
+    private function resizableEdges(object $booking, int $start, int $end, ?string $editorCid): array
+    {
+        $editable = $editorCid !== null
+            && $booking->source === 'core'
+            && $booking->type === 'BK'
+            && $booking->cts_booking_id === null
+            && ($booking->member['cid'] ?? null) === $editorCid;
+
+        $dayStart = Carbon::parse($this->selectedDate->toDateString(), $this->timezone);
+
+        return [
+            'can_resize_start' => $editable && ! $booking->continues_before && $dayStart->copy()->addMinutes($start)->isFuture(),
+            'can_resize_end' => $editable && ! $booking->continues_after && $dayStart->copy()->addMinutes($end > $start ? $end : 1440)->isFuture(),
+        ];
     }
 
     /**
@@ -1239,6 +1265,61 @@ class Calendar extends Component
 
         $this->refreshData();
         $this->dispatch('booking-deleted');
+    }
+
+    public function resizeBooking(int $id, string $startsAt, string $endsAt): void
+    {
+        if (! auth()->check() || auth()->user()->is_banned) {
+            $this->dispatch('booking-resize-failed', message: 'Your account is not permitted to modify bookings.');
+
+            return;
+        }
+
+        $booking = Booking::find($id);
+
+        if ($booking === null || $booking->type !== Booking::TYPE_STANDARD || $booking->cts_booking_id !== null || $booking->member_id !== auth()->id()) {
+            $this->dispatch('booking-resize-failed', message: 'You can only change your own bookings.');
+
+            return;
+        }
+
+        try {
+            $newStartsAt = Carbon::parse($startsAt, $this->timezone)->utc();
+            $newEndsAt = Carbon::parse($endsAt, $this->timezone)->utc();
+        } catch (InvalidFormatException) {
+            $this->dispatch('booking-resize-failed', message: 'Please provide a valid start and end time.');
+
+            return;
+        }
+
+        $message = match (true) {
+            $booking->ends_at->isPast() => 'You cannot change a booking that has already ended.',
+            ! $this->isOnFifteenMinuteBoundary($newStartsAt) || ! $this->isOnFifteenMinuteBoundary($newEndsAt) => 'Start and end times must be on 15-minute boundaries.',
+            $newEndsAt->lessThanOrEqualTo($newStartsAt) => 'End time must be after start time.',
+            $newEndsAt->isPast() => 'A booking cannot end in the past.',
+            $newStartsAt->ne($booking->starts_at) && $booking->starts_at->isPast() => 'You cannot move the start of a booking that has already started.',
+            $newStartsAt->ne($booking->starts_at) && $newStartsAt->isPast() => 'Bookings cannot start in the past.',
+            default => null,
+        };
+
+        if ($message !== null) {
+            $this->dispatch('booking-resize-failed', message: $message);
+
+            return;
+        }
+
+        try {
+            app(BookingService::class)->update($booking, [
+                'starts_at' => $newStartsAt,
+                'ends_at' => $newEndsAt,
+            ]);
+        } catch (RuntimeException|InvalidArgumentException $e) {
+            $this->dispatch('booking-resize-failed', message: $e->getMessage());
+
+            return;
+        }
+
+        $this->refreshData();
     }
 
     private function ctsEndsAt(CtsBooking $cts): Carbon
