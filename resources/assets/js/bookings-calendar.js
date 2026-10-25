@@ -46,6 +46,8 @@ document.addEventListener('alpine:init', () => {
         isToday: config.isToday,
         scale: config.scale,
         dragging: null,
+        resizing: null,
+        suppressClick: false,
         nowPct: 0,
         baseMinutes: 0,
         startedAt: 0,
@@ -210,6 +212,10 @@ document.addEventListener('alpine:init', () => {
         },
 
         pctToMinutes(pct) {
+            return this.snapToSlot(this.nearestMinute(pct));
+        },
+
+        nearestMinute(pct) {
             const scaleArr = this.scale;
             const target = pct * 100;
             let best = 0;
@@ -221,7 +227,7 @@ document.addEventListener('alpine:init', () => {
                     best = i;
                 }
             }
-            return this.snapToSlot(best);
+            return best;
         },
 
         addDay(dateString) {
@@ -311,7 +317,112 @@ document.addEventListener('alpine:init', () => {
             this.dragging = null;
         },
 
+        isResizing(booking) {
+            return this.resizing?.bookingId === booking.id;
+        },
+
+        blockSpan(booking) {
+            if (!this.isResizing(booking)) {
+                return 'left: ' + booking.left_pct + '%; width: ' + booking.width_pct + '%';
+            }
+            const { startMinutes, endMinutes } = this.resizing;
+            return 'left: ' + this.minToPct(startMinutes) + '%; width: ' + this.minWidth(startMinutes, endMinutes) + '%';
+        },
+
+        resizeProblem(pos, booking) {
+            if (!this.isResizing(booking)) return null;
+            const r = this.resizing;
+            if (r.startMinutes === r.originalStart && r.endMinutes === r.originalEnd) return null;
+            const overlaps = (pos.bookings || []).some(
+                (other) =>
+                    other.id !== booking.id &&
+                    other.startMin < r.endMinutes &&
+                    this.bookingEndMinutes(other) > r.startMinutes,
+            );
+            if (overlaps) return 'overlap';
+            const cutoff = config.noticeCutoffMinutes + Math.floor((Date.now() - this.startedAt) / 60000);
+            if (r.startMinutes !== r.originalStart && r.startMinutes < cutoff && pos.callsign !== config.controllingCallsign) {
+                return 'under ' + config.minAdvanceHours + 'h notice';
+            }
+            return null;
+        },
+
+        resizeLabel(pos, booking) {
+            const problem = this.resizeProblem(pos, booking);
+            return (
+                this.minuteToTime(this.resizing.startMinutes) +
+                ' \u2013 ' +
+                this.minuteToTime(this.resizing.endMinutes) +
+                (problem ? ' (' + problem + ')' : '')
+            );
+        },
+
+        startResize(event, booking, edge) {
+            if (this.resizing) return;
+            this.resizing = {
+                bookingId: booking.id,
+                edge,
+                bar: event.currentTarget.closest('[data-timeline-bar]'),
+                originX: event.clientX,
+                didDrag: false,
+                originalStart: booking.startMin,
+                originalEnd: this.bookingEndMinutes(booking),
+                startMinutes: booking.startMin,
+                endMinutes: this.bookingEndMinutes(booking),
+            };
+            this._boundResizeMove = this._boundResizeMove || this._resizeMove.bind(this);
+            this._boundResizeEnd = this._boundResizeEnd || this._resizeEnd.bind(this);
+            document.addEventListener('mousemove', this._boundResizeMove);
+            document.addEventListener('mouseup', this._boundResizeEnd);
+            document.body.style.cursor = 'ew-resize';
+        },
+
+        _resizeMove(e) {
+            const r = this.resizing;
+            if (!r || r.saving) return;
+            if (Math.abs(e.clientX - r.originX) > 3) {
+                r.didDrag = true;
+            }
+            const minute = Math.round(this.nearestMinute(this.getPosFromEvent(e, r.bar)) / 15) * 15;
+            if (r.edge === 'start') {
+                const earliest = this.isToday ? Math.ceil(this.nowMinutes() / 15) * 15 : 0;
+                r.startMinutes = Math.max(earliest, Math.min(r.endMinutes - 15, minute));
+            } else {
+                r.endMinutes = Math.min(1440, Math.max(r.startMinutes + 15, minute));
+            }
+        },
+
+        _resizeEnd() {
+            const r = this.resizing;
+            if (!r || r.saving) return;
+            document.removeEventListener('mousemove', this._boundResizeMove);
+            document.removeEventListener('mouseup', this._boundResizeEnd);
+            document.body.style.cursor = '';
+
+            // The mouseup is followed by a click on the block, which would open its details.
+            if (r.didDrag) {
+                this.suppressClick = true;
+                setTimeout(() => (this.suppressClick = false));
+            }
+
+            if (r.startMinutes === r.originalStart && r.endMinutes === r.originalEnd) {
+                this.resizing = null;
+                return;
+            }
+
+            r.saving = true;
+            const endDate = r.endMinutes >= 1440 ? this.addDay(this.selectedDate) : this.selectedDate;
+            this.$wire
+                .resizeBooking(
+                    Number(r.bookingId),
+                    this.selectedDate + 'T' + this.minuteToTime(r.startMinutes),
+                    endDate + 'T' + this.minuteToTime(r.endMinutes),
+                )
+                .finally(() => (this.resizing = null));
+        },
+
         openDetailModal(pos, booking) {
+            if (this.suppressClick) return;
             window.dispatchEvent(new CustomEvent('open-detail-modal', {
                 detail: {
                     booking: {

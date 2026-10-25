@@ -9,6 +9,7 @@ use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\Member as CtsMember;
+use App\Models\NetworkData\Atc;
 use App\Models\Roster;
 use App\Repositories\Cts\BookingRepository;
 use App\Repositories\Events\EventRepository;
@@ -21,6 +22,7 @@ use InvalidArgumentException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Renderless;
 use Livewire\Component;
 use RuntimeException;
 
@@ -188,6 +190,10 @@ class Calendar extends Component
             'now' => Carbon::now($this->timezone),
             'timezoneChosen' => session()->has(self::TIMEZONE_SESSION_KEY),
             'timezones' => DateTimeZone::listIdentifiers(),
+            'minAdvanceHours' => (int) config('bookings.min_advance_hours', 2),
+            'noticeCutoffMinutes' => (int) floor(Carbon::parse($this->selectedDate->toDateString(), $this->timezone)
+                ->diffInMinutes(Carbon::now()->addHours((int) config('bookings.min_advance_hours', 2)))),
+            'controllingCallsign' => auth()->check() ? Atc::forAccountId(auth()->id())->online()->value('callsign') : null,
         ]);
     }
 
@@ -319,18 +325,25 @@ class Calendar extends Component
         $this->loadData();
     }
 
-    public function jumpToDate(string $date, bool $push = true): void
+    public function jumpToDate(string $date): void
     {
         $this->selectedDate = Carbon::parse($date);
         $this->focusBookingId = null;
         $this->refreshData();
-        $this->syncHistory($push);
+        $this->syncHistory(true);
     }
 
     // Public for direct test assertions. Week mode carries ISO (year, week) only --
     // month/day segments are redundant once the week is known.
     public function historyUrl(): string
     {
+        if ($this->focusBookingId !== null) {
+            return route('site.bookings.calendar', array_filter([
+                'week' => $this->viewMode === 'week' ? $this->selectedDate->isoWeek() : null,
+                'booking_id' => $this->focusBookingId,
+            ]));
+        }
+
         if ($this->viewMode === 'week') {
             $monday = $this->weekWindowStart();
 
@@ -346,26 +359,44 @@ class Calendar extends Component
     private function syncHistory(bool $push): void
     {
         $this->js(sprintf(
-            "history.%s({}, '', %s)",
+            "(url => location.href === url ? history.replaceState({}, '', url) : history.%s({}, '', url))(%s)",
             $push ? 'pushState' : 'replaceState',
             json_encode($this->historyUrl())
         ));
+    }
+
+    private function focusedBookingId(string $source, ?int $id): ?int
+    {
+        return $source === 'core' ? $id : null;
+    }
+
+    #[Renderless]
+    public function focusBooking(string $source, ?int $id = null): void
+    {
+        $this->focusBookingId = $this->focusedBookingId($source, $id);
+        $this->syncHistory(false);
     }
 
     // Separate from jumpToDate so a booking already on the visible date can be
     // scrolled to without the dataVersion bump that rebuilds the timeline.
     public function jumpToBooking(string $date, string $source, ?int $id = null, ?int $ctsBookingId = null): void
     {
-        if (! $this->selectedDate->isSameDay(Carbon::parse($date))) {
-            $this->jumpToDate($date);
+        $dateChanged = ! $this->selectedDate->isSameDay(Carbon::parse($date));
+
+        if ($dateChanged) {
+            $this->selectedDate = Carbon::parse($date);
+            $this->refreshData();
         }
 
+        $this->focusBookingId = $this->focusedBookingId($source, $id);
+        $this->syncHistory($dateChanged);
         $this->dispatch('scroll-to-booking', source: $source, id: $id, ctsBookingId: $ctsBookingId, instant: true);
     }
 
     public function setViewMode(string $mode): void
     {
         $this->viewMode = $mode === 'week' ? 'week' : 'day';
+        $this->focusBookingId = null;
 
         if ($this->viewMode === 'day') {
             $this->selectedDate = $this->localToday();
@@ -392,13 +423,20 @@ class Calendar extends Component
         };
 
         $this->refreshData();
+
+        if ($booking !== null) {
+            $this->dispatch('scroll-to-booking', source: 'core', id: $booking->id, ctsBookingId: null, instant: true);
+        }
     }
 
     public function viewBookingFromWeek(string $date, string $source, ?int $id = null, ?int $ctsBookingId = null): void
     {
         $this->viewMode = 'day';
-        $this->jumpToBooking($date, $source, $id, $ctsBookingId);
+        $this->selectedDate = Carbon::parse($date);
+        $this->focusBookingId = $this->focusedBookingId($source, $id);
+        $this->refreshData();
         $this->syncHistory(true);
+        $this->dispatch('scroll-to-booking', source: $source, id: $id, ctsBookingId: $ctsBookingId, instant: true);
     }
 
     // A merged block has no single booking to scroll to -- just show its day.
@@ -620,6 +658,7 @@ class Calendar extends Component
         $events = [];
 
         $filter = strtoupper($this->positionFilter);
+        $editorCid = auth()->check() && ! auth()->user()->is_banned ? (string) auth()->id() : null;
 
         foreach ($this->bookings as $booking) {
             $isEvent = $booking->type === 'EV';
@@ -651,6 +690,7 @@ class Calendar extends Component
                 'starts_on' => $booking->starts_on,
                 'continues_before' => $booking->continues_before,
                 'continues_after' => $booking->continues_after,
+                ...$this->resizableEdges($booking, $start, $end, $editorCid),
             ];
 
             if ($isEvent) {
@@ -724,6 +764,25 @@ class Calendar extends Component
         $this->events = $eventRow['bookings'];
         $this->eventLaneCount = $eventRow['laneCount'];
         $this->timelinePositions = $result;
+    }
+
+    /**
+     * @return array{can_resize_start: bool, can_resize_end: bool}
+     */
+    private function resizableEdges(object $booking, int $start, int $end, ?string $editorCid): array
+    {
+        $editable = $editorCid !== null
+            && $booking->source === 'core'
+            && $booking->type === 'BK'
+            && $booking->cts_booking_id === null
+            && ($booking->member['cid'] ?? null) === $editorCid;
+
+        $dayStart = Carbon::parse($this->selectedDate->toDateString(), $this->timezone);
+
+        return [
+            'can_resize_start' => $editable && ! $booking->continues_before && $dayStart->copy()->addMinutes($start)->isFuture(),
+            'can_resize_end' => $editable && ! $booking->continues_after && $dayStart->copy()->addMinutes($end > $start ? $end : 1440)->isFuture(),
+        ];
     }
 
     /**
@@ -1206,6 +1265,61 @@ class Calendar extends Component
 
         $this->refreshData();
         $this->dispatch('booking-deleted');
+    }
+
+    public function resizeBooking(int $id, string $startsAt, string $endsAt): void
+    {
+        if (! auth()->check() || auth()->user()->is_banned) {
+            $this->dispatch('booking-resize-failed', message: 'Your account is not permitted to modify bookings.');
+
+            return;
+        }
+
+        $booking = Booking::find($id);
+
+        if ($booking === null || $booking->type !== Booking::TYPE_STANDARD || $booking->cts_booking_id !== null || $booking->member_id !== auth()->id()) {
+            $this->dispatch('booking-resize-failed', message: 'You can only change your own bookings.');
+
+            return;
+        }
+
+        try {
+            $newStartsAt = Carbon::parse($startsAt, $this->timezone)->utc();
+            $newEndsAt = Carbon::parse($endsAt, $this->timezone)->utc();
+        } catch (InvalidFormatException) {
+            $this->dispatch('booking-resize-failed', message: 'Please provide a valid start and end time.');
+
+            return;
+        }
+
+        $message = match (true) {
+            $booking->ends_at->isPast() => 'You cannot change a booking that has already ended.',
+            ! $this->isOnFifteenMinuteBoundary($newStartsAt) || ! $this->isOnFifteenMinuteBoundary($newEndsAt) => 'Start and end times must be on 15-minute boundaries.',
+            $newEndsAt->lessThanOrEqualTo($newStartsAt) => 'End time must be after start time.',
+            $newEndsAt->isPast() => 'A booking cannot end in the past.',
+            $newStartsAt->ne($booking->starts_at) && $booking->starts_at->isPast() => 'You cannot move the start of a booking that has already started.',
+            $newStartsAt->ne($booking->starts_at) && $newStartsAt->isPast() => 'Bookings cannot start in the past.',
+            default => null,
+        };
+
+        if ($message !== null) {
+            $this->dispatch('booking-resize-failed', message: $message);
+
+            return;
+        }
+
+        try {
+            app(BookingService::class)->update($booking, [
+                'starts_at' => $newStartsAt,
+                'ends_at' => $newEndsAt,
+            ]);
+        } catch (RuntimeException|InvalidArgumentException $e) {
+            $this->dispatch('booking-resize-failed', message: $e->getMessage());
+
+            return;
+        }
+
+        $this->refreshData();
     }
 
     private function ctsEndsAt(CtsBooking $cts): Carbon

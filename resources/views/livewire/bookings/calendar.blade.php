@@ -43,7 +43,7 @@
 
 				<div class="flex flex-wrap items-center justify-center gap-2 w-full sm:w-auto sm:justify-end sm:ml-auto">
 					@if ($viewMode === 'day')
-						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->subDay()->toDateString() }}', false)"
+						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->subDay()->toDateString() }}')"
 							class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
 							title="Previous day">
 							<i class="fa fa-chevron-left text-[10px]" aria-hidden="true"></i>
@@ -54,7 +54,7 @@
 								<span class="text-brand/90 text-xs font-normal">· today</span>
 							@endif
 						</span>
-						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->addDay()->toDateString() }}', false)"
+						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->addDay()->toDateString() }}')"
 							class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
 							title="Next day">
 							<i class="fa fa-chevron-right text-[10px]" aria-hidden="true"></i>
@@ -68,7 +68,7 @@
 						</button>
 					@else
 						@php $weekStart = $this->weekWindowStart(); @endphp
-						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->subDays(7)->toDateString() }}', false)"
+						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->subDays(7)->toDateString() }}')"
 							class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
 							title="Previous week">
 							<i class="fa fa-chevron-left text-[10px]" aria-hidden="true"></i>
@@ -78,7 +78,7 @@
 							<span class="text-white/60 text-xs">&middot; {{ $weekStart->format('d M') }} -
 								{{ $weekStart->copy()->addDays(6)->format('d M Y') }}</span>
 						</span>
-						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->addDays(7)->toDateString() }}', false)"
+						<button type="button" wire:click="jumpToDate('{{ $selectedDate->copy()->addDays(7)->toDateString() }}')"
 							class="flex items-center justify-center w-7 h-7 rounded-md bg-white/10 hover:bg-white/25 transition-colors text-white"
 							title="Next week">
 							<i class="fa fa-chevron-right text-[10px]" aria-hidden="true"></i>
@@ -173,6 +173,9 @@
 					    'isToday' => $selectedDate->isSameDay($today),
 					    'nowMinutes' => (int) $now->format('H') * 60 + (int) $now->format('i'),
 					    'scale' => $timelineScale,
+					    'minAdvanceHours' => $minAdvanceHours,
+					    'noticeCutoffMinutes' => $noticeCutoffMinutes,
+					    'controllingCallsign' => $controllingCallsign,
 					];
 				@endphp
 
@@ -450,7 +453,7 @@
 							</div>
 							<div class="w-14 shrink-0 px-2 py-2.5 flex items-center justify-center">
 								<button type="button" x-data
-									@if ($isBookingOnSelectedDate) x-on:click="window.dispatchEvent(new CustomEvent('scroll-to-booking', { detail: { source: '{{ $upcomingBooking->source }}', id: {{ $upcomingBooking->id !== null ? (int) $upcomingBooking->id : 'null' }}, ctsBookingId: {{ $upcomingBooking->cts_booking_id !== null ? (int) $upcomingBooking->cts_booking_id : 'null' }}, instant: false } }))"
+									@if ($isBookingOnSelectedDate) x-on:click="window.dispatchEvent(new CustomEvent('scroll-to-booking', { detail: { source: '{{ $upcomingBooking->source }}', id: {{ $upcomingBooking->id !== null ? (int) $upcomingBooking->id : 'null' }}, ctsBookingId: {{ $upcomingBooking->cts_booking_id !== null ? (int) $upcomingBooking->cts_booking_id : 'null' }}, instant: false } })); $wire.focusBooking('{{ $upcomingBooking->source }}', {{ $upcomingBooking->id !== null ? (int) $upcomingBooking->id : 'null' }})"
 									@else
 										wire:click="jumpToBooking('{{ $upcomingBooking->date }}', '{{ $upcomingBooking->source }}', {{ $upcomingBooking->id !== null ? (int) $upcomingBooking->id : 'null' }}, {{ $upcomingBooking->cts_booking_id !== null ? (int) $upcomingBooking->cts_booking_id : 'null' }})" @endif
 									title="Jump to this booking"
@@ -536,7 +539,7 @@
 						</div>
 						<div class="w-14 shrink-0 px-2 py-2.5 flex items-center justify-center">
 							<button type="button" x-data
-								@if ($isSessionOnSelectedDate) x-on:click="window.dispatchEvent(new CustomEvent('scroll-to-booking', { detail: { source: '{{ $upcomingSession->source }}', id: {{ $upcomingSession->id !== null ? (int) $upcomingSession->id : 'null' }}, ctsBookingId: {{ $upcomingSession->cts_booking_id !== null ? (int) $upcomingSession->cts_booking_id : 'null' }}, instant: false } }))"
+								@if ($isSessionOnSelectedDate) x-on:click="window.dispatchEvent(new CustomEvent('scroll-to-booking', { detail: { source: '{{ $upcomingSession->source }}', id: {{ $upcomingSession->id !== null ? (int) $upcomingSession->id : 'null' }}, ctsBookingId: {{ $upcomingSession->cts_booking_id !== null ? (int) $upcomingSession->cts_booking_id : 'null' }}, instant: false } })); $wire.focusBooking('{{ $upcomingSession->source }}', {{ $upcomingSession->id !== null ? (int) $upcomingSession->id : 'null' }})"
 								@else
 									wire:click="jumpToBooking('{{ $upcomingSession->date }}', '{{ $upcomingSession->source }}', {{ $upcomingSession->id !== null ? (int) $upcomingSession->id : 'null' }}, {{ $upcomingSession->cts_booking_id !== null ? (int) $upcomingSession->cts_booking_id : 'null' }})" @endif
 								title="Jump to this booking"
@@ -552,6 +555,21 @@
 
 	@include('livewire.bookings._create-modal')
 	@include('livewire.bookings._detail-modal')
+
+	<div x-data="{ open: false, message: '', timer: null }"
+		x-on:booking-resize-failed.window="message = $event.detail.message; open = true; clearTimeout(timer); timer = setTimeout(() => open = false, 6000)"
+		x-show="open" x-cloak x-transition.opacity
+		class="fixed bottom-4 inset-x-4 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-50 flex justify-center">
+		<div role="alert"
+			class="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white shadow-lg">
+			@svg('heroicon-m-exclamation-triangle', 'w-4 h-4 shrink-0')
+			<span x-text="message"></span>
+			<button type="button" x-on:click="open = false; clearTimeout(timer)"
+				class="ml-1 shrink-0 text-white/80 hover:text-white" aria-label="Dismiss">
+				@svg('heroicon-m-x-mark', 'w-4 h-4')
+			</button>
+		</div>
+	</div>
 </div>
 
 <script>

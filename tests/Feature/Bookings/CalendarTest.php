@@ -15,6 +15,7 @@ use App\Models\Mship\State;
 use App\Models\Roster;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -1118,6 +1119,125 @@ class CalendarTest extends TestCase
     }
 
     #[Test]
+    public function it_pushes_history_when_navigating_between_dates(): void
+    {
+        $component = Livewire::test(Calendar::class)->call('jumpToDate', '2026-09-16');
+
+        $this->assertHistory($component, 'pushState', '/calendar/2026/9?day=16');
+    }
+
+    #[Test]
+    public function it_replaces_the_url_with_the_booking_url_when_a_booking_is_focused(): void
+    {
+        $booking = Booking::factory()->create([
+            'starts_at' => Carbon::today()->addDays(2)->setHour(9),
+            'ends_at' => Carbon::today()->addDays(2)->setHour(10),
+        ]);
+
+        $component = Livewire::test(Calendar::class)
+            ->call('jumpToDate', $booking->starts_at->toDateString())
+            ->call('focusBooking', 'core', $booking->id)
+            ->assertSet('focusBookingId', $booking->id);
+
+        $this->assertHistory($component, 'replaceState', '/calendar?booking_id='.$booking->id);
+    }
+
+    #[Test]
+    public function it_keeps_week_mode_in_the_history_url_when_a_booking_is_focused(): void
+    {
+        $booking = Booking::factory()->create([
+            'starts_at' => Carbon::today()->addDays(2)->setHour(9),
+            'ends_at' => Carbon::today()->addDays(2)->setHour(10),
+        ]);
+
+        $url = Livewire::test(Calendar::class)
+            ->call('setViewMode', 'week')
+            ->call('focusBooking', 'core', $booking->id)
+            ->instance()
+            ->historyUrl();
+
+        $this->assertStringEndsWith('/calendar?week='.Carbon::today()->isoWeek().'&booking_id='.$booking->id, $url);
+
+        Livewire::withQueryParams(['week' => (string) Carbon::today()->isoWeek(), 'booking_id' => (string) $booking->id])
+            ->test(Calendar::class)
+            ->assertSet('viewMode', 'week')
+            ->assertSet('focusBookingId', $booking->id)
+            ->assertSet('selectedDate', $booking->starts_at->copy()->startOfDay());
+    }
+
+    #[Test]
+    public function it_keeps_the_date_url_when_a_cts_booking_is_focused(): void
+    {
+        $component = Livewire::test(Calendar::class)
+            ->call('jumpToDate', '2026-09-16')
+            ->call('focusBooking', 'cts', null)
+            ->assertSet('focusBookingId', null);
+
+        $this->assertStringNotContainsString('booking_id', $component->instance()->historyUrl());
+    }
+
+    #[Test]
+    public function it_pushes_history_when_jumping_to_a_booking_on_another_date(): void
+    {
+        $booking = Booking::factory()->create([
+            'starts_at' => Carbon::today()->addDays(3)->setHour(9),
+            'ends_at' => Carbon::today()->addDays(3)->setHour(10),
+        ]);
+
+        $component = Livewire::test(Calendar::class)
+            ->call('jumpToBooking', $booking->starts_at->toDateString(), 'core', $booking->id, null)
+            ->assertSet('selectedDate', $booking->starts_at->copy()->startOfDay());
+
+        $this->assertHistory($component, 'pushState', 'booking_id='.$booking->id);
+    }
+
+    #[Test]
+    public function it_replaces_history_when_jumping_to_a_booking_on_the_selected_date(): void
+    {
+        $booking = Booking::factory()->create([
+            'starts_at' => Carbon::today()->addDays(3)->setHour(9),
+            'ends_at' => Carbon::today()->addDays(3)->setHour(10),
+        ]);
+
+        $component = Livewire::test(Calendar::class)
+            ->call('jumpToDate', $booking->starts_at->toDateString())
+            ->call('jumpToBooking', $booking->starts_at->toDateString(), 'core', $booking->id, null);
+
+        $this->assertHistory($component, 'replaceState', 'booking_id='.$booking->id);
+    }
+
+    #[Test]
+    public function it_drops_the_booking_id_when_navigating_away_from_a_focused_booking(): void
+    {
+        $booking = Booking::factory()->create([
+            'starts_at' => Carbon::today()->addDays(3)->setHour(9),
+            'ends_at' => Carbon::today()->addDays(3)->setHour(10),
+        ]);
+
+        $url = Livewire::test(Calendar::class)
+            ->call('focusBooking', 'core', $booking->id)
+            ->call('jumpToDate', Carbon::today()->addDays(4)->toDateString())
+            ->instance()
+            ->historyUrl();
+
+        $this->assertStringNotContainsString('booking_id', $url);
+    }
+
+    #[Test]
+    public function it_scrolls_to_the_booking_when_restoring_a_booking_url(): void
+    {
+        $booking = Booking::factory()->create([
+            'starts_at' => Carbon::today()->addDays(4)->setHour(9),
+            'ends_at' => Carbon::today()->addDays(4)->setHour(10),
+        ]);
+
+        Livewire::test(Calendar::class)
+            ->call('syncFromLocation', null, null, null, null, $booking->id)
+            ->assertSet('focusBookingId', $booking->id)
+            ->assertDispatched('scroll-to-booking', source: 'core', id: $booking->id, ctsBookingId: null, instant: true);
+    }
+
+    #[Test]
     public function it_restores_day_mode_from_year_month_day_params(): void
     {
         Livewire::test(Calendar::class)
@@ -1224,5 +1344,17 @@ class CalendarTest extends TestCase
         $group = collect($timelinePositions)->firstWhere('icao', 'EGLL');
 
         $this->assertSame([], $group['clusters'][0]['positionCodes']);
+    }
+
+    private function assertHistory(Testable $component, string $method, string $urlFragment): void
+    {
+        $script = collect($component->effects['xjs'] ?? [])->last()['expression'] ?? '';
+
+        $this->assertStringContainsString('history.'.$method, $script);
+        $this->assertStringContainsString(str_replace('/', '\\/', $urlFragment), $script);
+
+        if ($method === 'replaceState') {
+            $this->assertStringNotContainsString('pushState', $script);
+        }
     }
 }

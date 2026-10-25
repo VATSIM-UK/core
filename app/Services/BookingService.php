@@ -108,8 +108,12 @@ class BookingService
 
             $this->policy->validateAdvanceBookingLimits($memberId, $startsAt, $booking->id);
             $this->policy->validateGatwickLimit($memberId, $booking->id);
-            $this->policy->validateMinimumNotice($memberId, $positionId, $startsAt);
             $this->policy->validateFutureQualification($memberId, $positionId, $startsAt);
+
+            // Notice only concerns when a session begins, not how long it runs.
+            if ($startsAt->ne($booking->starts_at) || $positionId !== $booking->position_id || $memberId !== $booking->member_id) {
+                $this->policy->validateMinimumNotice($memberId, $positionId, $startsAt);
+            }
         }
 
         $booking->update($data);
