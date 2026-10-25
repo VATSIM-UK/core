@@ -1,6 +1,7 @@
 <template x-teleport="body">
 	<div x-data="{
     open: false,
+    clearFocusOnClose: false,
     booking: null,
     confirmDelete: false,
     ended: false,
@@ -39,10 +40,11 @@
         return d + '. ' + m + '. ' + y;
     },
 }" x-show="open" x-cloak
-		x-on:open-detail-modal.window="open = true; booking = $event.detail?.booking || null; confirmDelete = false; ended = computeEnded(booking);"
-		x-on:close-modal.window="open = false" x-on:booking-deleted.window="open = false"
-		x-on:keydown.escape.window="open = false" class="fixed inset-0 z-50 flex items-center justify-center"
-		style="display: none;">
+		x-on:open-detail-modal.window="open = true; booking = $event.detail?.booking || null; confirmDelete = false; ended = computeEnded(booking); if (booking) { $wire.focusBooking(booking.source, booking.id ? Number(booking.id) : null); clearFocusOnClose = true; }"
+		x-effect="if (!open && clearFocusOnClose) { clearFocusOnClose = false; $wire.focusBooking('core', null); }"
+		x-on:popstate.window="clearFocusOnClose = false; open = false" x-on:close-modal.window="open = false"
+		x-on:booking-deleted.window="open = false" x-on:keydown.escape.window="open = false"
+		class="fixed inset-0 z-50 flex items-center justify-center" style="display: none;">
 		<div class="absolute inset-0 bg-black/50" x-on:click="open = false"></div>
 		<div
 			class="relative bg-white rounded-xl shadow-sm ring-1 ring-gray-200/80 overflow-hidden w-full max-w-sm mx-2 sm:mx-4"
@@ -133,7 +135,7 @@
 				</template>
 				<template x-if="booking?.fromWeek">
 					<button type="button"
-						x-on:click="$wire.viewBookingFromWeek(booking.date, booking.source, booking.id ? Number(booking.id) : null, booking.ctsBookingId); open = false"
+						x-on:click="clearFocusOnClose = false; $wire.viewBookingFromWeek(booking.date, booking.source, booking.id ? Number(booking.id) : null, booking.ctsBookingId); open = false"
 						class="px-4 py-2 text-sm font-medium text-white bg-brand rounded-md hover:bg-brand/90">Jump to day</button>
 				</template>
 				<template x-if="canBookAdjacent">

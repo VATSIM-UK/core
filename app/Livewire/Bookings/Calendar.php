@@ -21,6 +21,7 @@ use InvalidArgumentException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Renderless;
 use Livewire\Component;
 use RuntimeException;
 
@@ -319,18 +320,25 @@ class Calendar extends Component
         $this->loadData();
     }
 
-    public function jumpToDate(string $date, bool $push = true): void
+    public function jumpToDate(string $date): void
     {
         $this->selectedDate = Carbon::parse($date);
         $this->focusBookingId = null;
         $this->refreshData();
-        $this->syncHistory($push);
+        $this->syncHistory(true);
     }
 
     // Public for direct test assertions. Week mode carries ISO (year, week) only --
     // month/day segments are redundant once the week is known.
     public function historyUrl(): string
     {
+        if ($this->focusBookingId !== null) {
+            return route('site.bookings.calendar', array_filter([
+                'week' => $this->viewMode === 'week' ? $this->selectedDate->isoWeek() : null,
+                'booking_id' => $this->focusBookingId,
+            ]));
+        }
+
         if ($this->viewMode === 'week') {
             $monday = $this->weekWindowStart();
 
@@ -346,26 +354,44 @@ class Calendar extends Component
     private function syncHistory(bool $push): void
     {
         $this->js(sprintf(
-            "history.%s({}, '', %s)",
+            "(url => location.href === url ? history.replaceState({}, '', url) : history.%s({}, '', url))(%s)",
             $push ? 'pushState' : 'replaceState',
             json_encode($this->historyUrl())
         ));
+    }
+
+    private function focusedBookingId(string $source, ?int $id): ?int
+    {
+        return $source === 'core' ? $id : null;
+    }
+
+    #[Renderless]
+    public function focusBooking(string $source, ?int $id = null): void
+    {
+        $this->focusBookingId = $this->focusedBookingId($source, $id);
+        $this->syncHistory(false);
     }
 
     // Separate from jumpToDate so a booking already on the visible date can be
     // scrolled to without the dataVersion bump that rebuilds the timeline.
     public function jumpToBooking(string $date, string $source, ?int $id = null, ?int $ctsBookingId = null): void
     {
-        if (! $this->selectedDate->isSameDay(Carbon::parse($date))) {
-            $this->jumpToDate($date);
+        $dateChanged = ! $this->selectedDate->isSameDay(Carbon::parse($date));
+
+        if ($dateChanged) {
+            $this->selectedDate = Carbon::parse($date);
+            $this->refreshData();
         }
 
+        $this->focusBookingId = $this->focusedBookingId($source, $id);
+        $this->syncHistory($dateChanged);
         $this->dispatch('scroll-to-booking', source: $source, id: $id, ctsBookingId: $ctsBookingId, instant: true);
     }
 
     public function setViewMode(string $mode): void
     {
         $this->viewMode = $mode === 'week' ? 'week' : 'day';
+        $this->focusBookingId = null;
 
         if ($this->viewMode === 'day') {
             $this->selectedDate = $this->localToday();
@@ -392,13 +418,20 @@ class Calendar extends Component
         };
 
         $this->refreshData();
+
+        if ($booking !== null) {
+            $this->dispatch('scroll-to-booking', source: 'core', id: $booking->id, ctsBookingId: null, instant: true);
+        }
     }
 
     public function viewBookingFromWeek(string $date, string $source, ?int $id = null, ?int $ctsBookingId = null): void
     {
         $this->viewMode = 'day';
-        $this->jumpToBooking($date, $source, $id, $ctsBookingId);
+        $this->selectedDate = Carbon::parse($date);
+        $this->focusBookingId = $this->focusedBookingId($source, $id);
+        $this->refreshData();
         $this->syncHistory(true);
+        $this->dispatch('scroll-to-booking', source: $source, id: $id, ctsBookingId: $ctsBookingId, instant: true);
     }
 
     // A merged block has no single booking to scroll to -- just show its day.
