@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Seeders\LocalDevelopment\Training;
 
 use App\Models\Atc\Position;
-use App\Models\Cts\Availability;
 use App\Models\Cts\CancelReason;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExaminerSettings;
@@ -13,6 +12,7 @@ use App\Models\Cts\ExamSetup;
 use App\Models\Cts\Member;
 use App\Models\Cts\PracticalExaminers;
 use App\Models\Cts\PracticalResult;
+use App\Models\Training\Availability;
 use App\Services\Training\MentorPermissionService;
 use Database\Seeders\LocalDevelopment\Training\Concerns\AssignsDevTrainingRoles;
 use Database\Seeders\LocalDevelopment\Training\Concerns\CreatesDevTrainingPlace;

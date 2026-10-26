@@ -3,10 +3,10 @@
 namespace App\Livewire\Training;
 
 use App\Events\Training\Exams\ExamAccepted;
-use App\Models\Cts\Availability;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\ExamSetup;
 use App\Models\Cts\PracticalExaminers;
+use App\Models\Training\Availability;
 use App\Repositories\Cts\ExaminerRepository;
 use Carbon\Carbon;
 use Filament\Actions\Action;

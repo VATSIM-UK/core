@@ -2,7 +2,7 @@
 
 namespace App\Services\Training\Availability;
 
-use App\Models\Cts\Availability;
+use App\Models\Training\Availability;
 use App\Services\Training\AvailabilityService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;

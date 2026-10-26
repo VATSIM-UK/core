@@ -4,7 +4,6 @@ namespace App\Services\Training;
 
 use App\Models\Atc\Position;
 use App\Models\Booking;
-use App\Models\Cts\Availability;
 use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\CancelReason;
 use App\Models\Cts\ExamBooking;
@@ -12,6 +11,7 @@ use App\Models\Cts\Member;
 use App\Models\Cts\Position as CtsPosition;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
+use App\Models\Training\Availability;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedMentorNotification;
 use App\Notifications\Training\Mentoring\MentoringSessionAcceptedStudentNotification;

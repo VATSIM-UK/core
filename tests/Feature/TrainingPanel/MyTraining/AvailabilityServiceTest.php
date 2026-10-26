@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Services\Training;
 
-use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
+use App\Models\Training\Availability;
 use App\Services\Training\AvailabilityService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

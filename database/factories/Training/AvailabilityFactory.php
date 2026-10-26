@@ -1,9 +1,9 @@
 <?php
 
-namespace Database\Factories\Cts;
+namespace Database\Factories\Training;
 
-use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
+use App\Models\Training\Availability;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
