@@ -99,6 +99,11 @@ class AvailabilityService
      * @param  array<int, AvailabilityChange>  $changes
      * @return array{added: int, edited: int, merged: int, removed: int, refused: bool}
      */
+    private function storedEndTime(Carbon $end): string
+    {
+        return $end->format('H:i:s') === '00:00:00' ? '24:00:00' : $end->format('H:i:s');
+    }
+
     public function applyChanges(int $studentId, array $changes): array
     {
         $counts = [
@@ -142,7 +147,7 @@ class AvailabilityService
                         $change->existing?->update([
                             'date' => $change->newFrom->toDateString(),
                             'from' => $change->newFrom->format('H:i:s'),
-                            'to' => $change->newTo->format('H:i:s'),
+                            'to' => $this->storedEndTime($change->newTo),
                         ]);
 
                         $logs[] = fn (AvailabilityLogService $service, Collection $places) => $service->recordMerged($places, $change->oldFrom, $change->oldTo, $change->newFrom, $change->newTo);
@@ -161,7 +166,7 @@ class AvailabilityService
                         $change->existing?->update([
                             'date' => $change->newFrom->toDateString(),
                             'from' => $change->newFrom->format('H:i:s'),
-                            'to' => $change->newTo->format('H:i:s'),
+                            'to' => $this->storedEndTime($change->newTo),
                         ]);
 
                         $logs[] = fn (AvailabilityLogService $service, Collection $places) => $service->recordEdited($places, $change->oldFrom, $change->oldTo, $change->newFrom, $change->newTo);
@@ -175,7 +180,7 @@ class AvailabilityService
                             'type' => 'S',
                             'date' => $change->newFrom->toDateString(),
                             'from' => $change->newFrom->format('H:i:s'),
-                            'to' => $change->newTo->format('H:i:s'),
+                            'to' => $this->storedEndTime($change->newTo),
                         ]);
 
                         $logs[] = fn (AvailabilityLogService $service, Collection $places) => $service->recordAdded($places, $change->newFrom, $change->newTo);

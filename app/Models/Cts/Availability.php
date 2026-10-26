@@ -32,7 +32,19 @@ class Availability extends Model
     // Temporary handling for `to` being set to "24:00" from legacy CTS system
     protected function to(): Attribute
     {
-        return Attribute::make(get: fn ($value) => $value ? Carbon::parse(str_replace('24:00', '23:45', $value)) : null);
+        return Attribute::make(get: function ($value) {
+            if (! $value) {
+                return null;
+            }
+
+            // A slot that runs to the end of the day is stored as 24:00 by the availability
+            // grid and as 00:00 by rows written before it did, so both read as 23:45.
+            if (str_starts_with($value, '24:') || ($value === '00:00:00' && $this->from?->format('H:i:s') !== '00:00:00')) {
+                return Carbon::parse('23:45:00');
+            }
+
+            return Carbon::parse($value);
+        });
     }
 
     public function student(): BelongsTo
@@ -49,10 +61,15 @@ class Availability extends Model
     {
         $date = $this->date->format('Y-m-d');
 
-        $start = Carbon::parse($date.' '.$this->from->format('H:i:s'), 'UTC');
-        $end = Carbon::parse($date.' '.$this->to->format('H:i:s'), 'UTC');
+        // A slot that runs to the end of the day is stored as 24:00, or as 00:00 by rows
+        // written before the grid did that, so read the raw value to close it at midnight.
+        $storedEnd = (string) ($this->getAttributes()['to'] ?? '');
+        $endTime = in_array($storedEnd, ['24:00:00', '00:00:00'], true) ? '00:00:00' : $this->to->format('H:i:s');
 
-        if ($this->to->format('H:i:s') < $this->from->format('H:i:s')) {
+        $start = Carbon::parse($date.' '.$this->from->format('H:i:s'), 'UTC');
+        $end = Carbon::parse($date.' '.$endTime, 'UTC');
+
+        if ($endTime < $this->from->format('H:i:s')) {
             $end->addDay();
         }
 

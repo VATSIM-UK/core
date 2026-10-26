@@ -63,6 +63,28 @@ class AvailabilityServiceApplyTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function it_stores_a_slot_that_runs_to_the_end_of_the_day_as_24_00(): void
+    {
+        $change = new AvailabilityChange(
+            AvailabilityChangeType::Added,
+            null,
+            null,
+            null,
+            Carbon::parse('2026-05-11 18:00', 'UTC'),
+            Carbon::parse('2026-05-12 00:00', 'UTC'),
+        );
+
+        $result = app(AvailabilityService::class)->applyChanges($this->studentMember->id, [$change]);
+
+        $this->assertSame(1, $result['added']);
+
+        $row = Availability::where('student_id', $this->studentMember->id)->sole();
+        $this->assertSame('18:00:00', $row->getRawOriginal('from'));
+        $this->assertSame('24:00:00', $row->getRawOriginal('to'));
+        $this->assertSame('23:45:00', $row->to->format('H:i:s'), 'An end of 24:00 reads as 23:45.');
+    }
+
+    #[Test]
     public function it_updates_a_row_and_logs_edited_superseding_the_current_entry(): void
     {
         $row = Availability::factory()->forStudent($this->studentMember->id)->create(['date' => '2026-05-11', 'from' => '18:00:00', 'to' => '21:00:00', 'type' => 'S']);

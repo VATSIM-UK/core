@@ -182,7 +182,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             ->call('save');
 
         $row = Availability::where('student_id', $this->studentMember->id)->sole();
-        $this->assertSame('00:00:00', $row->getRawOriginal('to'));
+        $this->assertSame('24:00:00', $row->getRawOriginal('to'));
 
         $component->call('save');
 
