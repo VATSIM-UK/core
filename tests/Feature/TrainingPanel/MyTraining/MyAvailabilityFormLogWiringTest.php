@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature\TrainingPanel\MyTraining;
 
 use App\Filament\Training\Pages\MyTraining\MyAvailability;
-use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
+use App\Models\Training\Availability;
 use App\Models\Training\TrainingPlace\AvailabilityLogEntry;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use Carbon\Carbon;

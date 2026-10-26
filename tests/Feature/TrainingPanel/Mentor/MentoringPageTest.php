@@ -4,12 +4,12 @@ namespace Tests\Feature\TrainingPanel\Mentor;
 
 use App\Livewire\Training\AcceptedMentoringSessionsTable;
 use App\Livewire\Training\AvailabilityGantt;
-use App\Models\Cts\Availability;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
+use App\Models\Training\Availability;
 use App\Models\Training\Mentoring\MentorTrainingPosition;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPlace\TrainingPlaceLeaveOfAbsence;

@@ -2,7 +2,7 @@
 
 namespace App\Services\Training\Availability;
 
-use App\Models\Cts\Availability;
+use App\Models\Training\Availability;
 use Carbon\Carbon;
 
 final readonly class AvailabilityChange

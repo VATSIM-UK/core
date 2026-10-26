@@ -2,8 +2,8 @@
 
 namespace App\Filament\Training\Pages\MyTraining\Widgets;
 
-use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
+use App\Models\Training\Availability;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 

@@ -2,8 +2,8 @@
 
 namespace App\Services\Training;
 
-use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
+use App\Models\Training\Availability;
 use App\Services\Training\Availability\AvailabilityChange;
 use App\Services\Training\Availability\AvailabilityChangeType;
 use Carbon\Carbon;

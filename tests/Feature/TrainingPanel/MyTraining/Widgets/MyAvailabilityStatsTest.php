@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature\TrainingPanel\MyTraining\Widgets;
 
 use App\Filament\Training\Pages\MyTraining\Widgets\MyAvailabilityStats;
-use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
+use App\Models\Training\Availability;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;

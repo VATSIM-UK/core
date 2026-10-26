@@ -3,12 +3,12 @@
 namespace Tests\Feature\TrainingPanel\Exams;
 
 use App\Livewire\Training\ExamRequestsTable;
-use App\Models\Cts\Availability;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
 use App\Models\Cts\PracticalExaminers;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
+use App\Models\Training\Availability;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
