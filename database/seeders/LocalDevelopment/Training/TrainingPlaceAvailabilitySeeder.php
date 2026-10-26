@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Database\Seeders\LocalDevelopment\Training;
 
 use App\Enums\AvailabilityCheckStatus;
-use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
+use App\Models\Training\Availability;
 use App\Models\Training\TrainingPlace\AvailabilityCheck;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlaceLeaveOfAbsence;

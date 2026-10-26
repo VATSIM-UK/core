@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models\Cts;
+namespace App\Models\Training;
 
+use App\Models\Cts\Member;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -16,6 +17,7 @@ class Availability extends Model
     /** Student rows; the legacy mentor type is unused here. */
     public const TYPE_STUDENT = 'S';
 
+    // Transitional: the model has moved to the Training namespace, the table has not.
     protected $connection = 'cts';
 
     protected $table = 'availability';

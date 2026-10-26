@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Services\Training\Availability;
 
-use App\Models\Cts\Availability;
+use App\Models\Training\Availability;
 use App\Services\Training\Availability\AvailabilityChangeType;
 use App\Services\Training\Availability\AvailabilityPlanner;
 use Carbon\Carbon;

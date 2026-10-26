@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Seeders\LocalDevelopment\Training;
 
-use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
+use App\Models\Training\Availability;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\MentorPermissionService;
 use Database\Seeders\LocalDevelopment\Training\Concerns\CreatesLinkedAccount;

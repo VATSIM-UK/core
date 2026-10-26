@@ -4,10 +4,10 @@ namespace App\Filament\Training\Pages\MyTraining;
 
 use App\Filament\Training\Forms\Components\AvailabilityGrid;
 use App\Filament\Training\Pages\MyTraining\Widgets\MyAvailabilityStats;
-use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
 use App\Models\Cts\PositionValidation;
 use App\Models\Mship\Account\AvailabilitySetting;
+use App\Models\Training\Availability;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Services\Training\Availability\AvailabilityPlanner;
 use App\Services\Training\AvailabilityService;
