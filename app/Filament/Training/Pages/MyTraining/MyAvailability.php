@@ -388,7 +388,7 @@ class MyAvailability extends Page implements HasForms, HasTable
         $this->seededRowIds = array_values(array_unique(array_merge(
             $this->seededRowIds,
             $this->availabilityRows()
-                ->filter(fn ($row) => in_array($row->date->format('Y-m-d'), $newDates, true))
+                ->filter(fn ($row) => in_array($row->startsAt()->format('Y-m-d'), $newDates, true))
                 ->pluck('id')
                 ->all(),
         )));
@@ -618,20 +618,18 @@ class MyAvailability extends Page implements HasForms, HasTable
             ->columns([
                 TextColumn::make('date')
                     ->label('Date')
-                    ->state(fn (Availability $record) => $record->bounds()[0]->toPanelDateWithWeekday()),
+                    ->state(fn (Availability $record) => $record->startsAt()->toPanelDateWithWeekday()),
 
                 TextColumn::make('time_window')
                     ->label('Time')
                     ->state(function (Availability $record): string {
-                        [$start, $end] = $record->bounds();
-
-                        return $start->format('H:i').' - '.$end->format('H:i');
+                        return $record->startsAt()->format('H:i').' - '.$record->endsAt()->format('H:i');
                     }),
 
                 TextColumn::make('duration')
                     ->label('Duration')
                     ->state(fn (Availability $record) => $this->getAvailabilityService()->formatDuration(
-                        $record->date, $record->from, $record->to
+                        $record->startsAt(), $record->endsAt()
                     )),
             ])
             ->actions([
