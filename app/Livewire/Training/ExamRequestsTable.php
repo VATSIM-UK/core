@@ -76,19 +76,19 @@ class ExamRequestsTable extends Component implements HasActions, HasForms, HasTa
                             ->label('Select Availability Slot')
                             ->required()
                             ->options(function (ExamBooking $record) {
-                                return Availability::where('student_id', $record->student_id)
-                                    ->where('type', 'S')
-                                    ->where('date', '>=', now()->toDateString())
-                                    ->orderBy('date')
-                                    ->orderBy('from')
+                                return Availability::query()
+                                    ->forStudent($record->student_id)
+                                    ->studentOnly()
+                                    ->startingFrom(now()->utc())
+                                    ->orderedByStart()
                                     ->get()
                                     ->mapWithKeys(function ($availability) {
                                         [$availStart, $availEnd] = $this->normalizeAvailabilityTimes(
-                                            Carbon::parse($availability->from),
-                                            Carbon::parse($availability->to),
+                                            $availability->startsAt(),
+                                            $availability->endsAt(),
                                         );
 
-                                        $date = $availability->date->format('Y-m-d');
+                                        $date = $availability->startsAt()->toDateString();
                                         $fromTime = $availStart->format('H:i');
                                         $toTime = $availEnd->format('H:i');
 
@@ -123,8 +123,8 @@ class ExamRequestsTable extends Component implements HasActions, HasForms, HasTa
                                         }
 
                                         [$availStart, $availEnd] = $this->normalizeAvailabilityTimes(
-                                            Carbon::parse($availability->from),
-                                            Carbon::parse($availability->to),
+                                            $availability->startsAt(),
+                                            $availability->endsAt(),
                                         );
 
                                         $latestStartHour = min($availEnd->copy()->subHour()->hour, 22); // Don't allow a start hour to be 2300+ as they won't have the minimum of 60 minutes for the exam.
@@ -154,8 +154,8 @@ class ExamRequestsTable extends Component implements HasActions, HasForms, HasTa
                                         }
 
                                         [$availStart, $availEnd] = $this->normalizeAvailabilityTimes(
-                                            Carbon::parse($availability->from),
-                                            Carbon::parse($availability->to),
+                                            $availability->startsAt(),
+                                            $availability->endsAt(),
                                         );
 
                                         return $this->generateStartMinuteOptions($selectedHour, $availStart, $availEnd);
@@ -184,8 +184,8 @@ class ExamRequestsTable extends Component implements HasActions, HasForms, HasTa
                                         }
 
                                         [$availStart, $availEnd] = $this->normalizeAvailabilityTimes(
-                                            Carbon::parse($availability->from),
-                                            Carbon::parse($availability->to),
+                                            $availability->startsAt(),
+                                            $availability->endsAt(),
                                         );
 
                                         $startTime = Carbon::create(null, null, null, $startHour, $startMinute);
@@ -216,8 +216,8 @@ class ExamRequestsTable extends Component implements HasActions, HasForms, HasTa
                                         }
 
                                         [$availStart, $availEnd] = $this->normalizeAvailabilityTimes(
-                                            Carbon::parse($availability->from),
-                                            Carbon::parse($availability->to),
+                                            $availability->startsAt(),
+                                            $availability->endsAt(),
                                         );
 
                                         $startTime = Carbon::create(null, null, null, $startHour, $startMinute);
@@ -262,7 +262,7 @@ class ExamRequestsTable extends Component implements HasActions, HasForms, HasTa
                         $endTime = sprintf('%02d:%02d:00', $data['end_hour'], $data['end_minute']);
 
                         // Combine the availability date with the selected times
-                        $availabilityDate = $availability->date->format('Y-m-d');
+                        $availabilityDate = $availability->startsAt()->toDateString();
                         $examStartDateTime = Carbon::parse("{$availabilityDate} {$startTime}");
                         $examEndDateTime = Carbon::parse("{$availabilityDate} {$endTime}");
 
@@ -429,6 +429,11 @@ class ExamRequestsTable extends Component implements HasActions, HasForms, HasTa
 
     protected function normalizeAvailabilityTimes(Carbon $from, Carbon $to): array
     {
+        // Anchor both to today: a slot ending at or past midnight would otherwise compare as
+        // a day later and skip the clamp below.
+        $from = Carbon::parse($from->format('H:i:s'));
+        $to = Carbon::parse($to->format('H:i:s'));
+
         if ($to->lessThanOrEqualTo($from) || $to->hour > 23 || ($to->hour === 23 && $to->minute > 45)) {
             $to->setHour(23)->setMinute(45)->setSecond(0);
         }

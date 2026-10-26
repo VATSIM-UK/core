@@ -52,10 +52,9 @@ class AvailabilityService
         $now = now()->utc();
 
         return Availability::query()
-            ->where('student_id', $memberId)
-            ->where('type', 'S')
-            ->where('date', '>=', static::firstAllowedDate($now)->toDateString())
-            ->where('date', '<=', static::lastAllowedDate($now)->toDateString())
+            ->forStudent($memberId)
+            ->studentOnly()
+            ->startingBetween(static::firstAllowedDate($now), static::lastAllowedDate($now))
             ->exists();
     }
 
@@ -67,16 +66,9 @@ class AvailabilityService
     public function getFutureAvailabilityQuery(int $memberId): Builder
     {
         return Availability::query()
-            ->where('student_id', $memberId)
-            ->where('type', 'S')
-            ->where(function (Builder $query) {
-                $now = now()->utc();
-                $query->whereDate('date', '>', $now->toDateString())
-                    ->orWhere(function ($q) use ($now) {
-                        $q->whereDate('date', $now->toDateString())
-                            ->whereTime('to', '>', $now->format('H:i:s'));
-                    });
-            });
+            ->forStudent($memberId)
+            ->studentOnly()
+            ->endingAfter(now()->utc());
     }
 
     /**
@@ -85,11 +77,10 @@ class AvailabilityService
     public function availabilityRowsFor(int $memberId, Carbon $from, Carbon $to): Collection
     {
         return Availability::query()
-            ->where('student_id', $memberId)
-            ->where('type', 'S')
-            ->whereBetween('date', [$from->toDateString(), $to->toDateString()])
-            ->orderBy('date')
-            ->orderBy('from')
+            ->forStudent($memberId)
+            ->studentOnly()
+            ->startingBetween($from, $to)
+            ->orderedByStart()
             ->get();
     }
 
@@ -139,11 +130,7 @@ class AvailabilityService
                         break;
 
                     case AvailabilityChangeType::Merged:
-                        $change->existing?->update([
-                            'date' => $change->newFrom->toDateString(),
-                            'from' => $change->newFrom->format('H:i:s'),
-                            'to' => $change->newTo->format('H:i:s'),
-                        ]);
+                        $change->existing?->updateSlot($change->newFrom, $change->newTo);
 
                         $logs[] = fn (AvailabilityLogService $service, Collection $places) => $service->recordMerged($places, $change->oldFrom, $change->oldTo, $change->newFrom, $change->newTo);
                         $counts['merged']++;
@@ -158,11 +145,7 @@ class AvailabilityService
                         break;
 
                     case AvailabilityChangeType::Edited:
-                        $change->existing?->update([
-                            'date' => $change->newFrom->toDateString(),
-                            'from' => $change->newFrom->format('H:i:s'),
-                            'to' => $change->newTo->format('H:i:s'),
-                        ]);
+                        $change->existing?->updateSlot($change->newFrom, $change->newTo);
 
                         $logs[] = fn (AvailabilityLogService $service, Collection $places) => $service->recordEdited($places, $change->oldFrom, $change->oldTo, $change->newFrom, $change->newTo);
                         $counts['edited']++;
@@ -170,13 +153,7 @@ class AvailabilityService
                         break;
 
                     case AvailabilityChangeType::Added:
-                        Availability::create([
-                            'student_id' => $studentId,
-                            'type' => 'S',
-                            'date' => $change->newFrom->toDateString(),
-                            'from' => $change->newFrom->format('H:i:s'),
-                            'to' => $change->newTo->format('H:i:s'),
-                        ]);
+                        Availability::storeSlot($studentId, $change->newFrom, $change->newTo);
 
                         $logs[] = fn (AvailabilityLogService $service, Collection $places) => $service->recordAdded($places, $change->newFrom, $change->newTo);
                         $counts['added']++;
@@ -292,11 +269,10 @@ class AvailabilityService
     private function rowsOverlapping(int $studentId, Carbon $start, Carbon $end): Collection
     {
         return Availability::query()
-            ->where('student_id', $studentId)
-            ->where('type', 'S')
-            ->whereBetween('date', [$start->copy()->subDay()->toDateString(), $end->toDateString()])
-            ->orderBy('date')
-            ->orderBy('from')
+            ->forStudent($studentId)
+            ->studentOnly()
+            ->startingBetween($start->copy()->subDay(), $end)
+            ->orderedByStart()
             ->get()
             ->filter(fn (Availability $row) => $this->rangesOverlap([$start, $end], $row->bounds()))
             ->values();
@@ -355,12 +331,12 @@ class AvailabilityService
         $ends = array_map(fn (array $range) => $range[1]->getTimestamp(), $planned);
 
         $existing = Availability::query()
-            ->where('student_id', $studentId)
-            ->where('type', 'S')
-            ->whereBetween('date', [
-                Carbon::createFromTimestamp(min($starts), 'UTC')->subDay()->toDateString(),
-                Carbon::createFromTimestamp(max($ends), 'UTC')->toDateString(),
-            ])
+            ->forStudent($studentId)
+            ->studentOnly()
+            ->startingBetween(
+                Carbon::createFromTimestamp(min($starts), 'UTC')->subDay(),
+                Carbon::createFromTimestamp(max($ends), 'UTC'),
+            )
             ->lockForUpdate()
             ->get();
 
@@ -430,15 +406,8 @@ class AvailabilityService
         return $service->activeTrainingPlacesForAccount((int) $cid);
     }
 
-    public function formatDuration(Carbon $date, Carbon $from, Carbon $to): string
+    public function formatDuration(Carbon $start, Carbon $end): string
     {
-        $start = Carbon::parse($date->format('Y-m-d').' '.$from->format('H:i:s'));
-        $end = Carbon::parse($date->format('Y-m-d').' '.$to->format('H:i:s'));
-
-        if ($to->format('H:i:s') < $from->format('H:i:s')) {
-            $end->addDay();
-        }
-
         $minutes = max(0, $start->diffInMinutes($end));
         $hours = intdiv($minutes, 60);
         $rem = $minutes % 60;
@@ -477,10 +446,10 @@ class AvailabilityService
         }
 
         $overlapExists = Availability::query()
-            ->where('student_id', $studentId)
-            ->where('type', 'S')
+            ->forStudent($studentId)
+            ->studentOnly()
             ->when($ignoreId, fn (Builder $query) => $query->where('id', '!=', $ignoreId))
-            ->whereBetween('date', [$startUtc->clone()->subDay()->toDateString(), $startUtc->clone()->addDay()->toDateString()])
+            ->startingBetween($startUtc->clone()->subDay(), $startUtc->clone()->addDay())
             ->get()
             ->contains(function (Availability $slot) use ($startUtc, $endUtc) {
                 [$slotStart, $slotEnd] = $slot->bounds();

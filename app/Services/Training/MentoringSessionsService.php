@@ -91,7 +91,7 @@ class MentoringSessionsService
                 'mentor_id' => $mentorMember->id,
                 'mentor_rating' => $mentorAccount->qualification_atc?->vatsim,
                 'taken' => 1,
-                'taken_date' => $availability->date,
+                'taken_date' => $availability->startsAt()->toDateString(),
                 'taken_from' => $takenFrom,
                 'taken_to' => $takenTo,
                 'taken_time' => now(),
@@ -140,7 +140,7 @@ class MentoringSessionsService
                 'mentor_id' => $mentorMember->id,
                 'mentor_rating' => $mentorAccount->qualification_atc?->vatsim,
                 'taken' => 1,
-                'taken_date' => $availability->date,
+                'taken_date' => $availability->startsAt()->toDateString(),
                 'taken_from' => $takenFrom,
                 'taken_to' => $takenTo,
                 'taken_time' => now(),
@@ -178,7 +178,7 @@ class MentoringSessionsService
             $previousDateTime = $session->formattedSessionDateTime();
 
             $session->update([
-                'taken_date' => $availability->date,
+                'taken_date' => $availability->startsAt()->toDateString(),
                 'taken_from' => $takenFrom,
                 'taken_to' => $takenTo,
                 'taken_time' => now(),
@@ -437,7 +437,7 @@ class MentoringSessionsService
 
     private function validateSessionTimes(Availability $availability, string $takenFrom, string $takenTo): void
     {
-        $sessionStart = Carbon::parse($availability->date)->setTimeFromTimeString($takenFrom);
+        $sessionStart = $availability->startsAt()->setTimeFromTimeString($takenFrom);
 
         if ($sessionStart->isPast()) {
             throw new InvalidArgumentException('Cannot accept a mentoring session that is in the past.');
@@ -449,8 +449,8 @@ class MentoringSessionsService
 
         $requestedStart = strtotime($takenFrom);
         $requestedEnd = strtotime($takenTo);
-        $availabilityStart = strtotime($availability->from);
-        $availabilityEnd = strtotime($availability->to);
+        $availabilityStart = strtotime($availability->startsAt()->format('H:i:s'));
+        $availabilityEnd = strtotime($availability->endsAt()->format('H:i:s'));
 
         if ($requestedStart < $availabilityStart || $requestedEnd > $availabilityEnd) {
             throw new InvalidArgumentException("The requested times fall outside the student's availability window.");

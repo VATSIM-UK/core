@@ -142,8 +142,8 @@
 
 						@foreach ($student->availabilities as $avail)
 							@php
-								$start = \Carbon\Carbon::parse($avail->from);
-								$end = \Carbon\Carbon::parse($avail->to);
+								$start = $avail->startsAt();
+								$end = $avail->endsAt();
 
 								$startMinutesFromMidnight = $start->hour * 60 + $start->minute;
 

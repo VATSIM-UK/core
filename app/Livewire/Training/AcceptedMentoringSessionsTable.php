@@ -159,7 +159,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
 
         return app(MentoringSessionsService::class)->checkForOverlappingBookings(
             $session->position,
-            $availability->date,
+            $availability->startsAt()->toDateString(),
             $takenFrom,
             $takenTo,
             $session->id
@@ -185,7 +185,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
 
         return app(MentoringSessionsService::class)->checkForMentorOverlappingSession(
             $ctsMentorId,
-            $availability->date,
+            $availability->startsAt()->toDateString(),
             $takenFrom,
             $takenTo,
             $session->id
@@ -363,15 +363,14 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                     ->required()
                     ->live()
                     ->options(fn (Session $record) => Availability::query()
-                        ->where('student_id', $record->student_id)
-                        ->whereDate('date', '>=', now())
-                        ->orderBy('date')
-                        ->orderBy('from')
+                        ->forStudent($record->student_id)
+                        ->startingFrom(now()->utc())
+                        ->orderedByStart()
                         ->get()
                         ->mapWithKeys(function ($avail) {
-                            $date = Carbon::parse($avail->date)->toPanelDateWithWeekday();
-                            $start = Carbon::parse($avail->from)->toPanelTime();
-                            $end = Carbon::parse($avail->to)->toPanelTime();
+                            $date = $avail->startsAt()->toPanelDateWithWeekday();
+                            $start = $avail->startsAt()->toPanelTime();
+                            $end = $avail->endsAt()->toPanelTime();
 
                             return [$avail->id => "{$date} ({$start} to {$end})"];
                         })
@@ -416,11 +415,11 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                             }
 
                             $options = $this->generateTimeOptions(
-                                Carbon::parse($avail->from)->format('H:i'),
-                                Carbon::parse($avail->to)->format('H:i')
+                                $avail->startsAt()->format('H:i'),
+                                $avail->endsAt()->format('H:i')
                             );
 
-                            if (Carbon::parse($avail->date)->isToday()) {
+                            if ($avail->startsAt()->isToday()) {
                                 $nowTime = now()->format('H:i');
                                 $options = array_filter($options, fn ($time) => $time >= $nowTime, ARRAY_FILTER_USE_KEY);
                             }
@@ -446,8 +445,8 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                             }
 
                             $options = $this->generateTimeOptions(
-                                Carbon::parse($avail->from)->format('H:i'),
-                                Carbon::parse($avail->to)->format('H:i')
+                                $avail->startsAt()->format('H:i'),
+                                $avail->endsAt()->format('H:i')
                             );
 
                             $startTime = $get('taken_from');
@@ -514,7 +513,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                     return;
                 }
 
-                $proposedStart = Carbon::parse($availability->date)->setTimeFromTimeString($data['taken_from']);
+                $proposedStart = $availability->startsAt()->setTimeFromTimeString($data['taken_from']);
                 if ($proposedStart->isPast()) {
                     Notification::make()
                         ->title('Invalid Time Chosen')
@@ -534,7 +533,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                 );
 
                 if ($success) {
-                    $dateFormatted = Carbon::parse($availability->date)->toPanelDate();
+                    $dateFormatted = $availability->startsAt()->toPanelDate();
 
                     Notification::make()
                         ->title('Session Rescheduled')

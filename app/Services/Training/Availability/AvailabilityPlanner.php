@@ -104,7 +104,7 @@ class AvailabilityPlanner
         $eligible = [];
 
         foreach ($rows as $row) {
-            if ($row->date->format('Y-m-d') !== $date) {
+            if ($row->startsAt()->format('Y-m-d') !== $date) {
                 continue;
             }
 
@@ -302,10 +302,7 @@ class AvailabilityPlanner
 
     private function classifyRow(Availability $row, Carbon $start, Carbon $end, Carbon $boundary, Carbon $maxDate): string
     {
-        $from = $row->from->format('H:i:s');
-        $to = $row->to->format('H:i:s');
-
-        if ($to < $from && $to !== '00:00:00') {
+        if ($row->crossesMidnight()) {
             return self::CROSS_MIDNIGHT;
         }
 

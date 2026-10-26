@@ -236,11 +236,10 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         return Member::query()
             ->whereIn('cid', $accountIds)
             ->whereHas('availabilities', function ($query) use ($targetDate) {
-                $query->whereDate('date', $targetDate);
+                $query->onDate($targetDate);
             })
             ->with(['availabilities' => function ($query) use ($targetDate) {
-                $query->whereDate('date', $targetDate)
-                    ->orderBy('from', 'asc');
+                $query->onDate($targetDate)->orderedByStart();
             }])
             ->addSelect([
                 'last_session_date' => Session::selectRaw("CONCAT(taken_date, ' ', COALESCE(taken_from, '00:00:00'))")
@@ -271,8 +270,8 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
         foreach ($students as $student) {
             foreach ($student->availabilities as $avail) {
-                $startHour = (int) Carbon::parse($avail->from)->format('G');
-                $endHour = (int) Carbon::parse($avail->to)->format('G');
+                $startHour = (int) $avail->startsAt()->format('G');
+                $endHour = (int) $avail->endsAt()->format('G');
 
                 if ($startHour < $minHour) {
                     $minHour = $startHour;
@@ -349,7 +348,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             })
             ->modalDescription(function (array $arguments) {
                 $availability = Availability::findOrFail($arguments['availability_id']);
-                $date = Carbon::parse($availability->date)->toPanelDateWithWeekday();
+                $date = $availability->startsAt()->toPanelDateWithWeekday();
 
                 return "You are creating a mentoring session for {$date}. Please choose a position and confirm the exact start and end times below.";
             })
@@ -365,11 +364,11 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                     $defaultPosition = array_key_first($positionOptions);
                 }
 
-                $minTime = Carbon::parse($availability->from)->toPanelTime();
-                $maxTime = Carbon::parse($availability->to)->toPanelTime();
+                $minTime = $availability->startsAt()->toPanelTime();
+                $maxTime = $availability->endsAt()->toPanelTime();
                 $timeOptions = $this->generateTimeOptions($minTime, $maxTime);
 
-                if (Carbon::parse($availability->date)->isToday()) {
+                if ($availability->startsAt()->isToday()) {
                     $nowTime = now()->format('H:i');
                     $timeOptions = array_filter($timeOptions, fn ($time) => $time >= $nowTime, ARRAY_FILTER_USE_KEY);
                 }
@@ -442,8 +441,8 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                         ->description('The student\'s availability window for this slot has already expired. You won\'t be able to create a session during this slot.')
                         ->danger()
                         ->visible(function () use ($availability) {
-                            $slotEnd = Carbon::parse($availability->date)
-                                ->setTimeFromTimeString(Carbon::parse($availability->to)->format('H:i'));
+                            $slotEnd = $availability->startsAt()
+                                ->setTimeFromTimeString($availability->endsAt()->format('H:i'));
 
                             return $slotEnd->isBefore(now());
                         }),
@@ -458,7 +457,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                                 return false;
                             }
 
-                            $sessionStart = Carbon::parse($availability->date)->setTimeFromTimeString($selectedTime);
+                            $sessionStart = $availability->startsAt()->setTimeFromTimeString($selectedTime);
 
                             return $sessionStart->isAfter(now()) && now()->diffInHours($sessionStart, false) < 24;
                         }),
@@ -507,7 +506,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             ->action(function (array $data, array $arguments, MentoringSessionsService $mentoringService) {
                 $availability = Availability::findOrFail($arguments['availability_id']);
                 $student = Member::findOrFail($availability->student_id);
-                $formattedDate = Carbon::parse($availability->date)->toPanelDate();
+                $formattedDate = $availability->startsAt()->toPanelDate();
                 $place = $this->trainingPlaceForStudentCid((int) $student->cid);
 
                 if (! $place) {
@@ -611,7 +610,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
         return app(MentoringSessionsService::class)->checkForOverlappingBookings(
             $position,
-            $availability->date,
+            $availability->startsAt()->toDateString(),
             $takenFrom,
             $takenTo,
         );
@@ -629,7 +628,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
         return app(MentoringSessionsService::class)->checkForMentorOverlappingSession(
             $ctsMentorId,
-            $availability->date,
+            $availability->startsAt()->toDateString(),
             $takenFrom,
             $takenTo,
             $ignoreSessionId

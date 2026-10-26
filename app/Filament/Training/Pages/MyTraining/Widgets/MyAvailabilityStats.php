@@ -4,7 +4,6 @@ namespace App\Filament\Training\Pages\MyTraining\Widgets;
 
 use App\Models\Cts\Availability;
 use App\Models\Cts\Member;
-use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -19,22 +18,16 @@ class MyAvailabilityStats extends BaseWidget
         }
 
         $query = Availability::query()
-            ->where('student_id', $studentId)
-            ->where('type', 'S')
-            ->where(function ($q) {
-                $q->where('date', '>', now()->toDateString())
-                    ->orWhere(function ($q) {
-                        $q->where('date', now()->toDateString())
-                            ->where('to', '>', now()->toTimeString());
-                    });
-            });
+            ->forStudent($studentId)
+            ->studentOnly()
+            ->endingAfter(now()->utc());
 
         $futureAvailability = $query->get();
 
         $futureSlotsCount = $futureAvailability->count();
 
-        $totalMinutes = $futureAvailability->sum(function ($availability) {
-            return Carbon::parse($availability->from)->diffInMinutes(Carbon::parse($availability->to));
+        $totalMinutes = $futureAvailability->sum(function (Availability $availability) {
+            return $availability->startsAt()->diffInMinutes($availability->endsAt());
         });
 
         $hours = round($totalMinutes / 60, 1);
