@@ -24,11 +24,11 @@
 
 	<x-filament::tabs>
 		<x-filament::tabs.item icon="heroicon-m-cursor-arrow-rays" :active="$mode === 'calendar'" wire:click="$set('mode', 'calendar')">
-			Calendar (NEW)
+			Calendar (New)
 		</x-filament::tabs.item>
 
 		<x-filament::tabs.item icon="heroicon-m-pencil-square" :active="$mode === 'form'" wire:click="$set('mode', 'form')">
-			Form (OG)
+			Form
 		</x-filament::tabs.item>
 	</x-filament::tabs>
 
