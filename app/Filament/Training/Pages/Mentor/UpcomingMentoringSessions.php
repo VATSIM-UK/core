@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Training\Pages\Mentor;
 
 use App\Enums\CalendarViewer;
-use App\Filament\Training\Actions\SubscribeToCalendarAction;
 use App\Filament\Training\Pages\Concerns\AddToCalendar;
 use App\Filament\Training\Pages\Mentor\Base\BaseMentoringHistoryPage;
 use App\Filament\Training\Pages\Mentor\Concerns\RemembersTrainingGroupCategory;
@@ -95,7 +94,6 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
                 ->icon('heroicon-m-chevron-down')
                 ->color('gray')
                 ->button(),
-            SubscribeToCalendarAction::make(),
         ];
     }
 
