@@ -611,8 +611,7 @@ class MyAvailability extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query($this->getAvailabilityService()->getFutureAvailabilityQuery((int) auth()->id()))
-            ->defaultSort('starts_at')
+            ->query($this->getAvailabilityService()->getFutureAvailabilityQuery((int) auth()->id())->orderedByStart())
             ->columns([
                 TextColumn::make('starts_at')
                     ->label('Date')
