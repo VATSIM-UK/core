@@ -451,7 +451,7 @@ class MentoringSessionsService
         $requestedStart = strtotime($takenFrom);
         $requestedEnd = strtotime($takenTo);
         $availabilityStart = strtotime($availability->startsAt()->format('H:i:s'));
-        $availabilityEnd = strtotime($availability->endsAt()->format('H:i:s'));
+        $availabilityEnd = strtotime($availability->bookableEndsAt()->format('H:i:s'));
 
         if ($requestedStart < $availabilityStart || $requestedEnd > $availabilityEnd) {
             throw new InvalidArgumentException("The requested times fall outside the student's availability window.");

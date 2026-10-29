@@ -53,6 +53,20 @@ class Availability extends Model
             && ! $end->equalTo($end->copy()->startOfDay());
     }
 
+    /**
+     * A slot running to midnight books to 23:45: a CTS session stores a time, not an instant.
+     */
+    public function bookableEndsAt(): Carbon
+    {
+        $end = $this->endsAt();
+
+        if ($end->greaterThan($this->startsAt()) && $end->equalTo($end->copy()->startOfDay())) {
+            return $end->subMinutes(15);
+        }
+
+        return $end;
+    }
+
     public function scopeForAccount(Builder $query, int $accountId): Builder
     {
         return $query->where('account_id', $accountId);

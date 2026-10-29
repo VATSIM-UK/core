@@ -416,7 +416,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
 
                             $options = $this->generateTimeOptions(
                                 $avail->startsAt()->format('H:i'),
-                                $avail->endsAt()->format('H:i')
+                                $avail->bookableEndsAt()->format('H:i')
                             );
 
                             if ($avail->startsAt()->isToday()) {
@@ -446,7 +446,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
 
                             $options = $this->generateTimeOptions(
                                 $avail->startsAt()->format('H:i'),
-                                $avail->endsAt()->format('H:i')
+                                $avail->bookableEndsAt()->format('H:i')
                             );
 
                             $startTime = $get('taken_from');

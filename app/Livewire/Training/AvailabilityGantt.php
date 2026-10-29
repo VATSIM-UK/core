@@ -265,6 +265,14 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             });
     }
 
+    /** A midnight close is hour 24, or the timeline collapses to a single hour. */
+    private function timelineEndHour(Availability $availability): int
+    {
+        $end = $availability->endsAt();
+
+        return $end->equalTo($end->copy()->startOfDay()) ? 24 : (int) $end->format('G');
+    }
+
     public function render()
     {
         $students = $this->students;
@@ -276,7 +284,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         foreach ($students as $student) {
             foreach ($student->availabilities as $avail) {
                 $startHour = (int) $avail->startsAt()->format('G');
-                $endHour = (int) $avail->endsAt()->format('G');
+                $endHour = $this->timelineEndHour($avail);
 
                 if ($startHour < $minHour) {
                     $minHour = $startHour;
@@ -370,7 +378,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                 }
 
                 $minTime = $availability->startsAt()->toPanelTime();
-                $maxTime = $availability->endsAt()->toPanelTime();
+                $maxTime = $availability->bookableEndsAt()->toPanelTime();
                 $timeOptions = $this->generateTimeOptions($minTime, $maxTime);
 
                 if ($availability->startsAt()->isToday()) {
@@ -445,12 +453,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                         ->heading('This availability slot is in the past')
                         ->description('The student\'s availability window for this slot has already expired. You won\'t be able to create a session during this slot.')
                         ->danger()
-                        ->visible(function () use ($availability) {
-                            $slotEnd = $availability->startsAt()
-                                ->setTimeFromTimeString($availability->endsAt()->format('H:i'));
-
-                            return $slotEnd->isBefore(now());
-                        }),
+                        ->visible(fn () => $availability->endsAt()->isBefore(now())),
 
                     Callout::make('24_hours_notice')
                         ->heading('This session is being booked with less than 24 hours notice')
