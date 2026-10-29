@@ -363,7 +363,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                     ->required()
                     ->live()
                     ->options(fn (Session $record) => Availability::query()
-                        ->forStudent($record->student_id)
+                        ->forAccount((int) $record->student->cid)
                         ->startingFrom(now()->utc())
                         ->orderedByStart()
                         ->get()

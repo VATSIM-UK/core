@@ -2,7 +2,6 @@
 
 namespace App\Filament\Training\Pages\MyTraining\Widgets;
 
-use App\Models\Cts\Member;
 use App\Models\Training\Availability;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -11,15 +10,14 @@ class MyAvailabilityStats extends BaseWidget
 {
     protected function getStats(): array
     {
-        $studentId = $this->resolveStudentId();
+        $accountId = $this->resolveAccountId();
 
-        if (! $studentId) {
+        if (! $accountId) {
             return [];
         }
 
         $query = Availability::query()
-            ->forStudent($studentId)
-            ->studentOnly()
+            ->forAccount($accountId)
             ->endingAfter(now()->utc());
 
         $futureAvailability = $query->get();
@@ -38,8 +36,8 @@ class MyAvailabilityStats extends BaseWidget
         ];
     }
 
-    protected function resolveStudentId(): ?int
+    protected function resolveAccountId(): ?int
     {
-        return Member::where('cid', auth()->id())->value('id');
+        return (int) auth()->id();
     }
 }

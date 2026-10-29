@@ -2,7 +2,7 @@
 
 namespace Database\Factories\Training;
 
-use App\Models\Cts\Member;
+use App\Models\Mship\Account;
 use App\Models\Training\Availability;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -15,63 +15,79 @@ class AvailabilityFactory extends Factory
     protected $model = Availability::class;
 
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array
     {
-        $date = $this->faker->dateTimeBetween('now', '+30 days');
-        $startTime = $this->faker->time('H:i:s', '20:00:00');
-        $endTime = Carbon::createFromTimeString($startTime)->addHours(rand(2, 4))->format('H:i:s');
+        $start = Carbon::parse(
+            $this->faker->dateTimeBetween('now', '+30 days')->format('Y-m-d').' '.$this->faker->time('H:i:s', '20:00:00')
+        );
 
         return [
-            'student_id' => Member::factory(),
-            'date' => $date->format('Y-m-d'),
-            'from' => $startTime,
-            'to' => $endTime,
-            'type' => 'S', // Student availability
+            'account_id' => Account::factory(),
+            'starts_at' => $start,
+            'ends_at' => $start->copy()->addHours(rand(2, 4)),
         ];
     }
 
-    /**
-     * Create availability for a specific student
-     */
-    public function forStudent(int $studentId): static
+    public function forAccount(int $accountId): static
     {
         return $this->state(fn (array $attributes) => [
-            'student_id' => $studentId,
+            'account_id' => $accountId,
         ]);
     }
 
     /**
-     * Create availability for today or later
+     * Move the slot to a random day between today and the end of the window, keeping its length.
      */
     public function future(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'date' => $this->faker->dateTimeBetween('today', '+30 days')->format('Y-m-d'),
-        ]);
+        return $this->state(function (array $attributes) {
+            $startsAt = Carbon::parse($attributes['starts_at']);
+            $minutes = (int) $startsAt->diffInMinutes(Carbon::parse($attributes['ends_at']));
+
+            $start = Carbon::parse(
+                $this->faker->dateTimeBetween('today', '+30 days')->format('Y-m-d').' '.$startsAt->format('H:i:s')
+            );
+
+            return [
+                'starts_at' => $start,
+                'ends_at' => $start->copy()->addMinutes($minutes),
+            ];
+        });
     }
 
-    /**
-     * Create availability for a specific date
-     */
     public function onDate(string $date): static
     {
-        return $this->state(fn (array $attributes) => [
-            'date' => $date,
-        ]);
+        return $this->state(function (array $attributes) use ($date) {
+            $shift = Carbon::parse($attributes['starts_at'])->startOfDay()->diffInDays(Carbon::parse($date)->startOfDay());
+
+            return [
+                'starts_at' => Carbon::parse($attributes['starts_at'])->addDays($shift),
+                'ends_at' => Carbon::parse($attributes['ends_at'])->addDays($shift),
+            ];
+        });
     }
 
     /**
-     * Create availability with specific time range
+     * A `to` at or before `from` means the slot runs past midnight.
      */
     public function timeRange(string $from, string $to): static
     {
-        return $this->state(fn (array $attributes) => [
-            'from' => $from,
-            'to' => $to,
-        ]);
+        return $this->state(function (array $attributes) use ($from, $to) {
+            $date = Carbon::parse($attributes['starts_at'])->format('Y-m-d');
+
+            $start = Carbon::parse($date.' '.$from, 'UTC');
+            $end = Carbon::parse($date.' '.$to, 'UTC');
+
+            if ($end->lessThanOrEqualTo($start)) {
+                $end->addDay();
+            }
+
+            return [
+                'starts_at' => $start,
+                'ends_at' => $end,
+            ];
+        });
     }
 }

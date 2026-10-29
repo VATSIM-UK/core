@@ -79,13 +79,11 @@ class CtsExamsAndMentoringSeeder extends Seeder
 
         Availability::query()->updateOrCreate(
             [
-                'student_id' => $examStudentMember->id,
-                'date' => now()->addDays(5)->format('Y-m-d'),
+                'account_id' => (int) $examStudentMember->cid,
+                'starts_at' => now()->addDays(5)->format('Y-m-d').' 14:00:00',
             ],
             [
-                'from' => '14:00:00',
-                'to' => '18:00:00',
-                'type' => 'S',
+                'ends_at' => now()->addDays(5)->format('Y-m-d').' 18:00:00',
             ],
         );
 

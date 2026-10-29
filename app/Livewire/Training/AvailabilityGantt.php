@@ -231,16 +231,20 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         }
 
         $placeByCid = $places->keyBy('account_id');
-        $accountIds = $placeByCid->keys()->all();
+
+        $slots = Availability::query()
+            ->whereIn('account_id', $placeByCid->keys()->all())
+            ->onDate($targetDate)
+            ->orderedByStart()
+            ->get()
+            ->groupBy('account_id');
+
+        if ($slots->isEmpty()) {
+            return collect();
+        }
 
         return Member::query()
-            ->whereIn('cid', $accountIds)
-            ->whereHas('availabilities', function ($query) use ($targetDate) {
-                $query->onDate($targetDate);
-            })
-            ->with(['availabilities' => function ($query) use ($targetDate) {
-                $query->onDate($targetDate)->orderedByStart();
-            }])
+            ->whereIn('cid', $slots->keys()->all())
             ->addSelect([
                 'last_session_date' => Session::selectRaw("CONCAT(taken_date, ' ', COALESCE(taken_from, '00:00:00'))")
                     ->whereColumn('student_id', 'members.id')
@@ -252,11 +256,12 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             ])
             ->orderByRaw("COALESCE(last_session_date, '1970-01-01 00:00:00') ASC")
             ->get()
-            ->each(function (Member $member) use ($placeByCid) {
+            ->each(function (Member $member) use ($placeByCid, $slots) {
                 /** @var TrainingPlace|null $place */
                 $place = $placeByCid->get($member->cid);
                 $member->setAttribute('primary_position', $place?->primaryCtsPosition());
                 $member->setAttribute('training_place_id', $place?->id);
+                $member->setRelation('availabilities', $slots->get($member->cid, collect()));
             });
     }
 
@@ -342,7 +347,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
         return Action::make('acceptSession')
             ->modalHeading(function (array $arguments) {
                 $availability = Availability::findOrFail($arguments['availability_id']);
-                $student = Member::findOrFail($availability->student_id);
+                $student = Member::where('cid', $availability->account_id)->firstOrFail();
 
                 return "Create Mentoring Session: {$student->name}";
             })
@@ -355,7 +360,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             ->modalSubmitActionLabel('Create Session')
             ->form(function (array $arguments) {
                 $availability = Availability::findOrFail($arguments['availability_id']);
-                $student = Member::findOrFail($availability->student_id);
+                $student = Member::where('cid', $availability->account_id)->firstOrFail();
                 $place = $this->trainingPlaceForStudentCid((int) $student->cid);
                 $positionOptions = $this->bookablePositionOptions($place);
                 $defaultPosition = $place?->primaryCtsPosition();
@@ -505,7 +510,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             })
             ->action(function (array $data, array $arguments, MentoringSessionsService $mentoringService) {
                 $availability = Availability::findOrFail($arguments['availability_id']);
-                $student = Member::findOrFail($availability->student_id);
+                $student = Member::where('cid', $availability->account_id)->firstOrFail();
                 $formattedDate = $availability->startsAt()->toPanelDate();
                 $place = $this->trainingPlaceForStudentCid((int) $student->cid);
 
