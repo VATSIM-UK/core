@@ -88,12 +88,7 @@ class MyAvailabilityFormLogWiringTest extends BaseTrainingPanelTestCase
     {
         $date = now()->addDay()->toDateString();
 
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date,
-            'from' => '18:00:00',
-            'to' => '20:00:00',
-            'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($date)->timeRange('18:00:00', '20:00:00')->create();
 
         $added = AvailabilityLogEntry::factory()->create([
             'training_place_id' => $this->place->id,
@@ -131,12 +126,7 @@ class MyAvailabilityFormLogWiringTest extends BaseTrainingPanelTestCase
     {
         $date = now()->addDay()->toDateString();
 
-        $slot = Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date,
-            'from' => '18:00:00',
-            'to' => '21:00:00',
-            'type' => 'S',
-        ]);
+        $slot = Availability::factory()->forAccount($this->studentAccount->id)->onDate($date)->timeRange('18:00:00', '21:00:00')->create();
 
         $added = AvailabilityLogEntry::factory()->create([
             'training_place_id' => $this->place->id,
@@ -170,12 +160,7 @@ class MyAvailabilityFormLogWiringTest extends BaseTrainingPanelTestCase
     {
         $date = now()->addDay()->toDateString();
 
-        $slot = Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date,
-            'from' => '18:00:00',
-            'to' => '21:00:00',
-            'type' => 'S',
-        ]);
+        $slot = Availability::factory()->forAccount($this->studentAccount->id)->onDate($date)->timeRange('18:00:00', '21:00:00')->create();
 
         $current = AvailabilityLogEntry::factory()->create([
             'training_place_id' => $this->place->id,
@@ -200,19 +185,9 @@ class MyAvailabilityFormLogWiringTest extends BaseTrainingPanelTestCase
     {
         $date = now()->addDay()->toDateString();
 
-        $slotA = Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date,
-            'from' => '18:00:00',
-            'to' => '19:00:00',
-            'type' => 'S',
-        ]);
+        $slotA = Availability::factory()->forAccount($this->studentAccount->id)->onDate($date)->timeRange('18:00:00', '19:00:00')->create();
 
-        $slotB = Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date,
-            'from' => '20:00:00',
-            'to' => '21:00:00',
-            'type' => 'S',
-        ]);
+        $slotB = Availability::factory()->forAccount($this->studentAccount->id)->onDate($date)->timeRange('20:00:00', '21:00:00')->create();
 
         $entryA = AvailabilityLogEntry::factory()->create([
             'training_place_id' => $this->place->id,

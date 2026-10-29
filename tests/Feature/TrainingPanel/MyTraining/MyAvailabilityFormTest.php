@@ -42,22 +42,12 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_only_shows_availability_for_the_authenticated_member(): void
     {
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => now()->addDay()->toDateString(),
-            'from' => '19:00:00',
-            'to' => '21:00:00',
-            'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate(now()->addDay()->toDateString())->timeRange('19:00:00', '21:00:00')->create();
 
         $otherAccount = Account::factory()->create();
         $otherMember = Member::factory()->recycle($otherAccount)->create(['cid' => $otherAccount->id]);
 
-        Availability::factory()->forStudent($otherMember->id)->create([
-            'date' => now()->addDays(2)->toDateString(),
-            'from' => '19:30:00',
-            'to' => '21:30:00',
-            'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($otherAccount->id)->onDate(now()->addDays(2)->toDateString())->timeRange('19:30:00', '21:30:00')->create();
 
         $component = Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
@@ -70,26 +60,11 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_only_shows_future_availability_slots(): void
     {
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => now()->subDay()->toDateString(),
-            'from' => '19:00:00',
-            'to' => '21:00:00',
-            'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate(now()->subDay()->toDateString())->timeRange('19:00:00', '21:00:00')->create();
 
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => now()->toDateString(),
-            'from' => '09:00:00',
-            'to' => '11:00:00',
-            'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate(now()->toDateString())->timeRange('09:00:00', '11:00:00')->create();
 
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => now()->addDay()->toDateString(),
-            'from' => '19:30:00',
-            'to' => '21:30:00',
-            'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate(now()->addDay()->toDateString())->timeRange('19:30:00', '21:30:00')->create();
 
         $component = Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
@@ -99,7 +74,7 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
         $records = $component->instance()->getTable()->getRecords();
 
         $this->assertCount(1, $records);
-        $this->assertEquals(now()->addDay()->toDateString(), $records->first()->date->toDateString());
+        $this->assertEquals(now()->addDay()->toDateString(), $records->first()->starts_at->toDateString());
     }
 
     #[Test]
@@ -115,7 +90,7 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
             ->set('slotData.to', '21:00')
             ->call('create');
 
-        $this->assertCount(1, Availability::where('student_id', $this->studentMember->id)->get());
+        $this->assertCount(1, Availability::where('account_id', $this->studentAccount->id)->get());
     }
 
     #[Test]
@@ -132,7 +107,7 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
             ->call('create')
             ->assertNotified();
 
-        $this->assertCount(0, Availability::where('student_id', $this->studentMember->id)->get());
+        $this->assertCount(0, Availability::where('account_id', $this->studentAccount->id)->get());
     }
 
     #[Test]
@@ -149,7 +124,7 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
             ->set('slotData.to', '21:00')
             ->call('create');
 
-        $this->assertCount(5, Availability::where('student_id', $this->studentMember->id)->get());
+        $this->assertCount(5, Availability::where('account_id', $this->studentAccount->id)->get());
     }
 
     #[Test]
@@ -157,12 +132,7 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
     {
         $date = now()->addDay()->toDateString();
 
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date,
-            'from' => '18:00:00',
-            'to' => '20:00:00',
-            'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($date)->timeRange('18:00:00', '20:00:00')->create();
 
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
@@ -172,11 +142,11 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
             ->set('slotData.to', '21:00')
             ->call('create');
 
-        $slots = Availability::where('student_id', $this->studentMember->id)->get();
+        $slots = Availability::where('account_id', $this->studentAccount->id)->get();
 
         $this->assertCount(1, $slots, 'Should have merged into one slot, not created a second');
-        $this->assertEquals('18:00:00', $slots->first()->getRawOriginal('from'));
-        $this->assertEquals('21:00:00', $slots->first()->getRawOriginal('to'));
+        $this->assertEquals("{$date} 18:00:00", $slots->first()->getRawOriginal('starts_at'));
+        $this->assertEquals("{$date} 21:00:00", $slots->first()->getRawOriginal('ends_at'));
     }
 
     #[Test]
@@ -184,12 +154,7 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
     {
         $date = now()->addDay()->toDateString();
 
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date,
-            'from' => '19:00:00',
-            'to' => '21:00:00',
-            'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($date)->timeRange('19:00:00', '21:00:00')->create();
 
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
@@ -199,11 +164,11 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
             ->set('slotData.to', '20:00')
             ->call('create');
 
-        $slots = Availability::where('student_id', $this->studentMember->id)->get();
+        $slots = Availability::where('account_id', $this->studentAccount->id)->get();
 
         $this->assertCount(1, $slots);
-        $this->assertEquals('17:00:00', $slots->first()->getRawOriginal('from'));
-        $this->assertEquals('21:00:00', $slots->first()->getRawOriginal('to'));
+        $this->assertEquals("{$date} 17:00:00", $slots->first()->getRawOriginal('starts_at'));
+        $this->assertEquals("{$date} 21:00:00", $slots->first()->getRawOriginal('ends_at'));
     }
 
     #[Test]
@@ -211,12 +176,7 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
     {
         $date = now()->addDay()->toDateString();
 
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date,
-            'from' => '17:00:00',
-            'to' => '19:00:00',
-            'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($date)->timeRange('17:00:00', '19:00:00')->create();
 
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
@@ -226,11 +186,11 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
             ->set('slotData.to', '22:00')
             ->call('create');
 
-        $slots = Availability::where('student_id', $this->studentMember->id)->get();
+        $slots = Availability::where('account_id', $this->studentAccount->id)->get();
 
         $this->assertCount(1, $slots);
-        $this->assertEquals('17:00:00', $slots->first()->getRawOriginal('from'));
-        $this->assertEquals('22:00:00', $slots->first()->getRawOriginal('to'));
+        $this->assertEquals("{$date} 17:00:00", $slots->first()->getRawOriginal('starts_at'));
+        $this->assertEquals("{$date} 22:00:00", $slots->first()->getRawOriginal('ends_at'));
     }
 
     #[Test]
@@ -238,12 +198,7 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
     {
         $date = now()->addDay()->toDateString();
 
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date,
-            'from' => '17:00:00',
-            'to' => '22:00:00',
-            'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($date)->timeRange('17:00:00', '22:00:00')->create();
 
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
@@ -253,11 +208,11 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
             ->set('slotData.to', '21:00')
             ->call('create');
 
-        $slots = Availability::where('student_id', $this->studentMember->id)->get();
+        $slots = Availability::where('account_id', $this->studentAccount->id)->get();
 
         $this->assertCount(1, $slots);
-        $this->assertEquals('17:00:00', $slots->first()->getRawOriginal('from'));
-        $this->assertEquals('22:00:00', $slots->first()->getRawOriginal('to'));
+        $this->assertEquals("{$date} 17:00:00", $slots->first()->getRawOriginal('starts_at'));
+        $this->assertEquals("{$date} 22:00:00", $slots->first()->getRawOriginal('ends_at'));
     }
 
     #[Test]
@@ -268,12 +223,7 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
         $otherAccount = Account::factory()->create();
         $otherMember = Member::factory()->recycle($otherAccount)->create(['cid' => $otherAccount->id]);
 
-        Availability::factory()->forStudent($otherMember->id)->create([
-            'date' => $date,
-            'from' => '18:00:00',
-            'to' => '20:00:00',
-            'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($otherAccount->id)->onDate($date)->timeRange('18:00:00', '20:00:00')->create();
 
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
@@ -283,8 +233,8 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
             ->set('slotData.to', '21:00')
             ->call('create');
 
-        $this->assertCount(1, Availability::where('student_id', $this->studentMember->id)->get());
-        $this->assertCount(1, Availability::where('student_id', $otherMember->id)->get());
+        $this->assertCount(1, Availability::where('account_id', $this->studentAccount->id)->get());
+        $this->assertCount(1, Availability::where('account_id', $otherAccount->id)->get());
     }
 
     #[Test]
@@ -300,11 +250,11 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
             ->set('slotData.to', '14:00')
             ->call('create');
 
-        $availability = Availability::where('student_id', $this->studentMember->id)->first();
+        $availability = Availability::where('account_id', $this->studentAccount->id)->first();
 
         $this->assertNotNull($availability);
-        $this->assertEquals('12:00:00', $availability->getRawOriginal('from'));
-        $this->assertEquals('14:00:00', $availability->getRawOriginal('to'));
+        $this->assertEquals("{$date} 12:00:00", $availability->getRawOriginal('starts_at'));
+        $this->assertEquals("{$date} 14:00:00", $availability->getRawOriginal('ends_at'));
     }
 
     #[Test]
@@ -313,9 +263,7 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
         $date = now()->addDay()->toDateString();
 
         foreach ([['17:00:00', '18:30:00'], ['20:00:00', '22:00:00']] as [$from, $to]) {
-            Availability::factory()->forStudent($this->studentMember->id)->create([
-                'date' => $date, 'from' => $from, 'to' => $to, 'type' => 'S',
-            ]);
+            Availability::factory()->forAccount($this->studentAccount->id)->onDate($date)->timeRange($from, $to)->create();
         }
 
         Livewire::actingAs($this->studentAccount)
@@ -326,10 +274,10 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
             ->set('slotData.to', '21:00')
             ->call('create');
 
-        $slot = Availability::where('student_id', $this->studentMember->id)->sole();
+        $slot = Availability::where('account_id', $this->studentAccount->id)->sole();
 
-        $this->assertEquals('17:00:00', $slot->getRawOriginal('from'));
-        $this->assertEquals('22:00:00', $slot->getRawOriginal('to'));
+        $this->assertEquals("{$date} 17:00:00", $slot->getRawOriginal('starts_at'));
+        $this->assertEquals("{$date} 22:00:00", $slot->getRawOriginal('ends_at'));
     }
 
     #[Test]
@@ -346,6 +294,6 @@ class MyAvailabilityFormTest extends BaseTrainingPanelTestCase
             ->call('create')
             ->assertNotified('You can only add availability up to 31 days ahead.');
 
-        $this->assertCount(0, Availability::where('student_id', $this->studentMember->id)->get());
+        $this->assertCount(0, Availability::where('account_id', $this->studentAccount->id)->get());
     }
 }

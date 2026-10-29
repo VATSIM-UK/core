@@ -52,6 +52,30 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     }
 
     /**
+     * @param  array<string, mixed>  $attributes
+     */
+    private function memberWithSlotAccount(array $attributes = []): Member
+    {
+        $member = Member::factory()->create($attributes);
+        Account::factory()->create(['id' => $member->cid]);
+
+        return $member;
+    }
+
+    private function slotFor(Member $student, mixed $date, string $from, string $to): Availability
+    {
+        if (! Account::find($student->cid)) {
+            Account::factory()->create(['id' => $student->cid]);
+        }
+
+        return Availability::factory()
+            ->forAccount($student->cid)
+            ->onDate($date)
+            ->timeRange($from, $to)
+            ->create();
+    }
+
+    /**
      * @param  array<string, mixed>  $availabilityOverrides
      */
     protected function createBookableStudent(
@@ -69,12 +93,11 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
             ]);
         });
 
-        Availability::factory()->create(array_merge([
-            'student_id' => $student->id,
-            'date' => Carbon::today()->format('Y-m-d'),
-            'from' => '10:00:00',
-            'to' => '12:00:00',
-        ], $availabilityOverrides));
+        Availability::factory()
+            ->forAccount($student->cid)
+            ->onDate($availabilityOverrides['date'] ?? Carbon::today())
+            ->timeRange($availabilityOverrides['from'] ?? '10:00:00', $availabilityOverrides['to'] ?? '12:00:00')
+            ->create();
 
         return $student;
     }
@@ -400,12 +423,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
         $targetDate = Carbon::today();
         $student = Member::factory()->create();
 
-        Availability::factory()->create([
-            'student_id' => $student->id,
-            'date' => $targetDate->format('Y-m-d'),
-            'from' => '10:00:00',
-            'to' => '12:00:00',
-        ]);
+        $this->slotFor($student, $targetDate->format('Y-m-d'), '10:00:00', '12:00:00');
 
         $component = Livewire::actingAs($this->mentor)
             ->test(AvailabilityGantt::class);
@@ -547,12 +565,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
             ]);
         });
 
-        Availability::factory()->create([
-            'student_id' => $student->id,
-            'date' => Carbon::today()->format('Y-m-d'),
-            'from' => '10:00:00',
-            'to' => '12:00:00',
-        ]);
+        $this->slotFor($student, Carbon::today()->format('Y-m-d'), '10:00:00', '12:00:00');
 
         ExamBooking::factory()->create([
             'student_id' => $student->id,
@@ -835,7 +848,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
         Carbon::setTestNow(Carbon::today()->setTime(10, 0));
 
         $busyStudent = Member::factory()->create(['name' => 'Busy Student']);
-        $pickupStudent = Member::factory()->create(['name' => 'Pickup Student']);
+        $pickupStudent = $this->memberWithSlotAccount(['name' => 'Pickup Student']);
 
         Session::factory()->create([
             'student_id' => $busyStudent->id,
@@ -857,12 +870,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
             'cancelled_datetime' => null,
         ]);
 
-        Availability::factory()->create([
-            'student_id' => $pickupStudent->id,
-            'date' => Carbon::today()->format('Y-m-d'),
-            'from' => '14:00:00',
-            'to' => '16:00:00',
-        ]);
+        Availability::factory()->forAccount($pickupStudent->cid)->onDate(Carbon::today()->format('Y-m-d'))->timeRange('14:00:00', '16:00:00')->create();
 
         Livewire::actingAs($this->mentor)
             ->test(AvailabilityGantt::class)
@@ -875,7 +883,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     #[Test]
     public function availability_gantt_does_not_show_my_sessions_lane_when_mentor_has_no_sessions(): void
     {
-        $pickupStudent = Member::factory()->create();
+        $pickupStudent = $this->memberWithSlotAccount();
 
         Session::factory()->create([
             'student_id' => $pickupStudent->id,
@@ -885,12 +893,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
             'cancelled_datetime' => null,
         ]);
 
-        Availability::factory()->create([
-            'student_id' => $pickupStudent->id,
-            'date' => Carbon::today()->format('Y-m-d'),
-            'from' => '14:00:00',
-            'to' => '16:00:00',
-        ]);
+        Availability::factory()->forAccount($pickupStudent->cid)->onDate(Carbon::today()->format('Y-m-d'))->timeRange('14:00:00', '16:00:00')->create();
 
         Livewire::actingAs($this->mentor)
             ->test(AvailabilityGantt::class)
@@ -903,7 +906,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
         Carbon::setTestNow(Carbon::today()->setTime(10, 0));
 
         $busyStudent = Member::factory()->create(['name' => 'Already Booked Student']);
-        $pickupStudent = Member::factory()->create(['name' => 'New Pickup Student']);
+        $pickupStudent = $this->memberWithSlotAccount(['name' => 'New Pickup Student']);
 
         Session::factory()->create([
             'student_id' => $busyStudent->id,
@@ -925,12 +928,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
             'cancelled_datetime' => null,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $pickupStudent->id,
-            'date' => Carbon::today()->format('Y-m-d'),
-            'from' => '17:00:00',
-            'to' => '21:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($pickupStudent->cid)->onDate(Carbon::today()->format('Y-m-d'))->timeRange('17:00:00', '21:00:00')->create();
 
         $component = Livewire::actingAs($this->mentor)
             ->test(AvailabilityGantt::class)
@@ -961,7 +959,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
         Carbon::setTestNow(Carbon::today()->setTime(10, 0));
 
         $busyStudent = Member::factory()->create(['name' => 'Already Booked Student']);
-        $pickupStudent = Member::factory()->create(['name' => 'Clear Pickup Student']);
+        $pickupStudent = $this->memberWithSlotAccount(['name' => 'Clear Pickup Student']);
 
         Session::factory()->create([
             'student_id' => $busyStudent->id,
@@ -983,12 +981,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
             'cancelled_datetime' => null,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $pickupStudent->id,
-            'date' => Carbon::today()->format('Y-m-d'),
-            'from' => '14:00:00',
-            'to' => '16:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($pickupStudent->cid)->onDate(Carbon::today()->format('Y-m-d'))->timeRange('14:00:00', '16:00:00')->create();
 
         $component = Livewire::actingAs($this->mentor)
             ->test(AvailabilityGantt::class)

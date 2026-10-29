@@ -46,21 +46,9 @@ class MyAvailabilityStatsTest extends TestCase
     #[Test]
     public function it_calculates_stats_for_future_slots_correctly(): void
     {
-        Availability::factory()->create([
-            'student_id' => $this->member->id,
-            'type' => 'S',
-            'date' => '2026-05-11',
-            'from' => '18:00:00',
-            'to' => '20:00:00',
-        ]);
+        Availability::factory()->forAccount($this->user->id)->onDate('2026-05-11')->timeRange('18:00:00', '20:00:00')->create();
 
-        Availability::factory()->create([
-            'student_id' => $this->member->id,
-            'type' => 'S',
-            'date' => '2026-05-12',
-            'from' => '10:00:00',
-            'to' => '11:30:00',
-        ]);
+        Availability::factory()->forAccount($this->user->id)->onDate('2026-05-12')->timeRange('10:00:00', '11:30:00')->create();
 
         Livewire::actingAs($this->user)
             ->test(MyAvailabilityStats::class)
@@ -73,21 +61,9 @@ class MyAvailabilityStatsTest extends TestCase
     #[Test]
     public function it_includes_slots_happening_later_today_but_excludes_past_slots(): void
     {
-        Availability::factory()->create([
-            'student_id' => $this->member->id,
-            'type' => 'S',
-            'date' => '2026-05-10',
-            'from' => '08:00:00',
-            'to' => '10:00:00',
-        ]);
+        Availability::factory()->forAccount($this->user->id)->onDate('2026-05-10')->timeRange('08:00:00', '10:00:00')->create();
 
-        Availability::factory()->create([
-            'student_id' => $this->member->id,
-            'type' => 'S',
-            'date' => '2026-05-10',
-            'from' => '14:00:00',
-            'to' => '16:00:00',
-        ]);
+        Availability::factory()->forAccount($this->user->id)->onDate('2026-05-10')->timeRange('14:00:00', '16:00:00')->create();
 
         Livewire::actingAs($this->user)
             ->test(MyAvailabilityStats::class)
@@ -100,15 +76,10 @@ class MyAvailabilityStatsTest extends TestCase
     #[Test]
     public function it_ignores_availability_for_other_members(): void
     {
-        $otherMember = Member::factory()->create();
+        $otherAccount = Account::factory()->createQuietly();
+        $otherMember = Member::factory()->forAccount($otherAccount)->create();
 
-        Availability::factory()->create([
-            'student_id' => $otherMember->id,
-            'type' => 'S',
-            'date' => '2026-06-01',
-            'from' => '12:00:00',
-            'to' => '15:00:00',
-        ]);
+        Availability::factory()->forAccount($otherAccount->id)->onDate('2026-06-01')->timeRange('12:00:00', '15:00:00')->create();
 
         Livewire::actingAs($this->user)
             ->test(MyAvailabilityStats::class)

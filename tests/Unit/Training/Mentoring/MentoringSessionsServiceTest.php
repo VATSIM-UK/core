@@ -89,12 +89,7 @@ class MentoringSessionsServiceTest extends TestCase
             'prog_sheet_id' => 3,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow()->format('Y-m-d'),
-            'from' => '10:00:00',
-            'to' => '14:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow()->format('Y-m-d'))->timeRange('10:00:00', '14:00:00')->create();
 
         $this->assertTrue($this->service->createSession(
             $place,
@@ -139,12 +134,7 @@ class MentoringSessionsServiceTest extends TestCase
             'training_position_id' => $trainingPosition->id,
         ]));
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow()->format('Y-m-d'),
-            'from' => '10:00:00',
-            'to' => '14:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow()->format('Y-m-d'))->timeRange('10:00:00', '14:00:00')->create();
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The selected position is not valid for this training place.');
@@ -184,12 +174,7 @@ class MentoringSessionsServiceTest extends TestCase
             'prog_sheet_id' => 3,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow()->format('Y-m-d'),
-            'from' => '10:00:00',
-            'to' => '14:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow()->format('Y-m-d'))->timeRange('10:00:00', '14:00:00')->create();
 
         $this->expectException(AuthorizationException::class);
 
@@ -219,10 +204,7 @@ class MentoringSessionsServiceTest extends TestCase
     #[Test]
     public function accept_session_returns_false_when_student_has_no_pending_session(): void
     {
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->create();
 
         $this->assertFalse($this->service->acceptSession(
             999999,
@@ -242,10 +224,7 @@ class MentoringSessionsServiceTest extends TestCase
             'filed' => now(),
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->create();
 
         $this->assertFalse($this->service->acceptSession(
             $session->id,
@@ -265,10 +244,7 @@ class MentoringSessionsServiceTest extends TestCase
             'cancelled_datetime' => now(),
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->create();
 
         $this->assertFalse($this->service->acceptSession(
             $session->id,
@@ -290,10 +266,7 @@ class MentoringSessionsServiceTest extends TestCase
             'mentor_id' => null,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->create();
 
         $this->assertFalse($this->service->acceptSession(
             $mismatchedSession->id,
@@ -320,12 +293,7 @@ class MentoringSessionsServiceTest extends TestCase
             'taken' => 0,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-            'from' => '10:00:00',
-            'to' => '12:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->timeRange('10:00:00', '12:00:00')->create();
 
         $this->assertTrue($this->service->acceptSession(
             $pendingSession->id,
@@ -367,12 +335,7 @@ class MentoringSessionsServiceTest extends TestCase
             'taken' => 0,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-            'from' => '10:00:00',
-            'to' => '12:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->timeRange('10:00:00', '12:00:00')->create();
 
         $this->assertTrue($this->service->acceptSession(
             $pendingSession->id,
@@ -421,12 +384,7 @@ class MentoringSessionsServiceTest extends TestCase
             'taken' => 0,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-            'from' => '10:00:00',
-            'to' => '12:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->timeRange('10:00:00', '12:00:00')->create();
 
         $this->assertTrue($this->service->acceptSession(
             $pendingSession->id,
@@ -441,12 +399,7 @@ class MentoringSessionsServiceTest extends TestCase
             ->where('position', 'EGLL_APP')
             ->firstOrFail();
 
-        $newAvailability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow()->addDay(),
-            'from' => '14:00:00',
-            'to' => '16:00:00',
-        ]);
+        $newAvailability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow()->addDay())->timeRange('14:00:00', '16:00:00')->create();
 
         $this->assertTrue($this->service->rescheduleSession(
             $pendingSession->id,
@@ -486,12 +439,7 @@ class MentoringSessionsServiceTest extends TestCase
             'taken' => 0,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-            'from' => '10:00:00',
-            'to' => '12:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->timeRange('10:00:00', '12:00:00')->create();
 
         $this->assertTrue($this->service->acceptSession(
             $pendingSession->id,
@@ -533,12 +481,7 @@ class MentoringSessionsServiceTest extends TestCase
             'taken' => 0,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-            'from' => '10:00:00',
-            'to' => '12:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->timeRange('10:00:00', '12:00:00')->create();
 
         $this->assertTrue($this->service->acceptSession(
             $pendingSession->id,
@@ -585,12 +528,7 @@ class MentoringSessionsServiceTest extends TestCase
             'mentor_id' => null,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-            'from' => '09:00:00',
-            'to' => '13:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->timeRange('09:00:00', '13:00:00')->create();
 
         $this->assertTrue($this->service->acceptSession(
             $secondPending->id,
@@ -624,12 +562,7 @@ class MentoringSessionsServiceTest extends TestCase
             'mentor_id' => null,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-            'from' => '09:00:00',
-            'to' => '13:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->timeRange('09:00:00', '13:00:00')->create();
 
         $this->assertTrue($this->service->acceptSession(
             $secondPending->id,
@@ -663,12 +596,7 @@ class MentoringSessionsServiceTest extends TestCase
             'mentor_id' => null,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-            'from' => '09:00:00',
-            'to' => '13:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->timeRange('09:00:00', '13:00:00')->create();
 
         $this->expectException(AuthorizationException::class);
 
@@ -690,12 +618,7 @@ class MentoringSessionsServiceTest extends TestCase
             'mentor_id' => null,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-            'from' => '10:00:00',
-            'to' => '12:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->timeRange('10:00:00', '12:00:00')->create();
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -717,12 +640,7 @@ class MentoringSessionsServiceTest extends TestCase
             'mentor_id' => null,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-            'from' => '09:00:00',
-            'to' => '13:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->timeRange('09:00:00', '13:00:00')->create();
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -746,12 +664,7 @@ class MentoringSessionsServiceTest extends TestCase
             'mentor_id' => null,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-            'from' => '09:00:00',
-            'to' => '13:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->timeRange('09:00:00', '13:00:00')->create();
 
         $this->assertTrue($this->service->acceptSession(
             $pendingSession->id,
@@ -768,10 +681,7 @@ class MentoringSessionsServiceTest extends TestCase
     #[Test]
     public function reschedule_session_throws_exception_when_session_does_not_exist(): void
     {
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->create();
 
         $this->expectException(ModelNotFoundException::class);
 
@@ -818,12 +728,7 @@ class MentoringSessionsServiceTest extends TestCase
             'bookable_id' => $session->id,
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow(),
-            'from' => '14:00:00',
-            'to' => '16:00:00',
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow())->timeRange('14:00:00', '16:00:00')->create();
 
         $this->assertTrue($this->service->rescheduleSession(
             $session->id,
@@ -871,12 +776,7 @@ class MentoringSessionsServiceTest extends TestCase
             'taken_to' => '12:00:00',
         ]);
 
-        $availability = Availability::factory()->create([
-            'student_id' => $this->studentMember->id,
-            'date' => Carbon::tomorrow()->addDay(),
-            'from' => '12:00',
-            'to' => '20:00',
-        ]);
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow()->addDay())->timeRange('12:00', '20:00')->create();
 
         $this->assertTrue($this->service->rescheduleSession(
             $session->id,

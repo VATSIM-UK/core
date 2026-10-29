@@ -55,7 +55,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
 
         // Create student availability
         $this->availability = Availability::factory()
-            ->forStudent($this->studentMember->id)
+            ->forAccount($this->studentAccount->id)
             ->future()
             ->timeRange('14:00:00', '18:00:00')
             ->create();
@@ -195,8 +195,8 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
         // Verify the exam booking was updated
         $this->examBooking->refresh();
 
-        $expectedStartTime = Carbon::parse($this->availability->date->format('Y-m-d').' '.sprintf('%02d:%02d:00', $startHour, $startMinute));
-        $expectedEndTime = Carbon::parse($this->availability->date->format('Y-m-d').' '.sprintf('%02d:%02d:00', $endHour, $endMinute));
+        $expectedStartTime = Carbon::parse($this->availability->starts_at->format('Y-m-d').' '.sprintf('%02d:%02d:00', $startHour, $startMinute));
+        $expectedEndTime = Carbon::parse($this->availability->starts_at->format('Y-m-d').' '.sprintf('%02d:%02d:00', $endHour, $endMinute));
 
         $this->assertEquals(1, $this->examBooking->taken);
         $this->assertEquals($expectedStartTime->format('Y-m-d'), $this->examBooking->taken_date);
@@ -277,7 +277,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     {
         // Create a past availability slot
         $pastAvailability = Availability::factory()
-            ->forStudent($this->studentMember->id)
+            ->forAccount($this->studentAccount->id)
             ->onDate(Carbon::yesterday()->format('Y-m-d'))
             ->timeRange('14:00:00', '18:00:00')
             ->create();
@@ -299,7 +299,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
         $otherStudentMember = Member::factory()->forAccount($otherStudentAccount)->create();
 
         $otherAvailability = Availability::factory()
-            ->forStudent($otherStudentMember->id)
+            ->forAccount($otherStudentAccount->id)
             ->future()
             ->timeRange('10:00:00', '14:00:00')
             ->create();
@@ -557,7 +557,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     {
         // Create an availability slot that's longer than 2 hours
         $longAvailability = Availability::factory()
-            ->forStudent($this->studentMember->id)
+            ->forAccount($this->studentAccount->id)
             ->future()
             ->timeRange('09:00:00', '15:00:00') // 6 hours available
             ->create();
@@ -582,7 +582,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     {
         // Create an availability slot that covers exactly 2 hours
         $twoHourAvailability = Availability::factory()
-            ->forStudent($this->studentMember->id)
+            ->forAccount($this->studentAccount->id)
             ->future()
             ->timeRange('14:00:00', '16:00:00') // Exactly 2 hours
             ->create();
@@ -610,7 +610,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     {
         // Create a very long availability slot
         $longAvailability = Availability::factory()
-            ->forStudent($this->studentMember->id)
+            ->forAccount($this->studentAccount->id)
             ->future()
             ->timeRange('10:00:00', '18:00:00') // 8 hours available
             ->create();
@@ -646,7 +646,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
     {
         // Create a long availability
         $longAvailability = Availability::factory()
-            ->forStudent($this->studentMember->id)
+            ->forAccount($this->studentAccount->id)
             ->future()
             ->timeRange('09:00:00', '18:00:00')
             ->create();

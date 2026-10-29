@@ -57,10 +57,12 @@ class AvailabilityFactory extends Factory
         });
     }
 
-    public function onDate(string $date): static
+    public function onDate(string|Carbon $date): static
     {
         return $this->state(function (array $attributes) use ($date) {
-            $shift = Carbon::parse($attributes['starts_at'])->startOfDay()->diffInDays(Carbon::parse($date)->startOfDay());
+            $day = $date instanceof Carbon ? $date->format('Y-m-d') : $date;
+
+            $shift = Carbon::parse($attributes['starts_at'])->startOfDay()->diffInDays(Carbon::parse($day)->startOfDay());
 
             return [
                 'starts_at' => Carbon::parse($attributes['starts_at'])->addDays($shift),
