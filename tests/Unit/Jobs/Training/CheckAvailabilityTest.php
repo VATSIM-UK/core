@@ -142,7 +142,7 @@ class CheckAvailabilityTest extends TestCase
     #[Test]
     public function it_creates_passed_check_when_only_availability_exists(): void
     {
-        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Availability::factory()->forAccount($this->account->id)->create();
 
         $job = new CheckAvailability($this->trainingPlace);
         $job->handle(app(AvailabilityService::class));
@@ -159,7 +159,7 @@ class CheckAvailabilityTest extends TestCase
     #[Test]
     public function it_creates_passed_check_when_multiple_availabilities_exist_and_no_session(): void
     {
-        Availability::factory()->forStudent($this->ctsMember->id)->count(3)->create();
+        Availability::factory()->forAccount($this->account->id)->count(3)->create();
 
         $job = new CheckAvailability($this->trainingPlace);
         $job->handle(app(AvailabilityService::class));
@@ -662,7 +662,8 @@ class CheckAvailabilityTest extends TestCase
     {
         // Arrange: Create availability for a different student
         $otherMember = Member::factory()->create();
-        Availability::factory()->forStudent($otherMember->id)->create();
+        Account::factory()->create(['id' => $otherMember->cid]);
+        Availability::factory()->forAccount($otherMember->cid)->create();
 
         // Act: Run the job
         $job = new CheckAvailability($this->trainingPlace);
@@ -725,7 +726,7 @@ class CheckAvailabilityTest extends TestCase
         ]);
 
         // Arrange: Now create both availability and session
-        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Availability::factory()->forAccount($this->account->id)->create();
         Session::factory()->create([
             'student_id' => $this->ctsMember->id,
             'position' => 'EGLL_APP',
@@ -786,7 +787,7 @@ class CheckAvailabilityTest extends TestCase
     {
         // Arrange: Fake the notification system and create availability and session
         Notification::fake();
-        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Availability::factory()->forAccount($this->account->id)->create();
         Session::factory()->create([
             'student_id' => $this->ctsMember->id,
             'position' => 'EGLL_APP',
@@ -831,7 +832,7 @@ class CheckAvailabilityTest extends TestCase
     public function it_creates_passed_check_when_both_availability_and_session_exist(): void
     {
         // Arrange: Create availability and session for the student
-        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Availability::factory()->forAccount($this->account->id)->create();
         Session::factory()->create([
             'student_id' => $this->ctsMember->id,
             'position' => 'EGLL_APP', // Matches one of the cts_positions
@@ -1157,7 +1158,7 @@ class CheckAvailabilityTest extends TestCase
     #[Test]
     public function it_creates_passed_check_when_availability_exists_and_untaken_request_position_does_not_match(): void
     {
-        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Availability::factory()->forAccount($this->account->id)->create();
         Session::factory()->create([
             'student_id' => $this->ctsMember->id,
             'position' => 'EGKK_APP',
@@ -1199,7 +1200,7 @@ class CheckAvailabilityTest extends TestCase
     #[Test]
     public function it_creates_passed_check_when_availability_exists_and_another_student_has_a_session(): void
     {
-        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Availability::factory()->forAccount($this->account->id)->create();
         $otherMember = Member::factory()->create();
         Session::factory()->create([
             'student_id' => $otherMember->id,
@@ -1221,7 +1222,7 @@ class CheckAvailabilityTest extends TestCase
     public function it_creates_passed_check_when_training_position_has_no_cts_positions_but_availability_exists(): void
     {
         $this->trainingPosition->update(['cts_positions' => null]);
-        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Availability::factory()->forAccount($this->account->id)->create();
 
         (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
@@ -1238,7 +1239,7 @@ class CheckAvailabilityTest extends TestCase
     public function it_creates_passed_check_when_training_place_has_no_training_position_but_availability_exists(): void
     {
         $this->trainingPlace->update(['trainable_type' => null, 'trainable_id' => null]);
-        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Availability::factory()->forAccount($this->account->id)->create();
 
         (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
 
@@ -1255,7 +1256,7 @@ class CheckAvailabilityTest extends TestCase
     public function it_creates_passed_check_when_session_exists_but_has_been_taken(): void
     {
         // Arrange: Create availability and a session that has already been taken (taken_time set)
-        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Availability::factory()->forAccount($this->account->id)->create();
         Session::factory()->accepted()->create([
             'student_id' => $this->ctsMember->id,
             'position' => 'EGLL_APP',
@@ -1277,7 +1278,7 @@ class CheckAvailabilityTest extends TestCase
     #[Test]
     public function it_creates_passed_check_when_availability_exists_alongside_an_untaken_request(): void
     {
-        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Availability::factory()->forAccount($this->account->id)->create();
         Session::factory()->create([
             'student_id' => $this->ctsMember->id,
             'position' => 'EGLL_APP',
@@ -1319,7 +1320,7 @@ class CheckAvailabilityTest extends TestCase
     #[Test]
     public function it_creates_passed_check_when_availability_exists_and_past_booking_does_not(): void
     {
-        Availability::factory()->forStudent($this->ctsMember->id)->create();
+        Availability::factory()->forAccount($this->account->id)->create();
         Session::factory()->create([
             'student_id' => $this->ctsMember->id,
             'position' => 'EGLL_APP',
@@ -1386,9 +1387,7 @@ class CheckAvailabilityTest extends TestCase
     #[Test]
     public function it_fails_the_check_when_availability_is_only_beyond_the_window(): void
     {
-        Availability::factory()->forStudent($this->ctsMember->id)->create([
-            'date' => now()->addDays(AvailabilityService::MAX_FUTURE_DAYS + 1)->toDateString(),
-        ]);
+        Availability::factory()->forAccount($this->account->id)->onDate(now()->addDays(AvailabilityService::MAX_FUTURE_DAYS + 1)->toDateString())->create();
 
         Session::factory()->create(['student_id' => $this->ctsMember->id, 'position' => 'EGLL_TWR', 'taken_time' => null]);
 
@@ -1403,9 +1402,7 @@ class CheckAvailabilityTest extends TestCase
     #[Test]
     public function it_fails_the_check_when_availability_is_only_in_the_past(): void
     {
-        Availability::factory()->forStudent($this->ctsMember->id)->create([
-            'date' => now()->subDay()->toDateString(),
-        ]);
+        Availability::factory()->forAccount($this->account->id)->onDate(now()->subDay()->toDateString())->create();
 
         Session::factory()->create(['student_id' => $this->ctsMember->id, 'position' => 'EGLL_TWR', 'taken_time' => null]);
 
@@ -1420,9 +1417,7 @@ class CheckAvailabilityTest extends TestCase
     #[Test]
     public function it_passes_the_check_when_availability_is_on_the_last_day_of_the_window(): void
     {
-        Availability::factory()->forStudent($this->ctsMember->id)->create([
-            'date' => now()->addDays(AvailabilityService::MAX_FUTURE_DAYS)->toDateString(),
-        ]);
+        Availability::factory()->forAccount($this->account->id)->onDate(now()->addDays(AvailabilityService::MAX_FUTURE_DAYS)->toDateString())->create();
 
         Session::factory()->create(['student_id' => $this->ctsMember->id, 'position' => 'EGLL_TWR', 'taken_time' => null]);
 

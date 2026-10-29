@@ -58,26 +58,22 @@ class DevMentorUnavailabilitySeeder extends Seeder
         $this->seedDevMentoringPendingRequest($overlappingStudent, 'EGLL_N_APP');
         Availability::query()->updateOrCreate(
             [
-                'student_id' => $overlappingStudent->id,
-                'date' => $today,
+                'account_id' => (int) $overlappingStudent->cid,
+                'starts_at' => $today.' 17:00:00',
             ],
             [
-                'from' => '17:00:00',
-                'to' => '21:00:00',
-                'type' => 'S',
+                'ends_at' => $today.' 21:00:00',
             ],
         );
 
         $this->seedDevMentoringPendingRequest($clearStudent, 'EGKK_TWR');
         Availability::query()->updateOrCreate(
             [
-                'student_id' => $clearStudent->id,
-                'date' => $today,
+                'account_id' => (int) $clearStudent->cid,
+                'starts_at' => $today.' 14:00:00',
             ],
             [
-                'from' => '14:00:00',
-                'to' => '16:00:00',
-                'type' => 'S',
+                'ends_at' => $today.' 16:00:00',
             ],
         );
 

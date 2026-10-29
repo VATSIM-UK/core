@@ -118,9 +118,7 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
     public function it_seeds_the_current_week_with_saved_slots(): void
     {
         $tomorrow = now()->addDay()->toDateString();
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $tomorrow, 'from' => '18:00:00', 'to' => '21:00:00', 'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($tomorrow)->timeRange('18:00:00', '21:00:00')->create();
 
         $component = Livewire::actingAs($this->studentAccount)->test(MyAvailability::class)->assertSuccessful();
 
@@ -135,9 +133,7 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
     {
         $other = Account::factory()->create();
         $otherMember = Member::factory()->recycle($other)->create(['cid' => $other->id]);
-        Availability::factory()->forStudent($otherMember->id)->create([
-            'date' => now()->addDay()->toDateString(), 'from' => '18:00:00', 'to' => '21:00:00', 'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($other->id)->onDate(now()->addDay()->toDateString())->timeRange('18:00:00', '21:00:00')->create();
 
         $component = Livewire::actingAs($this->studentAccount)->test(MyAvailability::class)->assertSuccessful();
 
@@ -179,9 +175,7 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
     public function it_opens_overnight_when_a_saved_slot_starts_before_the_window(): void
     {
         $tomorrow = now()->addDay()->toDateString();
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $tomorrow, 'from' => '06:00:00', 'to' => '09:00:00', 'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($tomorrow)->timeRange('06:00:00', '09:00:00')->create();
 
         $component = Livewire::actingAs($this->studentAccount)->test(MyAvailability::class)->assertSuccessful();
 
@@ -193,9 +187,7 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
     public function it_opens_overnight_when_a_saved_slot_runs_past_the_window(): void
     {
         $tomorrow = now()->addDay()->toDateString();
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $tomorrow, 'from' => '20:00:00', 'to' => '22:30:00', 'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($tomorrow)->timeRange('20:00:00', '22:30:00')->create();
 
         $component = Livewire::actingAs($this->studentAccount)->test(MyAvailability::class)->assertSuccessful();
 
@@ -206,9 +198,7 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_seeds_nothing_for_a_week_it_has_not_opened(): void
     {
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => now()->addWeeks(3)->toDateString(), 'from' => '18:00:00', 'to' => '21:00:00', 'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate(now()->addWeeks(3)->toDateString())->timeRange('18:00:00', '21:00:00')->create();
 
         $component = Livewire::actingAs($this->studentAccount)->test(MyAvailability::class)->assertSuccessful();
 
@@ -219,9 +209,7 @@ class MyAvailabilityTest extends BaseTrainingPanelTestCase
     public function it_hides_a_saved_row_that_cannot_be_reproduced_on_the_grid(): void
     {
         $tomorrow = now()->addDay()->toDateString();
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $tomorrow, 'from' => '18:05:00', 'to' => '21:00:00', 'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($tomorrow)->timeRange('18:05:00', '21:00:00')->create();
 
         $component = Livewire::actingAs($this->studentAccount)->test(MyAvailability::class)->assertSuccessful();
 

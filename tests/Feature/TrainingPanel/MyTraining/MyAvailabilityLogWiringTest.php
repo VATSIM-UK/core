@@ -98,12 +98,8 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
     {
         $date = now()->addDay()->toDateString();
 
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date, 'from' => '18:00:00', 'to' => '19:00:00', 'type' => 'S',
-        ]);
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date, 'from' => '20:00:00', 'to' => '21:00:00', 'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($date)->timeRange('18:00:00', '19:00:00')->create();
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($date)->timeRange('20:00:00', '21:00:00')->create();
 
         $added = AvailabilityLogEntry::factory()->create([
             'training_place_id' => $this->place->id,
@@ -147,9 +143,7 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
     {
         $date = now()->addDay()->toDateString();
 
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date, 'from' => '18:00:00', 'to' => '21:00:00', 'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($date)->timeRange('18:00:00', '21:00:00')->create();
 
         $added = AvailabilityLogEntry::factory()->create([
             'training_place_id' => $this->place->id,
@@ -174,7 +168,7 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
         $this->assertSame("{$date} 21:00:00", $edited->slot_to->format('Y-m-d H:i:s'));
         $this->assertSame(
             '17:00:00',
-            Availability::where('student_id', $this->studentMember->id)->where('date', $date)->sole()->from->format('H:i:s'),
+            Availability::where('account_id', $this->studentAccount->id)->whereDate('starts_at', $date)->sole()->starts_at->format('H:i:s'),
             'The stored row must keep the earlier start.',
         );
         $this->assertSame(
@@ -189,9 +183,7 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
     {
         $date = now()->addDay()->toDateString();
 
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $date, 'from' => '18:00:00', 'to' => '21:00:00', 'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($date)->timeRange('18:00:00', '21:00:00')->create();
 
         $current = AvailabilityLogEntry::factory()->create([
             'training_place_id' => $this->place->id,
@@ -207,7 +199,7 @@ class MyAvailabilityLogWiringTest extends BaseTrainingPanelTestCase
             ->set('data.availability', [])
             ->call('save');
 
-        $this->assertSame(0, Availability::where('student_id', $this->studentMember->id)->count());
+        $this->assertSame(0, Availability::where('account_id', $this->studentAccount->id)->count());
         $this->assertNotNull($current->fresh()->superseded_at);
         $this->assertSame(1, AvailabilityLogEntry::where('training_place_id', $this->place->id)->count());
     }

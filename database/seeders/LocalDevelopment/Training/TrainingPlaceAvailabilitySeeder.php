@@ -57,13 +57,11 @@ class TrainingPlaceAvailabilitySeeder extends Seeder
 
         Availability::query()->updateOrCreate(
             [
-                'student_id' => $studentMember->id,
-                'date' => now()->addDays(3)->format('Y-m-d'),
+                'account_id' => (int) $studentMember->cid,
+                'starts_at' => now()->addDays(3)->format('Y-m-d').' 18:00:00',
             ],
             [
-                'from' => '18:00:00',
-                'to' => '22:00:00',
-                'type' => 'S',
+                'ends_at' => now()->addDays(3)->format('Y-m-d').' 22:00:00',
             ],
         );
 

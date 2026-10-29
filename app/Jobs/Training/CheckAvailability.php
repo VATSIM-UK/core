@@ -55,7 +55,7 @@ class CheckAvailability implements ShouldQueue
         $memberId = $account->member->id;
 
         // Check if availability exists for the student inside the future window
-        $hasAvailability = $availabilityService->hasAvailabilityWithinWindow($memberId);
+        $hasAvailability = $availabilityService->hasAvailabilityWithinWindow($account->id);
 
         $hasFutureBookedSession = $this->hasFutureBookedSession($memberId);
 

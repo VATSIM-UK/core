@@ -27,6 +27,7 @@ use App\Notifications\Training\Mentoring\MentoringSessionRescheduledStudentNotif
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -55,7 +56,7 @@ class MentoringSessionsService
             $mentorMember = Member::where('cid', $mentorAccount->id)->firstOrFail();
             $studentMember = Member::where('cid', $trainingPlace->account_id)->first();
 
-            if (! $studentMember || $studentMember->id !== $availability->student_id) {
+            if (! $studentMember || (int) $studentMember->cid !== $availability->account_id) {
                 throw new InvalidArgumentException('The selected availability does not belong to this training place student.');
             }
 
@@ -120,7 +121,7 @@ class MentoringSessionsService
 
             $session = Session::query()
                 ->where('id', $sessionId)
-                ->where('student_id', $availability->student_id)
+                ->whereHas('student', fn (Builder $query) => $query->where('cid', $availability->account_id))
                 ->whereNull('mentor_id')
                 ->whereNull('filed')
                 ->whereNull('cancelled_datetime')
@@ -168,7 +169,7 @@ class MentoringSessionsService
             throw new AuthorizationException('You are not authorized to reschedule this session.');
         }
 
-        if ($availability->student_id !== $session->student_id) {
+        if ($availability->account_id !== (int) $session->student?->cid) {
             throw new InvalidArgumentException("The selected availability does not belong to the session's student.");
         }
 
@@ -450,7 +451,7 @@ class MentoringSessionsService
         $requestedStart = strtotime($takenFrom);
         $requestedEnd = strtotime($takenTo);
         $availabilityStart = strtotime($availability->startsAt()->format('H:i:s'));
-        $availabilityEnd = strtotime($availability->endsAt()->format('H:i:s'));
+        $availabilityEnd = strtotime($availability->bookableEndsAt()->format('H:i:s'));
 
         if ($requestedStart < $availabilityStart || $requestedEnd > $availabilityEnd) {
             throw new InvalidArgumentException("The requested times fall outside the student's availability window.");

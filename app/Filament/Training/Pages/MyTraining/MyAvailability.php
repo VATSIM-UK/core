@@ -74,9 +74,9 @@ class MyAvailability extends Page implements HasForms, HasTable
 
     private ?array $seedCache = null;
 
-    private bool $studentIdResolved = false;
+    private bool $accountIdResolved = false;
 
-    private ?int $studentIdCache = null;
+    private ?int $accountIdCache = null;
 
     public static function canAccess(): bool
     {
@@ -224,9 +224,9 @@ class MyAvailability extends Page implements HasForms, HasTable
 
     public function save(): bool
     {
-        $studentId = $this->resolveStudentId();
+        $accountId = $this->resolveAccountId();
 
-        if (! $studentId) {
+        if (! $accountId) {
             return false;
         }
 
@@ -240,7 +240,7 @@ class MyAvailability extends Page implements HasForms, HasTable
             $this->seededRowIds,
         );
 
-        $counts = app(AvailabilityService::class)->applyChanges($studentId, $plan->changes);
+        $counts = app(AvailabilityService::class)->applyChanges($accountId, $plan->changes);
 
         if ($counts['refused']) {
             Notification::make()
@@ -308,16 +308,16 @@ class MyAvailability extends Page implements HasForms, HasTable
             return $this->availabilityRowsCache;
         }
 
-        $memberId = $this->resolveStudentId();
+        $accountId = $this->resolveAccountId();
 
-        if (! $memberId || $this->visitedDates === []) {
+        if (! $accountId || $this->visitedDates === []) {
             return $this->availabilityRowsCache = collect();
         }
 
         $from = Carbon::parse(min($this->visitedDates), 'UTC')->subDay();
         $to = Carbon::parse(max($this->visitedDates), 'UTC')->addDay();
 
-        return $this->availabilityRowsCache = $this->getAvailabilityService()->availabilityRowsFor($memberId, $from, $to);
+        return $this->availabilityRowsCache = $this->getAvailabilityService()->availabilityRowsFor($accountId, $from, $to);
     }
 
     /**
@@ -329,7 +329,7 @@ class MyAvailability extends Page implements HasForms, HasTable
             return $this->seedCache;
         }
 
-        if ($this->resolveStudentId() === null || $this->visitedDates === []) {
+        if ($this->resolveAccountId() === null || $this->visitedDates === []) {
             return $this->seedCache = ['cells' => [], 'lockedCells' => []];
         }
 
@@ -346,15 +346,15 @@ class MyAvailability extends Page implements HasForms, HasTable
         return $this->availabilityRows()->pluck('id')->all();
     }
 
-    private function resolveStudentId(): ?int
+    private function resolveAccountId(): ?int
     {
-        if ($this->studentIdResolved) {
-            return $this->studentIdCache;
+        if ($this->accountIdResolved) {
+            return $this->accountIdCache;
         }
 
-        $this->studentIdResolved = true;
+        $this->accountIdResolved = true;
 
-        return $this->studentIdCache = $this->getAvailabilityService()->resolveMemberId((int) auth()->id());
+        return $this->accountIdCache = auth()->id();
     }
 
     /** Only rows on newly opened dates join the seeded set; see seededRowIdsForVisitedDates(). */
@@ -548,9 +548,9 @@ class MyAvailability extends Page implements HasForms, HasTable
     public function create(): void
     {
         $data = $this->slotForm->getState();
-        $studentId = $this->resolveStudentId();
+        $accountId = $this->resolveAccountId();
 
-        if (! $studentId) {
+        if (! $accountId) {
             return;
         }
 
@@ -586,7 +586,7 @@ class MyAvailability extends Page implements HasForms, HasTable
             ];
         }
 
-        $counts = $this->getAvailabilityService()->addSlots($studentId, $ranges);
+        $counts = $this->getAvailabilityService()->addSlots($accountId, $ranges);
 
         if ($counts['refused']) {
             Notification::make()->title('Nothing was saved, the new slots would overlap existing availability')->danger()->send();
@@ -611,11 +611,9 @@ class MyAvailability extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query($this->getAvailabilityService()->getFutureAvailabilityQuery(
-                $this->getAvailabilityService()->resolveMemberId(auth()->id()) ?? 0
-            )->orderedByStart())
+            ->query($this->getAvailabilityService()->getFutureAvailabilityQuery((int) auth()->id())->orderedByStart())
             ->columns([
-                TextColumn::make('date')
+                TextColumn::make('starts_at')
                     ->label('Date')
                     ->state(fn (Availability $record) => $record->startsAt()->toPanelDateWithWeekday()),
 
@@ -656,7 +654,7 @@ class MyAvailability extends Page implements HasForms, HasTable
                         $endUtc = Carbon::parse("{$data['date']} {$data['to']}", 'UTC');
 
                         [$valid, $message] = $this->getAvailabilityService()->isSlotValid(
-                            $record->student_id, $startUtc, $endUtc, $record->id
+                            $record->account_id, $startUtc, $endUtc, $record->id
                         );
 
                         if (! $valid) {
@@ -678,11 +676,11 @@ class MyAvailability extends Page implements HasForms, HasTable
                     ->color('danger')
                     ->iconButton()
                     ->requiresConfirmation(false)
-                    ->action(fn (Availability $record) => $this->getAvailabilityService()->removeSlots($record->student_id, [$record])),
+                    ->action(fn (Availability $record) => $this->getAvailabilityService()->removeSlots($record->account_id, [$record])),
             ])
             ->bulkActions([
                 DeleteBulkAction::make()
-                    ->using(fn (Collection $records) => $this->getAvailabilityService()->removeSlots($this->resolveStudentId() ?? 0, $records)),
+                    ->using(fn (Collection $records) => $this->getAvailabilityService()->removeSlots($this->resolveAccountId() ?? 0, $records)),
             ])
             ->emptyStateHeading('No availability added yet')
             ->emptyStateDescription('Use the form to add your availability slots.')

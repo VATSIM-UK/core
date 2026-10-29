@@ -3,7 +3,6 @@
 namespace App\Models\Cts;
 
 use App\Models\Mship\Account;
-use App\Models\Training\Availability;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,11 +27,6 @@ class Member extends Model
         return Attribute::make(
             get: fn () => Account::find($this->cid),
         );
-    }
-
-    public function availabilities(): HasMany
-    {
-        return $this->hasMany(Availability::class, 'student_id', 'id');
     }
 
     public function sessions(): HasMany

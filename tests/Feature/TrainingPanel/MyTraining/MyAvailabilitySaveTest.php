@@ -72,9 +72,9 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             ->call('save')
             ->assertReturned(true);
 
-        $row = Availability::where('student_id', $this->studentMember->id)->sole();
-        $this->assertSame('18:00:00', $row->getRawOriginal('from'));
-        $this->assertSame('21:00:00', $row->getRawOriginal('to'));
+        $row = Availability::where('account_id', $this->studentAccount->id)->sole();
+        $this->assertSame('18:00:00', Carbon::parse($row->getRawOriginal('starts_at'))->format('H:i:s'));
+        $this->assertSame('21:00:00', Carbon::parse($row->getRawOriginal('ends_at'))->format('H:i:s'));
     }
 
     #[Test]
@@ -82,9 +82,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
     {
         $tomorrow = now()->addDay()->toDateString();
 
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $tomorrow, 'from' => '09:00:00', 'to' => '12:00:00', 'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($tomorrow)->timeRange('09:00:00', '12:00:00')->create();
 
         $erased = AvailabilityLogEntry::factory()->create([
             'training_place_id' => $this->place->id,
@@ -100,9 +98,9 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             ->set('data.availability', $this->cells($tomorrow, '18:00', 12))
             ->call('save');
 
-        $remaining = Availability::where('student_id', $this->studentMember->id)->sole();
-        $this->assertSame('18:00:00', $remaining->getRawOriginal('from'));
-        $this->assertSame('21:00:00', $remaining->getRawOriginal('to'));
+        $remaining = Availability::where('account_id', $this->studentAccount->id)->sole();
+        $this->assertSame('18:00:00', Carbon::parse($remaining->getRawOriginal('starts_at'))->format('H:i:s'));
+        $this->assertSame('21:00:00', Carbon::parse($remaining->getRawOriginal('ends_at'))->format('H:i:s'));
 
         $this->assertNotNull($erased->fresh()->superseded_at, 'Erasing a slot must supersede its current log entry.');
         $this->assertSame(
@@ -116,12 +114,8 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
     {
         $tomorrow = now()->addDay()->toDateString();
 
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $tomorrow, 'from' => '18:00:00', 'to' => '19:00:00', 'type' => 'S',
-        ]);
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $tomorrow, 'from' => '20:00:00', 'to' => '21:00:00', 'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($tomorrow)->timeRange('18:00:00', '19:00:00')->create();
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($tomorrow)->timeRange('20:00:00', '21:00:00')->create();
 
         $first = AvailabilityLogEntry::factory()->create([
             'training_place_id' => $this->place->id,
@@ -145,9 +139,9 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             ->set('data.availability', $this->cells($tomorrow, '18:00', 12))
             ->call('save');
 
-        $survivor = Availability::where('student_id', $this->studentMember->id)->sole();
-        $this->assertSame('18:00:00', $survivor->getRawOriginal('from'));
-        $this->assertSame('21:00:00', $survivor->getRawOriginal('to'));
+        $survivor = Availability::where('account_id', $this->studentAccount->id)->sole();
+        $this->assertSame('18:00:00', Carbon::parse($survivor->getRawOriginal('starts_at'))->format('H:i:s'));
+        $this->assertSame('21:00:00', Carbon::parse($survivor->getRawOriginal('ends_at'))->format('H:i:s'));
 
         $this->assertNotNull($first->fresh()->superseded_at);
         $this->assertNotNull($second->fresh()->superseded_at);
@@ -168,7 +162,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             ->call('save')
             ->assertReturned(true);
 
-        $this->assertSame(0, Availability::where('student_id', $this->studentMember->id)->count());
+        $this->assertSame(0, Availability::where('account_id', $this->studentAccount->id)->count());
     }
 
     #[Test]
@@ -181,8 +175,8 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             ->set('data.availability', $this->cells($tomorrow, '22:00', 8))
             ->call('save');
 
-        $row = Availability::where('student_id', $this->studentMember->id)->sole();
-        $this->assertSame('00:00:00', $row->getRawOriginal('to'));
+        $row = Availability::where('account_id', $this->studentAccount->id)->sole();
+        $this->assertSame('00:00:00', Carbon::parse($row->getRawOriginal('ends_at'))->format('H:i:s'));
 
         $component->call('save');
 
@@ -197,16 +191,14 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             ->call('save')
             ->assertReturned(true);
 
-        $this->assertSame(0, Availability::where('student_id', $this->studentMember->id)->count());
+        $this->assertSame(0, Availability::where('account_id', $this->studentAccount->id)->count());
         $this->assertSame(0, AvailabilityLogEntry::count());
     }
 
     #[Test]
     public function it_does_not_touch_a_week_the_student_never_opened(): void
     {
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => now()->addWeeks(3)->toDateString(), 'from' => '18:00:00', 'to' => '21:00:00', 'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate(now()->addWeeks(3)->toDateString())->timeRange('18:00:00', '21:00:00')->create();
 
         $tomorrow = now()->addDay()->toDateString();
 
@@ -215,7 +207,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             ->set('data.availability', $this->cells($tomorrow, '18:00', 4))
             ->call('save');
 
-        $this->assertSame(2, Availability::where('student_id', $this->studentMember->id)->count());
+        $this->assertSame(2, Availability::where('account_id', $this->studentAccount->id)->count());
     }
 
     #[Test]
@@ -235,7 +227,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
 
         $component->call('save');
 
-        $this->assertSame(2, Availability::where('student_id', $this->studentMember->id)->count());
+        $this->assertSame(2, Availability::where('account_id', $this->studentAccount->id)->count());
     }
 
     #[Test]
@@ -243,9 +235,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
     {
         $tomorrow = now()->addDay()->toDateString();
 
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $tomorrow, 'from' => '18:00:00', 'to' => '21:00:00', 'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($tomorrow)->timeRange('18:00:00', '21:00:00')->create();
 
         $component = Livewire::actingAs($this->studentAccount)->test(MyAvailability::class);
 
@@ -254,13 +244,11 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             array_values($component->get('data.availability')),
         );
 
-        $late = Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $tomorrow, 'from' => '22:00:00', 'to' => '23:00:00', 'type' => 'S',
-        ]);
+        $late = Availability::factory()->forAccount($this->studentAccount->id)->onDate($tomorrow)->timeRange('22:00:00', '23:00:00')->create();
 
         $component->call('save')->assertReturned(true);
 
-        $this->assertSame(2, Availability::where('student_id', $this->studentMember->id)->count());
+        $this->assertSame(2, Availability::where('account_id', $this->studentAccount->id)->count());
         $this->assertNotNull($late->fresh());
     }
 
@@ -269,9 +257,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
     {
         $tomorrow = now()->addDay()->toDateString();
 
-        $odd = Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $tomorrow, 'from' => '18:05:00', 'to' => '21:00:00', 'type' => 'S',
-        ]);
+        $odd = Availability::factory()->forAccount($this->studentAccount->id)->onDate($tomorrow)->timeRange('18:05:00', '21:00:00')->create();
 
         Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
@@ -279,7 +265,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             ->call('save')
             ->assertReturned(true);
 
-        $this->assertSame(2, Availability::where('student_id', $this->studentMember->id)->count());
+        $this->assertSame(2, Availability::where('account_id', $this->studentAccount->id)->count());
         $this->assertNotNull($odd->fresh());
     }
 
@@ -290,9 +276,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
 
         $component = Livewire::actingAs($this->studentAccount)->test(MyAvailability::class);
 
-        Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $tomorrow, 'from' => '18:05:00', 'to' => '21:00:00', 'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->studentAccount->id)->onDate($tomorrow)->timeRange('18:05:00', '21:00:00')->create();
 
         $component
             ->set('data.availability', $this->cells($tomorrow, '18:00', 12))
@@ -305,7 +289,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
                     ->danger(),
             );
 
-        $this->assertSame(1, Availability::where('student_id', $this->studentMember->id)->count());
+        $this->assertSame(1, Availability::where('account_id', $this->studentAccount->id)->count());
     }
 
     #[Test]
@@ -315,9 +299,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
 
         $component = Livewire::actingAs($this->studentAccount)->test(MyAvailability::class);
 
-        $other = Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $friday, 'from' => '18:00:00', 'to' => '20:00:00', 'type' => 'S',
-        ]);
+        $other = Availability::factory()->forAccount($this->studentAccount->id)->onDate($friday)->timeRange('18:00:00', '20:00:00')->create();
 
         $component->call('nextWeek')->call('save');
 
@@ -329,9 +311,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
     {
         $lastWeek = now()->subWeek()->toDateString();
 
-        $past = Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $lastWeek, 'from' => '18:00:00', 'to' => '20:00:00', 'type' => 'S',
-        ]);
+        $past = Availability::factory()->forAccount($this->studentAccount->id)->onDate($lastWeek)->timeRange('18:00:00', '20:00:00')->create();
 
         $component = Livewire::actingAs($this->studentAccount)
             ->test(MyAvailability::class)
@@ -344,7 +324,7 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
         $component->set('data.availability', $this->cells($lastWeek, '10:00', 4))->call('save');
 
         $this->assertNotNull($past->fresh());
-        $this->assertSame(1, Availability::where('student_id', $this->studentMember->id)->count());
+        $this->assertSame(1, Availability::where('account_id', $this->studentAccount->id)->count());
     }
 
     #[Test]
@@ -357,15 +337,13 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
             ->set('data.availability', $this->cells($tomorrow, '10:00', 4))
             ->call('save');
 
-        $other = Availability::factory()->forStudent($this->studentMember->id)->create([
-            'date' => $tomorrow, 'from' => '18:00:00', 'to' => '20:00:00', 'type' => 'S',
-        ]);
+        $other = Availability::factory()->forAccount($this->studentAccount->id)->onDate($tomorrow)->timeRange('18:00:00', '20:00:00')->create();
 
         $component->set('data.availability', $this->cells($tomorrow, '12:00', 4))->call('save');
 
         $this->assertNotNull($other->fresh());
-        $remaining = Availability::where('student_id', $this->studentMember->id)->where('id', '!=', $other->id)->sole();
-        $this->assertSame('12:00:00', $remaining->getRawOriginal('from'));
+        $remaining = Availability::where('account_id', $this->studentAccount->id)->where('id', '!=', $other->id)->sole();
+        $this->assertSame('12:00:00', Carbon::parse($remaining->getRawOriginal('starts_at'))->format('H:i:s'));
     }
 
     #[Test]
@@ -409,10 +387,10 @@ class MyAvailabilitySaveTest extends BaseTrainingPanelTestCase
 
         $component->set('data.availability', $painted)->call('save')->assertReturned(true);
 
-        $rows = Availability::where('student_id', $this->studentMember->id)->get();
+        $rows = Availability::where('account_id', $this->studentAccount->id)->get();
         $this->assertSame(1, $rows->count());
-        $this->assertSame('2026-06-13', $rows->first()->date->toDateString());
-        $this->assertSame('18:00:00', $rows->first()->getRawOriginal('from'));
-        $this->assertSame('19:00:00', $rows->first()->getRawOriginal('to'));
+        $this->assertSame('2026-06-13', $rows->first()->starts_at->toDateString());
+        $this->assertSame('18:00:00', Carbon::parse($rows->first()->getRawOriginal('starts_at'))->format('H:i:s'));
+        $this->assertSame('19:00:00', Carbon::parse($rows->first()->getRawOriginal('ends_at'))->format('H:i:s'));
     }
 }

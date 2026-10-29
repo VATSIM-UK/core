@@ -77,8 +77,7 @@ class ExamRequestsTable extends Component implements HasActions, HasForms, HasTa
                             ->required()
                             ->options(function (ExamBooking $record) {
                                 return Availability::query()
-                                    ->forStudent($record->student_id)
-                                    ->studentOnly()
+                                    ->forAccount((int) $record->student->cid)
                                     ->startingFrom(now()->utc())
                                     ->orderedByStart()
                                     ->get()

@@ -2,7 +2,6 @@
 
 namespace App\Services\Training;
 
-use App\Models\Cts\Member;
 use App\Models\Training\Availability;
 use App\Services\Training\Availability\AvailabilityChange;
 use App\Services\Training\Availability\AvailabilityChangeType;
@@ -47,50 +46,43 @@ class AvailabilityService
     }
 
     /** Whether the student holds availability inside the window the check counts. */
-    public function hasAvailabilityWithinWindow(int $memberId): bool
+    public function hasAvailabilityWithinWindow(int $accountId): bool
     {
         $now = now()->utc();
 
         return Availability::query()
-            ->forStudent($memberId)
-            ->studentOnly()
+            ->forAccount($accountId)
             ->startingBetween(static::firstAllowedDate($now), static::lastAllowedDate($now))
             ->exists();
     }
 
-    public function resolveMemberId(int $cid): ?int
-    {
-        return Member::where('cid', $cid)->value('id');
-    }
-
-    public function getFutureAvailabilityQuery(int $memberId): Builder
+    public function getFutureAvailabilityQuery(int $accountId): Builder
     {
         return Availability::query()
-            ->forStudent($memberId)
-            ->studentOnly()
+            ->forAccount($accountId)
             ->endingAfter(now()->utc());
     }
 
     /**
      * @return Collection<int, Availability>
      */
-    public function availabilityRowsFor(int $memberId, Carbon $from, Carbon $to): Collection
+    public function availabilityRowsFor(int $accountId, Carbon $from, Carbon $to): Collection
     {
         return Availability::query()
-            ->forStudent($memberId)
-            ->studentOnly()
+            ->forAccount($accountId)
             ->startingBetween($from, $to)
             ->orderedByStart()
             ->get();
     }
 
     /**
-     * Log entries live on another connection, so they are written only after the CTS commit.
+     * Log entries are written after the slot transaction commits, so a log failure cannot
+     * roll back a save.
      *
      * @param  array<int, AvailabilityChange>  $changes
      * @return array{added: int, edited: int, merged: int, removed: int, refused: bool}
      */
-    public function applyChanges(int $studentId, array $changes): array
+    public function applyChanges(int $accountId, array $changes): array
     {
         $counts = [
             'added' => 0,
@@ -103,16 +95,16 @@ class AvailabilityService
         $ordered = $this->sortChanges($changes);
         $logs = [];
 
-        $applied = DB::connection('cts')->transaction(function () use ($ordered, $studentId, &$counts, &$logs): bool {
+        $applied = DB::transaction(function () use ($ordered, $accountId, &$counts, &$logs): bool {
             foreach ($ordered as $change) {
                 if ($change->newFrom && $this->isBeyondFutureWindow($change->newFrom)) {
-                    Log::warning('Availability save refused, beyond the future window', ['student_id' => $studentId]);
+                    Log::warning('Availability save refused, beyond the future window', ['account_id' => $accountId]);
 
                     return false;
                 }
             }
 
-            if ($this->wouldOverlap($studentId, $ordered)) {
+            if ($this->wouldOverlap($accountId, $ordered)) {
                 return false;
             }
 
@@ -153,7 +145,7 @@ class AvailabilityService
                         break;
 
                     case AvailabilityChangeType::Added:
-                        Availability::storeSlot($studentId, $change->newFrom, $change->newTo);
+                        Availability::storeSlot($accountId, $change->newFrom, $change->newTo);
 
                         $logs[] = fn (AvailabilityLogService $service, Collection $places) => $service->recordAdded($places, $change->newFrom, $change->newTo);
                         $counts['added']++;
@@ -169,14 +161,14 @@ class AvailabilityService
         });
 
         if (! $applied) {
-            Log::warning('Availability save refused, overlapping slots', ['student_id' => $studentId]);
+            Log::warning('Availability save refused, overlapping slots', ['account_id' => $accountId]);
 
             return [...$counts, 'refused' => true];
         }
 
         if ($logs !== []) {
             $service = app(AvailabilityLogService::class);
-            $places = $this->activeTrainingPlaces($service, $studentId);
+            $places = $this->activeTrainingPlaces($service, $accountId);
 
             foreach ($logs as $log) {
                 $log($service, $places);
@@ -192,21 +184,21 @@ class AvailabilityService
      * @param  array<int, array{0: Carbon, 1: Carbon}>  $ranges
      * @return array{added: int, edited: int, merged: int, removed: int, refused: bool}
      */
-    public function addSlots(int $studentId, array $ranges): array
+    public function addSlots(int $accountId, array $ranges): array
     {
         $changes = [];
         $consumed = [];
 
         foreach ($ranges as [$start]) {
             if ($this->isBeyondFutureWindow($start)) {
-                Log::warning('Availability add refused, beyond the future window', ['student_id' => $studentId]);
+                Log::warning('Availability add refused, beyond the future window', ['account_id' => $accountId]);
 
                 return ['added' => 0, 'edited' => 0, 'merged' => 0, 'removed' => 0, 'refused' => true];
             }
         }
 
         foreach ($ranges as [$start, $end]) {
-            $overlapping = $this->rowsOverlapping($studentId, $start, $end)
+            $overlapping = $this->rowsOverlapping($accountId, $start, $end)
                 ->reject(fn (Availability $row) => isset($consumed[$row->getKey()]))
                 ->values();
 
@@ -232,7 +224,7 @@ class AvailabilityService
             $changes[] = new AvailabilityChange(AvailabilityChangeType::Merged, $target, $oldFrom, $oldTo, $from, $to, $overlapping->all());
         }
 
-        return $this->applyChanges($studentId, $changes);
+        return $this->applyChanges($accountId, $changes);
     }
 
     /**
@@ -242,7 +234,7 @@ class AvailabilityService
     {
         [$oldFrom, $oldTo] = $row->bounds();
 
-        return $this->applyChanges($row->student_id, [
+        return $this->applyChanges($row->account_id, [
             new AvailabilityChange(AvailabilityChangeType::Edited, $row, $oldFrom, $oldTo, $start, $end),
         ]);
     }
@@ -251,7 +243,7 @@ class AvailabilityService
      * @param  iterable<int, Availability>  $rows
      * @return array{added: int, edited: int, merged: int, removed: int, refused: bool}
      */
-    public function removeSlots(int $studentId, iterable $rows): array
+    public function removeSlots(int $accountId, iterable $rows): array
     {
         $changes = [];
 
@@ -260,17 +252,16 @@ class AvailabilityService
             $changes[] = new AvailabilityChange(AvailabilityChangeType::Removed, $row, $from, $to, null, null);
         }
 
-        return $this->applyChanges($studentId, $changes);
+        return $this->applyChanges($accountId, $changes);
     }
 
     /**
      * @return Collection<int, Availability>
      */
-    private function rowsOverlapping(int $studentId, Carbon $start, Carbon $end): Collection
+    private function rowsOverlapping(int $accountId, Carbon $start, Carbon $end): Collection
     {
         return Availability::query()
-            ->forStudent($studentId)
-            ->studentOnly()
+            ->forAccount($accountId)
             ->startingBetween($start->copy()->subDay(), $end)
             ->orderedByStart()
             ->get()
@@ -284,7 +275,7 @@ class AvailabilityService
      *
      * @param  array<int, AvailabilityChange>  $changes
      */
-    private function wouldOverlap(int $studentId, array $changes): bool
+    private function wouldOverlap(int $accountId, array $changes): bool
     {
         $touchedKeys = [];
         $planned = [];
@@ -331,8 +322,7 @@ class AvailabilityService
         $ends = array_map(fn (array $range) => $range[1]->getTimestamp(), $planned);
 
         $existing = Availability::query()
-            ->forStudent($studentId)
-            ->studentOnly()
+            ->forAccount($accountId)
             ->startingBetween(
                 Carbon::createFromTimestamp(min($starts), 'UTC')->subDay(),
                 Carbon::createFromTimestamp(max($ends), 'UTC'),
@@ -395,15 +385,9 @@ class AvailabilityService
     /**
      * @return Collection<int, \App\Models\Training\TrainingPlace\TrainingPlace>
      */
-    private function activeTrainingPlaces(AvailabilityLogService $service, int $studentId): Collection
+    private function activeTrainingPlaces(AvailabilityLogService $service, int $accountId): Collection
     {
-        $cid = Member::where('id', $studentId)->value('cid');
-
-        if (! $cid) {
-            return collect();
-        }
-
-        return $service->activeTrainingPlacesForAccount((int) $cid);
+        return $service->activeTrainingPlacesForAccount($accountId);
     }
 
     public function formatDuration(Carbon $start, Carbon $end): string
@@ -427,7 +411,7 @@ class AvailabilityService
         return $startUtc->diffInMinutes($endUtc) >= static::MINIMUM_SLOT_DURATION_MINUTES;
     }
 
-    public function isSlotValid(int $studentId, Carbon $startUtc, Carbon $endUtc, ?int $ignoreId = null): array
+    public function isSlotValid(int $accountId, Carbon $startUtc, Carbon $endUtc, ?int $ignoreId = null): array
     {
         if ($startUtc->greaterThanOrEqualTo($endUtc)) {
             return [false, 'The availability end time must be after the start time.'];
@@ -446,8 +430,7 @@ class AvailabilityService
         }
 
         $overlapExists = Availability::query()
-            ->forStudent($studentId)
-            ->studentOnly()
+            ->forAccount($accountId)
             ->when($ignoreId, fn (Builder $query) => $query->where('id', '!=', $ignoreId))
             ->startingBetween($startUtc->clone()->subDay(), $startUtc->clone()->addDay())
             ->get()

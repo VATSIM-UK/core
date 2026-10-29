@@ -363,7 +363,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
                     ->required()
                     ->live()
                     ->options(fn (Session $record) => Availability::query()
-                        ->forStudent($record->student_id)
+                        ->forAccount((int) $record->student->cid)
                         ->startingFrom(now()->utc())
                         ->orderedByStart()
                         ->get()
@@ -416,7 +416,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
 
                             $options = $this->generateTimeOptions(
                                 $avail->startsAt()->format('H:i'),
-                                $avail->endsAt()->format('H:i')
+                                $avail->bookableEndsAt()->format('H:i')
                             );
 
                             if ($avail->startsAt()->isToday()) {
@@ -446,7 +446,7 @@ class AcceptedMentoringSessionsTable extends Component implements HasActions, Ha
 
                             $options = $this->generateTimeOptions(
                                 $avail->startsAt()->format('H:i'),
-                                $avail->endsAt()->format('H:i')
+                                $avail->bookableEndsAt()->format('H:i')
                             );
 
                             $startTime = $get('taken_from');

@@ -15,8 +15,15 @@ class AvailabilityPlannerTest extends TestCase
 {
     private function row(string $date, string $from, string $to): Availability
     {
+        $start = Carbon::parse("{$date} {$from}", 'UTC');
+        $end = Carbon::parse("{$date} {$to}", 'UTC');
+
+        if ($end->lessThanOrEqualTo($start)) {
+            $end->addDay();
+        }
+
         return Availability::factory()->make([
-            'date' => $date, 'from' => $from, 'to' => $to, 'type' => 'S', 'student_id' => 1,
+            'starts_at' => $start, 'ends_at' => $end, 'account_id' => 1,
         ]);
     }
 

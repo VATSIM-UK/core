@@ -3,6 +3,7 @@
 namespace Tests\Unit\Services\Training;
 
 use App\Models\Cts\Member;
+use App\Models\Mship\Account;
 use App\Models\Training\Availability;
 use App\Services\Training\AvailabilityService;
 use Carbon\Carbon;
@@ -18,12 +19,15 @@ class AvailabilityServiceTest extends TestCase
 
     protected Member $member;
 
+    protected Account $account;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->service = new AvailabilityService;
-        $this->member = Member::factory()->create();
+        $this->account = Account::factory()->createQuietly();
+        $this->member = Member::factory()->forAccount($this->account)->create();
 
         $this->travelTo(Carbon::create(2026, 4, 18, 12, 0, 0, 'UTC'));
     }
@@ -34,7 +38,7 @@ class AvailabilityServiceTest extends TestCase
         $start = Carbon::parse('2026-04-19 21:00:00');
         $end = Carbon::parse('2026-04-19 18:00:00');
 
-        [$valid, $message] = $this->service->isSlotValid($this->member->id, $start, $end);
+        [$valid, $message] = $this->service->isSlotValid($this->account->id, $start, $end);
 
         $this->assertFalse($valid);
         $this->assertEquals('The availability end time must be after the start time.', $message);
@@ -46,7 +50,7 @@ class AvailabilityServiceTest extends TestCase
         $start = Carbon::parse('2026-04-19 18:00:00');
         $end = Carbon::parse('2026-04-19 18:30:00');
 
-        [$valid, $message] = $this->service->isSlotValid($this->member->id, $start, $end);
+        [$valid, $message] = $this->service->isSlotValid($this->account->id, $start, $end);
 
         $this->assertFalse($valid);
         $this->assertEquals(
@@ -61,7 +65,7 @@ class AvailabilityServiceTest extends TestCase
         $start = Carbon::parse('2026-04-19 18:00:00');
         $end = Carbon::parse('2026-04-19 18:45:00');
 
-        [$valid] = $this->service->isSlotValid($this->member->id, $start, $end);
+        [$valid] = $this->service->isSlotValid($this->account->id, $start, $end);
 
         $this->assertTrue($valid);
     }
@@ -72,7 +76,7 @@ class AvailabilityServiceTest extends TestCase
         $start = Carbon::parse('2026-04-17 12:00:00');
         $end = Carbon::parse('2026-04-17 14:00:00');
 
-        [$valid, $message] = $this->service->isSlotValid($this->member->id, $start, $end);
+        [$valid, $message] = $this->service->isSlotValid($this->account->id, $start, $end);
 
         $this->assertFalse($valid);
         $this->assertEquals('Availability cannot be in the past.', $message);
@@ -81,18 +85,12 @@ class AvailabilityServiceTest extends TestCase
     #[Test]
     public function it_detects_overlapping_slots()
     {
-        Availability::factory()->create([
-            'student_id' => $this->member->id,
-            'date' => '2026-04-19',
-            'from' => '18:00:00',
-            'to' => '20:00:00',
-            'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->account->id)->onDate('2026-04-19')->timeRange('18:00:00', '20:00:00')->create();
 
         $start = Carbon::parse('2026-04-19 19:00:00');
         $end = Carbon::parse('2026-04-19 21:00:00');
 
-        [$valid, $message] = $this->service->isSlotValid($this->member->id, $start, $end);
+        [$valid, $message] = $this->service->isSlotValid($this->account->id, $start, $end);
 
         $this->assertFalse($valid);
         $this->assertEquals('This availability slot overlaps with an existing entry.', $message);
@@ -101,18 +99,12 @@ class AvailabilityServiceTest extends TestCase
     #[Test]
     public function it_allows_perfectly_adjacent_slots()
     {
-        Availability::factory()->create([
-            'student_id' => $this->member->id,
-            'date' => '2026-04-19',
-            'from' => '18:00:00',
-            'to' => '19:00:00',
-            'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->account->id)->onDate('2026-04-19')->timeRange('18:00:00', '19:00:00')->create();
 
         $start = Carbon::parse('2026-04-19 19:00:00');
         $end = Carbon::parse('2026-04-19 20:00:00');
 
-        [$valid] = $this->service->isSlotValid($this->member->id, $start, $end);
+        [$valid] = $this->service->isSlotValid($this->account->id, $start, $end);
 
         $this->assertTrue($valid);
     }
@@ -128,7 +120,7 @@ class AvailabilityServiceTest extends TestCase
         $nyStart = Carbon::parse('2026-04-18 09:00:00', 'America/New_York')->utc();
         $nyEnd = Carbon::parse('2026-04-18 11:00:00', 'America/New_York')->utc();
 
-        [$valid] = $this->service->isSlotValid($this->member->id, $nyStart, $nyEnd);
+        [$valid] = $this->service->isSlotValid($this->account->id, $nyStart, $nyEnd);
 
         $this->assertTrue($valid, 'Slot should be valid as the UTC conversion is in the future.');
     }
@@ -139,7 +131,7 @@ class AvailabilityServiceTest extends TestCase
         $start = Carbon::parse('2026-04-20 09:00:00');
         $end = Carbon::parse('2026-04-20 10:00:00');
 
-        [$valid] = $this->service->isSlotValid($this->member->id, $start, $end);
+        [$valid] = $this->service->isSlotValid($this->account->id, $start, $end);
 
         $this->assertTrue($valid);
     }
@@ -173,7 +165,7 @@ class AvailabilityServiceTest extends TestCase
     public function it_returns_false_for_a_slot_after_the_window(): void
     {
         [$valid, $message] = $this->service->isSlotValid(
-            $this->member->id,
+            $this->account->id,
             Carbon::parse('2026-05-20 18:00:00', 'UTC'),
             Carbon::parse('2026-05-20 21:00:00', 'UTC'),
         );
@@ -185,22 +177,8 @@ class AvailabilityServiceTest extends TestCase
     #[Test]
     public function it_counts_student_availability_within_the_window(): void
     {
-        Availability::factory()->forStudent($this->member->id)->create([
-            'date' => now()->addDay()->toDateString(),
-            'type' => 'S',
-        ]);
+        Availability::factory()->forAccount($this->account->id)->onDate(now()->addDay())->create();
 
-        $this->assertTrue($this->service->hasAvailabilityWithinWindow($this->member->id));
-    }
-
-    #[Test]
-    public function it_ignores_non_student_availability_within_the_window(): void
-    {
-        Availability::factory()->forStudent($this->member->id)->create([
-            'date' => now()->addDay()->toDateString(),
-            'type' => 'M',
-        ]);
-
-        $this->assertFalse($this->service->hasAvailabilityWithinWindow($this->member->id));
+        $this->assertTrue($this->service->hasAvailabilityWithinWindow($this->account->id));
     }
 }
