@@ -613,8 +613,7 @@ class MyAvailability extends Page implements HasForms, HasTable
         return $table
             ->query($this->getAvailabilityService()->getFutureAvailabilityQuery(
                 $this->getAvailabilityService()->resolveMemberId(auth()->id()) ?? 0
-            ))
-            ->defaultSort('date')
+            )->orderedByStart())
             ->columns([
                 TextColumn::make('date')
                     ->label('Date')
