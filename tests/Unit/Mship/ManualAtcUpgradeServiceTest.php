@@ -45,6 +45,23 @@ class ManualAtcUpgradeServiceTest extends TestCase
     }
 
     #[Test]
+    public function it_never_returns_c2_as_next_atc_rating()
+    {
+        $account = Account::factory()->create();
+
+        $c1 = Qualification::code('C1')->first();
+        $c2 = Qualification::code('C2')->first();
+
+        $account->addQualification($c1);
+
+        $next = ManualAtcUpgradeService::getNextAtcQualification($account);
+
+        $this->assertNotNull($next);
+        $this->assertNotEquals($c2->id, $next->id);
+        $this->assertNotEquals('C2', $next->code);
+    }
+
+    #[Test]
     public function it_awards_next_atc_rating_and_sets_awarded_date_on_mship_account_qualification_pivot()
     {
         $account = Account::factory()->create();

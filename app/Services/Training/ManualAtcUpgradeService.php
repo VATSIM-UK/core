@@ -8,6 +8,9 @@ use Carbon\CarbonImmutable;
 
 class ManualAtcUpgradeService
 {
+    // Codes that should never be awarded as they are not used on the network
+    private const EXCLUDED_CODES = ['C2'];
+
     public static function getNextAtcQualification(Account $account): ?Qualification
     {
         $currentMax = $account->qualifications()
@@ -16,6 +19,7 @@ class ManualAtcUpgradeService
 
         return Qualification::query()
             ->where('type', 'atc')
+            ->whereNotIn('code', self::EXCLUDED_CODES)
             ->where('vatsim', '>', ($currentMax ?? 0))
             ->orderBy('vatsim')
             ->first();
