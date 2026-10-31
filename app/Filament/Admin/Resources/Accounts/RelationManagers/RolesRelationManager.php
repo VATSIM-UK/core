@@ -92,6 +92,13 @@ class RolesRelationManager extends RelationManager
     {
         $user = auth()->user();
 
-        return $user->can('account.edit-roles.*') || $user->permissions()->where('name', 'like', 'account.edit-roles.%')->exists();
+        // The owner record is an account, while delegated permissions contain role IDs.
+        // Show the relation manager when the user can manage at least one role.
+        return $user->can('account.edit-roles.*')
+            || $user->permissions()->where('name', 'like', 'account.edit-roles.%')->exists()
+            || $user->roles()->whereHas(
+                'permissions',
+                fn (Builder $query): Builder => $query->where('name', 'like', 'account.edit-roles.%'),
+            )->exists();
     }
 }
