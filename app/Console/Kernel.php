@@ -44,10 +44,6 @@ class Kernel extends ConsoleKernel
             ->everyTenMinutes();
 
         // === By Hour === //
-        $schedule->command('sync:cts-roles')
-            ->hourlyAt(15)
-            ->graceTimeInMinutes(15);
-
         $schedule->command('roster:gander')
             ->hourlyAt(25)
             ->graceTimeInMinutes(5);

@@ -48,6 +48,24 @@ class MentorPermissionService
         'TFP Training' => 'Pilot Mentor',
     ];
 
+    public const ATC_STUDENT_CATEGORY_ROLE_MAP = [
+        'OBS to S1 Training' => 'OBS Students',
+        'S2 Training' => 'ATC Students (TWR)',
+        'S3 Training' => 'ATC Students (APP)',
+        'C1 Training' => 'ATC Students (ENR)',
+        'Heathrow GMC' => 'ATC Students (Heathrow)',
+        'Heathrow AIR' => 'ATC Students (Heathrow)',
+        'Heathrow APC' => 'ATC Students (Heathrow)',
+    ];
+
+    public const PILOT_STUDENT_CATEGORY_ROLE_MAP = [
+        'P1 Training' => 'Pilot Students',
+        'P2 Training' => 'Pilot Students',
+        'P3 Training' => 'Pilot Students',
+        'P4 Training' => 'Pilot Students',
+        'TFP Training' => 'TFP Student',
+    ];
+
     public const ATC_TGI_CATEGORY_ROLE_MAP = [
         'OBS to S1 Training' => 'ATC NC Instructor',
         'S2 Training' => 'ATC TWR Instructor',
@@ -125,6 +143,27 @@ class MentorPermissionService
     public static function roleForCategory(string $category): ?string
     {
         return self::ATC_CATEGORY_ROLE_MAP[$category] ?? self::PILOT_CATEGORY_ROLE_MAP[$category] ?? null;
+    }
+
+    public static function studentRoleForCategory(?string $category): ?string
+    {
+        if ($category === null || $category === '') {
+            return null;
+        }
+
+        return self::ATC_STUDENT_CATEGORY_ROLE_MAP[$category] ?? self::PILOT_STUDENT_CATEGORY_ROLE_MAP[$category] ?? null;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public static function studentRoleNames(): array
+    {
+        return collect(self::ATC_STUDENT_CATEGORY_ROLE_MAP)
+            ->merge(self::PILOT_STUDENT_CATEGORY_ROLE_MAP)
+            ->unique()
+            ->values()
+            ->all();
     }
 
     public static function tgiRoleForCategory(string $category): ?string
