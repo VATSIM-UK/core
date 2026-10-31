@@ -53,6 +53,14 @@ class StaffPageTest extends TestCase
 
         $response->assertOk();
         $response->assertSeeInOrder([
+            '&thinsp; Management',
+            '&thinsp; Operations',
+            '&thinsp; ATC Training',
+            '&thinsp; Pilot Training',
+            '&thinsp; Technology',
+            '&thinsp; Community',
+        ], false);
+        $response->assertSeeInOrder([
             'Addie Arkley',
             'ATC Training Director',
             'Stackable',
@@ -83,6 +91,9 @@ class StaffPageTest extends TestCase
         $response->assertDontSee('ATC Empty Seat');
 
         $html = $response->getContent();
+        $this->assertSame(1, substr_count($html, 'staff-management container'));
+        $this->assertSame(3, substr_count($html, 'staff-departments__row row'));
+        $this->assertSame(5, substr_count($html, 'staff-departments__department col-md-6'));
         $response->assertDontSee('Ada Arkley');
         $this->assertSame(1, substr_count($html, 'Addie Arkley'));
         $this->assertSame(1, substr_count($html, 'Ben Team'));

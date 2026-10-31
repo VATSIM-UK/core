@@ -31,7 +31,7 @@
 		</div>
 	</div>
 
-	<div class="container">
+	<div class="staff-management container">
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
 				<div class="panel panel-ukblue">
@@ -47,11 +47,9 @@
 		</div>
 	</div>
 
-	<div class="container">
-		<!-- Row One -->
-		<div class="row">
-			<!-- Operations -->
-			<div class="col-md-4">
+	<div class="staff-departments container">
+		<div class="staff-departments__row row">
+			<div class="staff-departments__department col-md-6">
 				<div class="panel panel-ukblue">
 					<div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Operations
 					</div>
@@ -62,34 +60,32 @@
 					</div>
 				</div>
 			</div>
-			<!-- End Operations -->
-			<!-- Training -->
-			<div class="col-md-8">
+			<div class="staff-departments__department col-md-6">
 				<div class="panel panel-ukblue">
-					<div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Training
+					<div class="panel-heading"><i class="fa fa-star"></i> &thinsp; ATC Training
 					</div>
 					<div class="panel-body">
-						<div class="col-md-6">
-							@include('site.partials.staff-department', [
-								'directory' => $atcTrainingDirectory,
-							])
-						</div>
-
-						<div class="col-md-6">
-							@include('site.partials.staff-department', [
-								'directory' => $pilotTrainingDirectory,
-							])
-						</div>
+						@include('site.partials.staff-department', [
+							'directory' => $atcTrainingDirectory,
+						])
 					</div>
 				</div>
 			</div>
-			<!-- End Training -->
 		</div>
-	</div>
-	<div class="container">
-		<div class="row row-eq-height">
-			<!-- Web Services -->
-			<div class="col-md-4">
+
+		<div class="staff-departments__row row">
+			<div class="staff-departments__department col-md-6">
+				<div class="panel panel-ukblue">
+					<div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Pilot Training
+					</div>
+					<div class="panel-body">
+						@include('site.partials.staff-department', [
+							'directory' => $pilotTrainingDirectory,
+						])
+					</div>
+				</div>
+			</div>
+			<div class="staff-departments__department col-md-6">
 				<div class="panel panel-ukblue">
 					<div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Technology
 					</div>
@@ -100,9 +96,10 @@
 					</div>
 				</div>
 			</div>
-			<!-- End Web Services -->
-			<!-- Community -->
-			<div class="col-md-4">
+		</div>
+
+		<div class="staff-departments__row row">
+			<div class="staff-departments__department col-md-6">
 				<div class="panel panel-ukblue">
 					<div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Community
 					</div>
@@ -113,8 +110,6 @@
 					</div>
 				</div>
 			</div>
-			<!-- End Community -->
 		</div>
-		<!-- End Row One -->
 	</div>
 @stop
