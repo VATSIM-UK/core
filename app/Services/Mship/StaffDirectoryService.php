@@ -71,10 +71,10 @@ class StaffDirectoryService
             ->values();
 
         return new StaffDirectoryEntry(
-            name: $account->real_name,
+            name: $account->name,
             jobTitles: $positions->pluck('job_title')->all(),
             sortOrder: (int) $positions->min('sort_order'),
-            sortName: "{$account->name_last} {$account->name_first}",
+            sortName: "{$account->name_last} {$account->name_preferred}",
         );
     }
 
