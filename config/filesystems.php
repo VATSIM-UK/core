@@ -63,6 +63,31 @@ return [
             'bucket' => env('AWS_BUCKET'),
         ],
 
+        // Private bucket for user and system uploads. Works with Amazon S3
+        // and S3-compatible providers (R2, Spaces, Hetzner, MinIO, ...);
+        // set AWS_ENDPOINT and AWS_USE_PATH_STYLE_ENDPOINT for the latter.
+        // UPLOADS_DRIVER=local is a development-only convenience.
+        'uploads' => env('UPLOADS_DRIVER', 's3') === 'local'
+            ? [
+                'driver' => 'local',
+                'root' => storage_path('app/uploads'),
+                'url' => env('APP_URL').'/storage/uploads',
+                'visibility' => 'private',
+                'serve' => true,
+                'throw' => true,
+            ]
+            : [
+                'driver' => 's3',
+                'key' => env('AWS_ACCESS_KEY_ID', env('AWS_KEY')),
+                'secret' => env('AWS_SECRET_ACCESS_KEY', env('AWS_SECRET')),
+                'region' => env('AWS_DEFAULT_REGION', env('AWS_REGION', 'eu-west-2')),
+                'bucket' => env('AWS_BUCKET'),
+                'endpoint' => env('AWS_ENDPOINT'),
+                'use_path_style_endpoint' => (bool) env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+                'visibility' => 'private',
+                'throw' => true,
+            ],
+
     ],
 
 ];

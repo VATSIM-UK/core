@@ -233,6 +233,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'achievements.manage',
             'achievements.award',
 
+            // Upload / Storage Permissions
+            'storage.categories.manage',
+            'storage.uploads.view',
+            'storage.uploads.delete',
+
             // // TeamSpeak Permissions
             // 'teamspeak.servergroup.serveradmin',
             // 'teamspeak.idle.extended',
