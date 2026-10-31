@@ -75,6 +75,30 @@ class RolesRelationManagerTest extends BaseAdminTestCase
             ->assertCountTableRecords(1);
     }
 
+    public function test_role_delegate_can_only_see_delegated_roles()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+
+        $delegateRole = Role::create(['name' => 'Role Managers', 'guard_name' => 'web']);
+        $this->user->assignRole($delegateRole);
+
+        $this->service->createDelegatePermission($this->role1);
+        $this->service->createDelegatePermission($this->role2);
+        $this->service->grantDelegate($delegateRole, $this->role1);
+
+        $this->targetAccount->assignRole($this->role1);
+        $this->targetAccount->assignRole($this->role2);
+
+        Livewire::actingAs($this->user)
+            ->test(RolesRelationManager::class, [
+                'ownerRecord' => $this->targetAccount,
+                'pageClass' => ViewAccount::class,
+            ])
+            ->assertCanSeeTableRecords([$this->role1])
+            ->assertCanNotSeeTableRecords([$this->role2])
+            ->assertCountTableRecords(1);
+    }
+
     public function test_wildcard_user_can_attach_any_role()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');

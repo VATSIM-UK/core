@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\Roles\Pages\CreateRole;
 use App\Filament\Admin\Resources\Roles\Pages\EditRole;
 use App\Filament\Admin\Resources\Roles\Pages\ListRoles;
 use App\Filament\Admin\Resources\Roles\RelationManagers\DelegatesRelationManager;
+use App\Filament\Admin\Resources\Roles\RelationManagers\RoleDelegatesRelationManager;
 use App\Filament\Admin\Resources\Roles\RelationManagers\UsersRelationManager;
 use App\Jobs\UpdateMember;
 use DB;
@@ -18,6 +19,7 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -142,7 +144,10 @@ class RoleResource extends Resource
     {
         return [
             UsersRelationManager::class,
-            DelegatesRelationManager::class,
+            RelationGroup::make('Delegates', [
+                DelegatesRelationManager::class,
+                RoleDelegatesRelationManager::class,
+            ]),
         ];
     }
 

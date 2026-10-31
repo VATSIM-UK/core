@@ -16,7 +16,7 @@ class DelegatesRelationManager extends RelationManager
 {
     protected static string $relationship = 'users';
 
-    protected static ?string $title = 'Delegates';
+    protected static ?string $title = 'Individuals';
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -25,14 +25,19 @@ class DelegatesRelationManager extends RelationManager
         $service = new DelegateRoleManagementService;
 
         return $table
-            ->modifyQueryUsing(function (Builder $query) use ($service) {
+            ->query(Account::query())
+            ->modifyQueryUsing(function (Builder $query, bool $isResolvingRecord) use ($service) {
+                if ($isResolvingRecord) {
+                    return $query;
+                }
+
                 $role = $this->getOwnerRecord();
 
                 if (! $service->delegatePermissionExists($role)) {
                     return $query->whereRaw('1 = 0');
                 }
 
-                return $service->getDelegates($role);
+                return $service->filterDelegates($query, $role);
             })
             ->columns([
                 TextColumn::make('id')
@@ -62,7 +67,7 @@ class DelegatesRelationManager extends RelationManager
                         $role = $this->getOwnerRecord();
 
                         $account = Account::where('id', $data['users_id'])->first();
-                        $account->givePermissionTo($service->delegatePermissionName($role));
+                        $service->grantDelegate($account, $role);
 
                         Notification::make()
                             ->title('Delegation successful')

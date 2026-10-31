@@ -44,15 +44,30 @@ class DelegateRoleManagementService
         }
     }
 
-    public function revokeDelegate(Account $account, Role $role): void
+    public function grantDelegate(Account|Role $delegate, Role $role): void
     {
         $permissionName = $this->delegatePermissionName($role);
 
-        if ($account->hasPermissionTo($permissionName)) {
-            $account->revokePermissionTo($permissionName);
+        if (! $delegate->permissions()->where('name', $permissionName)->exists()) {
+            $delegate->givePermissionTo($permissionName);
 
             audit('Delegate permission changed', [
-                'account_id' => $account->id,
+                $delegate instanceof Account ? 'account_id' : 'delegate_role_id' => $delegate->id,
+                'role_id' => $role->id,
+                'action' => 'granted',
+            ]);
+        }
+    }
+
+    public function revokeDelegate(Account|Role $delegate, Role $role): void
+    {
+        $permissionName = $this->delegatePermissionName($role);
+
+        if ($delegate->permissions()->where('name', $permissionName)->exists()) {
+            $delegate->revokePermissionTo($permissionName);
+
+            audit('Delegate permission changed', [
+                $delegate instanceof Account ? 'account_id' : 'delegate_role_id' => $delegate->id,
                 'role_id' => $role->id,
                 'action' => 'revoked',
             ]);
@@ -73,12 +88,42 @@ class DelegateRoleManagementService
             ->toArray();
     }
 
+    public function getPotentialDelegateRoles(string $search, Role $role): array
+    {
+        return Role::query()
+            ->whereKeyNot($role->getKey())
+            ->where('name', 'like', "%{$search}%")
+            ->orderBy('name')
+            ->limit(50)
+            ->pluck('name', 'id')
+            ->toArray();
+    }
+
     public function getDelegates(Role $role)
+    {
+        return $this->filterDelegates(Account::query(), $role);
+    }
+
+    public function filterDelegates(Builder $query, Role $role): Builder
     {
         $permissionName = $this->delegatePermissionName($role);
 
-        return Account::query()->whereHas('permissions', function ($q) use ($permissionName) {
+        return $query->whereHas('permissions', function ($q) use ($permissionName) {
             $q->where('name', $permissionName);
+        });
+    }
+
+    public function getRoleDelegates(Role $role): Builder
+    {
+        return $this->filterRoleDelegates(Role::query(), $role);
+    }
+
+    public function filterRoleDelegates(Builder $query, Role $role): Builder
+    {
+        $permissionName = $this->delegatePermissionName($role);
+
+        return $query->whereHas('permissions', function ($permissionQuery) use ($permissionName) {
+            $permissionQuery->where('name', $permissionName);
         });
     }
 
