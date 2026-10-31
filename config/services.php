@@ -127,6 +127,22 @@ return [
     'moodle' => [
         'database' => env('MOODLE_DATABASE'),
         'oauth_issuer_id' => env('MOODLE_OAUTH_ISSUER_ID'),
+
+        /*
+        | Moodle quiz IDs for each theory exam level
+        |
+        | Each value must be the Moodle quiz ID (mdl_quiz.id) for that exam. If it is left 'null' it won't be synced from moodle.
+        */
+        'theory_exams' => [
+            'S1' => null,
+            'S2' => null,
+            'S3' => null,
+            'C1' => null,
+            'P1' => null,
+            'P2' => null,
+            'P3' => null,
+            'P4' => null,
+        ],
     ],
 
 ];
