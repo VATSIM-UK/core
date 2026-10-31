@@ -206,7 +206,7 @@ jobs:
             $PHP_PATH artisan sitemap:generate
 
             # Restart Discord bot
-            sudo -n /usr/bin/systemctl restart core-discord-honeypot
+            sudo -n /usr/bin/supervisorctl restart core-discord-honeypot:core-discord-honeypot_00
           envs: RELEASE_DIRECTORY,APPLICATION_ROOT,PHP_PATH,PHP_FPM,TAG,COMMIT,GITHUB_ACTOR
 
       - name: Create Sentry release
