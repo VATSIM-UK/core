@@ -4,10 +4,12 @@ namespace Tests\Unit\Account\Sync;
 
 use App\Events\Mship\Roles\RoleAssigned;
 use App\Events\Mship\Roles\RoleRemoved;
+use App\Jobs\Mship\ReconcileHelpdeskStaff;
 use App\Jobs\Mship\SyncToCTS;
 use App\Jobs\Mship\SyncToDiscord;
 use App\Jobs\Mship\SyncToHelpdesk;
 use App\Jobs\Mship\SyncToMoodle;
+use App\Models\Mship\RoleHelpdeskStaffSetting;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
@@ -72,5 +74,27 @@ class RoleSyncTest extends TestCase
         Queue::assertPushed(SyncToMoodle::class, 1);
         Queue::assertPushed(SyncToHelpdesk::class, 1);
         Queue::assertPushed(SyncToDiscord::class, 1);
+    }
+
+    #[Test]
+    public function it_reconciles_helpdesk_staff_for_a_mapped_role()
+    {
+        Queue::fake();
+
+        RoleHelpdeskStaffSetting::withoutEvents(fn () => RoleHelpdeskStaffSetting::query()->create([
+            'role_id' => $this->role->id,
+            'helpdesk_department_id' => 10,
+            'helpdesk_team_id' => 20,
+            'helpdesk_role_id' => 30,
+            'priority' => 0,
+        ]));
+
+        event(new RoleAssigned($this->user, $this->role));
+        event(new RoleRemoved($this->user, $this->role));
+
+        Queue::assertPushed(
+            ReconcileHelpdeskStaff::class,
+            2,
+        );
     }
 }

@@ -107,6 +107,11 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping()
             ->graceTimeInMinutes(15);
 
+        $schedule->command('helpdesk:sync-staff')
+            ->dailyAt('04:30')
+            ->withoutOverlapping()
+            ->graceTimeInMinutes(15);
+
         $schedule->command('training-places:check-availability')
             ->dailyAt('10:00')
             ->graceTimeInMinutes(15);
