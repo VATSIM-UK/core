@@ -40,6 +40,7 @@ class SyncTheoryExamFromMoodle extends Job implements ShouldQueue
             })
             ->where('a.quiz', $this->quizId)
             ->where('a.state', 'finished')
+            ->where('a.preview', 0)
             ->whereNotNull('a.timefinish')
             ->where('a.timefinish', '>', 0)
             ->select([
