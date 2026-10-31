@@ -15,7 +15,7 @@ class StaffPageTest extends TestCase
     #[Test]
     public function it_lists_atc_training_and_technology_positions_from_roles(): void
     {
-        $ada = $this->member('Ada', 'Arkley');
+        $ada = $this->member('Ada', 'Arkley', 'Addie');
         $eve = $this->member('Eve', 'Shared');
         $ben = $this->member('Ben', 'Team');
         $cara = $this->member('Cara', 'Both');
@@ -53,7 +53,7 @@ class StaffPageTest extends TestCase
 
         $response->assertOk();
         $response->assertSeeInOrder([
-            'Ada Arkley',
+            'Addie Arkley',
             'ATC Training Director',
             'Stackable',
             'Staff members',
@@ -83,17 +83,19 @@ class StaffPageTest extends TestCase
         $response->assertDontSee('ATC Empty Seat');
 
         $html = $response->getContent();
-        $this->assertSame(1, substr_count($html, 'Ada Arkley'));
+        $response->assertDontSee('Ada Arkley');
+        $this->assertSame(1, substr_count($html, 'Addie Arkley'));
         $this->assertSame(1, substr_count($html, 'Ben Team'));
         $this->assertSame(1, substr_count($html, 'Dan Tech'));
         $this->assertSame(2, substr_count($html, 'Cara Both'));
     }
 
-    private function member(string $first, string $last): Account
+    private function member(string $first, string $last, ?string $nickname = null): Account
     {
         return Account::factory()->createQuietly([
             'name_first' => $first,
             'name_last' => $last,
+            'nickname' => $nickname,
         ]);
     }
 
