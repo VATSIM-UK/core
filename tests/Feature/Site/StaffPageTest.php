@@ -53,26 +53,31 @@ class StaffPageTest extends TestCase
 
         $response->assertOk();
         $response->assertSeeInOrder([
+            'Ada Arkley',
             'ATC Training Director',
             'Stackable',
-            'Ada Arkley',
-            'ATC Training Team',
-            'ATC Assistant One',
+            'Staff members',
             'Eve Shared',
             'ATC Assistant One',
-            'ATC Assistant Two',
             'Ben Team',
-            'ATC Cross Department',
+            'ATC Assistant One',
+            'ATC Assistant Two',
             'Cara Both',
+            'ATC Cross Department',
+            'Ben Carpenter',
             'Pilot Training Director',
+            'Dan Tech',
             'Technology Director',
             'Technology Side Title',
-            'Dan Tech',
-            'Technology Team',
-            'Technology Developer',
             'Cara Both',
+            'Technology Developer',
         ]);
         $response->assertSee('Stackable<br />', false);
+        $response->assertSee('staff-directory__lead');
+        $response->assertSee('staff-directory__member');
+        $response->assertSee('>AA</div>', false);
+        $response->assertSee('>—</div>', false);
+        $response->assertDontSee('Department lead');
         $response->assertDontSee('Secret Operations Title');
         $response->assertDontSee('ATC Absent Director');
         $response->assertDontSee('ATC Empty Seat');
