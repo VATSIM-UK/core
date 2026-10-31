@@ -130,64 +130,10 @@
 					</div>
 					<div class="panel-body">
 						<div class="col-md-6">
-							<h4 class="text-center">ATC Training Director (VATUK5)</h4><br />
-							<p class="text-center">Adam Arkley</p>
-							<h4 class="text-center">ATC Training Team</h4>
-							<table class="table">
-								<tr>
-									<td>ATC Training Manager & <br />
-										Division Instructor</td>
-									<td>Will Jennings</td>
-								</tr>
-								<tr>
-									<td>Training Department Assistant</td>
-									<td>Craig Stewart</td>
-								</tr>
-								<tr>
-									<td>Training Department Assistant</td>
-									<td>Alex Anderson</td>
-								</tr>
-								<tr>
-									<td>Division Instructor</td>
-									<td>Adam Arkley</td>
-								</tr>
-								<tr>
-									<td>Division Instructor</td>
-									<td>Fraser Cooper</td>
-								</tr>
-								<tr>
-									<td>Division Instructor</td>
-									<td>Charlie Watson</td>
-								</tr>
-								<tr>
-									<td>Division Instructor</td>
-									<td>Thijs Schepman</td>
-								</tr>
-								<tr>
-									<td>TG Instructor (New Controller)</td>
-									<td>James Taylor</td>
-								</tr>
-								<tr>
-									<td>TG Instructor (New Controller)</td>
-									<td>Stephen Lee</td>
-								</tr>
-								<tr>
-									<td>TG Instructor (TWR)</td>
-									<td>Matthew Owen</td>
-								</tr>
-								<tr>
-									<td>TG Instructor (APP)</td>
-									<td>James Bradford</td>
-								</tr>
-								<tr>
-									<td>TG Instructor (ENR)</td>
-									<td><em>Vacant</em></td>
-								</tr>
-								<tr>
-									<td>TG Instructor (Heathrow)</td>
-									<td>Noam Lavie</td>
-								</tr>
-							</table>
+							@include('site.partials.staff-department', [
+								'directory' => $atcTrainingDirectory,
+								'teamHeading' => 'ATC Training Team',
+							])
 						</div>
 
 						<div class="col-md-6">
@@ -239,26 +185,10 @@
 					<div class="panel-heading"><i class="fa fa-star"></i> &thinsp; Technology
 					</div>
 					<div class="panel-body">
-						<h4 class="text-center">Technology Director (VATUK8)</h4><br />
-						<p class="text-center">Callum Axon</p>
-
-						<h4 class="text-center">Technology Team</h4>
-						<table class="table">
-							<tr>
-								<td>Technology Manager<br />
-									Developer
-								</td>
-								<td>Calum Tοwers</td>
-							</tr>
-							<tr>
-								<td>Developer</td>
-								<td>Kristián Kunc</td>
-							</tr>
-							<tr>
-								<td>Developer</td>
-								<td>Coby Chapman</td>
-							</tr>
-						</table>
+						@include('site.partials.staff-department', [
+							'directory' => $technologyDirectory,
+							'teamHeading' => 'Technology Team',
+						])
 					</div>
 				</div>
 			</div>

@@ -15,9 +15,11 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -44,6 +46,34 @@ class RoleResource extends Resource
                     ->label('Secondary password mandatory'),
                 Checkbox::make('two_factor_mandatory')
                     ->label('Two-factor authentication mandatory'),
+                Section::make('Staff page')
+                    ->columnSpanFull()
+                    ->schema([
+                        TextInput::make('staff_department')
+                            ->label('Department')
+                            ->maxLength(255)
+                            ->trim()
+                            ->requiredWith('staff_job_title')
+                            ->dehydrated(false),
+                        Textarea::make('staff_job_title')
+                            ->label('Job title')
+                            ->rows(2)
+                            ->maxLength(255)
+                            ->trim()
+                            ->requiredWith('staff_department')
+                            ->dehydrated(false),
+                        Checkbox::make('staff_is_department_lead')
+                            ->label('Department lead')
+                            ->helperText('Head of this department on the staff page.')
+                            ->dehydrated(false),
+                        TextInput::make('staff_sort_order')
+                            ->label('Sort order')
+                            ->integer()
+                            ->minValue(0)
+                            ->default(0)
+                            ->helperText('Lower numbers appear first within the department.')
+                            ->dehydrated(false),
+                    ]),
                 CheckboxList::make('permissions')
                     ->relationship('permissions', 'name')
                     ->columns(3)
