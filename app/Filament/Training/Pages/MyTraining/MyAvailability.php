@@ -466,7 +466,8 @@ class MyAvailability extends Page implements HasForms, HasTable
                     ->label('From')
                     ->required()
                     ->searchable()
-                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
+                    ->searchPrompt('Type a time (e.g. 18:30 or 1830) to filter the list')
+                    ->extraAlpineAttributes($this->timeSearchAlpineAttributes())
                     ->options($this->generateTimeOptions())
                     ->optionsLimit(100),
 
@@ -474,7 +475,8 @@ class MyAvailability extends Page implements HasForms, HasTable
                     ->label('To')
                     ->required()
                     ->searchable()
-                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
+                    ->searchPrompt('Type a time (e.g. 18:30 or 1830) to filter the list')
+                    ->extraAlpineAttributes($this->timeSearchAlpineAttributes())
                     ->options($this->generateTimeOptions())
                     ->optionsLimit(100),
             ])
@@ -529,7 +531,8 @@ class MyAvailability extends Page implements HasForms, HasTable
                     ->required()
                     ->searchable()
                     ->allowHtml(false)
-                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
+                    ->searchPrompt('Type a time (e.g. 18:30 or 1830) to filter the list')
+                    ->extraAlpineAttributes($this->timeSearchAlpineAttributes())
                     ->options($this->generateTimeOptions())
                     ->optionsLimit(100),
 
@@ -538,7 +541,8 @@ class MyAvailability extends Page implements HasForms, HasTable
                     ->required()
                     ->searchable()
                     ->allowHtml(false)
-                    ->searchPrompt('Type a time (e.g. 18:30) to filter the list')
+                    ->searchPrompt('Type a time (e.g. 18:30 or 1830) to filter the list')
+                    ->extraAlpineAttributes($this->timeSearchAlpineAttributes())
                     ->options($this->generateTimeOptions())
                     ->optionsLimit(100),
             ])
@@ -700,5 +704,34 @@ class MyAvailability extends Page implements HasForms, HasTable
         }
 
         return $options;
+    }
+
+    protected function timeSearchAlpineAttributes(): array
+    {
+        return [
+            'x-init' => <<<'JS'
+                const timeSelect = $data.select
+
+                if (timeSelect) {
+                    timeSelect.filterOptions = function (query) {
+                        const normalizedQuery = query.trim().replace(':', '')
+
+                        this.options = normalizedQuery
+                            ? this.originalOptions.filter((option) => {
+                                const normalizedLabel = String(option.label).replace(':', '')
+
+                                return normalizedLabel.startsWith(normalizedQuery)
+                            })
+                            : []
+
+                        this.renderOptions()
+
+                        if (this.isOpen) {
+                            this.positionDropdown()
+                        }
+                    }
+                }
+                JS,
+        ];
     }
 }
