@@ -41,6 +41,15 @@ class RolesAndPermissionsSeeder extends Seeder
         foreach (MentorPermissionService::PILOT_CATEGORY_ROLE_MAP as $mentorRole) {
             Role::firstOrCreate(['name' => $mentorRole, 'guard_name' => 'web', 'default' => false]);
         }
+
+        foreach (MentorPermissionService::ATC_STUDENT_CATEGORY_ROLE_MAP as $studentRole) {
+            Role::firstOrCreate(['name' => $studentRole, 'guard_name' => 'web', 'default' => false]);
+        }
+
+        foreach (MentorPermissionService::PILOT_STUDENT_CATEGORY_ROLE_MAP as $studentRole) {
+            Role::firstOrCreate(['name' => $studentRole, 'guard_name' => 'web', 'default' => false]);
+        }
+
         Role::firstOrCreate(['name' => 'P3 Mentor', 'guard_name' => 'web', 'default' => false]);
 
         // Add All Permissions

@@ -79,7 +79,7 @@ When adding new code follow these locations — the app is organized by domain s
 | Console commands | `app/Console/Commands/<Domain>/` | `App\Console\Commands\Roster\UpdateRoster` |
 | Policies | `app/Policies/` (flat or `<Domain>/` subdir) | `App\Policies\AccountPolicy` |
 | Enums | `app/Enums/` (flat, PHP 8.4 backed enums) | `BanTypeEnum`, `ExamResultEnum` |
-| CTS data access | `app/Repositories/Cts/` | `BookingRepository`, `StudentRepository` |
+| CTS data access | `app/Repositories/Cts/` | `BookingRepository`, `ExaminerRepository` |
 | External API wrappers | `app/Libraries/` | `App\Libraries\Discord`, `App\Libraries\TeamSpeak` |
 | Livewire components | `app/Livewire/` + view in `resources/views/livewire/` | |
 | Filament Admin resources | `app/Filament/Admin/Resources/` | |
