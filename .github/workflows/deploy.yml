@@ -34,6 +34,7 @@ jobs:
             echo "RELEASE_DIRECTORY=$APPLICATION_ROOT/releases/$COMMIT"
             echo "SHARED_DIRECTORY=$APPLICATION_ROOT/shared"
             echo "PHP_PATH=/bin/php8.4"
+            echo "PHP_FPM=php8.4-fpm"
             echo "VERSIONS_TO_KEEP=5"
             echo "DISCORD_TRAINING_ALERTS_CHANNEL_ID=$DISCORD_TRAINING_ALERTS_CHANNEL_ID"
           } >> "$GITHUB_ENV"
@@ -190,7 +191,7 @@ jobs:
             # Restart PHP-FPM
 
             ( flock -w 10 9 || exit 1
-                echo 'Restarting FPM...'; sudo -S service $PHP_FPM reload ) 9>/tmp/fpmlock
+                echo 'Restarting FPM...'; sudo -n /usr/sbin/service "$PHP_FPM" reload ) 9>/tmp/fpmlock
 
             # Restart queue workers against the new release
             $PHP_PATH artisan horizon:terminate
@@ -205,8 +206,8 @@ jobs:
             $PHP_PATH artisan sitemap:generate
 
             # Restart Discord bot
-            sudo systemctl restart core-discord-honeypot
-          envs: RELEASE_DIRECTORY,APPLICATION_ROOT,PHP_PATH,TAG,COMMIT,GITHUB_ACTOR
+            sudo -n /usr/bin/systemctl restart core-discord-honeypot
+          envs: RELEASE_DIRECTORY,APPLICATION_ROOT,PHP_PATH,PHP_FPM,TAG,COMMIT,GITHUB_ACTOR
 
       - name: Create Sentry release
         uses: getsentry/action-release@v3
