@@ -720,7 +720,7 @@ class MyAvailability extends Page implements HasForms, HasTable
                             ? this.originalOptions.filter((option) => {
                                 const normalizedLabel = String(option.label).replace(':', '')
 
-                                return normalizedLabel.includes(normalizedQuery)
+                                return normalizedLabel.startsWith(normalizedQuery)
                             })
                             : []
 
