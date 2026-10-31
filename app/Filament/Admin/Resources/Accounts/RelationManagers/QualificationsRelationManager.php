@@ -103,21 +103,11 @@ class QualificationsRelationManager extends RelationManager
 
     protected function getNextAtcQualification($account): ?Qualification
     {
-        $currentMax = $account->qualifications()
-            ->where('type', 'atc')
-            ->max('vatsim');
-
-        return Qualification::query()
-            ->where('type', 'atc')
-            ->where('vatsim', '>', $currentMax ?? 0)
-            ->orderBy('vatsim')
-            ->first();
+        return ManualAtcUpgradeService::getNextAtcQualification($account);
     }
 
     protected function accountHasAdministrativeRating($account): bool
     {
-        return $account->qualifications()
-            ->whereIn('type', ['training_atc', 'admin'])
-            ->exists();
+        return ManualAtcUpgradeService::hasAdministrativeRating($account);
     }
 }
