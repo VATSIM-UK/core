@@ -37,6 +37,7 @@ return new class extends Migration
             ->join('members as m', 'm.id', '=', 't.student_id')
             ->where('t.submitted', 1)
             ->whereNotNull('t.submitted_time')
+            ->where('t.submitted_time', '>', '0000-00-00 00:00:00')
             ->select(['m.cid', 't.exam', 't.submitted_time', 't.pass'])
             ->orderBy('t.id')
             ->chunk(500, function ($rows): void {
