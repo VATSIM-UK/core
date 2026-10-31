@@ -243,26 +243,68 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             return collect();
         }
 
-        return Member::query()
+        $members = Member::query()
             ->whereIn('cid', $slots->keys()->all())
-            ->addSelect([
-                'last_session_date' => Session::selectRaw("CONCAT(taken_date, ' ', COALESCE(taken_from, '00:00:00'))")
-                    ->whereColumn('student_id', 'members.id')
-                    ->whereNotNull('taken_date')
-                    ->whereNull('cancelled_datetime')
-                    ->orderBy('taken_date', 'desc')
-                    ->orderBy('taken_from', 'desc')
-                    ->limit(1),
-            ])
-            ->orderByRaw("COALESCE(last_session_date, '1970-01-01 00:00:00') ASC")
-            ->get()
+            ->get();
+
+        $lastSessionDates = $this->lastSessionDatesByStudent($members, $placeByCid);
+
+        return $members
             ->each(function (Member $member) use ($placeByCid, $slots) {
                 /** @var TrainingPlace|null $place */
                 $place = $placeByCid->get($member->cid);
                 $member->setAttribute('primary_position', $place?->primaryCtsPosition());
                 $member->setAttribute('training_place_id', $place?->id);
                 $member->setRelation('availabilities', $slots->get($member->cid, collect()));
-            });
+            })
+            ->each(fn (Member $member) => $member->setAttribute(
+                'last_session_date',
+                $lastSessionDates->get($member->id),
+            ))
+            ->sortBy(fn (Member $member) => $member->last_session_date ?? '1970-01-01 00:00:00')
+            ->values();
+    }
+
+    /**
+     * @param  Collection<int, Member>  $members
+     * @param  Collection<int, TrainingPlace>  $placeByCid
+     * @return Collection<int, string>
+     */
+    private function lastSessionDatesByStudent(Collection $members, Collection $placeByCid): Collection
+    {
+        $studentIdsByCategory = $members
+            ->filter(fn (Member $member) => filled($placeByCid->get($member->cid)?->category))
+            ->groupBy(fn (Member $member) => $placeByCid->get($member->cid)?->category)
+            ->map(fn (Collection $students) => $students->pluck('id')->all());
+
+        $service = app(MentorPermissionService::class);
+        $sessionScopes = $studentIdsByCategory
+            ->map(fn (array $studentIds, string $category) => [
+                'student_ids' => $studentIds,
+                'callsigns' => $service->getAllCtsCallsignsForCategory($category),
+            ])
+            ->filter(fn (array $scope) => $scope['callsigns'] !== []);
+
+        if ($sessionScopes->isEmpty()) {
+            return collect();
+        }
+
+        return Session::query()
+            ->select('student_id')
+            ->selectRaw("MAX(CONCAT(taken_date, ' ', COALESCE(taken_from, '00:00:00'))) AS last_session_date")
+            ->whereNotNull('taken_date')
+            ->whereNull('cancelled_datetime')
+            ->where(function ($query) use ($sessionScopes) {
+                $sessionScopes->each(function (array $scope) use ($query) {
+                    $query->orWhere(function ($categoryQuery) use ($scope) {
+                        $categoryQuery
+                            ->whereIn('student_id', $scope['student_ids'])
+                            ->whereIn('position', $scope['callsigns']);
+                    });
+                });
+            })
+            ->groupBy('student_id')
+            ->pluck('last_session_date', 'student_id');
     }
 
     /** A midnight close is hour 24, or the timeline collapses to a single hour. */

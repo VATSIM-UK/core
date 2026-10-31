@@ -807,6 +807,82 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function last_session_date_uses_sessions_from_all_positions_in_the_students_training_category(): void
+    {
+        $student = $this->createBookableStudent();
+        $sameCategorySessionDate = Carbon::today()->subMonths(3);
+
+        TrainingPosition::factory()->create([
+            'cts_positions' => ['EGCC_APP'],
+            'cts_primary_position' => 'EGCC_APP',
+            'category' => 'S3 Training',
+        ]);
+
+        TrainingPosition::factory()->create([
+            'cts_positions' => ['EGLL_TWR'],
+            'cts_primary_position' => 'EGLL_TWR',
+            'category' => 'S2 Training',
+        ]);
+
+        Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGCC_APP',
+            'taken_date' => $sameCategorySessionDate->format('Y-m-d'),
+            'taken_from' => '08:00:00',
+            'filed' => now(),
+        ]);
+
+        Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_TWR',
+            'taken_date' => Carbon::yesterday()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'filed' => now(),
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class);
+
+        $renderedStudent = $component->instance()->students->firstWhere('id', $student->id);
+
+        $this->assertSame(
+            $sameCategorySessionDate->format('Y-m-d 08:00:00'),
+            $renderedStudent->last_session_date,
+        );
+    }
+
+    #[Test]
+    public function last_session_date_shows_never_when_only_sessions_in_other_categories_exist(): void
+    {
+        $student = $this->createBookableStudent();
+
+        TrainingPosition::factory()->create([
+            'cts_positions' => ['EGLL_TWR'],
+            'cts_primary_position' => 'EGLL_TWR',
+            'category' => 'S2 Training',
+        ]);
+
+        Session::factory()->create([
+            'student_id' => $student->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_TWR',
+            'taken_date' => Carbon::yesterday()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'filed' => now(),
+        ]);
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->assertSee('Never');
+
+        $renderedStudent = $component->instance()->students->firstWhere('id', $student->id);
+
+        $this->assertNull($renderedStudent->last_session_date);
+    }
+
+    #[Test]
     public function availability_gantt_shows_now_line_when_viewing_today(): void
     {
         Carbon::setTestNow(Carbon::today()->setTime(14, 30));
