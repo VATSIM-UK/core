@@ -3,7 +3,7 @@
 @section('body')
 
 	@yield('email-content')
-	@if (!$application->is_withdrawn)
+	@if (empty($withdrawal) && !$application->is_withdrawn)
 		<p>
 			You will be notified of any future updates or changes to your application as it progresses.
 			You can view your application at any point <a
