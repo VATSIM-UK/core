@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Auth\SessionGuard as AppSessionGuard;
 use App\Models\Atc\PositionGroup;
 use App\Models\Cts\Session;
 use App\Models\Discord\DiscordRoleRule;
@@ -34,6 +35,7 @@ use App\Registrars\PermissionRegistrar as RegistrarsPermissionRegistrar;
 use Illuminate\Contracts\Auth\Access\Gate as AccessGate;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Models\Role;
@@ -83,6 +85,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        $this->registerSessionGuard();
+
         // Custom spatie permissions override
         $this->app->singleton(PermissionRegistrar::class, RegistrarsPermissionRegistrar::class);
 
@@ -105,6 +109,30 @@ class AuthServiceProvider extends ServiceProvider
             } catch (PermissionDoesNotExist $e) {
                 return false;
             }
+        });
+    }
+
+    protected function registerSessionGuard(): void
+    {
+        Auth::extend('session', function (Application $app, string $name, array $config) {
+            $guard = new AppSessionGuard(
+                $name,
+                Auth::createUserProvider($config['provider'] ?? null),
+                $app['session.store'],
+                rehashOnLogin: $app['config']->get('hashing.rehash_on_login', true),
+                timeboxDuration: $app['config']->get('auth.timebox_duration', 200000),
+                hashKey: $app['config']->get('app.key'),
+            );
+
+            $guard->setCookieJar($app['cookie']);
+            $guard->setDispatcher($app['events']);
+            $guard->setRequest($app->refresh('request', $guard, 'setRequest'));
+
+            if (isset($config['remember'])) {
+                $guard->setRememberDuration($config['remember']);
+            }
+
+            return $guard;
         });
     }
 }
