@@ -138,10 +138,10 @@ return [
             'S2' => null,
             'S3' => null,
             'C1' => null,
-            'P1' => null,
-            'P2' => null,
-            'P3' => null,
-            'P4' => null,
+            'P1' => 193, // P1 Entry Exam
+            'P2' => 170, // Theory Exam
+            'P3' => 225, // P3 Theory Exam
+            'P4' => 244, // P4 Theory Exam
         ],
     ],
 
