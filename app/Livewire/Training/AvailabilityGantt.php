@@ -407,7 +407,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
                 return "You are creating a mentoring session for {$date}. Please choose a position and confirm the exact start and end times below.";
             })
-            ->modalSubmitActionLabel('Create Session')
+            ->modalSubmitActionLabel('Accept Session')
             ->form(function (array $arguments) {
                 $availability = Availability::findOrFail($arguments['availability_id']);
                 $student = Member::where('cid', $availability->account_id)->firstOrFail();
