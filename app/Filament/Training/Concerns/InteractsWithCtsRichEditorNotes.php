@@ -30,7 +30,7 @@ trait InteractsWithCtsRichEditorNotes
     protected function conductSessionRichEditor(RichEditor $editor, ?callable $afterStateUpdated = null): RichEditor
     {
         $editor = $editor
-            ->live()
+            ->live(debounce: 1000)
             ->extraFieldWrapperAttributes(['wire:ignore' => true]);
 
         if ($afterStateUpdated !== null) {
