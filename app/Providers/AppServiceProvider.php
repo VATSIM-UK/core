@@ -141,6 +141,11 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->make(ParallelTesting::class)
             ->setUpTestDatabase(function () {
+                // Laravel may still consider the schema current after a database is recreated.
+                if (Artisan::call('migrate', ['--force' => true]) !== 0) {
+                    throw new \RuntimeException('Failed to migrate the parallel test database.');
+                }
+
                 Artisan::call('db:seed', ['--force' => true]);
                 $this->app->make(PermissionRegistrar::class)->forgetCachedPermissions();
             });

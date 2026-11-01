@@ -3,6 +3,7 @@
 namespace App\Events\VisitTransfer;
 
 use App\Models\VisitTransfer\Application;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Queue\SerializesModels;
 
 class ApplicationSubmitted extends ApplicationStatusChanged
@@ -16,5 +17,18 @@ class ApplicationSubmitted extends ApplicationStatusChanged
         $this->application = $application;
 
         $this->application->load('facility');
+    }
+
+    public function restoreModel($value)
+    {
+        try {
+            return parent::restoreModel($value);
+        } catch (ModelNotFoundException $exception) {
+            if ($value->class !== Application::class || $exception->getModel() !== Application::class) {
+                throw $exception;
+            }
+
+            return null;
+        }
     }
 }

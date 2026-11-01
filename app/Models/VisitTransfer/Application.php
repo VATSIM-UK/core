@@ -584,16 +584,35 @@ class Application extends Model
 
     public function withdraw()
     {
-        $this->guardAgainstInvalidWithdrawal();
+        $application = $this->getConnection()->transaction(function () {
+            $application = $this->newQuery()->lockForUpdate()->find($this->getKey());
 
-        $this->attributes['status'] = self::STATUS_WITHDRAWN;
-        $this->save();
+            if (! $application) {
+                throw new ApplicationCannotBeWithdrawnException($this);
+            }
 
-        event(new ApplicationWithdrawn($this));
+            $application->guardAgainstInvalidWithdrawal();
+            $application->status = self::STATUS_WITHDRAWN;
+            if (! $application->save()) {
+                throw new ApplicationCannotBeWithdrawnException($application);
+            }
 
-        if ($this->facility) {
-            $this->facility->addTrainingSpace();
-        }
+            if ($application->facility?->addTrainingSpace() === false) {
+                throw new ApplicationCannotBeWithdrawnException($application);
+            }
+
+            event(new ApplicationWithdrawn($application));
+
+            if (! $application->forceDelete()) {
+                throw new ApplicationCannotBeWithdrawnException($application);
+            }
+
+            return $application;
+        });
+
+        $this->setRawAttributes($application->getAttributes(), true);
+        $this->unsetRelations();
+        $this->exists = false;
     }
 
     public function expire()
