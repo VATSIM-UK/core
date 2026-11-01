@@ -39,6 +39,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class ConductMentoringSession extends Page implements HasForms, HasInfolists
 {
@@ -284,7 +285,7 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
             ->extraAttributes(['class' => MentoringReportLayout::CRITERION_ROW_CLASSES]);
     }
 
-    public function save(bool $withNotification = true): void
+    public function save(bool $withNotification = true): bool
     {
         $this->isSaving = true;
 
@@ -304,25 +305,40 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
                 $criteriaData,
                 $this->ctsRichContentNotesForCts($this->additionalCommentsData['body'] ?? ''),
             );
+        } catch (Throwable $exception) {
+            Log::error('Mentoring report draft save failed', ['exception' => $exception, 'session_id' => $this->session->id]);
 
-            $this->hasUnsavedChanges = false;
+            Notification::make()
+                ->title('Mentoring report not saved')
+                ->body('Your changes could not be saved. Please try again before leaving this page.')
+                ->danger()
+                ->persistent()
+                ->send();
 
-            if ($withNotification) {
-                Notification::make()
-                    ->title('Mentoring report saved')
-                    ->success()
-                    ->send();
-            } else {
-                $this->skipRender();
-            }
+            return false;
         } finally {
             $this->isSaving = false;
         }
+
+        $this->hasUnsavedChanges = false;
+
+        if ($withNotification) {
+            Notification::make()
+                ->title('Mentoring report saved')
+                ->success()
+                ->send();
+        } else {
+            $this->skipRender();
+        }
+
+        return true;
     }
 
     public function submitReport(): void
     {
-        $this->save(withNotification: false);
+        if (! $this->save(withNotification: false)) {
+            return;
+        }
 
         try {
             app(MentoringReportService::class)->submit($this->session->fresh());
