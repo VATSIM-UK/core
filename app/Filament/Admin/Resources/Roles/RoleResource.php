@@ -16,12 +16,15 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -74,6 +77,62 @@ class RoleResource extends Resource
                             ->minValue(0)
                             ->default(0)
                             ->helperText('Lower numbers appear first within the department.')
+                            ->dehydrated(false),
+                    ]),
+                Section::make('osTicket agent')
+                    ->columnSpanFull()
+                    ->schema([
+                        Checkbox::make('helpdesk_enabled')
+                            ->label('Create an osTicket agent for members with this role')
+                            ->live()
+                            ->dehydrated(false),
+                        Select::make('helpdesk_department_id')
+                            ->label('Primary department')
+                            ->options(fn () => app(\App\Services\Helpdesk\HelpdeskStaffOptions::class)->departments())
+                            ->searchable()
+                            ->required(fn (Get $get): bool => (bool) $get('helpdesk_enabled'))
+                            ->visible(fn (Get $get): bool => (bool) $get('helpdesk_enabled'))
+                            ->dehydrated(false),
+                        Select::make('helpdesk_team_id')
+                            ->label('Team')
+                            ->options(fn () => app(\App\Services\Helpdesk\HelpdeskStaffOptions::class)->teams())
+                            ->searchable()
+                            ->required(fn (Get $get): bool => (bool) $get('helpdesk_enabled'))
+                            ->visible(fn (Get $get): bool => (bool) $get('helpdesk_enabled'))
+                            ->dehydrated(false),
+                        Select::make('helpdesk_role_id')
+                            ->label('Permission role')
+                            ->options(fn () => app(\App\Services\Helpdesk\HelpdeskStaffOptions::class)->roles())
+                            ->searchable()
+                            ->required(fn (Get $get): bool => (bool) $get('helpdesk_enabled'))
+                            ->visible(fn (Get $get): bool => (bool) $get('helpdesk_enabled'))
+                            ->dehydrated(false),
+                        TextInput::make('helpdesk_priority')
+                            ->label('Priority')
+                            ->helperText('Higher-priority mappings win when a member has multiple mapped roles.')
+                            ->integer()
+                            ->minValue(0)
+                            ->default(0)
+                            ->required(fn (Get $get): bool => (bool) $get('helpdesk_enabled'))
+                            ->visible(fn (Get $get): bool => (bool) $get('helpdesk_enabled'))
+                            ->dehydrated(false),
+                        Repeater::make('helpdesk_extended_access')
+                            ->label('Extended department access')
+                            ->schema([
+                                Select::make('department_id')
+                                    ->label('Department')
+                                    ->options(fn () => app(\App\Services\Helpdesk\HelpdeskStaffOptions::class)->departments())
+                                    ->searchable()
+                                    ->required()
+                                    ->distinct(),
+                                Select::make('role_id')
+                                    ->label('Permission role')
+                                    ->options(fn () => app(\App\Services\Helpdesk\HelpdeskStaffOptions::class)->roles())
+                                    ->searchable()
+                                    ->required(),
+                            ])
+                            ->columns(2)
+                            ->visible(fn (Get $get): bool => (bool) $get('helpdesk_enabled'))
                             ->dehydrated(false),
                     ]),
                 CheckboxList::make('permissions')
