@@ -29,9 +29,7 @@ class SyncTheoryExamFromMoodle extends Job implements ShouldQueue
 
         $attempts = DB::table($moodle.'.mdl_quiz_attempts as a')
             ->join($moodle.'.mdl_user as u', 'u.id', '=', 'a.userid')
-            ->join($moodle.'.mdl_quiz_grades as g', function ($join) {
-                $join->on('g.quiz', '=', 'a.quiz')->on('g.userid', '=', 'a.userid');
-            })
+            ->join($moodle.'.mdl_quiz as q', 'q.id', '=', 'a.quiz')
             ->join($moodle.'.mdl_grade_items as gi', function ($join) {
                 $join->on('gi.iteminstance', '=', 'a.quiz')
                     ->where('gi.itemtype', 'mod')
@@ -40,13 +38,16 @@ class SyncTheoryExamFromMoodle extends Job implements ShouldQueue
             })
             ->where('a.quiz', $this->quizId)
             ->where('a.state', 'finished')
-            ->where('a.preview', 0)
             ->whereNotNull('a.timefinish')
             ->where('a.timefinish', '>', 0)
+            ->whereNotNull('a.sumgrades')
+            ->where('q.sumgrades', '>', 0)
             ->select([
                 'u.username',
                 'a.timefinish',
-                'g.grade',
+                'a.sumgrades as attempt_sumgrades',
+                'q.grade as quiz_grade',
+                'q.sumgrades as quiz_sumgrades',
                 'gi.gradepass',
             ])
             ->get();
@@ -61,11 +62,13 @@ class SyncTheoryExamFromMoodle extends Job implements ShouldQueue
                 continue;
             }
 
+            $score = (float) $attempt->attempt_sumgrades * (float) $attempt->quiz_grade / (float) $attempt->quiz_sumgrades;
+
             $rows[] = [
                 'account_id' => $accountId,
                 'exam' => $this->exam,
                 'exam_datetime' => date('Y-m-d H:i:s', (int) $attempt->timefinish),
-                'result' => (float) $attempt->grade >= (float) $attempt->gradepass ? 'P' : 'F',
+                'result' => $score >= (float) $attempt->gradepass ? 'P' : 'F',
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
