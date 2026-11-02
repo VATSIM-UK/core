@@ -3734,16 +3734,16 @@
         },
         {
             "name": "laravel/fortify",
-            "version": "v1.39.0",
+            "version": "v1.41.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/fortify.git",
-                "reference": "b1fc50707bbe007fd92165d8b7d460ab549b355a"
+                "reference": "c456642584c102f6a6aafee9932299542da637b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/fortify/zipball/b1fc50707bbe007fd92165d8b7d460ab549b355a",
-                "reference": "b1fc50707bbe007fd92165d8b7d460ab549b355a",
+                "url": "https://api.github.com/repos/laravel/fortify/zipball/c456642584c102f6a6aafee9932299542da637b5",
+                "reference": "c456642584c102f6a6aafee9932299542da637b5",
                 "shasum": ""
             },
             "require": {
@@ -3756,6 +3756,7 @@
                 "pragmarx/google2fa": "^9.0"
             },
             "require-dev": {
+                "jasonmccreary/double": "^1.0",
                 "orchestra/testbench": "^9.15|^10.8|^11.0",
                 "phpstan/phpstan": "^2.2.6"
             },
@@ -3794,7 +3795,7 @@
                 "issues": "https://github.com/laravel/fortify/issues",
                 "source": "https://github.com/laravel/fortify"
             },
-            "time": "2026-08-23T07:46:41+00:00"
+            "time": "2026-09-28T14:56:25+00:00"
         },
         {
             "name": "laravel/framework",
@@ -11426,16 +11427,16 @@
         },
         {
             "name": "spomky-labs/cbor-php",
-            "version": "3.4.1",
+            "version": "3.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/cbor-php.git",
-                "reference": "995b7747ca48c9cb55a8e644cd37f4f00d806e7d"
+                "reference": "8f5ea00a07ad529d20886505cdbeb2b9ac7bb2d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/cbor-php/zipball/995b7747ca48c9cb55a8e644cd37f4f00d806e7d",
-                "reference": "995b7747ca48c9cb55a8e644cd37f4f00d806e7d",
+                "url": "https://api.github.com/repos/Spomky-Labs/cbor-php/zipball/8f5ea00a07ad529d20886505cdbeb2b9ac7bb2d6",
+                "reference": "8f5ea00a07ad529d20886505cdbeb2b9ac7bb2d6",
                 "shasum": ""
             },
             "require": {
@@ -11482,7 +11483,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Spomky-Labs/cbor-php/issues",
-                "source": "https://github.com/Spomky-Labs/cbor-php/tree/3.4.1"
+                "source": "https://github.com/Spomky-Labs/cbor-php/tree/3.4.2"
             },
             "funding": [
                 {
@@ -11494,7 +11495,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2026-09-12T18:58:34+00:00"
+            "time": "2026-09-15T06:55:29+00:00"
         },
         {
             "name": "spomky-labs/pki-framework",
@@ -14138,16 +14139,16 @@
         },
         {
             "name": "symfony/property-access",
-            "version": "v8.1.4",
+            "version": "v8.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/property-access.git",
-                "reference": "1a41232c678972b93ce499a504e19ea09dfcd0b2"
+                "reference": "38ce2d539230c1d0e3c42198289c4bae5e931727"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/property-access/zipball/1a41232c678972b93ce499a504e19ea09dfcd0b2",
-                "reference": "1a41232c678972b93ce499a504e19ea09dfcd0b2",
+                "url": "https://api.github.com/repos/symfony/property-access/zipball/38ce2d539230c1d0e3c42198289c4bae5e931727",
+                "reference": "38ce2d539230c1d0e3c42198289c4bae5e931727",
                 "shasum": ""
             },
             "require": {
@@ -14195,7 +14196,7 @@
                 "reflection"
             ],
             "support": {
-                "source": "https://github.com/symfony/property-access/tree/v8.1.4"
+                "source": "https://github.com/symfony/property-access/tree/v8.1.10"
             },
             "funding": [
                 {
@@ -14215,20 +14216,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-30T12:40:56+00:00"
+            "time": "2026-10-26T21:55:04+00:00"
         },
         {
             "name": "symfony/property-info",
-            "version": "v8.1.6",
+            "version": "v8.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/property-info.git",
-                "reference": "d25e1dabbaff3f91bb15ba68328cf4fbd1c43c42"
+                "reference": "cb5bfc9fbc9da75fdb1b8860a29d9c4fefb2b924"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/property-info/zipball/d25e1dabbaff3f91bb15ba68328cf4fbd1c43c42",
-                "reference": "d25e1dabbaff3f91bb15ba68328cf4fbd1c43c42",
+                "url": "https://api.github.com/repos/symfony/property-info/zipball/cb5bfc9fbc9da75fdb1b8860a29d9c4fefb2b924",
+                "reference": "cb5bfc9fbc9da75fdb1b8860a29d9c4fefb2b924",
                 "shasum": ""
             },
             "require": {
@@ -14281,7 +14282,7 @@
                 "validator"
             ],
             "support": {
-                "source": "https://github.com/symfony/property-info/tree/v8.1.6"
+                "source": "https://github.com/symfony/property-info/tree/v8.1.10"
             },
             "funding": [
                 {
@@ -14301,7 +14302,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-30T08:48:43+00:00"
+            "time": "2026-10-25T14:40:25+00:00"
         },
         {
             "name": "symfony/psr-http-message-bridge",
@@ -14478,16 +14479,16 @@
         },
         {
             "name": "symfony/serializer",
-            "version": "v8.1.6",
+            "version": "v8.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/serializer.git",
-                "reference": "931151b12d6e2d4996ce2ce8e7b180d35455f37a"
+                "reference": "b9b8831cd84a5304e43f2bb92cb0e88290ba2082"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/serializer/zipball/931151b12d6e2d4996ce2ce8e7b180d35455f37a",
-                "reference": "931151b12d6e2d4996ce2ce8e7b180d35455f37a",
+                "url": "https://api.github.com/repos/symfony/serializer/zipball/b9b8831cd84a5304e43f2bb92cb0e88290ba2082",
+                "reference": "b9b8831cd84a5304e43f2bb92cb0e88290ba2082",
                 "shasum": ""
             },
             "require": {
@@ -14553,7 +14554,7 @@
             "description": "Handles serializing and deserializing data structures, including object graphs, into array structures or other formats like XML and JSON.",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/serializer/tree/v8.1.6"
+                "source": "https://github.com/symfony/serializer/tree/v8.1.10"
             },
             "funding": [
                 {
@@ -14573,7 +14574,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-30T08:48:47+00:00"
+            "time": "2026-10-25T14:40:25+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -14936,16 +14937,16 @@
         },
         {
             "name": "symfony/type-info",
-            "version": "v8.1.5",
+            "version": "v8.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/type-info.git",
-                "reference": "ceb48db5b38d6a48640c414be0c69d53980ae5c5"
+                "reference": "2083d4516f9041b8ac550d9029afb08fcf09d0ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/type-info/zipball/ceb48db5b38d6a48640c414be0c69d53980ae5c5",
-                "reference": "ceb48db5b38d6a48640c414be0c69d53980ae5c5",
+                "url": "https://api.github.com/repos/symfony/type-info/zipball/2083d4516f9041b8ac550d9029afb08fcf09d0ad",
+                "reference": "2083d4516f9041b8ac550d9029afb08fcf09d0ad",
                 "shasum": ""
             },
             "require": {
@@ -14994,7 +14995,7 @@
                 "type"
             ],
             "support": {
-                "source": "https://github.com/symfony/type-info/tree/v8.1.5"
+                "source": "https://github.com/symfony/type-info/tree/v8.1.10"
             },
             "funding": [
                 {
@@ -15014,7 +15015,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-21T17:47:34+00:00"
+            "time": "2026-10-25T14:40:25+00:00"
         },
         {
             "name": "symfony/uid",
@@ -15740,16 +15741,16 @@
         },
         {
             "name": "web-auth/webauthn-lib",
-            "version": "5.3.9",
+            "version": "5.3.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/web-auth/webauthn-lib.git",
-                "reference": "727e378fb7a36c26be5c911e4a0120c146741ce7"
+                "reference": "894f6be8c8a47354a4dfd134a5979246e26d8639"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/web-auth/webauthn-lib/zipball/727e378fb7a36c26be5c911e4a0120c146741ce7",
-                "reference": "727e378fb7a36c26be5c911e4a0120c146741ce7",
+                "url": "https://api.github.com/repos/web-auth/webauthn-lib/zipball/894f6be8c8a47354a4dfd134a5979246e26d8639",
+                "reference": "894f6be8c8a47354a4dfd134a5979246e26d8639",
                 "shasum": ""
             },
             "require": {
@@ -15810,7 +15811,7 @@
                 "webauthn"
             ],
             "support": {
-                "source": "https://github.com/web-auth/webauthn-lib/tree/5.3.9"
+                "source": "https://github.com/web-auth/webauthn-lib/tree/5.3.10"
             },
             "funding": [
                 {
@@ -15822,7 +15823,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2026-09-10T21:10:45+00:00"
+            "time": "2026-10-31T12:44:21+00:00"
         },
         {
             "name": "webbingbrasil/filament-copyactions",
