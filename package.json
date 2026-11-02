@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@alpinejs/collapse": "^3.17.4",
-    "alpinejs": "^3.17.4"
+    "alpinejs": "^3.17.5"
   },
   "description": "VATSIM UK Core Framework",
   "devDependencies": {
