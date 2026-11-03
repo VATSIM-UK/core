@@ -5831,16 +5831,16 @@
         },
         {
             "name": "logtail/monolog-logtail",
-            "version": "v3.3.1",
+            "version": "v3.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/logtail/monolog-logtail.git",
-                "reference": "c6526b79293026b7efff0f3de4dc05240200c9e6"
+                "reference": "df21fcd2ab3c54aed2e3e04197bbdcc5f02050fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/logtail/monolog-logtail/zipball/c6526b79293026b7efff0f3de4dc05240200c9e6",
-                "reference": "c6526b79293026b7efff0f3de4dc05240200c9e6",
+                "url": "https://api.github.com/repos/logtail/monolog-logtail/zipball/df21fcd2ab3c54aed2e3e04197bbdcc5f02050fb",
+                "reference": "df21fcd2ab3c54aed2e3e04197bbdcc5f02050fb",
                 "shasum": ""
             },
             "require": {
@@ -5873,9 +5873,9 @@
             ],
             "support": {
                 "issues": "https://github.com/logtail/monolog-logtail/issues",
-                "source": "https://github.com/logtail/monolog-logtail/tree/v3.3.1"
+                "source": "https://github.com/logtail/monolog-logtail/tree/v3.3.3"
             },
-            "time": "2026-07-08T13:52:27+00:00"
+            "time": "2026-10-01T15:18:01+00:00"
         },
         {
             "name": "lorisleiva/cron-translator",
