@@ -43,6 +43,16 @@ class Kernel extends ConsoleKernel
             ->doNotMonitor()
             ->everyTenMinutes();
 
+        $schedule->command('training:sync-theory-results-from-moodle')
+            ->everyFifteenMinutes()
+            ->withoutOverlapping()
+            ->graceTimeInMinutes(5);
+
+        $schedule->command('training:sync-theory-results-from-cts')
+            ->everyFifteenMinutes()
+            ->withoutOverlapping()
+            ->graceTimeInMinutes(5);
+
         // === By Hour === //
         $schedule->command('roster:gander')
             ->hourlyAt(25)
