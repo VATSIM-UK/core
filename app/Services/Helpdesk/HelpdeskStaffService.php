@@ -8,6 +8,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\HelpdeskStaffAccount;
 use App\Models\Mship\RoleHelpdeskStaffSetting;
 use Illuminate\Database\Connection;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -24,15 +25,17 @@ class HelpdeskStaffService
             return;
         }
 
-        $setting = RoleHelpdeskStaffSetting::query()
+        $settings = RoleHelpdeskStaffSetting::query()
             ->with('extendedAccess')
             ->whereIn('role_id', $account->roles()->pluck('mship_role.id'))
             ->orderByDesc('priority')
             ->orderBy('role_id')
-            ->first();
+            ->get();
+
+        $setting = $settings->first();
 
         if ($setting) {
-            $this->provision($account, $setting);
+            $this->provision($account, $setting, $this->extendedAccessFor($settings));
 
             return;
         }
@@ -40,11 +43,19 @@ class HelpdeskStaffService
         $this->deprovision($account);
     }
 
-    public function provision(Account $account, RoleHelpdeskStaffSetting $setting): void
+    /**
+     * @param  Collection<int, array{dept_id: int, role_id: int}>|null  $extendedAccess
+     */
+    public function provision(Account $account, RoleHelpdeskStaffSetting $setting, ?Collection $extendedAccess = null): void
     {
         $connection = $this->connection();
+        $extendedAccess ??= $setting->extendedAccess
+            ->map(fn ($access): array => [
+                'dept_id' => $access->helpdesk_department_id,
+                'role_id' => $access->helpdesk_role_id,
+            ]);
 
-        $connection->transaction(function () use ($account, $connection, $setting): void {
+        $connection->transaction(function () use ($account, $connection, $extendedAccess, $setting): void {
             $staff = $connection->table($this->table('ost_staff'))
                 ->where('username', $this->username($account))
                 ->lockForUpdate()
@@ -89,12 +100,12 @@ class HelpdeskStaffService
                 ->where('staff_id', $staffId)
                 ->delete();
 
-            if ($setting->extendedAccess->isNotEmpty()) {
+            if ($extendedAccess->isNotEmpty()) {
                 $connection->table($this->table('ost_staff_dept_access'))->insert(
-                    $setting->extendedAccess->map(fn ($access): array => [
+                    $extendedAccess->map(fn (array $access): array => [
                         'staff_id' => $staffId,
-                        'dept_id' => $access->helpdesk_department_id,
-                        'role_id' => $access->helpdesk_role_id,
+                        'dept_id' => $access['dept_id'],
+                        'role_id' => $access['role_id'],
                         'flags' => 1,
                     ])->all(),
                 );
@@ -168,6 +179,44 @@ class HelpdeskStaffService
                 ->where('account_id', $account->id)
                 ->delete();
         });
+    }
+
+    /**
+     * The highest-priority role supplies the primary department and team.
+     * Every other held role contributes its department as extended access.
+     *
+     * @param  Collection<int, RoleHelpdeskStaffSetting>  $settings
+     * @return Collection<int, array{dept_id: int, role_id: int}>
+     */
+    private function extendedAccessFor(Collection $settings): Collection
+    {
+        $winner = $settings->first();
+        $access = collect();
+
+        foreach ($settings as $setting) {
+            $entries = $setting->is($winner)
+                ? $setting->extendedAccess->map(fn ($entry): array => [
+                    'dept_id' => $entry->helpdesk_department_id,
+                    'role_id' => $entry->helpdesk_role_id,
+                ])
+                : collect([[
+                    'dept_id' => $setting->helpdesk_department_id,
+                    'role_id' => $setting->helpdesk_role_id,
+                ]])->merge($setting->extendedAccess->map(fn ($entry): array => [
+                    'dept_id' => $entry->helpdesk_department_id,
+                    'role_id' => $entry->helpdesk_role_id,
+                ]));
+
+            foreach ($entries as $entry) {
+                if ($entry['dept_id'] === $winner->helpdesk_department_id || $access->contains('dept_id', $entry['dept_id'])) {
+                    continue;
+                }
+
+                $access->push($entry);
+            }
+        }
+
+        return $access;
     }
 
     public function username(Account $account): string
