@@ -26,7 +26,12 @@ class UsersRelationManager extends RelationManager
             ->headerActions([
                 AttachAction::make()
                     ->recordSelectSearchColumns(AccountResource::getGloballySearchableAttributes())
-                    ->recordTitle(fn ($record) => "$record->name ($record->id)"),
+                    ->recordTitle(fn ($record) => "$record->name ($record->id)")
+                    ->using(function ($record, $livewire) {
+                        $record->assignRole($livewire->ownerRecord);
+
+                        return $record;
+                    }),
             ])
             ->recordActions([
                 ViewAction::make()->resource(AccountResource::class),

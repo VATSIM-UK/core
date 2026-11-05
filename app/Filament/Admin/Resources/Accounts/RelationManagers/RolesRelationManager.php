@@ -56,11 +56,20 @@ class RolesRelationManager extends RelationManager
 
                             $action->cancel();
                         }
+                    })
+                    ->using(function (Role $record): Role {
+                        $this->getOwnerRecord()->assignRole($record);
+
+                        return $record;
                     }),
             ])
             ->recordActions([
                 ViewAction::make()->resource(RoleResource::class),
-                DetachAction::make()->label('Remove'),
+                DetachAction::make()
+                    ->label('Remove')
+                    ->using(function (Role $record): void {
+                        $this->getOwnerRecord()->removeRole($record);
+                    }),
             ])->toolbarActions([
                 BulkAction::make('detach')
                     ->requiresConfirmation()

@@ -8,6 +8,8 @@ use App\Http\Controllers\BaseController;
 use App\Http\Responses\LogoutResponse;
 use App\Libraries\Discord;
 use App\Libraries\UKCP;
+use App\Observers\RoleObserver;
+use App\Services\Helpdesk\HelpdeskStaffOptions;
 use App\Support\DateFormat;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Filament\Support\Facades\FilamentColor;
@@ -27,6 +29,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Testing\ParallelTesting;
 use Livewire\Livewire;
 use Opcodes\LogViewer\Facades\LogViewer;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 use Whitecube\LaravelCookieConsent\Facades\Cookies;
 
@@ -40,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        Role::observe(RoleObserver::class);
 
         FilamentColor::register([
             'primary' => '#25ADE3',
@@ -119,6 +123,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(UKCP::class);
         $this->app->singleton(Discord::class);
+        $this->app->singleton(HelpdeskStaffOptions::class);
         $this->app->bind(\Filament\Auth\Http\Responses\Contracts\LogoutResponse::class, LogoutResponse::class);
         $this->app->singleton(\Wohali\OAuth2\Client\Provider\Discord::class, function () {
             return new \Wohali\OAuth2\Client\Provider\Discord([

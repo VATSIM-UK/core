@@ -4,9 +4,12 @@ namespace App\Providers;
 
 use App\Events\Discord\DiscordLinked;
 use App\Events\Discord\DiscordUnlinked;
+use App\Events\Mship\Roles\RoleAssigned;
+use App\Events\Mship\Roles\RoleRemoved;
 use App\Listeners\Discord\RemoveDiscordUser;
 use App\Listeners\Discord\SetupDiscordUser;
 use App\Listeners\Mship\CheckEmailPreferences;
+use App\Listeners\Mship\ReconcileHelpdeskStaffOnRoleChange;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Notifications\Events\NotificationSending;
 
@@ -65,6 +68,12 @@ class EventServiceProvider extends ServiceProvider
 
         DiscordUnlinked::class => [
             RemoveDiscordUser::class,
+        ],
+        RoleAssigned::class => [
+            ReconcileHelpdeskStaffOnRoleChange::class,
+        ],
+        RoleRemoved::class => [
+            ReconcileHelpdeskStaffOnRoleChange::class,
         ],
         \App\Events\Mship\Endorsement\TierEndorsementAdded::class => [
             \App\Listeners\Mship\Endorsement\NotifyOfTierEndorsement::class,

@@ -4,6 +4,7 @@ namespace App\Models\Mship\Concerns;
 
 use App\Events\Mship\Roles\RoleAssigned;
 use App\Events\Mship\Roles\RoleRemoved;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles as OriginalHasRoles;
 
 /**
@@ -52,6 +53,28 @@ trait HasRoles
         $this->originalRemoveRole($role);
 
         $this->fireRoleRemovedEvent($role);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function syncRoles(...$roles)
+    {
+        $before = $this->roles()->pluck('mship_role.id');
+
+        $this->originalSyncRoles(...$roles);
+
+        $after = $this->roles()->pluck('mship_role.id');
+
+        Role::query()
+            ->whereIn('id', $after->diff($before))
+            ->each(fn (Role $role) => $this->fireRoleAssignedEvent($role));
+
+        Role::query()
+            ->whereIn('id', $before->diff($after))
+            ->each(fn (Role $role) => $this->fireRoleRemovedEvent($role));
 
         return $this;
     }

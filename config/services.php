@@ -121,6 +121,7 @@ return [
     ],
 
     'helpdesk' => [
+        'connection' => env('HELPDESK_DB_CONNECTION', 'mysql'),
         'database' => env('HELPDESK_DATABASE'),
     ],
 
