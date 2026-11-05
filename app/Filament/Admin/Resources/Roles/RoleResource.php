@@ -109,7 +109,7 @@ class RoleResource extends Resource
                             ->dehydrated(false),
                         TextInput::make('helpdesk_priority')
                             ->label('Priority')
-                            ->helperText('Higher-priority mappings win when a member has multiple mapped roles.')
+                            ->helperText('Chooses the primary department and team when a member holds several mapped roles. Their other roles are added as extended access.')
                             ->integer()
                             ->minValue(0)
                             ->default(0)

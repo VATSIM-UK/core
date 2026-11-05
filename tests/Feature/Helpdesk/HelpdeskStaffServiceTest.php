@@ -131,6 +131,12 @@ class HelpdeskStaffServiceTest extends TestCase
         $staff = DB::connection('helpdesk_test')->table('ost_staff')->first();
         $this->assertSame(11, $staff->dept_id);
         $this->assertSame(31, $staff->role_id);
+        $this->assertSame(21, DB::connection('helpdesk_test')->table('ost_team_member')->value('team_id'));
+        $this->assertDatabaseHas("{$this->database}.ost_staff_dept_access", [
+            'staff_id' => $staff->staff_id,
+            'dept_id' => 10,
+            'role_id' => 30,
+        ], 'helpdesk_test');
 
         DB::connection('helpdesk_test')->table('ost_ticket')->insert([
             'ticket_id' => 1,
