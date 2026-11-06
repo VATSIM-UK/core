@@ -10,10 +10,10 @@ use Illuminate\Database\Eloquent\Builder;
 class VisitTransferStats
 {
     private const RATING_ORDER = [
-        'Student 1' => 1,
-        'Student 2' => 2,
-        'Student 3' => 3,
-        'Controller 1' => 4,
+        'Developing Controller' => 1,
+        'Aerodrome Controller' => 2,
+        'Terminal Controller' => 3,
+        'Enroute Controller' => 4,
         'Controller 3' => 5,
     ];
 
