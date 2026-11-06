@@ -36,10 +36,10 @@ instead termed ‘Oceanic Control’.
 - Inactive / INA
 - Suspended / SUS
 - Observer / OBS (also called ‘Pilot/Observer’)
-- Student / S1 / STU
-- Student 2 / S2 / STU
-- Senior Student / S3 / STU+
-- Controller / C1 / CTR
+- Developing Controller / S1 / STU
+- Aerodrome Controller / S2 / STU
+- Terminal Controller / S3 / STU+
+- Enroute Controller / C1 / CTR
 - Senior Controller / C3 / CTR+
 - Instructor / I1 / INS
 - Senior Instructor / I3 / INS+

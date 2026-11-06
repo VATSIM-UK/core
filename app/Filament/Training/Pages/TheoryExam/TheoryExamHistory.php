@@ -86,10 +86,10 @@ class TheoryExamHistory extends Page implements HasTable
                 Filter::make('exam_rating')->schema([
                     Select::make('exam_rating')
                         ->options([
-                            'S1' => 'OBS/Student (S1)',
-                            'S2' => 'Tower (S2)',
-                            'S3' => 'Approach (S3)',
-                            'C1' => 'Enroute (C1)',
+                            'S1' => 'Developing Controller (S1)',
+                            'S2' => 'Aerodrome Controller (S2)',
+                            'S3' => 'Terminal Controller (S3)',
+                            'C1' => 'Enroute Controller (C1)',
                         ])
                         ->multiple()
                         ->label('Exam'),
