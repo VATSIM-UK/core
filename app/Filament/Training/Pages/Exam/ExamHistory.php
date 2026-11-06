@@ -66,10 +66,10 @@ class ExamHistory extends Page implements HasTable
                 Filter::make('position')->schema([
                     Select::make('atc_positions')
                         ->options([
-                            'OBS' => 'Observer',
-                            'TWR' => 'Aerodrome Controller',
-                            'APP' => 'Terminal Controller',
-                            'CTR' => 'Enroute Controller',
+                            'OBS' => 'Observer (OBS)',
+                            'TWR' => 'Aerodrome Controller (S2)',
+                            'APP' => 'Terminal Controller (S3)',
+                            'CTR' => 'Enroute Controller (C1)',
                         ])
                         ->multiple()
                         ->label('ATC position'),
