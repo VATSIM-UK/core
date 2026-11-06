@@ -14,7 +14,7 @@ class VisitTransferStats
         'Aerodrome Controller' => 2,
         'Terminal Controller' => 3,
         'Enroute Controller' => 4,
-        'Controller 3' => 5,
+        'Senior Controller' => 5,
     ];
 
     private static function baseQuery(?int $type, Carbon $start, Carbon $end): Builder
