@@ -3,6 +3,7 @@
 namespace Tests\Feature\VisitTransfer;
 
 use App\Events\VisitTransfer\ApplicationSubmitted;
+use App\Events\VisitTransfer\ApplicationWithdrawn;
 use App\Listeners\VisitTransfer\NotifyApplicantOfStatusChange;
 use App\Models\Mship\Account;
 use App\Models\VisitTransfer\Application;
@@ -38,6 +39,22 @@ class WithdrawalNotificationTest extends TestCase
 
         Notification::assertSentToTimes($account, ApplicationStatusChanged::class, 1);
         Notification::assertSentTo($account, ApplicationStatusChanged::class, fn ($notification) => str_contains($notification->toMail($account)->subject, 'Withdrawn'));
+    }
+
+    #[Test]
+    public function queued_withdrawal_listener_survives_application_being_deleted_before_it_runs(): void
+    {
+        $application = $this->application();
+        $account = $application->account;
+        $payload = serialize(new CallQueuedListener(NotifyApplicantOfStatusChange::class, 'handle', [new ApplicationWithdrawn($application)]));
+
+        $application->forceDelete();
+        $job = unserialize($payload);
+        $this->assertInstanceOf(CallQueuedListener::class, $job);
+        $job->setJob(new SyncJob($this->app, '{}', 'sync', 'default'));
+        $job->handle($this->app);
+
+        Notification::assertNothingSentTo($account);
     }
 
     #[Test]
