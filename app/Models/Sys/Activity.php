@@ -65,7 +65,9 @@ class Activity extends Model
     public function getExtraDataAttribute()
     {
         $extraData = [];
-        $extraData[$this->subject->getKeyName()] = $this->subject->getKey();
+        if ($this->subject) {
+            $extraData[$this->subject->getKeyName()] = $this->subject->getKey();
+        }
 
         return $extraData;
     }
