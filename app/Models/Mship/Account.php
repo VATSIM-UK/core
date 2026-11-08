@@ -642,7 +642,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
 
     public function hiddenFeedbackUsers()
     {
-        if ($this->can('use-permission', 'feedback/own') || $this->can('use-permission', 'feedback.view-own')) {
+        if ($this->can('use-permission', 'feedback.view-own')) {
             return [];
         }
 
