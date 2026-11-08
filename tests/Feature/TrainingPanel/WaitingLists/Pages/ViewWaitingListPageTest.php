@@ -27,8 +27,8 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
     public function test_one_relation_manager_tables_are_present()
     {
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
 
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->assertStatus(200);
@@ -38,8 +38,8 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
     {
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
 
         Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
@@ -52,9 +52,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('DIVISION'));
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
-        $this->panelUser->givePermissionTo('waiting-lists.add-accounts.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.add-accounts.*');
 
         Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
@@ -78,9 +78,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
 
         $waitingList->addToWaitingList($accountToAdd, $this->panelUser);
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
-        $this->panelUser->givePermissionTo('waiting-lists.add-accounts.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.add-accounts.*');
 
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->callAction('add_student', data: [
@@ -95,9 +95,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('INTERNATIONAL'));
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
-        $this->panelUser->givePermissionTo('waiting-lists.add-accounts.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.add-accounts.*');
 
         Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
@@ -120,9 +120,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('DIVISION'));
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
-        $this->panelUser->givePermissionTo('waiting-lists.add-accounts.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.add-accounts.*');
 
         Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
@@ -137,10 +137,10 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('DIVISION'));
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
-        $this->panelUser->givePermissionTo('waiting-lists.add-accounts.*');
-        $this->panelUser->givePermissionTo('waiting-lists.add-accounts-admin.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.add-accounts.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.add-accounts-admin.*');
 
         Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
@@ -165,10 +165,10 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('DIVISION'));
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
-        $this->panelUser->givePermissionTo('waiting-lists.add-accounts.*');
-        $this->panelUser->givePermissionTo('waiting-lists.add-accounts-admin.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.add-accounts.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.add-accounts-admin.*');
 
         Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
@@ -192,10 +192,10 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $accountToAdd = Account::factory()->create();
         $accountToAdd->addState(State::findByCode('DIVISION'));
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
-        $this->panelUser->givePermissionTo('waiting-lists.add-accounts.*');
-        $this->panelUser->givePermissionTo('waiting-lists.add-accounts-admin.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.add-accounts.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.add-accounts-admin.*');
 
         Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
@@ -217,9 +217,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
     {
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
-        $this->panelUser->givePermissionTo('waiting-lists.add-flags.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.add-flags.*');
 
         Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
@@ -238,9 +238,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
     {
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
-        $this->panelUser->givePermissionTo('waiting-lists.add-flags.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.add-flags.*');
 
         $flag = WaitingListFlag::factory()->create([
             'list_id' => $waitingList->id,
@@ -261,9 +261,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
         $positionGroup = factory(PositionGroup::class)->create();
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
-        $this->panelUser->givePermissionTo('waiting-lists.add-flags.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.add-flags.*');
 
         Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
@@ -284,8 +284,8 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
     {
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
 
         Livewire::actingAs($this->panelUser);
         Livewire::test(ViewWaitingList::class, ['record' => $waitingList->id])
@@ -302,8 +302,8 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $account->addState(State::findByCode('DIVISION'));
         $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList, 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts()->first()])
@@ -320,8 +320,8 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $account->addState(State::findByCode('DIVISION'));
         $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList, 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
@@ -338,9 +338,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $account->addState(State::findByCode('DIVISION'));
         $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
-        $this->panelUser->givePermissionTo('waiting-lists.update-accounts.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.update-accounts.*');
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList, 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
@@ -354,9 +354,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $account->addState(State::findByCode('DIVISION'));
         $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
-        $this->panelUser->givePermissionTo('waiting-lists.update-accounts.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.update-accounts.*');
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList->refresh(), 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
@@ -384,9 +384,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         ]);
         $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
-        $this->panelUser->givePermissionTo('waiting-lists.update-accounts.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.update-accounts.*');
 
         $waitingListAccount = $waitingList->waitingListAccounts->first();
 
@@ -416,9 +416,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         ]);
         $waitingListAccount = $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
-        $this->panelUser->givePermissionTo('waiting-lists.update-accounts.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.update-accounts.*');
 
         // set flag to true
         $waitingListAccount->flags()->sync($manualFlag->id, [
@@ -451,9 +451,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $account->addState(State::findByCode('DIVISION'));
         $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.remove-accounts.*');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.remove-accounts.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
 
         $removal_type = WaitingList\RemovalReason::Request->value;
 
@@ -480,9 +480,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $account->addState(State::findByCode('DIVISION'));
         $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.remove-accounts.*');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.remove-accounts.*');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
 
         $removal_type = WaitingList\RemovalReason::Other->value;
         $other_reason = 'for testing';
@@ -510,8 +510,8 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
 
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
-        $userWithoutPermission->givePermissionTo('waiting-lists.view.atc');
-        $userWithoutPermission->givePermissionTo('waiting-lists.access');
+        $userWithoutPermission->givePermissionTo('training.waiting-lists.view.atc');
+        $userWithoutPermission->givePermissionTo('training.waiting-lists.access');
 
         Livewire::actingAs($userWithoutPermission)->test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->assertDontSee('Edit settings');
@@ -522,9 +522,9 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $userWithPermission = Account::factory()->create();
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
-        $userWithPermission->givePermissionTo('waiting-lists.view.atc');
-        $userWithPermission->givePermissionTo('waiting-lists.access');
-        $userWithPermission->givePermissionTo('waiting-lists.admin.atc');
+        $userWithPermission->givePermissionTo('training.waiting-lists.view.atc');
+        $userWithPermission->givePermissionTo('training.waiting-lists.access');
+        $userWithPermission->givePermissionTo('training.waiting-lists.admin.atc');
 
         Livewire::actingAs($userWithPermission)->test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->assertSee('Edit settings');
@@ -535,10 +535,10 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $userWithPermission = Account::factory()->create();
         $waitingList = WaitingList::factory()->create(['department' => 'atc']);
 
-        $userWithPermission->givePermissionTo('waiting-lists.access');
-        $userWithPermission->givePermissionTo('waiting-lists.view.atc');
-        $userWithPermission->givePermissionTo('waiting-lists.admin.atc');
-        $userWithPermission->givePermissionTo('waiting-lists.delete.atc');
+        $userWithPermission->givePermissionTo('training.waiting-lists.access');
+        $userWithPermission->givePermissionTo('training.waiting-lists.view.atc');
+        $userWithPermission->givePermissionTo('training.waiting-lists.admin.atc');
+        $userWithPermission->givePermissionTo('training.waiting-lists.delete.atc');
 
         Livewire::actingAs($userWithPermission)->test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->assertSee('Delete Waiting List');
@@ -549,10 +549,10 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $userWithPermission = Account::factory()->create();
         $waitingList = WaitingList::factory()->create(['department' => 'pilot']);
 
-        $userWithPermission->givePermissionTo('waiting-lists.access');
-        $userWithPermission->givePermissionTo('waiting-lists.view.atc');
-        $userWithPermission->givePermissionTo('waiting-lists.admin.atc');
-        $userWithPermission->givePermissionTo('waiting-lists.delete.atc');
+        $userWithPermission->givePermissionTo('training.waiting-lists.access');
+        $userWithPermission->givePermissionTo('training.waiting-lists.view.atc');
+        $userWithPermission->givePermissionTo('training.waiting-lists.admin.atc');
+        $userWithPermission->givePermissionTo('training.waiting-lists.delete.atc');
 
         Livewire::actingAs($this->panelUser)->test(ViewWaitingList::class, ['record' => $waitingList->id])
             ->assertDontSee('Delete Waiting List');

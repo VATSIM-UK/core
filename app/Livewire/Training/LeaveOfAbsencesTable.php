@@ -75,7 +75,7 @@ class LeaveOfAbsencesTable extends Component implements HasActions, HasForms, Ha
                     ->modalDescription('Adding a leave of absence will stop automated checking for this training place during the selected period.')
                     ->modalSubmitActionLabel('Create LOA')
                     ->createAnother(false)
-                    ->visible(fn () => auth()->user()->can('training-places.loas.create.*'))
+                    ->visible(fn () => auth()->user()->can('training.training-places.loas.create.*'))
                     ->form([
                         Grid::make(2)->columnSpanFull()->schema([
                             DatePicker::make('begins_at')
@@ -131,7 +131,7 @@ class LeaveOfAbsencesTable extends Component implements HasActions, HasForms, Ha
                             ->rows(3)
                             ->columnSpanFull(),
                     ])
-                    ->visible(fn (TrainingPlaceLeaveOfAbsence $record) => $record->isActive() && auth()->user()->can('training-places.loas.end-early.*'))
+                    ->visible(fn (TrainingPlaceLeaveOfAbsence $record) => $record->isActive() && auth()->user()->can('training.training-places.loas.end-early.*'))
                     ->action(function (TrainingPlaceLeaveOfAbsence $record, array $data) {
                         $record->update(['ends_at' => now()]);
 

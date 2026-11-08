@@ -28,7 +28,7 @@ class TrainingPlaceLeaveOfAbsenceTest extends BaseTrainingPanelTestCase
     {
         parent::setUp();
 
-        $this->panelUser->givePermissionTo('training-places.view.*');
+        $this->panelUser->givePermissionTo('training.training-places.view.*');
 
         Event::fake();
 
@@ -48,7 +48,7 @@ class TrainingPlaceLeaveOfAbsenceTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_shows_create_action_when_user_has_create_permission()
     {
-        $this->panelUser->givePermissionTo('training-places.loas.create.*');
+        $this->panelUser->givePermissionTo('training.training-places.loas.create.*');
 
         Livewire::test(LeaveOfAbsencesTable::class, ['trainingPlace' => $this->trainingPlace])
             ->assertTableActionVisible('create');
@@ -64,7 +64,7 @@ class TrainingPlaceLeaveOfAbsenceTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_can_create_an_loa()
     {
-        $this->panelUser->givePermissionTo('training-places.loas.create.*');
+        $this->panelUser->givePermissionTo('training.training-places.loas.create.*');
 
         Livewire::test(LeaveOfAbsencesTable::class, ['trainingPlace' => $this->trainingPlace])
             ->callTableAction('create', data: [
@@ -83,7 +83,7 @@ class TrainingPlaceLeaveOfAbsenceTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_prevents_creation_of_overlapping_loa()
     {
-        $this->panelUser->givePermissionTo('training-places.loas.create.*');
+        $this->panelUser->givePermissionTo('training.training-places.loas.create.*');
 
         $this->createLoa([
             'begins_at' => Carbon::today(),
@@ -105,7 +105,7 @@ class TrainingPlaceLeaveOfAbsenceTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_shows_end_early_action_for_active_loa_with_permission()
     {
-        $this->panelUser->givePermissionTo('training-places.loas.end-early.*');
+        $this->panelUser->givePermissionTo('training.training-places.loas.end-early.*');
 
         $loa = $this->createLoa([
             'begins_at' => now()->subDay(),
@@ -119,7 +119,7 @@ class TrainingPlaceLeaveOfAbsenceTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_hides_end_early_action_for_inactive_loa()
     {
-        $this->panelUser->givePermissionTo('training-places.loas.end-early.*');
+        $this->panelUser->givePermissionTo('training.training-places.loas.end-early.*');
 
         $loa = $this->createLoa([
             'begins_at' => now()->subDays(10),
@@ -145,7 +145,7 @@ class TrainingPlaceLeaveOfAbsenceTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_can_end_an_loa_early()
     {
-        $this->panelUser->givePermissionTo('training-places.loas.end-early.*');
+        $this->panelUser->givePermissionTo('training.training-places.loas.end-early.*');
 
         $loa = $this->createLoa([
             'begins_at' => now()->subDay(),
