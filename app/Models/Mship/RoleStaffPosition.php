@@ -18,6 +18,8 @@ class RoleStaffPosition extends Model
 
     public const TECHNOLOGY_DEPARTMENT = 'Technology';
 
+    public const COMMUNITY_DEPARTMENT = 'Community';
+
     protected $table = 'mship_role_staff_position';
 
     protected $fillable = [
