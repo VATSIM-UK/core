@@ -148,9 +148,10 @@ class RoleResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable(),
+                TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('users_count')->counts('users')->label('Assigned Users')->badge(),
             ])
+            ->defaultSort('name')
             ->recordActions([
                 Action::make('syncDiscord')
                     ->label('Sync Discord')
