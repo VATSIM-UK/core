@@ -29,6 +29,21 @@ class RoleResourceTest extends BaseAdminResourceTestCase
     }
 
     #[Test]
+    public function it_sorts_roles_by_name_and_defaults_to_ascending(): void
+    {
+        $alpha = Role::create(['name' => 'Zzsortrole Alpha', 'guard_name' => 'web']);
+        $zulu = Role::create(['name' => 'Zzsortrole Zulu', 'guard_name' => 'web']);
+
+        $this->actingAsAdminUser(['role.view.*']);
+
+        Livewire::test(ListRoles::class)
+            ->searchTable('Zzsortrole')
+            ->assertCanSeeTableRecords([$alpha, $zulu], inOrder: true)
+            ->sortTable('name', 'desc')
+            ->assertCanSeeTableRecords([$zulu, $alpha], inOrder: true);
+    }
+
+    #[Test]
     public function it_shows_sync_discord_table_action_with_role_sync_discord_permission(): void
     {
         $role = Role::create(['name' => 'Role For Sync Discord Visible', 'guard_name' => 'web']);
