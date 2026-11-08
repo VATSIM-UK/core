@@ -63,6 +63,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'log-viewer.access',
 
             // Training Panel Permissions
+            'training.*',
             'training.access',
             'training.beta',
             'training.exams.access',

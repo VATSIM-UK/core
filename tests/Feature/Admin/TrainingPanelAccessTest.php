@@ -51,5 +51,21 @@ class TrainingPanelAccessTest extends TestCase
         $this->actingAs($account);
 
         $this->get($this->path)->assertStatus(200);
+        $this->assertFalse($account->can('training.exams.conduct.obs'));
+    }
+
+    #[Test]
+    public function it_grants_training_admin_access_from_the_training_wildcard_alone()
+    {
+        $account = Account::factory()->create();
+        $account->givePermissionTo('training.*');
+
+        $this->actingAs($account);
+
+        $this->get($this->path)->assertStatus(200);
+        $this->assertTrue($account->can('training.exams.conduct.obs'));
+        $this->assertTrue($account->can('training.mentoring.view.*'));
+        $this->assertFalse($account->can('waiting-lists.access'));
+        $this->assertFalse($account->can('account.view-insensitive.*'));
     }
 }
