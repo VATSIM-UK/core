@@ -63,18 +63,7 @@ class StaffPageController extends \App\Http\Controllers\BaseController
                     ['name' => 'Vacant', 'jobTitles' => ['Advanced Flight Instructor']],
                 ],
             ))
-            ->with('communityDirectory', $this->directory(
-                leads: [
-                    ['name' => 'William Shaw', 'jobTitles' => ['Community Director (VATUK3)']],
-                ],
-                team: [
-                    ['name' => 'Vacant', 'jobTitles' => ['Outreach Manager']],
-                    ['name' => 'Callum Hicks', 'jobTitles' => ['Outreach Assistant']],
-                    ['name' => 'Charles Newman', 'jobTitles' => ['Outreach Assistant']],
-                    ['name' => 'Noah Murdoch', 'jobTitles' => ['Outreach Assistant']],
-                    ['name' => 'Dylan Parkes', 'jobTitles' => ['VT Assistant']],
-                ],
-            ));
+            ->with('communityDirectory', $staffDirectory->forDepartment(RoleStaffPosition::COMMUNITY_DEPARTMENT));
     }
 
     /**
