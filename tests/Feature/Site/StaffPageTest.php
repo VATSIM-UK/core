@@ -13,13 +13,15 @@ use Tests\TestCase;
 class StaffPageTest extends TestCase
 {
     #[Test]
-    public function it_lists_atc_training_technology_and_community_positions_from_roles(): void
+    public function it_lists_atc_training_pilot_training_technology_and_community_positions_from_roles(): void
     {
         $ada = $this->member('Ada', 'Arkley', 'Addie');
         $eve = $this->member('Eve', 'Shared');
         $ben = $this->member('Ben', 'Team');
         $cara = $this->member('Cara', 'Both');
         $dan = $this->member('Dan', 'Tech');
+        $pia = $this->member('Pia', 'Director');
+        $sam = $this->member('Sam', 'Instructor');
         $wren = $this->member('Wren', 'Community');
         $kit = $this->member('Kit', 'Outreach');
 
@@ -48,6 +50,14 @@ class StaffPageTest extends TestCase
             $this->position('Technology Director Role', RoleStaffPosition::TECHNOLOGY_DEPARTMENT, 'Technology Director', lead: true, sort: 0),
             $this->position('Technology Side Title Role', RoleStaffPosition::TECHNOLOGY_DEPARTMENT, 'Technology Side Title', sort: 5),
         );
+
+        $pia->assignRole(
+            $this->position('Pilot Training Director Role', RoleStaffPosition::PILOT_TRAINING_DEPARTMENT, 'Pilot Training Director', lead: true, sort: 0),
+        );
+        $sam->assignRole(
+            $this->position('Pilot Training Manager Role', RoleStaffPosition::PILOT_TRAINING_DEPARTMENT, 'Pilot Training Manager', sort: 10),
+        );
+        $this->position('Pilot Empty Seat Role', RoleStaffPosition::PILOT_TRAINING_DEPARTMENT, 'Pilot Empty Seat', sort: 20);
 
         $wren->assignRole(
             $this->position('Community Director Role', RoleStaffPosition::COMMUNITY_DEPARTMENT, 'Community Director', lead: true, sort: 0),
@@ -82,8 +92,10 @@ class StaffPageTest extends TestCase
             'ATC Assistant Two',
             'Cara Both',
             'ATC Cross Department',
-            'Ben Carpenter',
+            'Pia Director',
             'Pilot Training Director',
+            'Sam Instructor',
+            'Pilot Training Manager',
             'Dan Tech',
             'Technology Director',
             'Technology Side Title',
@@ -103,9 +115,12 @@ class StaffPageTest extends TestCase
         $response->assertDontSee('Secret Operations Title');
         $response->assertDontSee('ATC Absent Director');
         $response->assertDontSee('ATC Empty Seat');
+        $response->assertDontSee('Pilot Empty Seat');
         $response->assertDontSee('Community Empty Seat');
         $response->assertDontSee('William Shaw');
         $response->assertDontSee('Callum Hicks');
+        $response->assertDontSee('Ben Carpenter');
+        $response->assertDontSee('Lewis Hammett');
 
         $html = $response->getContent();
         $this->assertSame(1, substr_count($html, 'staff-management container'));
@@ -116,6 +131,8 @@ class StaffPageTest extends TestCase
         $this->assertSame(1, substr_count($html, 'Ben Team'));
         $this->assertSame(1, substr_count($html, 'Dan Tech'));
         $this->assertSame(2, substr_count($html, 'Cara Both'));
+        $this->assertSame(1, substr_count($html, 'Pia Director'));
+        $this->assertSame(1, substr_count($html, 'Sam Instructor'));
         $this->assertSame(1, substr_count($html, 'Wren Community'));
         $this->assertSame(1, substr_count($html, 'Kit Outreach'));
     }

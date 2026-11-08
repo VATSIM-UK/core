@@ -49,20 +49,7 @@ class StaffPageController extends \App\Http\Controllers\BaseController
                     ['name' => 'Oliver Cesarczyk', 'jobTitles' => ['Operations Assistant']],
                 ],
             ))
-            ->with('pilotTrainingDirectory', $this->directory(
-                leads: [
-                    ['name' => 'Ben Carpenter', 'jobTitles' => ['Pilot Training Director (VATUK6)']],
-                ],
-                team: [
-                    ['name' => 'Lewis Hammett', 'jobTitles' => ['Pilot Training Manager']],
-                    ['name' => 'Andy White', 'jobTitles' => ['Initial Flight Instructor']],
-                    ['name' => 'Aiden Bok', 'jobTitles' => ['VFR Flight Instructor']],
-                    ['name' => 'Vacant', 'jobTitles' => ['VFR Flight Instructor']],
-                    ['name' => 'Firas Bashee', 'jobTitles' => ['IFR Flight Instructor']],
-                    ['name' => 'Charlie Innam', 'jobTitles' => ['Advanced Flight Instructor']],
-                    ['name' => 'Vacant', 'jobTitles' => ['Advanced Flight Instructor']],
-                ],
-            ))
+            ->with('pilotTrainingDirectory', $staffDirectory->forDepartment(RoleStaffPosition::PILOT_TRAINING_DEPARTMENT))
             ->with('communityDirectory', $staffDirectory->forDepartment(RoleStaffPosition::COMMUNITY_DEPARTMENT));
     }
 
