@@ -35,6 +35,7 @@ use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\IconSize;
 use Filament\Support\Enums\TextSize;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Log;
@@ -290,6 +291,8 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
         $this->isSaving = true;
 
         try {
+            $this->authorize('conduct', $this->session);
+
             $criteriaState = $this->form->getState()['criteria'] ?? [];
             $criteriaData = collect($criteriaState)->mapWithKeys(function (array $item, $fieldId) {
                 return [
@@ -305,6 +308,18 @@ class ConductMentoringSession extends Page implements HasForms, HasInfolists
                 $criteriaData,
                 $this->ctsRichContentNotesForCts($this->additionalCommentsData['body'] ?? ''),
             );
+        } catch (ValidationException|AuthorizationException $exception) {
+            Log::debug('Mentoring report save blocked', ['exception' => $exception, 'session_id' => $this->session->id]);
+
+            Notification::make()
+                ->title('Mentoring report not saved')
+                ->body($exception instanceof ValidationException
+                    ? collect($exception->errors())->flatten()->first()
+                    : 'You no longer have permission to edit this report.')
+                ->danger()
+                ->send();
+
+            return false;
         } catch (Throwable $exception) {
             Log::error('Mentoring report draft save failed', ['exception' => $exception, 'session_id' => $this->session->id]);
 
