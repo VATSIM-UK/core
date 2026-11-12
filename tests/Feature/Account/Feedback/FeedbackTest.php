@@ -62,10 +62,74 @@ class FeedbackTest extends TestCase
         }
 
         $request = $this->actingAs($this->user, 'web')
-            ->call('GET', route('mship.feedback.new.form', $form->slug), ['cid' => 'mycidishere']);
+            ->call('GET', route('mship.feedback.new.form', $form->slug), ['cid' => '1234567']);
 
         $request->assertSuccessful();
-        $request->assertSee('mycidishere');
+        $request->assertSee('value="1234567"', false);
+    }
+
+    #[Test]
+    public function test_it_does_not_reflect_a_non_integer_cid_in_the_atc_form()
+    {
+        $form = Form::whereSlug('atc')->first();
+        if (! $form) {
+            $this->markTestSkipped('could not find atc form');
+        }
+
+        $payload = '"><script>alert(document.domain)</script>';
+
+        $this->actingAs($this->user, 'web')
+            ->call('GET', route('mship.feedback.new.form', $form->slug), ['cid' => $payload])
+            ->assertSuccessful()
+            ->assertDontSee($payload, false)
+            ->assertDontSee('alert(document.domain)', false);
+    }
+
+    #[Test]
+    public function test_it_escapes_previously_submitted_input_when_redisplaying_the_form()
+    {
+        $form = Form::whereSlug('atc')->first();
+        if (! $form) {
+            $this->markTestSkipped('could not find atc form');
+        }
+
+        $payload = '"><script>alert(document.domain)</script>';
+
+        $this->actingAs($this->user, 'web')
+            ->post(route('mship.feedback.new.form.post', $form->slug), [
+                'usercid' => $payload,
+                'datetime' => $payload,
+                'position_callsign' => $payload,
+                'comments' => $payload,
+            ])
+            ->assertRedirect();
+
+        $this->actingAs($this->user, 'web')
+            ->get(route('mship.feedback.new.form', $form->slug))
+            ->assertSuccessful()
+            ->assertDontSee($payload, false)
+            ->assertSee(e($payload), false);
+    }
+
+    #[Test]
+    public function test_it_handles_array_input_when_redisplaying_the_form()
+    {
+        $form = Form::whereSlug('atc')->first();
+        if (! $form) {
+            $this->markTestSkipped('could not find atc form');
+        }
+
+        $this->actingAs($this->user, 'web')
+            ->post(route('mship.feedback.new.form.post', $form->slug), [
+                'usercid' => ['not', 'a', 'cid'],
+                'datetime' => ['not', 'a', 'date'],
+                'comments' => ['not', 'a', 'comment'],
+            ])
+            ->assertRedirect();
+
+        $this->actingAs($this->user, 'web')
+            ->get(route('mship.feedback.new.form', $form->slug))
+            ->assertSuccessful();
     }
 
     #[Test]
@@ -77,9 +141,22 @@ class FeedbackTest extends TestCase
         }
 
         $request = $this->actingAs($this->user, 'web')
-            ->call('GET', route('mship.feedback.redirect.atc'), ['cid' => 'mycidishere']);
+            ->call('GET', route('mship.feedback.redirect.atc'), ['cid' => '1234567']);
 
-        $request->assertRedirect(route('mship.feedback.new.form', [$form->slug, 'cid' => 'mycidishere']));
+        $request->assertRedirect(route('mship.feedback.new.form', [$form->slug, 'cid' => '1234567']));
+    }
+
+    #[Test]
+    public function test_it_drops_a_non_integer_cid_when_redirecting_to_atc_feedback()
+    {
+        $form = Form::whereSlug('atc')->first();
+        if (! $form) {
+            $this->markTestSkipped('could not find atc form');
+        }
+
+        $this->actingAs($this->user, 'web')
+            ->call('GET', route('mship.feedback.redirect.atc'), ['cid' => '"><script>alert(document.domain)</script>'])
+            ->assertRedirect(route('mship.feedback.new.form', $form->slug));
     }
 
     #[Test]
