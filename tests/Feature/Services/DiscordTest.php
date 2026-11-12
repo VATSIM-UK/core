@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Services;
 
+use App\Events\Discord\DiscordLinked;
 use App\Exceptions\Discord\DiscordUserNotFoundException;
 use App\Exceptions\Discord\GenericDiscordException;
 use App\Libraries\Discord;
@@ -82,6 +83,122 @@ class DiscordTest extends TestCase
     }
 
     #[Test]
+    public function test_it_stores_the_state_when_starting_o_auth()
+    {
+        $response = $this->actingAs($this->user)
+            ->get(route('discord.create'))
+            ->assertRedirect();
+
+        $state = session('discord_oauth_state');
+
+        $this->assertIsString($state);
+        $this->assertNotSame('', $state);
+        $this->assertStringContainsString('state='.$state, $response->getTargetUrl());
+
+        $secondResponse = $this->actingAs($this->user)
+            ->get(route('discord.create'))
+            ->assertRedirect();
+
+        $secondState = session('discord_oauth_state');
+
+        $this->assertNotSame($state, $secondState);
+        $this->assertStringContainsString('state='.$secondState, $secondResponse->getTargetUrl());
+    }
+
+    #[Test]
+    public function test_it_rejects_store_without_a_matching_state()
+    {
+        $this->actingAs($this->user)
+            ->from(route('mship.manage.dashboard'))
+            ->get(route('discord.store', ['code' => '123456789']))
+            ->assertRedirect(route('mship.manage.dashboard'))
+            ->assertSessionHasErrors('state');
+
+        $this->assertNull($this->user->fresh()->discord_id);
+    }
+
+    #[Test]
+    public function test_it_rejects_store_when_no_o_auth_flow_was_started()
+    {
+        $this->actingAs($this->user)
+            ->get(route('discord.store', [
+                'code' => 'attacker-code',
+                'state' => 'attacker-state',
+            ]))
+            ->assertRedirect(route('mship.manage.dashboard'))
+            ->assertSessionHas('error');
+
+        $this->assertNull($this->user->fresh()->discord_id);
+    }
+
+    #[Test]
+    public function test_it_rejects_store_when_the_state_does_not_match()
+    {
+        $this->actingAs($this->user)
+            ->withSession(['discord_oauth_state' => 'expected-state'])
+            ->get(route('discord.store', [
+                'code' => 'attacker-code',
+                'state' => 'attacker-state',
+            ]))
+            ->assertRedirect(route('mship.manage.dashboard'))
+            ->assertSessionHas('error');
+
+        $this->assertNull($this->user->fresh()->discord_id);
+    }
+
+    #[Test]
+    public function test_it_links_the_discord_account_when_the_state_matches()
+    {
+        Event::fake([DiscordLinked::class]);
+
+        $this->instance(\Wohali\OAuth2\Client\Provider\Discord::class, Mockery::mock(\Wohali\OAuth2\Client\Provider\Discord::class, function (MockInterface $mock) {
+            $mock->shouldReceive('getAccessToken')->andReturn(new AccessToken(['access_token' => '123456', 'scope' => 'identify guilds.join']));
+            $mock->shouldReceive('getResourceOwner')->andReturn(new DiscordResourceOwner([
+                'id' => '987654321',
+            ]));
+        }));
+
+        $this->actingAs($this->user)
+            ->withSession(['discord_oauth_state' => 'expected-state'])
+            ->get(route('discord.store', [
+                'code' => 'valid-code',
+                'state' => 'expected-state',
+            ]))
+            ->assertRedirect(route('mship.manage.dashboard'))
+            ->assertSessionHas('success');
+
+        Event::assertDispatched(DiscordLinked::class, function (DiscordLinked $event) {
+            return $event->account->is($this->user) && $event->discordId === '987654321';
+        });
+
+        $this->assertNull(session('discord_oauth_state'));
+    }
+
+    #[Test]
+    public function test_it_refuses_to_overwrite_an_existing_discord_link()
+    {
+        Event::fake([DiscordLinked::class]);
+
+        $this->user->forceFill(['discord_id' => '111222333', 'last_login' => now()])->saveQuietly();
+
+        $this->instance(\Wohali\OAuth2\Client\Provider\Discord::class, Mockery::mock(\Wohali\OAuth2\Client\Provider\Discord::class, function (MockInterface $mock) {
+            $mock->shouldNotReceive('getAccessToken');
+        }));
+
+        $this->actingAs($this->user)
+            ->withSession(['discord_oauth_state' => 'expected-state'])
+            ->get(route('discord.store', [
+                'code' => 'attacker-code',
+                'state' => 'expected-state',
+            ]))
+            ->assertRedirect(route('mship.manage.dashboard'))
+            ->assertSessionHas('error');
+
+        $this->assertSame('111222333', $this->user->fresh()->discord_id);
+        Event::assertNotDispatched(DiscordLinked::class);
+    }
+
+    #[Test]
     public function test_it_redirects_when_code_missing()
     {
         $emptyString = $this->actingAs($this->user)
@@ -99,6 +216,8 @@ class DiscordTest extends TestCase
         $emptyString->assertRedirect(route('mship.manage.dashboard'))->assertSessionHasErrors('code');
         $missingCode->assertRedirect(route('mship.manage.dashboard'))->assertSessionHasErrors('code');
         $nullCode->assertRedirect(route('mship.manage.dashboard'))->assertSessionHasErrors('code');
+
+        $this->assertNull($this->user->fresh()->discord_id);
     }
 
     #[Test]
@@ -116,8 +235,10 @@ class DiscordTest extends TestCase
         ]);
 
         $this->actingAs($this->user)
+            ->withSession(['discord_oauth_state' => 'expected-state'])
             ->get(route('discord.store', [
                 'code' => '123456789',
+                'state' => 'expected-state',
             ]))
             ->assertRedirect(route('mship.manage.dashboard'))
             ->assertSessionHas('error', 'You have reached your Discord server limit! You must leave a server before you can join another one');
