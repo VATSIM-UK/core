@@ -4,6 +4,8 @@ namespace Tests\Feature\TrainingPanel\Mentor;
 
 use App\Enums\FieldScore;
 use App\Filament\Training\Pages\Mentor\ViewMentoringReport;
+use App\Livewire\Training\CriteriaCategoryTable;
+use App\Livewire\Training\SessionCriteriaTable;
 use App\Models\Cts\CancelReason;
 use App\Models\Cts\Member;
 use App\Models\Cts\ProgSheet;
@@ -19,6 +21,7 @@ use App\Services\Training\MentoringReportAccessService;
 use App\Services\Training\MentorPermissionService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Carbon;
+use Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Role;
@@ -742,5 +745,38 @@ class ViewMentoringReportTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->student)
             ->test(ViewMentoringReport::class, ['sessionId' => $this->mentoringSession->id])
             ->assertDontSee('Test Standard');
+    }
+
+    #[Test]
+    public function session_criteria_table_prevents_switching_to_another_session(): void
+    {
+        $otherSession = Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'progress_sheet_id' => $this->progSheet->prog_sheet_id,
+            'taken_date' => '2025-03-20',
+            'filed' => now(),
+        ]);
+
+        $this->expectException(CannotUpdateLockedPropertyException::class);
+
+        Livewire::actingAs($this->student)
+            ->test(SessionCriteriaTable::class, ['sessionId' => $this->mentoringSession->id])
+            ->set('sessionId', $otherSession->id);
+    }
+
+    #[Test]
+    public function criteria_category_table_prevents_switching_to_other_sessions(): void
+    {
+        $this->expectException(CannotUpdateLockedPropertyException::class);
+
+        Livewire::actingAs($this->student)
+            ->test(CriteriaCategoryTable::class, [
+                'currentSessionId' => $this->mentoringSession->id,
+                'sessionIds' => [$this->mentoringSession->id],
+                'categoryName' => $this->category->catName,
+            ])
+            ->set('sessionIds', [999999]);
     }
 }
