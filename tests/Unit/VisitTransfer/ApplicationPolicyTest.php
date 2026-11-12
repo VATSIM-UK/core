@@ -54,6 +54,20 @@ class ApplicationPolicyTest extends TestCase
         $this->assertEquals($can_complete, $policy->complete($this->user, $application));
     }
 
+    public function test_applicant_cannot_accept_their_own_application()
+    {
+        $application = Application::factory()->create([
+            'account_id' => $this->user->id,
+            'status' => Application::STATUS_SUBMITTED,
+            'check_outcome_90_day' => VTCheckStatus::Passed,
+            'check_outcome_50_hours' => VTCheckStatus::Passed,
+        ]);
+
+        $policy = app(\App\Policies\VisitTransfer\ApplicationPolicy::class);
+
+        $this->assertFalse($policy->accept($this->user, $application));
+    }
+
     public function test_change_facility_is_allowed_for_accepted_application()
     {
         $application = Application::factory()->create([

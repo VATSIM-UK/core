@@ -47,7 +47,13 @@ class ViewAccount extends BaseViewRecordPage
                 ->color('gray')
                 ->icon('heroicon-o-cloud-arrow-down')
                 ->label('Sync Member')
+                ->visible(fn () => auth()->user()->can('update', $this->record))
                 ->action(function ($action) {
+                    // visible() governs rendering only, so re-check here: the sync
+                    // overwrites the member's details and must require the same
+                    // permission as editing them.
+                    abort_unless(auth()->user()->can('update', $this->record), 403);
+
                     UpdateMember::dispatch($this->record->id);
                     $action->success();
                 })

@@ -130,6 +130,44 @@ class DelegatesRelationManagerTest extends BaseAdminTestCase
         $this->assertTrue($this->delegateAccount->fresh()->hasPermissionTo($expectedPermissionName));
     }
 
+    public function test_cannot_add_ineligible_delegate()
+    {
+        $this->user->givePermissionTo('role.view.*');
+        $this->user->givePermissionTo('role.manage-delegates.*');
+
+        $this->service->createDelegatePermission($this->role);
+
+        $member = Account::factory()->createQuietly();
+
+        $this->actingAs($this->user);
+
+        Livewire::test(DelegatesRelationManager::class, [
+            'ownerRecord' => $this->role,
+            'pageClass' => EditRole::class,
+        ])
+            ->callTableAction('add_delegate', data: ['users_id' => $member->id])
+            ->assertHasFormErrors(['users_id']);
+
+        $this->assertFalse($member->fresh()->hasPermissionTo($this->service->delegatePermissionName($this->role)));
+    }
+
+    public function test_cannot_add_missing_delegate()
+    {
+        $this->user->givePermissionTo('role.view.*');
+        $this->user->givePermissionTo('role.manage-delegates.*');
+
+        $this->service->createDelegatePermission($this->role);
+
+        $this->actingAs($this->user);
+
+        Livewire::test(DelegatesRelationManager::class, [
+            'ownerRecord' => $this->role,
+            'pageClass' => EditRole::class,
+        ])
+            ->callTableAction('add_delegate', data: ['users_id' => 999999])
+            ->assertHasFormErrors(['users_id']);
+    }
+
     public function test_table_shows_delegated_users()
     {
         $this->user->givePermissionTo('role.view.*');
