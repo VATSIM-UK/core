@@ -21,17 +21,24 @@ class ConfirmedSecondaryPasswordResponse implements PasswordConfirmedResponseCon
             return redirect()->to($defaultRedirect);
         }
 
-        if (Str::startsWith($redirect, '/') && ! Str::startsWith($redirect, '//')) {
-            return redirect()->to($redirect);
-        }
-
+        // Only follow a path on this site: parse_url's host is spoofable, e.g.
+        // "https://evil.example\@core.test/" parses as core.test but navigates to evil.example.
+        $parts = parse_url($redirect);
         $appHost = parse_url(config('app.url'), PHP_URL_HOST);
-        $redirectHost = parse_url($redirect, PHP_URL_HOST);
 
-        if (is_string($appHost) && is_string($redirectHost) && $appHost === $redirectHost) {
-            return redirect()->to($redirect);
+        $isRelative = Str::startsWith($redirect, '/') && ! Str::startsWith($redirect, '//');
+        $isSameHost = is_array($parts) && is_string($appHost) && is_string($parts['host'] ?? null) && $parts['host'] === $appHost;
+
+        if (! is_array($parts) || str_contains($redirect, '\\') || (! $isRelative && ! $isSameHost)) {
+            return redirect()->to($defaultRedirect);
         }
 
-        return redirect()->to($defaultRedirect);
+        $target = '/'.ltrim($parts['path'] ?? '', '/');
+
+        if (isset($parts['query'])) {
+            $target .= '?'.$parts['query'];
+        }
+
+        return redirect()->to($target);
     }
 }

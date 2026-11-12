@@ -306,6 +306,17 @@ class TwoFactorAuthTest extends TestCase
     }
 
     #[Test]
+    public function confirm_password_redirect_ignores_backslash_userinfo_host_spoof(): void
+    {
+        $this->actingAs($this->account)
+            ->post(route('two-factor.confirm-password.store'), [
+                'password' => 'secret-password',
+                'redirect' => 'https://evil.example\@'.parse_url(config('app.url'), PHP_URL_HOST).'/',
+            ])
+            ->assertRedirect(route('mship.manage.dashboard'));
+    }
+
+    #[Test]
     public function confirming_two_factor_redirects_to_backup_codes_page(): void
     {
         app(EnableTwoFactorAuthentication::class)($this->account, true);
