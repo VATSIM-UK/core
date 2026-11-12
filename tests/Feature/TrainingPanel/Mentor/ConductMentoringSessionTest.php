@@ -128,6 +128,43 @@ class ConductMentoringSessionTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function save_is_blocked_when_report_has_already_been_filed(): void
+    {
+        $component = Livewire::actingAs($this->mentor)
+            ->test(ConductMentoringSession::class, ['sessionId' => $this->session->id])
+            ->set('data.criteria.'.$this->field->field_id.'.score', FieldScore::GOOD->value);
+
+        $this->session->update(['filed' => now()]);
+
+        $component->call('save');
+
+        $this->assertDatabaseMissing('report_sheet', [
+            'seshid' => $this->session->id,
+            'field_id' => $this->field->field_id,
+        ], 'cts');
+    }
+
+    #[Test]
+    public function save_is_blocked_when_session_has_been_reallocated_to_another_mentor(): void
+    {
+        $otherMentor = Account::factory()->create();
+        $otherMentorMember = Member::factory()->forAccount($otherMentor)->create();
+
+        $component = Livewire::actingAs($this->mentor)
+            ->test(ConductMentoringSession::class, ['sessionId' => $this->session->id])
+            ->set('data.criteria.'.$this->field->field_id.'.score', FieldScore::GOOD->value);
+
+        $this->session->update(['mentor_id' => $otherMentorMember->id]);
+
+        $component->call('save');
+
+        $this->assertDatabaseMissing('report_sheet', [
+            'seshid' => $this->session->id,
+            'field_id' => $this->field->field_id,
+        ], 'cts');
+    }
+
+    #[Test]
     public function submit_files_session_and_notifies_student(): void
     {
         Notification::fake();

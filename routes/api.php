@@ -3,7 +3,7 @@
 use App\Http\Controllers\Bookings\CalendarFeedController;
 
 Route::get('validations')->uses('Api\ValidationsController@view')->name('api.validations');
-Route::get('metar/{airportIcao}')->uses('Site\MetarController@get')->name('api.metar');
+Route::get('metar/{airportIcao}')->uses('Site\MetarController@get')->where('airportIcao', '[A-Za-z]{4}')->name('api.metar');
 Route::get('/bookings')->uses('Api\CtsController@getBookings')->name('api.cts.bookings');
 Route::get('trackaudio-latest')->uses('Api\TrackAudioController@getLatest')->name('api.trackaudio.latest');
 

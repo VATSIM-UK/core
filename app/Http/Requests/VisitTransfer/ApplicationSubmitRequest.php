@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\VisitTransfer;
 
-use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
@@ -39,6 +38,6 @@ class ApplicationSubmitRequest extends FormRequest
      */
     public function authorize()
     {
-        return Gate::allows('submit-application', Auth::user()->visit_transfer_current);
+        return Gate::allows('submit-application', $this->route('applicationByPublicId'));
     }
 }

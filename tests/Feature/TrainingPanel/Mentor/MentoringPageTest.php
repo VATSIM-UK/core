@@ -982,7 +982,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
         Carbon::setTestNow(Carbon::today()->setTime(10, 0));
 
         $busyStudent = Member::factory()->create(['name' => 'Already Booked Student']);
-        $pickupStudent = $this->memberWithSlotAccount(['name' => 'New Pickup Student']);
+        $pickupStudent = $this->createBookableStudent();
 
         Session::factory()->create([
             'student_id' => $busyStudent->id,
@@ -1035,7 +1035,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
         Carbon::setTestNow(Carbon::today()->setTime(10, 0));
 
         $busyStudent = Member::factory()->create(['name' => 'Already Booked Student']);
-        $pickupStudent = $this->memberWithSlotAccount(['name' => 'Clear Pickup Student']);
+        $pickupStudent = $this->createBookableStudent();
 
         Session::factory()->create([
             'student_id' => $busyStudent->id,
@@ -1076,6 +1076,18 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
         $this->assertNull($overlap);
 
         Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function accept_session_is_forbidden_for_a_student_outside_the_mentors_scope(): void
+    {
+        $outOfScopeStudent = $this->memberWithSlotAccount(['name' => 'Out Of Scope Student']);
+        $availability = $this->slotFor($outOfScopeStudent, Carbon::today(), '10:00:00', '12:00:00');
+
+        Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->mountAction('acceptSession', ['availability_id' => $availability->id])
+            ->assertForbidden();
     }
 
     /**

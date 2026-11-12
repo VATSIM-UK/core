@@ -3,6 +3,7 @@
 namespace Tests\Unit\Training;
 
 use App\Models\Atc\Position;
+use App\Models\Atc\PositionGroup;
 use App\Models\Mship\Account;
 use App\Models\Mship\Account\Endorsement;
 use App\Models\Training\TrainingPlace\TrainingPlace;
@@ -10,6 +11,7 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use App\Services\Training\EndorsementService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
 class EndorsementServiceTest extends TestCase
@@ -343,6 +345,40 @@ class EndorsementServiceTest extends TestCase
         $this->assertContains($oldEndorsement->id, $endorsementIds);
         $this->assertContains($newEndorsement->id, $endorsementIds);
         $this->assertContains($oldRelatedEndorsement->id, $endorsementIds);
+    }
+
+    public function test_create_temporary_solo_endorsement_cannot_exceed_cumulative_limit()
+    {
+        // 85 of the 90 cumulative days have already been used on this position.
+        Endorsement::factory()->create([
+            'account_id' => $this->student->id,
+            'endorsable_type' => Position::class,
+            'endorsable_id' => $this->position->id,
+            'created_at' => now()->subDays(100)->startOfDay(),
+            'expires_at' => now()->subDays(15)->startOfDay(),
+        ]);
+
+        $this->expectException(ValidationException::class);
+
+        EndorsementService::createTemporary($this->position, $this->student, $this->user, 10);
+    }
+
+    public function test_create_temporary_non_solo_endorsement_cannot_exceed_365_days()
+    {
+        $positionGroup = PositionGroup::factory()->create();
+
+        $this->expectException(ValidationException::class);
+
+        EndorsementService::createTemporary($positionGroup, $this->student, $this->user, 366);
+    }
+
+    public function test_bypass_permission_allows_exceeding_the_temporary_limit()
+    {
+        $this->user->givePermissionTo('endorsement.bypass.maximumdays');
+
+        $endorsement = EndorsementService::createTemporary($this->position, $this->student, $this->user, 200);
+
+        $this->assertTrue($endorsement->expires_at->isSameDay(now()->addDays(200)));
     }
 
     public function test_has_active_solo_endorsement_returns_true_when_active_endorsement_exists()

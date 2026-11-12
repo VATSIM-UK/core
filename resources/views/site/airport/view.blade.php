@@ -147,7 +147,7 @@
 				</div>
 				@if ($airport->description)
 					<div class="panel-body">
-						{!! nl2br($airport->description) !!}
+						{!! nl2br(e($airport->description)) !!}
 					</div>
 				@endif
 			</div>
@@ -219,7 +219,7 @@
 									</a>
 									<div id="departureProcedures" class="panel-collapse collapse" role="tabpanel">
 										<div class="panel-body">
-											{!! $airport->departure_procedures !!}
+											{!! \Illuminate\Support\Str::sanitizeHtml($airport->departure_procedures) !!}
 										</div>
 									</div>
 								</div>
@@ -236,7 +236,7 @@
 									</a>
 									<div id="arrivalProcedures" class="panel-collapse collapse" role="tabpanel">
 										<div class="panel-body">
-											{!! $airport->arrival_procedures !!}
+											{!! \Illuminate\Support\Str::sanitizeHtml($airport->arrival_procedures) !!}
 										</div>
 									</div>
 								</div>
@@ -251,7 +251,7 @@
 									</a>
 									<div id="vfrProcedures" class="panel-collapse collapse" role="tabpanel">
 										<div class="panel-body">
-											{!! $airport->vfr_procedures !!}
+											{!! \Illuminate\Support\Str::sanitizeHtml($airport->vfr_procedures) !!}
 										</div>
 									</div>
 								</div>
@@ -267,7 +267,7 @@
 					<div class="panel-heading"><i class="fa fa-info"></i> Additional Information</div>
 					<div class="text-summary panel-body">
 						<p class="summary-container collapse" id="additionalInformationContainer">
-							{!! $airport->other_information !!}
+							{!! \Illuminate\Support\Str::sanitizeHtml($airport->other_information) !!}
 						</p>
 						<a id="additionalInfoController" class="summary-controller collapsed" data-toggle="collapse"
 							href="#additionalInformationContainer" aria-expanded="false" aria-controls="additionalInformationContainer"></a>

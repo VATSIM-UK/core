@@ -142,6 +142,8 @@ class ManageMentors extends Page implements HasTable
                     ->modalHeading(fn () => 'Remove Selected Mentors from '.$this->category)
                     ->modalSubheading('This will revoke all mentoring permissions for the selected members within this specific training group.')
                     ->action(function (Collection $records) {
+                        abort_unless($this->canManageCategory($this->category), 403, 'You may not manage mentors in this category.');
+
                         foreach ($records as $record) {
                             app(MentorPermissionService::class)->revokeFromCategory(
                                 $record,
@@ -182,6 +184,8 @@ class ManageMentors extends Page implements HasTable
                             ->required(),
                     ])
                     ->action(function (array $data): void {
+                        abort_unless($this->canManageCategory($this->category), 403, 'You may not manage mentors in this category.');
+
                         $accounts = Account::findMany($data['account_ids']);
                         $modelClass = app(MentorPermissionService::class)->getModelClassForCategory($this->category);
                         $items = $modelClass::findMany($data['position_ids']);
@@ -210,6 +214,8 @@ class ManageMentors extends Page implements HasTable
                             ->default($this->currentPositionIds($record, $this->category)),
                     ])
                     ->action(function (array $data, Account $record): void {
+                        abort_unless($this->canManageCategory($this->category), 403, 'You may not manage mentors in this category.');
+
                         app(MentorPermissionService::class)->syncPositionsInCategory(
                             $record,
                             $this->category,
@@ -231,6 +237,8 @@ class ManageMentors extends Page implements HasTable
                     ->requiresConfirmation()
                     ->visible(fn () => $canManage)
                     ->action(function (Account $record): void {
+                        abort_unless($this->canManageCategory($this->category), 403, 'You may not manage mentors in this category.');
+
                         app(MentorPermissionService::class)->revokeFromCategory(
                             $record,
                             $this->category

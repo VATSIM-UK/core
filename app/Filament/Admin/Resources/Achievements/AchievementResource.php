@@ -88,6 +88,7 @@ class AchievementResource extends Resource
                 FileUpload::make('image')
                     ->label('Image')
                     ->image()
+                    ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
                     ->maxSize(1024)
                     ->automaticallyResizeImagesToWidth(64)
                     ->automaticallyResizeImagesToHeight(64)
