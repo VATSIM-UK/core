@@ -140,7 +140,7 @@ Route::get('atcfb', function () {
     return redirect()
         ->route('mship.feedback.new.form', [
             'form' => 'atc',
-            'cid' => request()->get('cid'),
+            'cid' => request()->integer('cid') ?: null,
         ]);
 })->name('mship.feedback.redirect.atc');
 
