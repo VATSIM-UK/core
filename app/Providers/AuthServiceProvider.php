@@ -7,6 +7,7 @@ use App\Models\Atc\PositionGroup;
 use App\Models\Cts\Session;
 use App\Models\Discord\DiscordRoleRule;
 use App\Models\Mship\Account\Ban;
+use App\Models\Mship\Account\Endorsement;
 use App\Models\Mship\Account\EndorsementRequest;
 use App\Models\Mship\Account\Note;
 use App\Models\Mship\Feedback\Feedback;
@@ -24,6 +25,7 @@ use App\Policies\Mship\Account\NotePolicy;
 use App\Policies\PasswordPolicy;
 use App\Policies\PositionGroupPolicy;
 use App\Policies\RolePolicy;
+use App\Policies\Training\EndorsementPolicy;
 use App\Policies\Training\Mentoring\ManageMentorsPolicy;
 use App\Policies\Training\Mentoring\MentoringPolicy;
 use App\Policies\Training\WaitingList\WaitingListRetentionChecksPolicy;
@@ -62,6 +64,7 @@ class AuthServiceProvider extends ServiceProvider
         Ban::class => BanPolicy::class,
         Role::class => RolePolicy::class,
         Note::class => NotePolicy::class,
+        Endorsement::class => EndorsementPolicy::class,
         WaitingListRetentionCheck::class => WaitingListRetentionChecksPolicy::class,
         TrainingPlace::class => TrainingPlacePolicy::class,
         Session::class => MentoringPolicy::class,
