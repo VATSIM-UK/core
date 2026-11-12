@@ -223,6 +223,10 @@ class DiscordTest extends TestCase
     #[Test]
     public function test_it_reports_when_user_in_too_many_servers()
     {
+        // Saving the link fires AccountAltered, whose subscribers queue work that
+        // needs Redis; only this test's Discord error path is under test.
+        Event::fake([\App\Events\Mship\AccountAltered::class]);
+
         $this->instance(\Wohali\OAuth2\Client\Provider\Discord::class, Mockery::mock(\Wohali\OAuth2\Client\Provider\Discord::class, function (MockInterface $mock) {
             $mock->shouldReceive('getAccessToken')->andReturn(new AccessToken(['access_token' => '123456', 'scope' => 'identify guilds.join']));
             $mock->shouldReceive('getResourceOwner')->andReturn(new DiscordResourceOwner([
