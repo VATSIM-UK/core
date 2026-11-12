@@ -14,9 +14,12 @@ class ProcessVatsimNetWebhook extends BaseController
     {
         $this->validateAuth($request);
         $webhook = $request->all();
+        $actions = is_array($webhook['actions'] ?? null) ? $webhook['actions'] : [];
 
-        Log::info('Raw webhook data', [
-            'webhook' => $webhook,
+        // The payload contains personal data (names, emails), so log identifiers only.
+        Log::info('VATSIM.net webhook received', [
+            'resource' => $webhook['resource'] ?? null,
+            'action_types' => array_column($actions, 'action'),
         ]);
 
         // Ignore bad payloads
@@ -26,13 +29,7 @@ class ProcessVatsimNetWebhook extends BaseController
             ]);
         }
 
-        Log::debug('VATSIM.net webhook received', [
-            'resource' => $webhook['resource'],
-            'actions.length' => count($webhook['actions']),
-        ]);
-
         // Sort the actions by timestamp to make sure that we process them in the correct order
-        $actions = $webhook['actions'];
         usort($actions, function ($a, $b) {
             return ($a['timestamp'] ?? null) <=> ($b['timestamp'] ?? null);
         });
