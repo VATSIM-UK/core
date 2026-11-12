@@ -20,6 +20,9 @@ class LogoutController extends BaseController
         Auth::guard('web')->logout();
         Auth::guard('vatsim-sso')->logout();
 
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         return redirect()->route('site.home');
     }
 }

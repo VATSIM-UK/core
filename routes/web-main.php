@@ -20,7 +20,7 @@ require base_path('routes/fortify-two-factor.php');
 Route::get('/staff')->uses('Site\StaffPageController@staff')->middleware('auth_full_group')->name('site.staff');
 
 Route::view('banned-network', 'errors.banned-network')->name('banned.network');
-Route::get('banned-local')->uses('Auth\LocalBanDisplayController')->name('banned.local');
+Route::get('banned-local')->uses('Auth\LocalBanDisplayController')->middleware('auth')->name('banned.local');
 
 // Password
 Route::group([

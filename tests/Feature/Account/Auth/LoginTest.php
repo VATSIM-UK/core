@@ -92,6 +92,23 @@ class LoginTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_it_invalidates_the_session_on_logout()
+    {
+        $this->actingAs($this->account);
+
+        $sessionId = session()->getId();
+        $csrfToken = session()->token();
+        session(['session-marker' => 'value']);
+
+        $this->post(route('logout'))
+            ->assertRedirect(route('site.home'));
+
+        $this->assertGuest();
+        $this->assertNotSame($sessionId, session()->getId());
+        $this->assertNotSame($csrfToken, session()->token());
+        $this->assertNull(session('session-marker'));
+    }
+
     public function test_it_logs_a_user_out_of_the_vatsim_sso_guard()
     {
         $this->actingAs($this->account, 'vatsim-sso');
