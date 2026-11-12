@@ -93,6 +93,8 @@ class Application extends BaseController
 
     public function postManualFacility(Request $request, \App\Models\VisitTransfer\Application $application)
     {
+        $this->authorize('select-facility', $application);
+
         $validator = Validator::make(Request::all(), [
             'facility-code' => 'required|alpha_num',
         ]);
@@ -106,6 +108,12 @@ class Application extends BaseController
         if (! $facility) {
             return Redirect::back()
                 ->withError('That facility code is invalid.')
+                ->withInput();
+        }
+
+        if (! $application->facilityIsPermitted($facility)) {
+            return Redirect::back()
+                ->withError('You are not permitted to apply to this facility.')
                 ->withInput();
         }
 
