@@ -132,7 +132,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
 
     public function test_can_request_update()
     {
-        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo(['account.view-insensitive.*', 'account.edit-basic-details.*']);
         Livewire::actingAs($this->user);
 
         Bus::fake();
@@ -142,6 +142,19 @@ class ViewAccountPageTest extends BaseAdminTestCase
             ->callAction('request_central_update');
 
         Bus::assertDispatched(UpdateMember::class, fn (UpdateMember $job) => $job->accountID === $this->privacc->id);
+    }
+
+    public function test_cant_request_update_without_permission()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        Livewire::actingAs($this->user);
+
+        Bus::fake();
+
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+            ->assertActionHidden('request_central_update');
+
+        Bus::assertNotDispatched(UpdateMember::class);
     }
 
     public function test_records_page_visit_in_admin_log()

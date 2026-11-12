@@ -14,7 +14,10 @@ class AccountSelect extends Select
         $relationshipName ??= 'account';
 
         return parent::make($relationshipName.'_id')
-            ->searchable(AccountResource::getGloballySearchableAttributes())
+            // Deliberately not AccountResource::getGloballySearchableAttributes():
+            // searching by Discord ID would let staff enumerate accounts by an
+            // identifier they are not otherwise entitled to look up.
+            ->searchable(['id', 'name_first', 'name_last', 'nickname'])
             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
             ->setRelationshipName($relationshipName);
     }
