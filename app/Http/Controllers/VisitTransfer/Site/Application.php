@@ -45,7 +45,7 @@ class Application extends BaseController
         try {
             $application = $this->startApplication(Request::input('application_type'), Request::input('training_team'));
         } catch (Exception $e) {
-            return Redirect::route('visiting.application.start', [Request::input('application_type')])->withError($e->getMessage());
+            return Redirect::route('visiting.landing')->withError($e->getMessage());
         }
 
         return Redirect::route('visiting.application.facility', [$application->public_id])->withSuccess('Application started! Please complete all sections to submit your application.');
