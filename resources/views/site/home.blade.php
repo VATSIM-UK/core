@@ -248,7 +248,7 @@
 						{{ $nextEvent->start->format('l jS F Y') }} &bull;
 						{{ $nextEvent->start->format('H:i') }} &ndash; {{ $nextEvent->end->format('H:i') }}z
 					</p>
-					<p class="text-light">{!! $nextEvent->description !!}</p>
+					<p class="text-light">{!! \Illuminate\Support\Str::sanitizeHtml((string) $nextEvent->description) !!}</p>
 					<a class="btn btn-l btn-round btn-primary px-7" href="{{ route('site.events.show', $nextEvent) }}">View event
 						details</a>
 				</div>
