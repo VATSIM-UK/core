@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Testing\ParallelTesting;
+use Laravel\Passport\Passport;
 use Livewire\Livewire;
 use Opcodes\LogViewer\Facades\LogViewer;
 use Spatie\Permission\Models\Role;
@@ -119,6 +120,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        Passport::ignoreRoutes();
+
         $this->app->register(TelescopeServiceProvider::class);
 
         $this->app->singleton(UKCP::class);

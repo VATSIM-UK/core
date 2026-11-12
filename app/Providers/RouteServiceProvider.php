@@ -36,6 +36,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
+        $this->mapPassportRoutes();
         $this->mapWebRoutes();
         $this->mapApiRoutes();
     }
@@ -55,6 +56,17 @@ class RouteServiceProvider extends ServiceProvider
 
         Route::middleware('web')
             ->group(base_path('routes/web-livewire.php'));
+    }
+
+    /**
+     * Define the OAuth routes.
+     *
+     * Passport's own route registration is disabled, so only the endpoints
+     * required for the authorization code grant are registered.
+     */
+    protected function mapPassportRoutes()
+    {
+        require base_path('routes/passport.php');
     }
 
     /**
