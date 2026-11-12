@@ -20,7 +20,6 @@ class RecoveryCodeNotificationTest extends TestCase
         parent::setUp();
 
         $this->account = Account::factory()->create([
-            'password' => 'secret-password',
         ]);
 
         app(EnableTwoFactorAuthentication::class)($this->account, true);

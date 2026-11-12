@@ -9,10 +9,6 @@ Route::get('/dashboard')->uses('Mship\Management@getLanding')->name('landing');
 // Authentication
 Route::get('login')->uses('Auth\LoginController@login')->name('login');
 Route::post('login')->uses('Auth\LoginController@login')->name('login.post');
-Route::get('login-secondary')->uses('Auth\LoginController@showLoginForm')->middleware('auth:vatsim-sso')->name('auth-secondary');
-Route::post('login-secondary')->uses('Auth\SecondaryLoginController@loginSecondary')->middleware('auth:vatsim-sso')->name('auth-secondary.post');
-Route::get('login/password/setup')->uses('Auth\LoginPasswordSetupController@show')->middleware('auth:vatsim-sso')->name('login.password.setup');
-Route::post('login/password/setup')->uses('Auth\LoginPasswordSetupController@store')->middleware('auth:vatsim-sso')->name('login.password.setup.store');
 Route::post('logout')->uses('Auth\LogoutController')->name('logout');
 
 require base_path('routes/fortify-two-factor.php');
@@ -21,33 +17,6 @@ Route::get('/staff')->uses('Site\StaffPageController@staff')->middleware('auth_f
 
 Route::view('banned-network', 'errors.banned-network')->name('banned.network');
 Route::get('banned-local')->uses('Auth\LocalBanDisplayController')->middleware('auth')->name('banned.local');
-
-// Password
-Route::group([
-    'as' => 'password.',
-    'prefix' => 'password',
-], function () {
-    // Reset
-    Route::group([
-        'middleware' => 'auth:vatsim-sso',
-    ], function () {
-        Route::post('email')->uses('Auth\ForgotPasswordController@sendResetLinkEmail')->name('email');
-        Route::get('reset/{token}')->uses('Auth\ResetPasswordController@showResetForm')->name('reset');
-        Route::post('reset')->uses('Auth\ResetPasswordController@reset')->name('request');
-    });
-
-    // Change
-    Route::group([
-        'middleware' => 'auth_full_group',
-    ], function () {
-        Route::get('create')->uses('Auth\ChangePasswordController@showCreateForm')->name('create');
-        Route::post('create')->uses('Auth\ChangePasswordController@create');
-        Route::get('change')->uses('Auth\ChangePasswordController@showChangeForm')->name('change');
-        Route::post('change')->uses('Auth\ChangePasswordController@change');
-        Route::get('delete', 'Auth\ChangePasswordController@showDeleteForm')->name('delete');
-        Route::post('delete')->uses('Auth\ChangePasswordController@delete');
-    });
-});
 
 // Members
 Route::group([

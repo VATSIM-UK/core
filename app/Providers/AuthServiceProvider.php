@@ -22,7 +22,6 @@ use App\Policies\FeedbackPolicy;
 use App\Policies\Mship\Account\BanPolicy;
 use App\Policies\Mship\Account\EndorsementRequestPolicy;
 use App\Policies\Mship\Account\NotePolicy;
-use App\Policies\PasswordPolicy;
 use App\Policies\PositionGroupPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\Training\EndorsementPolicy;
@@ -50,7 +49,6 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'password' => PasswordPolicy::class,
         VisitTransfer\Application::class => ApplicationPolicy::class,
         WaitingList::class => WaitingListPolicy::class,
         Feedback::class => FeedbackPolicy::class,

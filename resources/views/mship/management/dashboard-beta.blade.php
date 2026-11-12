@@ -209,39 +209,6 @@
 							</div>
 						@endif
 
-						<div class="px-5 py-3 flex flex-col sm:flex-row sm:items-start gap-3 sm:justify-between">
-							<div class="flex gap-3">
-								<div class="size-9 shrink-0 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600">
-									<i class="fa fa-lock"></i>
-								</div>
-								<div>
-									<p class="text-sm font-semibold text-gray-900 m-0">Secondary password</p>
-									<p class="mt-1 text-base text-gray-500 max-w-prose mb-0">
-										Fallback when VATSIM.net certificate services are unavailable. When enabled, you may be asked for this password
-										after login.
-									</p>
-								</div>
-							</div>
-							<div class="flex flex-col items-start sm:items-end gap-2 sm:pl-4 shrink-0">
-								@if ($_account->password)
-									<span
-										class="inline-flex items-center rounded-full bg-green-50 px-2.5 py-0.5 text-sm font-semibold text-green-700 ring-1 ring-inset ring-green-600/20">Enabled</span>
-									<a href="{{ route('password.change') }}"
-										class="text-base font-medium text-brand hover:text-sky-700 no-underline">Modify password</a>
-									@if (!$_account->mandatory_password)
-										<a href="{{ route('password.delete') }}"
-											class="text-sm text-gray-500 hover:text-gray-700 no-underline">Disable</a>
-									@else
-										<span class="text-sm text-gray-400">Cannot be disabled</span>
-									@endif
-								@else
-									<span
-										class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-sm font-semibold text-gray-600 ring-1 ring-inset ring-gray-300">Disabled</span>
-									<a href="{{ route('password.create') }}"
-										class="text-base font-medium text-brand hover:text-sky-700 no-underline">Enable password</a>
-								@endif
-							</div>
-						</div>
 					</div>
 				</x-mship.dashboard.card>
 
