@@ -14,6 +14,7 @@ class LogoutController extends BaseController
             'login.id',
             'login.remember',
             'auth.password_confirmed_at',
+            'auth_override',
         ]);
 
         Auth::guard('web')->logout();
