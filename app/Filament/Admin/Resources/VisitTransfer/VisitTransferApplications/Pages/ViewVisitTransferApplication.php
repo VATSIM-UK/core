@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplications\P
 use App\Enums\VTCheckStatus;
 use App\Filament\Admin\Helpers\Pages\LogPageAccess;
 use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplications\VisitTransferApplicationResource;
+use App\Models\Mship\Account\Note;
 use App\Models\Mship\Note\Type;
 use App\Models\VisitTransfer\Application;
 use Carbon\Carbon;
@@ -154,6 +155,7 @@ class ViewVisitTransferApplication extends ViewRecord
     {
 
         $application = $this->record;
+        $showSensitiveNotes = $application->account && auth()->user()?->can('viewSensitive', $application->account);
 
         return $schema->record($application)->components([
             TextEntry::make('status')->label('Status')->formatStateUsing(fn ($state, $record) => $record->status_string)->badge()->color(fn ($record) => $record->status_color),
@@ -259,6 +261,7 @@ class ViewVisitTransferApplication extends ViewRecord
                             ->schema([
                                 Grid::make(1)->columnSpanFull()->schema(
                                     ($application->account?->notes ?? collect())
+                                        ->when(! $showSensitiveNotes, fn ($notes) => $notes->reject(fn (Note $note) => $note->isSensitive()))
                                         ->map(function ($note) {
                                             return TextEntry::make("note_{$note->id}")
                                                 ->label('Note by '.($note->writer?->full_name ?? 'System').' on '.$note->created_at->toPanelDate())
