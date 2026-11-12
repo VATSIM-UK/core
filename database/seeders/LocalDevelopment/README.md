@@ -70,7 +70,7 @@ php artisan db:seed --class=Database\\Seeders\\LocalDevelopment\\Training\\DevTr
 
 `dev-training-staff` and `dev-training-student` exist **only for local seeding**. They are convenience bundles of permissions and do **not** mirror real production roles (for example `ATC Examiner (TWR)`, division staff roles, or per-list delegated permissions).
 
-The training panel authorises actions via **permission** checks (`training.access`, `waiting-lists.view.atc`, and so on) in policies and Filament — not by role name. When adding or changing access control:
+The training panel authorises actions via **permission** checks (`training.access`, `training.waiting-lists.view.atc`, and so on) in policies and Filament — not by role name. When adding or changing access control:
 
 - Write and run tests that assert the relevant **permission** (or policy behaviour), not membership of a dev role.
 - Treat dev personas as a quick way to click through the panel locally; do not assume that passing as `dev-training-staff` proves production role configuration is correct.

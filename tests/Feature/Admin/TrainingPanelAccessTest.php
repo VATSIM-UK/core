@@ -65,7 +65,8 @@ class TrainingPanelAccessTest extends TestCase
         $this->get($this->path)->assertStatus(200);
         $this->assertTrue($account->can('training.exams.conduct.obs'));
         $this->assertTrue($account->can('training.mentoring.view.*'));
-        $this->assertFalse($account->can('waiting-lists.access'));
+        $this->assertTrue($account->can('training.waiting-lists.access'));
+        $this->assertTrue($account->can('training.training-places.view.atc'));
         $this->assertFalse($account->can('account.view-insensitive.*'));
     }
 }
