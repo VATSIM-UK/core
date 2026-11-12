@@ -43,10 +43,6 @@
 							<li class="md:hidden"><a href="{{ route('mship.notification.list') }}"
 									class="nav-dropdown-link">Notifications</a></li>
 							<li class="nav-dropdown-divider"></li>
-							<li><a href="{{ route('password.change') }}" class="nav-dropdown-link">Modify Password</a></li>
-							@if (!Auth::user()->mandatory_password)
-								<li><a href="{{ route('password.delete') }}" class="nav-dropdown-link">Disable Password</a></li>
-							@endif
 							<li class="nav-dropdown-divider"></li>
 							<li><a href="{{ route('mship.manage.email.add') }}" class="nav-dropdown-link">Add Email Address</a></li>
 							<li><a href="{{ route('mship.manage.email.assignments') }}" class="nav-dropdown-link">Email Assignments</a></li>

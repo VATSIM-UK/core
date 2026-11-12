@@ -47,8 +47,6 @@ class RoleResource extends Resource
             ->components([
                 TextInput::make('name')->required()->unique(ignorable: fn ($record) => $record),
                 TextInput::make('guard_name')->default('web')->in(array_keys(config('auth.guards'))),
-                Checkbox::make('password_mandatory')
-                    ->label('Secondary password mandatory'),
                 Checkbox::make('two_factor_mandatory')
                     ->label('Two-factor authentication mandatory'),
                 Section::make('Staff page')

@@ -18,7 +18,6 @@ class TwoFactorRekeyTest extends TestCase
         parent::setUp();
 
         $this->account = Account::factory()->create([
-            'password' => 'secret-password',
         ]);
     }
 
@@ -30,18 +29,6 @@ class TwoFactorRekeyTest extends TestCase
     }
 
     #[Test]
-    public function rekey_requires_password_confirmation(): void
-    {
-        $this->enableTwoFactorFor($this->account);
-
-        $this->actingAs($this->account)
-            ->post(route('two-factor.rekey'))
-            ->assertRedirect(route('two-factor.confirm-password', [
-                'redirect' => route('two-factor.rekey'),
-            ]));
-    }
-
-    #[Test]
     public function rekey_replaces_the_secret_and_clears_confirmation(): void
     {
         $this->enableTwoFactorFor($this->account);
@@ -50,7 +37,6 @@ class TwoFactorRekeyTest extends TestCase
         $originalCodes = $this->account->fresh()->two_factor_recovery_codes;
 
         $this->actingAs($this->account)
-            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->post(route('two-factor.rekey'))
             ->assertRedirect(route('two-factor.setup'));
 
@@ -68,14 +54,12 @@ class TwoFactorRekeyTest extends TestCase
         $this->enableTwoFactorFor($this->account);
 
         $this->actingAs($this->account)
-            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->post(route('two-factor.rekey'));
 
         $newSecret = Fortify::currentEncrypter()->decrypt($this->account->fresh()->two_factor_secret);
         $code = app(Google2FA::class)->getCurrentOtp($newSecret);
 
         $this->actingAs($this->account)
-            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->post(route('two-factor.confirm'), ['code' => $code])
             ->assertRedirect(route('two-factor.backup-codes'));
 
@@ -88,7 +72,6 @@ class TwoFactorRekeyTest extends TestCase
         $this->enableTwoFactorFor($this->account);
 
         $this->actingAs($this->account)
-            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->get(route('two-factor.setup'))
             ->assertOk()
             ->assertSee('Replace Authenticator App', false)
@@ -103,7 +86,6 @@ class TwoFactorRekeyTest extends TestCase
         $this->enableTwoFactorFor($this->account);
 
         $this->actingAs($this->account)
-            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->get(route('two-factor.setup'))
             ->assertOk()
             ->assertSee('Replace Authenticator App', false)

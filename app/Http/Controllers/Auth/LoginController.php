@@ -7,7 +7,6 @@ use App\Http\Controllers\BaseController;
 use App\Models\Mship\Account;
 use App\Providers\VATSIMOAuthProvider;
 use Carbon\Carbon;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -19,8 +18,6 @@ use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
  */
 class LoginController extends BaseController
 {
-    use AuthenticatesUsers;
-
     protected $provider;
 
     /**

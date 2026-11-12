@@ -21,7 +21,6 @@ use App\Models\Mship\Concerns\HasMentoringPermissions;
 use App\Models\Mship\Concerns\HasMoodleAccount;
 use App\Models\Mship\Concerns\HasNetworkData;
 use App\Models\Mship\Concerns\HasNotifications;
-use App\Models\Mship\Concerns\HasPassword;
 use App\Models\Mship\Concerns\HasQualifications;
 use App\Models\Mship\Concerns\HasRoles;
 use App\Models\Mship\Concerns\HasSeminarInvitations;
@@ -38,7 +37,6 @@ use App\Models\Training\WaitingList\WaitingListRetentionCheck;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -61,9 +59,6 @@ use Watson\Rememberable\Rememberable;
  * @property string $name_last
  * @property string|null $nickname
  * @property string|null $email
- * @property string|null $password
- * @property \Illuminate\Support\Carbon|null $password_set_at
- * @property \Illuminate\Support\Carbon|null $password_expires_at
  * @property \Illuminate\Support\Carbon|null $last_login
  * @property string $last_login_ip
  * @property string|null $remember_token
@@ -112,12 +107,10 @@ use Watson\Rememberable\Rememberable;
  * @property-read mixed $is_network_banned
  * @property-read bool $is_on_network
  * @property-read mixed $is_system_banned
- * @property-read bool $mandatory_password
  * @property-read bool $mandatory_two_factor
  * @property-read mixed|string $name_preferred
  * @property-read mixed $network_ban
  * @property-read mixed $new_ts_registration
- * @property-read int $password_lifetime
  * @property-read \Illuminate\Support\Collection $permanent_states
  * @property-read mixed $primary_permanent_state
  * @property-read mixed $primary_state
@@ -229,7 +222,7 @@ use Watson\Rememberable\Rememberable;
  *
  * @mixin \Eloquent
  */
-class Account extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
+class Account extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable,
         Authorizable,
@@ -247,7 +240,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         HasMoodleAccount,
         HasNetworkData,
         HasNotifications,
-        HasPassword,
         HasQualifications,
         HasRoles,
         HasSeminarInvitations,
@@ -281,9 +273,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'name_last',
         'nickname',
         'email',
-        'password',
-        'password_set_at',
-        'password_expires_at',
         'joined_at',
         'cert_checked_at',
     ];
@@ -298,7 +287,6 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'cert_checked_at',
         'last_login',
         'remember_token',
-        'password',
         'updated_at',
         'last_login_ip',
         'discord_access_token',
@@ -321,14 +309,11 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
-        'password_set_at' => 'datetime',
-        'password_expires_at' => 'datetime',
         'two_factor_confirmed_at' => 'datetime',
     ];
 
     protected $hidden = [
         'calendar_feed_token',
-        'password',
         'remember_token',
         'two_factor_secret',
         'two_factor_recovery_codes',

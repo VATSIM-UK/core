@@ -32,8 +32,6 @@ class ViewAccountPageTest extends BaseAdminTestCase
         $this->user->givePermissionTo('account.impersonate.*');
         Livewire::actingAs($this->user);
 
-        session(['auth.password_confirmed_at' => now()->unix()]);
-
         Log::shouldReceive('channel')->with('audit')->andReturnSelf();
         Log::shouldReceive('info')->once()->withArgs(fn ($message, $context) => $message === 'Account impersonation started'
             && $context['admin_id'] === $this->user->id
@@ -47,39 +45,6 @@ class ViewAccountPageTest extends BaseAdminTestCase
             ->callAction('impersonate', data: ['reason' => 'Some reason for impersonating a user']);
 
         $this->assertEquals($this->privacc->id, auth()->user()->id);
-        $this->assertFalse(session()->has('auth.password_confirmed_at'));
-    }
-
-    public function test_cant_remove_password_without_permission()
-    {
-        $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->privacc->setPassword('123');
-        Livewire::actingAs($this->user);
-        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])->assertActionHidden('remove_password');
-    }
-
-    public function test_can_remove_password_with_permission()
-    {
-        $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('account.remove-password.*');
-        $this->privacc->setPassword('123');
-        $this->assertTrue($this->privacc->fresh()->hasPassword());
-
-        Livewire::actingAs($this->user);
-        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
-            ->assertActionVisible('remove_password')
-            ->callAction('remove_password');
-
-        $this->assertFalse($this->privacc->fresh()->hasPassword());
-    }
-
-    public function test_can_remove_password_not_visible_when_no_password()
-    {
-        $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('account.remove-password.*');
-        Livewire::actingAs($this->user);
-        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
-            ->assertActionHidden('remove_password');
     }
 
     public function test_cant_see_email_address_without_permission()
@@ -443,7 +408,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
     public function test_reset_two_factor_hidden_when_two_factor_disabled()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('account.remove-password.*');
+        $this->user->givePermissionTo('account.reset-two-factor.*');
 
         Livewire::actingAs($this->user);
         Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
@@ -453,7 +418,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
     public function test_can_reset_two_factor_with_permission()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('account.remove-password.*');
+        $this->user->givePermissionTo('account.reset-two-factor.*');
         $this->enableTwoFactorFor($this->privacc);
 
         $this->assertTrue($this->privacc->fresh()->hasEnabledTwoFactorAuthentication());
@@ -474,7 +439,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
     public function test_reset_two_factor_creates_a_security_note()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('account.remove-password.*');
+        $this->user->givePermissionTo('account.reset-two-factor.*');
         $this->enableTwoFactorFor($this->privacc);
 
         Livewire::actingAs($this->user);
@@ -492,7 +457,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
     public function test_reset_two_factor_notifies_the_member()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('account.remove-password.*');
+        $this->user->givePermissionTo('account.reset-two-factor.*');
         $this->enableTwoFactorFor($this->privacc);
 
         Livewire::actingAs($this->user);
@@ -505,7 +470,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
     public function test_reset_two_factor_notifies_privileged_users()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('account.remove-password.*');
+        $this->user->givePermissionTo('account.reset-two-factor.*');
         $this->enableTwoFactorFor($this->privacc);
 
         Livewire::actingAs($this->user);
@@ -521,7 +486,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
     public function test_reset_two_factor_requires_a_reason()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('account.remove-password.*');
+        $this->user->givePermissionTo('account.reset-two-factor.*');
         $this->enableTwoFactorFor($this->privacc);
 
         Livewire::actingAs($this->user);

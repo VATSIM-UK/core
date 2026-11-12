@@ -28,27 +28,9 @@ class RememberMeCookieTest extends TestCase
     public function it_authenticates_a_passwordless_account_from_a_valid_remember_cookie(): void
     {
         $account = Account::factory()->createQuietly();
-        $account->forceFill(['remember_token' => 'current-token', 'password' => null])->saveQuietly();
+        $account->forceFill(['remember_token' => 'current-token'])->saveQuietly();
 
         $recaller = $account->id.'|current-token|'.$this->cookieHash('');
-
-        $this->withCookie($this->recallerName(), $recaller)
-            ->get(route('site.join'))
-            ->assertOk();
-
-        $this->assertAuthenticatedAs($account, 'web');
-    }
-
-    #[Test]
-    public function it_authenticates_from_a_pre_12_69_remember_cookie(): void
-    {
-        $account = Account::factory()->createQuietly();
-        $account->forceFill([
-            'remember_token' => 'current-token',
-            'password' => 'hashed-password',
-        ])->saveQuietly();
-
-        $recaller = $account->id.'|current-token|'.$account->password;
 
         $this->withCookie($this->recallerName(), $recaller)
             ->get(route('site.join'))
