@@ -69,9 +69,20 @@ class TwoFactorAuthTest extends TestCase
         $this->account->assignRole($role);
 
         $this->actingAs($this->account)
+            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->get(route('two-factor.setup'))
             ->assertOk()
             ->assertSee('Two-Factor Authentication Setup');
+    }
+
+    #[Test]
+    public function setup_page_requires_password_confirmation(): void
+    {
+        $this->actingAs($this->account)
+            ->get(route('two-factor.setup'))
+            ->assertRedirect(route('two-factor.confirm-password', [
+                'redirect' => route('two-factor.setup'),
+            ]));
     }
 
     #[Test]
@@ -203,6 +214,7 @@ class TwoFactorAuthTest extends TestCase
         $secret = Fortify::currentEncrypter()->decrypt($this->account->fresh()->two_factor_secret);
 
         $this->actingAs($this->account)
+            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->get(route('two-factor.setup'))
             ->assertOk()
             ->assertSee($secret, false)
@@ -224,6 +236,7 @@ class TwoFactorAuthTest extends TestCase
         $this->assertNull($this->account->fresh()->two_factor_confirmed_at);
 
         $this->actingAs($this->account)
+            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->get(route('two-factor.setup'))
             ->assertOk()
             ->assertSee('The provided two factor authentication code was invalid.', false);
@@ -266,6 +279,29 @@ class TwoFactorAuthTest extends TestCase
             ->assertRedirect(route('two-factor.backup-codes'));
 
         $this->assertNotNull($account->fresh()->two_factor_confirmed_at);
+    }
+
+    #[Test]
+    public function passwordless_account_can_view_setup_page_without_password_confirmation(): void
+    {
+        $account = Account::factory()->create(['password' => null]);
+
+        $this->actingAs($account)
+            ->get(route('two-factor.setup'))
+            ->assertOk()
+            ->assertSee('Two-Factor Authentication Setup');
+    }
+
+    #[Test]
+    public function passwordless_account_can_view_backup_codes_without_password_confirmation(): void
+    {
+        $account = Account::factory()->create(['password' => null]);
+        $this->enableTwoFactorFor($account);
+
+        $this->actingAs($account->fresh())
+            ->get(route('two-factor.backup-codes'))
+            ->assertOk()
+            ->assertSee('Save Your Recovery Codes', false);
     }
 
     #[Test]
@@ -336,6 +372,7 @@ class TwoFactorAuthTest extends TestCase
             ->assertSessionHas('success');
 
         $this->actingAs($this->account)
+            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->get(route('two-factor.backup-codes'))
             ->assertOk()
             ->assertSee('Save Your Recovery Codes', false)
@@ -350,8 +387,21 @@ class TwoFactorAuthTest extends TestCase
     public function backup_codes_page_requires_enabled_two_factor(): void
     {
         $this->actingAs($this->account)
+            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->get(route('two-factor.backup-codes'))
             ->assertRedirect(route('two-factor.setup'));
+    }
+
+    #[Test]
+    public function backup_codes_page_requires_password_confirmation(): void
+    {
+        $this->enableTwoFactorFor($this->account);
+
+        $this->actingAs($this->account)
+            ->get(route('two-factor.backup-codes'))
+            ->assertRedirect(route('two-factor.confirm-password', [
+                'redirect' => route('two-factor.backup-codes'),
+            ]));
     }
 
     #[Test]
@@ -360,6 +410,7 @@ class TwoFactorAuthTest extends TestCase
         $this->enableTwoFactorFor($this->account);
 
         $this->actingAs($this->account)
+            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->get(route('two-factor.setup'))
             ->assertOk()
             ->assertSee('Recovery Codes', false)

@@ -88,6 +88,7 @@ class TwoFactorRekeyTest extends TestCase
         $this->enableTwoFactorFor($this->account);
 
         $this->actingAs($this->account)
+            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->get(route('two-factor.setup'))
             ->assertOk()
             ->assertSee('Replace Authenticator App', false)
@@ -102,6 +103,7 @@ class TwoFactorRekeyTest extends TestCase
         $this->enableTwoFactorFor($this->account);
 
         $this->actingAs($this->account)
+            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->get(route('two-factor.setup'))
             ->assertOk()
             ->assertSee('Replace Authenticator App', false)
