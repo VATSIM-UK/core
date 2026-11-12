@@ -5,7 +5,6 @@ namespace App\Providers\Filament;
 use App\Filament\Admin\Pages\Dashboard;
 use App\Filament\Widgets\AccountInfoWidget;
 use App\Http\Middleware\AdminPanelFilamentAccessMiddleware;
-use App\Http\Middleware\DenyIfBanned;
 use App\Http\Middleware\MandatoryTwoFactor;
 use App\Http\Middleware\TrackInactivity;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -53,13 +52,12 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 TrackInactivity::class,
                 MandatoryTwoFactor::class,
-                DenyIfBanned::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
                 AdminPanelFilamentAccessMiddleware::class,
-            ], isPersistent: true)
+            ])
             ->brandLogo(asset('images/branding/vatsimuk_blackblue.png'))
             ->darkModeBrandLogo(asset('images/branding/vatsimuk_whiteblue.png'))
             ->brandName('VATSIM UK')

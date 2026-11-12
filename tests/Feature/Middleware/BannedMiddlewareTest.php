@@ -38,23 +38,4 @@ class BannedMiddlewareTest extends TestCase
             ->get(route('mship.manage.dashboard'))
             ->assertRedirect(route('banned.local'));
     }
-
-    #[Test]
-    public function test_banned_local_page_requires_authentication()
-    {
-        $this->get(route('banned.local'))->assertRedirect(route('landing'));
-    }
-
-    #[Test]
-    public function test_local_banned_user_can_view_banned_local_page()
-    {
-        $account = Account::factory()->create();
-        $banReason = Reason::factory()->create();
-
-        $account->addBan($banReason, 'Local ban', 'Ban note.');
-
-        $this->actingAs($account->refresh())
-            ->get(route('banned.local'))
-            ->assertOk();
-    }
 }

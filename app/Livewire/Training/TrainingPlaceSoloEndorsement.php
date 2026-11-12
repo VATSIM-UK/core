@@ -82,14 +82,9 @@ class TrainingPlaceSoloEndorsement extends Component implements HasActions, HasF
                             ->numeric()
                             ->required()
                             ->minValue(1)
-                            ->maxValue(fn () => auth()->user()?->can('endorsement.bypass.maximumdays')
-                                ? null
-                                : EndorsementService::maximumTemporaryDays(
-                                    $this->trainingPlace->trainingPosition->position,
-                                    $this->trainingPlace->account
-                                ))
+                            ->maxValue(90)
                             ->default(7)
-                            ->helperText('Number of days the solo endorsement will be valid for. Solo endorsements are limited to 90 days in total per position.'),
+                            ->helperText('Number of days the solo endorsement will be valid for'),
                     ])
                     ->action(function (array $data) {
                         $position = $this->trainingPlace->trainingPosition->position;

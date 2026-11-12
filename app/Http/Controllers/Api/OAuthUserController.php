@@ -94,14 +94,8 @@ class OAuthUserController
         $return['account_state_current'] = $account->primary_state->name;
         $return['account_status'] = $account->status;
 
-        $activeBan = $account->system_ban ?? $account->network_ban;
         $return['is_banned'] = (bool) $account->is_banned;
-        $return['ban_info'] = $activeBan ? [
-            'type' => $activeBan->type->value,
-            'period_start' => $activeBan->period_start?->toDateTimeString(),
-            'period_finish' => $activeBan->period_finish?->toDateTimeString(),
-            'is_permanent' => $activeBan->period_finish === null,
-        ] : null;
+        $return['ban_info'] = ($account->is_banned ? $account->bans->first() : null);
 
         $return['is_inactive'] = (bool) $account->is_inactive;
         $return['experience'] = $account->experience;

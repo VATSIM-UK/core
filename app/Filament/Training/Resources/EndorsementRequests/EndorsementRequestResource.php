@@ -12,9 +12,9 @@ use App\Models\Mship\Account;
 use App\Models\Mship\Account\EndorsementRequest;
 use App\Models\Mship\Qualification;
 use App\Services\Training\EndorsementRequestVisibilityService;
-use App\Services\Training\EndorsementService;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -66,6 +66,8 @@ class EndorsementRequestResource extends Resource
                         'App\Models\Atc\Position' => 'Solo Endorsement',
                         'App\Models\Mship\Qualification' => 'Rating Endorsement',
                     ])->required()->live(),
+
+                    Hidden::make('requested_by')->default(auth()->id()),
                 ]),
 
                 Section::make('Tier 1 Endorsement')->columnSpanFull()->schema([
@@ -177,7 +179,7 @@ class EndorsementRequestResource extends Resource
                             ->title('Endorsement request rejected')
                             ->success();
                     })->visible(fn (EndorsementRequest $endorsementRequest) => $endorsementRequest->status === 'Pending' &&
-                            auth()->user()->can('reject', $endorsementRequest)),
+                            auth()->user()->can('approve', $endorsementRequest)),
             ]);
     }
 
@@ -220,12 +222,12 @@ class EndorsementRequestResource extends Resource
                 ->placeholder(7)
                 ->maxValue(function (?EndorsementRequest $endorsementRequest = null) {
                     if (! $endorsementRequest || ! $endorsementRequest->endorsable instanceof Position) {
-                        return EndorsementService::MAX_TEMPORARY_ENDORSEMENT_DAYS;
+                        return 365;
                     }
 
                     return auth()->user()->can('endorsement.bypass.maximumdays')
                         ? null
-                        : EndorsementService::maximumTemporaryDays($endorsementRequest->endorsable, $endorsementRequest->account);
+                        : 90 - $endorsementRequest->account->daysSpentTemporarilyEndorsedOn($endorsementRequest->endorsable);
                 })
                 ->required(fn (Get $get): bool => $get('type') === 'Temporary')
                 ->visible(fn (Get $get): bool => $get('type') === 'Temporary'),

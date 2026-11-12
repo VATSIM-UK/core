@@ -33,7 +33,6 @@ class ApplicationPolicy
     public function accept(Account $user, Application $application)
     {
         return $user->can('vt.application.accept.*')
-        && $user->id !== $application->account_id
         && $application->can_accept
         && $this->checkIsSatisfied($application->check_outcome_90_day)
         && $this->checkIsSatisfied($application->check_outcome_50_hours);

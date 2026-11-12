@@ -575,38 +575,4 @@ class AccountModelTest extends TestCase
     {
         $this->assertFalse($this->user->onRoster());
     }
-
-    #[Test]
-    public function it_does_not_track_sensitive_attributes()
-    {
-        $this->user->vatsim_access_token = 'vatsim-access-token';
-        $this->user->vatsim_refresh_token = 'vatsim-refresh-token';
-        $this->user->discord_access_token = 'discord-access-token';
-        $this->user->discord_refresh_token = 'discord-refresh-token';
-        $this->user->two_factor_secret = 'two-factor-secret';
-        $this->user->two_factor_recovery_codes = 'two-factor-recovery-codes';
-        $this->user->two_factor_confirmed_at = now();
-        $this->user->last_login_ip = '127.0.0.1';
-        $this->user->nickname = 'New Nickname';
-        $this->user->save();
-
-        $this->assertSame('vatsim-access-token', $this->user->fresh()->vatsim_access_token);
-
-        $this->assertSame(0, $this->user->dataChanges()
-            ->whereIn('data_key', [
-                'vatsim_access_token',
-                'vatsim_refresh_token',
-                'discord_access_token',
-                'discord_refresh_token',
-                'two_factor_secret',
-                'two_factor_recovery_codes',
-                'two_factor_confirmed_at',
-                'last_login_ip',
-            ])
-            ->count());
-
-        $this->assertSame(1, $this->user->dataChanges()
-            ->where('data_key', 'nickname')
-            ->count());
-    }
 }

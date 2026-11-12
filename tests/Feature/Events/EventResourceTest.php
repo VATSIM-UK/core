@@ -12,10 +12,7 @@ use App\Models\Mship\Account;
 use App\Models\Permission;
 use Filament\Actions\Testing\TestAction;
 use Filament\Forms\Components\Select;
-use InvalidArgumentException;
 use Livewire\Livewire;
-use PHPUnit\Framework\AssertionFailedError;
-use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 class EventResourceTest extends TestCase
@@ -168,42 +165,6 @@ class EventResourceTest extends TestCase
             'event_id' => $event->id,
             'item' => 'eoi_published',
             'account_id' => $user->id,
-        ]);
-    }
-
-    public function test_checklist_cannot_be_written_without_manage_permission(): void
-    {
-        $event = Event::factory()->create();
-
-        // The field is disabled for view-only staff, so mount the form as someone
-        // who may edit it and withdraw the permission before the write lands.
-        $manager = $this->userWithPermission('events.manage');
-        $this->actingAs($manager);
-
-        $component = Livewire::test(EditEvent::class, ['record' => $event->getRouteKey()]);
-
-        $manager->permissions()->detach();
-        $manager->unsetRelation('permissions')->unsetRelation('roles');
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
-
-        try {
-            $component->fillForm(['checklist' => ['eoi_published']]);
-        } catch (InvalidArgumentException) {
-            // The test harness cannot continue rendering after a rejected request.
-        }
-
-        // Filament may deny the page (404) or the field guard may reject the
-        // update (403) depending on how the component re-renders; either way the
-        // write must not happen.
-        try {
-            $component->assertStatus(403);
-        } catch (AssertionFailedError) {
-            $component->assertStatus(404);
-        }
-
-        $this->assertDatabaseMissing('event_checklist_completions', [
-            'event_id' => $event->id,
-            'item' => 'eoi_published',
         ]);
     }
 

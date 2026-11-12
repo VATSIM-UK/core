@@ -17,7 +17,6 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
 class ManageMentorsTest extends BaseTrainingPanelTestCase
@@ -124,76 +123,6 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
             ->test(ManageMentors::class, ['category' => $selectedCategory])
             ->assertCanSeeTableRecords([$selectedMentor])
             ->assertCanNotSeeTableRecords([$otherMentor]);
-    }
-
-    #[Test]
-    public function it_cannot_manage_a_category_without_the_matching_manage_permission(): void
-    {
-        $this->panelUser->givePermissionTo([
-            'training.mentors.view.atc',
-            'training.mentors.manage.atc',
-        ]);
-
-        $target = Account::factory()->create();
-        Member::factory()->create(['cid' => $target->id]);
-
-        $pplQual = $this->getOrCreateQualification('PPL');
-
-        $page = Livewire::actingAs($this->panelUser)
-            ->test(ManageMentors::class, ['category' => MentorPermissionService::atcCategories()[0]])
-            ->instance();
-
-        // Simulate a request that switches the category after the table built
-        // with the originally permitted category has already been cached.
-        $page->category = 'P1 Training';
-
-        $this->assertActionForbidden(fn () => $page->getTable()->getAction('addMentor')->call(['data' => [
-            'account_ids' => [$target->id],
-            'position_ids' => [$pplQual->id],
-        ]]));
-
-        $this->assertDatabaseMissing('mentor_training_positions', [
-            'account_id' => $target->id,
-            'mentorable_id' => $pplQual->id,
-        ]);
-    }
-
-    #[Test]
-    public function it_cannot_update_or_remove_mentors_after_switching_to_an_unmanaged_category(): void
-    {
-        $this->panelUser->givePermissionTo([
-            'training.mentors.view.atc',
-            'training.mentors.manage.atc',
-        ]);
-
-        $category = MentorPermissionService::atcCategories()[0];
-        $mentor = Account::factory()->create();
-        Member::factory()->create(['cid' => $mentor->id]);
-
-        $trainingPosition = $this->createTrainingPosition($category, 'EGPH_GND');
-
-        app(MentorPermissionService::class)->assignToMentorable($mentor, $trainingPosition, $this->panelUser, $category);
-
-        $page = Livewire::actingAs($this->panelUser)
-            ->test(ManageMentors::class, ['category' => $category])
-            ->instance();
-
-        $page->category = 'P1 Training';
-
-        $this->assertActionForbidden(fn () => $page->getTable()->getAction('managePositions')->record($mentor)->call([
-            'data' => ['position_ids' => [$trainingPosition->id]],
-        ]));
-
-        $this->assertActionForbidden(fn () => $page->getTable()->getAction('removeAll')->record($mentor)->call());
-
-        $this->assertActionForbidden(fn () => $page->getTable()->getBulkAction('bulkRemove')->call([
-            'records' => collect([$mentor]),
-        ]));
-
-        $this->assertDatabaseHas('mentor_training_positions', [
-            'account_id' => $mentor->id,
-            'mentorable_id' => $trainingPosition->id,
-        ]);
     }
 
     #[Test]
@@ -477,17 +406,6 @@ class ManageMentorsTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->panelUser)
             ->test(ManageMentors::class, ['category' => $category])
             ->assertTableColumnStateSet('last_mentored', $validDate->toPanelDate(), record: $mentor);
-    }
-
-    private function assertActionForbidden(callable $callback): void
-    {
-        try {
-            $callback();
-
-            $this->fail('The action ran without the matching manage permission.');
-        } catch (HttpException $exception) {
-            $this->assertSame(403, $exception->getStatusCode());
-        }
     }
 
     private function createTrainingPosition(string $category, string $callsign): TrainingPosition

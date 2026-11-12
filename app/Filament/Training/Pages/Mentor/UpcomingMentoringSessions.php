@@ -27,7 +27,6 @@ use Filament\Tables\Table;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
-use Livewire\Attributes\Locked;
 use Livewire\Attributes\Url;
 
 class UpcomingMentoringSessions extends BaseMentoringHistoryPage
@@ -50,7 +49,6 @@ class UpcomingMentoringSessions extends BaseMentoringHistoryPage
     protected static ?string $slug = 'mentoring/upcoming-sessions';
 
     #[Url]
-    #[Locked]
     public string $category = '';
 
     public static function canAccess(): bool

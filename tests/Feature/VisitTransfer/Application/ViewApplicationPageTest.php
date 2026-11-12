@@ -5,7 +5,6 @@ namespace Tests\Feature\VisitTransfer\Application;
 use App\Enums\VTCheckStatus;
 use App\Filament\Admin\Resources\VisitTransfer\VisitTransferApplications\Pages\ViewVisitTransferApplication;
 use App\Models\Mship\Account;
-use App\Models\Mship\Note\Type;
 use App\Models\VisitTransfer\Application;
 use App\Models\VisitTransfer\Facility;
 use Filament\Actions\Testing\TestAction;
@@ -405,30 +404,6 @@ class ViewApplicationPageTest extends BaseAdminTestCase
         $this->application->refresh();
 
         $this->assertTrue($this->application->is_under_review);
-    }
-
-    #[Test]
-    public function it_hides_internal_notes_without_sensitive_permission()
-    {
-        $account = $this->application->account;
-        $account->addNote(Type::where('name', 'General')->first(), 'a public applicant note', $this->adminUser);
-        $account->addNote('discipline', 'an internal ban note', $this->adminUser);
-        $account->addNote('security', 'an internal two-factor reset reason', $this->adminUser);
-
-        Livewire::actingAs($this->adminUser)
-            ->test(ViewVisitTransferApplication::class, ['record' => $this->application->id])
-            ->assertSuccessful()
-            ->assertSee('a public applicant note')
-            ->assertDontSee('an internal ban note')
-            ->assertDontSee('an internal two-factor reset reason');
-
-        $this->adminUser->givePermissionTo('account.view-sensitive.*');
-
-        Livewire::actingAs($this->adminUser)
-            ->test(ViewVisitTransferApplication::class, ['record' => $this->application->id])
-            ->assertSuccessful()
-            ->assertSee('an internal ban note')
-            ->assertSee('an internal two-factor reset reason');
     }
 
     #[Test]

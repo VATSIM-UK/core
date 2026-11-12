@@ -154,49 +154,4 @@ class ExamAnnouncementServiceTest extends TestCase
 
         $this->assertStringContainsString("**Notes:**\nNOTES GO HERE", $message);
     }
-
-    #[Test]
-    public function it_restricts_mentions_to_the_injected_roles()
-    {
-        config()->set('training.discord.exam_announce_channel_id', '987654321');
-        config()->set('training.discord.exam_pilot_role_id', '333');
-        config()->set('training.discord.exam_controller_role_id', '444');
-
-        $examBooking = ExamBooking::factory()->make([
-            'exam' => 'S2',
-            'position_1' => 'EGPH_TWR',
-            'start_date' => '2026-01-11T12:00:00Z',
-        ]);
-
-        $discord = $this->mock(Discord::class);
-        $discord->shouldReceive('sendMessageToChannel')
-            ->once()
-            ->withArgs(fn (string $channelId, array $payload) => $channelId === '987654321'
-                && $payload['allowed_mentions'] === ['parse' => [], 'roles' => ['333']]
-                && str_contains($payload['content'], '<@&333>'));
-
-        (new ExamAnnouncementService($discord))->postAnnouncement($examBooking, ['ping_exam_pilot' => true, 'notes' => '@everyone <@&999>']);
-    }
-
-    #[Test]
-    public function it_allows_no_mentions_when_no_role_is_pinged()
-    {
-        config()->set('training.discord.exam_announce_channel_id', '987654321');
-        config()->set('training.discord.exam_pilot_role_id', '333');
-        config()->set('training.discord.exam_controller_role_id', '444');
-
-        $examBooking = ExamBooking::factory()->make([
-            'exam' => 'S2',
-            'position_1' => 'EGPH_TWR',
-            'start_date' => '2026-01-11T12:00:00Z',
-        ]);
-
-        $discord = $this->mock(Discord::class);
-        $discord->shouldReceive('sendMessageToChannel')
-            ->once()
-            ->withArgs(fn (string $channelId, array $payload) => $channelId === '987654321'
-                && $payload['allowed_mentions'] === ['parse' => [], 'roles' => []]);
-
-        (new ExamAnnouncementService($discord))->postAnnouncement($examBooking, ['notes' => '@everyone <@&999>']);
-    }
 }

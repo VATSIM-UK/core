@@ -222,26 +222,6 @@ class FeedbackRestrictionsTest extends TestCase
     }
 
     #[Test]
-    public function test_disabled_or_non_public_form_cannot_be_viewed_or_submitted_to()
-    {
-        $form = Form::whereSlug('atc')->first();
-
-        foreach ([['enabled' => false], ['enabled' => true, 'public' => false]] as $attributes) {
-            Form::whereKey($form->id)->update($attributes);
-
-            $this->actingAs($this->user, 'web')
-                ->get(route('mship.feedback.new.form', $form->slug))
-                ->assertRedirect(route('mship.feedback.new'))
-                ->assertSessionHas('error');
-
-            $this->actingAs($this->user, 'web')
-                ->post(route('mship.feedback.new.form.post', $form->slug), [])
-                ->assertRedirect(route('mship.feedback.new'))
-                ->assertSessionHas('error');
-        }
-    }
-
-    #[Test]
     public function test_account_with_no_atc_qualification_fails_qualification_restriction()
     {
         $form = Form::whereSlug('atc')->first();

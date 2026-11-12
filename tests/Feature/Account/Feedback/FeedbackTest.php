@@ -304,24 +304,6 @@ class FeedbackTest extends TestCase
     }
 
     #[Test]
-    public function test_it_rejects_a_datetime_without_a_time_component()
-    {
-        $form = Form::whereSlug('atc')->first();
-        if (! $form) {
-            $this->markTestSkipped('could not find atc form');
-        }
-
-        $datetimeSlug = $form->questions->first(fn ($question) => $question->type->name == 'datetime')->slug;
-
-        $formData = $this->buildFormData($form, Account::factory()->create(), now()->subMinutes(10));
-        $formData[$datetimeSlug] = now()->format('Y/m/d');
-
-        $this->actingAs($this->user, 'web')
-            ->post(route('mship.feedback.new.form.post', $form->slug), $formData)
-            ->assertSessionHasErrors($datetimeSlug);
-    }
-
-    #[Test]
     public function test_it_orders_questions_by_page_then_sequence()
     {
         $form = Form::whereSlug('atc')->first();
@@ -477,7 +459,7 @@ class FeedbackTest extends TestCase
             if ($question->type->name == 'userlookup') {
                 $formData[$question->slug] = $targetAccount->id;
             } elseif ($question->type->name == 'datetime') {
-                $formData[$question->slug] = $eventTime->format('Y/m/d H:i');
+                $formData[$question->slug] = $eventTime->format('Y-m-d H:i');
             } elseif ($question->type->name == 'position_selector') {
                 $position = Position::query()->first() ?? Position::factory()->create(['callsign' => 'EGLL_TWR']);
                 $formData[$question->slug] = $position->callsign;

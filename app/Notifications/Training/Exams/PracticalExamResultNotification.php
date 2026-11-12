@@ -3,7 +3,6 @@
 namespace App\Notifications\Training\Exams;
 
 use App\Models\Cts\PracticalResult;
-use App\Support\RichText;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -49,7 +48,6 @@ class PracticalExamResultNotification extends Notification
                 'position' => $position,
                 'examiner' => $examiner,
                 'date' => $date,
-                'notes' => RichText::sanitize($this->practicalResult->notes),
             ]);
     }
 }

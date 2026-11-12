@@ -396,20 +396,20 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
     {
         return Action::make('acceptSession')
             ->modalHeading(function (array $arguments) {
-                $availability = $this->availabilityInScope((int) $arguments['availability_id']);
+                $availability = Availability::findOrFail($arguments['availability_id']);
                 $student = Member::where('cid', $availability->account_id)->firstOrFail();
 
                 return "Create Mentoring Session: {$student->name}";
             })
             ->modalDescription(function (array $arguments) {
-                $availability = $this->availabilityInScope((int) $arguments['availability_id']);
+                $availability = Availability::findOrFail($arguments['availability_id']);
                 $date = $availability->startsAt()->toPanelDateWithWeekday();
 
                 return "You are creating a mentoring session for {$date}. Please choose a position and confirm the exact start and end times below.";
             })
             ->modalSubmitActionLabel('Accept Session')
             ->form(function (array $arguments) {
-                $availability = $this->availabilityInScope((int) $arguments['availability_id']);
+                $availability = Availability::findOrFail($arguments['availability_id']);
                 $student = Member::where('cid', $availability->account_id)->firstOrFail();
                 $place = $this->trainingPlaceForStudentCid((int) $student->cid);
                 $positionOptions = $this->bookablePositionOptions($place);
@@ -554,7 +554,7 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                 ];
             })
             ->action(function (array $data, array $arguments, MentoringSessionsService $mentoringService) {
-                $availability = $this->availabilityInScope((int) $arguments['availability_id']);
+                $availability = Availability::findOrFail($arguments['availability_id']);
                 $student = Member::where('cid', $availability->account_id)->firstOrFail();
                 $formattedDate = $availability->startsAt()->toPanelDate();
                 $place = $this->trainingPlaceForStudentCid((int) $student->cid);
@@ -624,21 +624,6 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
     public function getStudentsPerPageProperty(): int
     {
         return self::STUDENTS_PER_PAGE;
-    }
-
-    /**
-     * Resolves an availability slot belonging to a student this mentor may book,
-     * so a client-supplied id cannot disclose or book another student's slot.
-     */
-    protected function availabilityInScope(int $availabilityId): Availability
-    {
-        $availability = Availability::query()
-            ->whereIn('account_id', $this->eligibleTrainingPlaces()->pluck('account_id')->all())
-            ->find($availabilityId);
-
-        abort_if($availability === null, 403);
-
-        return $availability;
     }
 
     protected function trainingPlaceForStudentCid(int $cid): ?TrainingPlace

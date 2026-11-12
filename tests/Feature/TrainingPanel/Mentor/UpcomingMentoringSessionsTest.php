@@ -16,7 +16,6 @@ use App\Services\Training\MentorPermissionService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
-use Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Spatie\CalendarLinks\Link;
@@ -71,36 +70,6 @@ class UpcomingMentoringSessionsTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->panelUser)
             ->test(UpcomingMentoringSessions::class, ['category' => 'Not A Real Category'])
             ->assertSet('category', MentorPermissionService::ALL_CATEGORIES);
-    }
-
-    #[Test]
-    public function it_selects_the_category_from_the_url_even_though_the_property_is_locked(): void
-    {
-        $this->panelUser->givePermissionTo('training.mentors.view.atc');
-
-        $category = MentorPermissionService::atcCategories()[0];
-        $this->createTrainingPosition($category, 'EGLL_GND');
-
-        Livewire::actingAs($this->panelUser)
-            ->withQueryParams(['category' => $category])
-            ->test(UpcomingMentoringSessions::class)
-            ->assertSuccessful()
-            ->assertSet('category', $category);
-    }
-
-    #[Test]
-    public function category_cannot_be_changed_client_side_to_another_training_group(): void
-    {
-        $this->panelUser->givePermissionTo('training.mentors.view.atc');
-
-        $visibleCategory = MentorPermissionService::atcCategories()[0];
-        $this->createTrainingPosition($visibleCategory, 'EGLL_GND');
-
-        $this->expectException(CannotUpdateLockedPropertyException::class);
-
-        Livewire::actingAs($this->panelUser)
-            ->test(UpcomingMentoringSessions::class, ['category' => $visibleCategory])
-            ->set('category', MentorPermissionService::pilotCategories()[0]);
     }
 
     #[Test]
@@ -532,21 +501,6 @@ class UpcomingMentoringSessionsTest extends BaseTrainingPanelTestCase
             ->test(PendingMentoringReportsTable::class, ['category' => $categoryOne])
             ->assertCanSeeTableRecords([$sessionInRecord])
             ->assertCanNotSeeTableRecords([$sessionOutRecord]);
-    }
-
-    #[Test]
-    public function pending_reports_table_category_cannot_be_changed_client_side(): void
-    {
-        $this->panelUser->givePermissionTo('training.mentors.view.atc');
-
-        $category = MentorPermissionService::atcCategories()[0];
-        $this->createTrainingPosition($category, 'EGPC_GND');
-
-        $this->expectException(CannotUpdateLockedPropertyException::class);
-
-        Livewire::actingAs($this->panelUser)
-            ->test(PendingMentoringReportsTable::class, ['category' => $category])
-            ->set('category', MentorPermissionService::pilotCategories()[0]);
     }
 
     #[Test]

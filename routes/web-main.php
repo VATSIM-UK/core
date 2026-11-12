@@ -20,7 +20,7 @@ require base_path('routes/fortify-two-factor.php');
 Route::get('/staff')->uses('Site\StaffPageController@staff')->middleware('auth_full_group')->name('site.staff');
 
 Route::view('banned-network', 'errors.banned-network')->name('banned.network');
-Route::get('banned-local')->uses('Auth\LocalBanDisplayController')->middleware('auth')->name('banned.local');
+Route::get('banned-local')->uses('Auth\LocalBanDisplayController')->name('banned.local');
 
 // Password
 Route::group([
@@ -153,8 +153,7 @@ Route::group([
     Route::model('tsreg', App\Models\TeamSpeak\Registration::class);
     Route::get('new', ['as' => 'teamspeak.new', 'uses' => 'Registration@getNew']);
     Route::get('success', ['as' => 'teamspeak.success', 'uses' => 'Registration@getConfirmed']);
-    Route::get('{registration}/delete', fn () => redirect()->route('landing'));
-    Route::delete('{mshipRegistration}/delete', ['as' => 'teamspeak.delete', 'uses' => 'Registration@getDelete']);
+    Route::get('{mshipRegistration}/delete', ['as' => 'teamspeak.delete', 'uses' => 'Registration@getDelete']);
     Route::post('{mshipRegistration}/status', ['as' => 'teamspeak.status', 'uses' => 'Registration@postStatus']);
 });
 
@@ -168,8 +167,7 @@ Route::group([
     Route::get('/')->uses('Registration@show')->name('show');
     Route::get('/create')->uses('Registration@create')->name('create');
     Route::get('/store')->uses('Registration@store')->name('store');
-    Route::get('/destroy', fn () => redirect()->route('landing'));
-    Route::delete('/destroy')->uses('Registration@destroy')->name('destroy');
+    Route::get('/destroy')->uses('Registration@destroy')->name('destroy');
 });
 
 // UKCP
@@ -180,8 +178,7 @@ Route::group([
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('/')->uses('Token@show')->name('guide');
-    Route::get('/token/invalidate', fn () => redirect()->route('landing'));
-    Route::post('/token/invalidate')->uses('Token@invalidate')->name('token.invalidate');
+    Route::get('/token/invalidate')->uses('Token@invalidate')->name('token.invalidate');
 });
 
 // Controllers
@@ -218,9 +215,8 @@ Route::group([
         'prefix' => 'application',
     ], function () {
         // Start
-        Route::get('start/{type}/{team}', fn () => redirect()->route('landing'))->where('type', "\d+");
-        Route::post('start/{type}/{team}')->uses('Application@getStart')->name('start')->where('type', "\d+");
-        Route::post('start/{type}/{team}/submit')->uses('Application@postStart')->name('start.post')->where('type', "\d+");
+        Route::get('start/{type}/{team}')->uses('Application@getStart')->name('start')->where('type', "\d+");
+        Route::post('start/{type}/{team}')->uses('Application@postStart')->name('start.post')->where('type', "\d+");
 
         // Continue
         Route::group([

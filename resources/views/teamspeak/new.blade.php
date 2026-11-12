@@ -8,15 +8,8 @@
 				({{ array_get($_SERVER, 'REMOTE_ADDR') }}) is different to the IP address you used to create this
 				registration ({{ $registration->registration_ip }}).<br>
 				To successfully register, your current IP address must be identical to the one you used to create this
-				registration.
-				<form method="POST" action="{{ route('teamspeak.delete', [$registration->id]) }}" style="display: inline">
-					@csrf
-					@method('DELETE')
-					<button type="submit" class="alert-link"
-						style="background: none; border: 0; padding: 0; cursor: pointer; vertical-align: baseline">Click
-						here</button>
-				</form> to start a new registration.
-			</div>
+				registration. <strong><a href="{{ route('teamspeak.delete', [$registration->id]) }}" class="alert-link">Click
+						here</a></strong> to start a new registration.</div>
 		@endif
 
 		<div class="alert alert-danger" role="alert" id="helpmessage" style="display:none">

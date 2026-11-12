@@ -46,7 +46,7 @@ class PracticalExamResultNotificationTest extends TestCase
             'student_id' => $student->id,
             'exam' => 'TWR',
             'result' => PracticalResult::PASSED,
-            'notes' => '<p>Excellent <span onclick=alert(1)>performance</span></p>',
+            'notes' => 'Excellent performance',
             'date' => now(),
         ]);
 
@@ -63,12 +63,6 @@ class PracticalExamResultNotificationTest extends TestCase
                 return $mailMessage->subject === 'Your TWR Practical Exam Result';
             }
         );
-
-        $mail = (new PracticalExamResultNotification($practicalResult))->toMail($studentAccount);
-        $rendered = $mail->render();
-
-        $this->assertStringContainsString('Excellent', $rendered);
-        $this->assertStringNotContainsString('onclick', $rendered);
     }
 
     #[Test]

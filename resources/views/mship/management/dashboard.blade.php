@@ -395,12 +395,8 @@
 												<strong>LAST LOGIN</strong>: {{ $tsreg->last_login }}<br />
 												<strong>OPERATING SYSTEM</strong>: {{ $tsreg->last_os }}<br />
 											@endif
-											[ <form method="POST" action="{{ route('teamspeak.delete', [$tsreg->id]) }}" style="display: inline">
-												@csrf
-												@method('DELETE')
-												<button type="submit" class="btn btn-link p-0" style="vertical-align: baseline">Remove
-													Registration</button>
-											</form>
+											[ <a href="{{ route('teamspeak.delete', [$tsreg->id]) }}">Remove
+												Registration</a>
 											]<br />&nbsp;
 										</div>
 									@endforeach
@@ -455,11 +451,7 @@
 										{{ $_account->discord_user ? '@' . ($_account->discord_user['username'] ?? 'Unknown') : $_account->discord_id }}.
 									</button>
 								</a>
-								<form method="POST" action="{{ route('discord.destroy') }}" class="text-center" style="margin: 0">
-									@csrf
-									@method('DELETE')
-									<button type="submit" class="btn btn-link p-0">Unlink Account</button>
-								</form>
+								<p class="text-center"><a href="{{ route('discord.destroy') }}">Unlink Account</a></p>
 							@endif
 						</div>
 					</div>
@@ -476,10 +468,9 @@
 							<b>UK CONTROLLER<br />PLUGIN KEYS</b>
 							@if (count($pluginKeys))
 								<div class="text-center pt-4">
-									<form method="POST" action="{{ route('ukcp.token.invalidate') }}">
-										@csrf
-										<button type="submit" class="btn btn-warning btn-sm">Invalidate Token(s)</button>
-									</form>
+									<a class="btn btn-warning btn-sm" href="{{ route('ukcp.token.invalidate') }}">
+										Invalidate Token(s)
+									</a>
 									</br>
 									<small>
 										Note: If you are currently online, some operations, such as squawk assignments, will

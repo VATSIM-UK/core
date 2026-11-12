@@ -31,8 +31,6 @@ class MentoringReportService
      */
     public function saveDraft(Session $session, array $criteriaData, ?string $additionalComments): void
     {
-        $this->assertCanConduct($session);
-
         DB::connection('cts')->transaction(function () use ($session, $criteriaData, $additionalComments): void {
             foreach ($criteriaData as $fieldId => $data) {
                 $this->repository->upsertCriterion(

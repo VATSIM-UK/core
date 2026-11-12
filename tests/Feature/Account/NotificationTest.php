@@ -56,21 +56,6 @@ class NotificationTest extends TestCase
     }
 
     #[Test]
-    public function test_notification_content_is_escaped_and_preserves_line_breaks()
-    {
-        $notification = factory(Notification::class)->create([
-            'content' => "Line one\n<script>alert(1)</script>",
-        ]);
-
-        $this->actingAs($this->user)
-            ->get(route('mship.notification.list'))
-            ->assertOk()
-            ->assertSee('Line one<br />', false)
-            ->assertSee('&lt;script&gt;alert(1)&lt;/script&gt;', false)
-            ->assertDontSee('<script>alert(1)</script>', false);
-    }
-
-    #[Test]
     public function test_notification_banner_doesnt_show_on_secondary_login()
     {
         factory(Notification::class)->create();

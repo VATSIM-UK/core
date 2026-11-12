@@ -29,6 +29,7 @@ use App\Policies\Training\EndorsementPolicy;
 use App\Policies\Training\Mentoring\ManageMentorsPolicy;
 use App\Policies\Training\Mentoring\MentoringPolicy;
 use App\Policies\Training\WaitingList\WaitingListRetentionChecksPolicy;
+use App\Policies\Training\WaitingListFlagsPolicy;
 use App\Policies\Training\WaitingListPolicy;
 use App\Policies\TrainingPlacePolicy;
 use App\Policies\VisitTransfer\ApplicationPolicy;
@@ -53,6 +54,8 @@ class AuthServiceProvider extends ServiceProvider
         'password' => PasswordPolicy::class,
         VisitTransfer\Application::class => ApplicationPolicy::class,
         WaitingList::class => WaitingListPolicy::class,
+        WaitingList\WaitingListFlag::class => WaitingListFlagsPolicy::class,
+        Qualification::class => QualificationPolicy::class,
         Feedback::class => FeedbackPolicy::class,
         EndorsementRequest::class => EndorsementRequestPolicy::class,
         PositionGroup::class => PositionGroupPolicy::class,

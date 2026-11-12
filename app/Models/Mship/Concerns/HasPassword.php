@@ -33,7 +33,7 @@ trait HasPassword
 
     public function verifyPassword($password)
     {
-        if (hash_equals((string) $this->password, sha1(sha1((string) $password)))) {
+        if ($this->password == sha1(sha1($password))) {
             $this->password = $password;
             $this->save();
         }

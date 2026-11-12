@@ -7,7 +7,6 @@ use App\Filament\Training\Pages\EmailSettings;
 use App\Filament\Training\Pages\Endorsements;
 use App\Filament\Widgets\AccountInfoWidget;
 use App\Filament\Widgets\UpcomingTrainingSessionWidget;
-use App\Http\Middleware\DenyIfBanned;
 use App\Http\Middleware\MandatoryTwoFactor;
 use App\Http\Middleware\TrackInactivity;
 use App\Http\Middleware\TrainingPanelAccessMiddleware;
@@ -58,13 +57,12 @@ class TrainingPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 TrackInactivity::class,
                 MandatoryTwoFactor::class,
-                DenyIfBanned::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
                 TrainingPanelAccessMiddleware::class,
-            ], isPersistent: true)
+            ])
             ->brandLogo(asset('images/branding/vatsimuk_blackblue.png'))
             ->darkModeBrandLogo(asset('images/branding/vatsimuk_whiteblue.png'))
             ->brandName('VATSIM UK')

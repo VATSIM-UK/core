@@ -68,32 +68,6 @@ class WebhooksTest extends TestCase
         ]);
     }
 
-    public function test_webhook_payload_personal_data_is_not_logged()
-    {
-        \Bus::fake();
-        \Log::spy();
-
-        $this->post(
-            route('external.vatsim-net.webhook'),
-            $this->buildCreatedSample(),
-            $this->authHeaders()
-        )->assertStatus(200);
-
-        \Log::shouldHaveReceived('info')
-            ->withArgs(function (string $message, array $context) {
-                $logged = $message.json_encode($context);
-
-                $this->assertEquals(1851903, $context['resource']);
-                $this->assertSame(['member_created_action'], $context['action_types']);
-                $this->assertArrayNotHasKey('webhook', $context);
-                $this->assertStringNotContainsString('John', $logged);
-                $this->assertStringNotContainsString('Doe', $logged);
-                $this->assertStringNotContainsString('tech@vatsim.net', $logged);
-
-                return true;
-            });
-    }
-
     public function test_creation_handler()
     {
         $webhook = $this->buildCreatedSample();

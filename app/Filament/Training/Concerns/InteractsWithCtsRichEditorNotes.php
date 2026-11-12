@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Training\Concerns;
 
 use App\Filament\Forms\Components\TrainingRichEditor;
-use App\Support\RichText;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 
@@ -153,10 +152,23 @@ trait InteractsWithCtsRichEditorNotes
         }, $html) ?? $html;
     }
 
+    protected function ctsAllowedNotesHtmlTags(): string
+    {
+        return '<p><br><h1><h2><h3><h4><h5><h6><strong><b><em><i><u><s><sub><sup><ul><ol><li><a><span><pre><code><table><thead><tbody><tfoot><tr><td><th><caption><colgroup><col>';
+    }
+
     protected function ctsSanitizeNotesHtml(string $html): string
     {
-        // The sanitiser renders void tags XHTML-style (<br />); CTS stores them as <br>.
-        return str_replace('<br />', '<br>', RichText::sanitize($html));
+        $withoutScripts = preg_replace('/<script\b[^>]*>.*?<\/script>/is', '', $html) ?? $html;
+        $withoutEventHandlers = preg_replace('/\s+on\w+\s*=\s*("|\').*?\1/i', '', $withoutScripts) ?? $withoutScripts;
+        $sanitized = strip_tags($withoutEventHandlers, $this->ctsAllowedNotesHtmlTags());
+
+        return $this->ctsStripUnsafeLinks($sanitized);
+    }
+
+    protected function ctsStripUnsafeLinks(string $html): string
+    {
+        return preg_replace('/\s+href\s*=\s*("|\')\s*(?:javascript|data|vbscript):.*?\1/i', '', $html) ?? $html;
     }
 
     protected function ctsNormalizeEmptyParagraphs(string $html): string

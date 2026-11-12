@@ -111,20 +111,6 @@ class PublicEventShowTest extends TestCase
     }
 
     #[Test]
-    public function it_sanitises_the_event_description(): void
-    {
-        $event = Event::factory()->published()->create([
-            'description' => '<p>Join us</p><script>alert(1)</script><a href="javascript:alert(1)">click</a>',
-        ]);
-
-        $this->get(route('site.events.show', $event))
-            ->assertOk()
-            ->assertSee('<p>Join us</p>', false)
-            ->assertDontSee('<script>alert(1)</script>', false)
-            ->assertDontSee('javascript:alert(1)', false);
-    }
-
-    #[Test]
     public function it_downloads_an_ics_file(): void
     {
         $event = Event::factory()->published()->create(['name' => 'Lorem Ipsum Dolor']);

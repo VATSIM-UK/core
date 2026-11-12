@@ -137,7 +137,7 @@ class ExamRequestsTableTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->panelUser)
             ->test(ExamRequestsTable::class)
             ->assertSuccessful()
-            ->assertCanNotSeeTableRecords([$acceptedExam]);
+            ->assertDontSee($acceptedExam->id);
     }
 
     #[Test]

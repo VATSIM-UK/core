@@ -59,6 +59,6 @@ class LoginPasswordSetupController extends BaseController
             return redirect()->route('auth-secondary');
         }
 
-        return LoginFlow::establishWebSession($request, $account, false);
+        return LoginFlow::establishWebSession($request, $account, true);
     }
 }

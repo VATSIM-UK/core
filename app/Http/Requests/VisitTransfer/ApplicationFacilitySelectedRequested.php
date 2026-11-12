@@ -3,6 +3,7 @@
 namespace App\Http\Requests\VisitTransfer;
 
 use App\Models\VisitTransfer\Facility;
+use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
@@ -41,7 +42,7 @@ class ApplicationFacilitySelectedRequested extends FormRequest
      */
     public function authorize()
     {
-        return Gate::allows('select-facility', $this->route('applicationByPublicId'));
+        return Gate::allows('select-facility', Auth::user()->visit_transfer_current);
     }
 
     protected function getValidatorInstance()
@@ -50,7 +51,7 @@ class ApplicationFacilitySelectedRequested extends FormRequest
         $data['permitted'] = false;
 
         $facility = Facility::find(array_get($data, 'facility_id', null));
-        $application = $this->route('applicationByPublicId');
+        $application = Auth::user()->visit_transfer_current;
 
         if ($facility && $application && $application->facilityIsPermitted($facility)) {
             $data['permitted'] = true;

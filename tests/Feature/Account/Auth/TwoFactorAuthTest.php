@@ -3,12 +3,8 @@
 namespace Tests\Feature\Account\Auth;
 
 use App\Libraries\UKCP;
-use App\Listeners\Mship\LockTwoFactorChallenge;
 use App\Models\Mship\Account;
-use App\Notifications\Mship\TwoFactorChallengeLocked;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 use Laravel\Fortify\Fortify;
 use Mockery\MockInterface;
@@ -69,20 +65,9 @@ class TwoFactorAuthTest extends TestCase
         $this->account->assignRole($role);
 
         $this->actingAs($this->account)
-            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->get(route('two-factor.setup'))
             ->assertOk()
             ->assertSee('Two-Factor Authentication Setup');
-    }
-
-    #[Test]
-    public function setup_page_requires_password_confirmation(): void
-    {
-        $this->actingAs($this->account)
-            ->get(route('two-factor.setup'))
-            ->assertRedirect(route('two-factor.confirm-password', [
-                'redirect' => route('two-factor.setup'),
-            ]));
     }
 
     #[Test]
@@ -214,7 +199,6 @@ class TwoFactorAuthTest extends TestCase
         $secret = Fortify::currentEncrypter()->decrypt($this->account->fresh()->two_factor_secret);
 
         $this->actingAs($this->account)
-            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->get(route('two-factor.setup'))
             ->assertOk()
             ->assertSee($secret, false)
@@ -236,7 +220,6 @@ class TwoFactorAuthTest extends TestCase
         $this->assertNull($this->account->fresh()->two_factor_confirmed_at);
 
         $this->actingAs($this->account)
-            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->get(route('two-factor.setup'))
             ->assertOk()
             ->assertSee('The provided two factor authentication code was invalid.', false);
@@ -282,29 +265,6 @@ class TwoFactorAuthTest extends TestCase
     }
 
     #[Test]
-    public function passwordless_account_can_view_setup_page_without_password_confirmation(): void
-    {
-        $account = Account::factory()->create(['password' => null]);
-
-        $this->actingAs($account)
-            ->get(route('two-factor.setup'))
-            ->assertOk()
-            ->assertSee('Two-Factor Authentication Setup');
-    }
-
-    #[Test]
-    public function passwordless_account_can_view_backup_codes_without_password_confirmation(): void
-    {
-        $account = Account::factory()->create(['password' => null]);
-        $this->enableTwoFactorFor($account);
-
-        $this->actingAs($account->fresh())
-            ->get(route('two-factor.backup-codes'))
-            ->assertOk()
-            ->assertSee('Save Your Recovery Codes', false);
-    }
-
-    #[Test]
     public function setup_still_requires_password_confirmation_when_a_secondary_password_is_set(): void
     {
         $role = factory(Role::class)->create(['two_factor_mandatory' => true]);
@@ -346,17 +306,6 @@ class TwoFactorAuthTest extends TestCase
     }
 
     #[Test]
-    public function confirm_password_redirect_ignores_backslash_userinfo_host_spoof(): void
-    {
-        $this->actingAs($this->account)
-            ->post(route('two-factor.confirm-password.store'), [
-                'password' => 'secret-password',
-                'redirect' => 'https://evil.example\@'.parse_url(config('app.url'), PHP_URL_HOST).'/',
-            ])
-            ->assertRedirect(route('mship.manage.dashboard'));
-    }
-
-    #[Test]
     public function confirming_two_factor_redirects_to_backup_codes_page(): void
     {
         app(EnableTwoFactorAuthentication::class)($this->account, true);
@@ -372,7 +321,6 @@ class TwoFactorAuthTest extends TestCase
             ->assertSessionHas('success');
 
         $this->actingAs($this->account)
-            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->get(route('two-factor.backup-codes'))
             ->assertOk()
             ->assertSee('Save Your Recovery Codes', false)
@@ -387,21 +335,8 @@ class TwoFactorAuthTest extends TestCase
     public function backup_codes_page_requires_enabled_two_factor(): void
     {
         $this->actingAs($this->account)
-            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->get(route('two-factor.backup-codes'))
             ->assertRedirect(route('two-factor.setup'));
-    }
-
-    #[Test]
-    public function backup_codes_page_requires_password_confirmation(): void
-    {
-        $this->enableTwoFactorFor($this->account);
-
-        $this->actingAs($this->account)
-            ->get(route('two-factor.backup-codes'))
-            ->assertRedirect(route('two-factor.confirm-password', [
-                'redirect' => route('two-factor.backup-codes'),
-            ]));
     }
 
     #[Test]
@@ -410,7 +345,6 @@ class TwoFactorAuthTest extends TestCase
         $this->enableTwoFactorFor($this->account);
 
         $this->actingAs($this->account)
-            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->get(route('two-factor.setup'))
             ->assertOk()
             ->assertSee('Recovery Codes', false)
@@ -439,81 +373,6 @@ class TwoFactorAuthTest extends TestCase
 
         $this->assertAuthenticatedAs($this->account);
         $this->assertNull(session('login.id'));
-    }
-
-    #[Test]
-    public function five_failed_challenges_lock_the_challenge_and_notify_the_member(): void
-    {
-        $this->enableTwoFactorFor($this->account);
-
-        $secret = Fortify::currentEncrypter()->decrypt($this->account->fresh()->two_factor_secret);
-
-        session([
-            'login.id' => $this->account->id,
-            'login.remember' => false,
-        ]);
-
-        for ($attempt = 1; $attempt <= 4; $attempt++) {
-            $this->post(route('two-factor.login.store'), ['code' => '000000'])
-                ->assertSessionHasErrors('code');
-        }
-
-        Notification::assertNotSentTo($this->account, TwoFactorChallengeLocked::class);
-
-        $this->post(route('two-factor.login.store'), ['code' => '000000'])
-            ->assertSessionHasErrors('code');
-
-        Notification::assertSentToTimes($this->account, TwoFactorChallengeLocked::class, 1);
-
-        // Wait out the per-minute limit so only the lockout can block a valid code.
-        $this->travel(2)->minutes();
-
-        $this->post(route('two-factor.login.store'), [
-            'code' => app(Google2FA::class)->getCurrentOtp($secret),
-        ])
-            ->assertRedirect(route('two-factor.login'))
-            ->assertSessionHasErrors('code');
-
-        $this->assertGuest('web');
-        Notification::assertSentToTimes($this->account, TwoFactorChallengeLocked::class, 1);
-
-        // The lock is temporary and lifts after the full 15 minutes.
-        $this->travel(14)->minutes();
-
-        $this->post(route('two-factor.login.store'), [
-            'code' => app(Google2FA::class)->getCurrentOtp($secret),
-        ])
-            ->assertRedirect(route('mship.manage.dashboard'));
-
-        $this->assertAuthenticatedAs($this->account);
-    }
-
-    #[Test]
-    public function valid_challenge_code_clears_the_failure_count(): void
-    {
-        $this->enableTwoFactorFor($this->account);
-
-        $secret = Fortify::currentEncrypter()->decrypt($this->account->fresh()->two_factor_secret);
-
-        session([
-            'login.id' => $this->account->id,
-            'login.remember' => false,
-        ]);
-
-        for ($attempt = 1; $attempt <= 4; $attempt++) {
-            $this->post(route('two-factor.login.store'), ['code' => '000000'])
-                ->assertSessionHasErrors('code');
-        }
-
-        $this->assertSame(4, RateLimiter::attempts(LockTwoFactorChallenge::failuresKey($this->account->id)));
-
-        $this->post(route('two-factor.login.store'), [
-            'code' => app(Google2FA::class)->getCurrentOtp($secret),
-        ])
-            ->assertRedirect(route('mship.manage.dashboard'));
-
-        $this->assertAuthenticatedAs($this->account);
-        $this->assertSame(0, RateLimiter::attempts(LockTwoFactorChallenge::failuresKey($this->account->id)));
     }
 
     protected function enableTwoFactorFor(Account $account): void

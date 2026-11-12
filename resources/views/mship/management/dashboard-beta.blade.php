@@ -339,12 +339,8 @@
 								<article class="rounded-lg bg-gray-50 p-4 ring-1 ring-gray-200/60">
 									<div class="flex items-center justify-between gap-2">
 										<span class="text-sm font-semibold text-gray-900">Registration #{{ $tsreg->id }}</span>
-										<form method="POST" action="{{ route('teamspeak.delete', [$tsreg->id]) }}" class="m-0">
-											@csrf
-											@method('DELETE')
-											<button type="submit"
-												class="cursor-pointer border-0 bg-transparent p-0 text-sm font-medium text-red-600 hover:text-red-700 no-underline">Remove</button>
-										</form>
+										<a href="{{ route('teamspeak.delete', [$tsreg->id]) }}"
+											class="text-sm font-medium text-red-600 hover:text-red-700 no-underline">Remove</a>
 									</div>
 									<dl class="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-sm mb-0">
 										<div>
@@ -422,15 +418,10 @@
 									@endif
 								</span>
 							</div>
-							<div class="text-center mb-0">
-								<form method="POST" action="{{ route('discord.destroy') }}" class="m-0 inline">
-									@csrf
-									@method('DELETE')
-									<button type="submit"
-										class="cursor-pointer border-0 bg-transparent p-0 text-base font-medium text-gray-600 hover:text-red-600 no-underline">Unlink
-										account</button>
-								</form>
-							</div>
+							<p class="text-center mb-0">
+								<a href="{{ route('discord.destroy') }}"
+									class="text-base font-medium text-gray-600 hover:text-red-600 no-underline">Unlink account</a>
+							</p>
 						@endif
 					</div>
 				</x-mship.dashboard.card>
@@ -459,13 +450,10 @@
 									</li>
 								@endforeach
 							</ul>
-							<form method="POST" action="{{ route('ukcp.token.invalidate') }}">
-								@csrf
-								<button type="submit"
-									class="flex w-full cursor-pointer items-center justify-center rounded-md border-0 bg-amber-50 px-3 py-2 text-base font-semibold text-amber-900 ring-1 ring-inset ring-amber-600/20 hover:bg-amber-100 no-underline">
-									Invalidate token(s)
-								</button>
-							</form>
+							<a href="{{ route('ukcp.token.invalidate') }}"
+								class="flex w-full items-center justify-center rounded-md bg-amber-50 px-3 py-2 text-base font-semibold text-amber-900 ring-1 ring-inset ring-amber-600/20 hover:bg-amber-100 no-underline">
+								Invalidate token(s)
+							</a>
 							<p class="text-sm text-gray-500 mb-0">
 								If you are currently online, some operations such as squawk assignments may fail.
 							</p>

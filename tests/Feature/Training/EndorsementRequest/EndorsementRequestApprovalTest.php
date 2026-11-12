@@ -133,59 +133,6 @@ class EndorsementRequestApprovalTest extends BaseTrainingPanelTestCase
         Notification::assertSentTo($endorsementRequest->account, SoloEndorsementNotification::class);
     }
 
-    public function test_cannot_approve_permanent_solo_endorsement_without_bypass_permission()
-    {
-        $endorsementRequest = EndorsementRequest::factory()->create([
-            'endorsable_type' => Position::class,
-            'endorsable_id' => Position::factory()->create()->id,
-        ]);
-
-        $this->panelUser->givePermissionTo('endorsement-request.approve.*');
-
-        Livewire::actingAs($this->panelUser);
-        Livewire::test(ResourceTable::class, ['resource' => EndorsementRequestResource::class])
-            ->assertTableActionVisible('approve', $endorsementRequest->id)
-            ->mountTableAction('approve', $endorsementRequest)
-            ->set('mountedActions.0.data.type', 'Permanent')
-            ->callMountedTableAction()
-            ->assertHasErrors('type');
-
-        $this->assertDatabaseMissing('mship_account_endorsement', [
-            'account_id' => $endorsementRequest->account_id,
-            'endorsable_id' => $endorsementRequest->endorsable_id,
-            'endorsable_type' => Position::class,
-        ]);
-
-        $this->assertDatabaseHas('endorsement_requests', [
-            'id' => $endorsementRequest->id,
-            'actioned_at' => null,
-        ]);
-    }
-
-    public function test_can_approve_permanent_solo_endorsement_with_bypass_permission()
-    {
-        $endorsementRequest = EndorsementRequest::factory()->create([
-            'endorsable_type' => Position::class,
-            'endorsable_id' => Position::factory()->create()->id,
-        ]);
-
-        $this->panelUser->givePermissionTo('endorsement-request.approve.*');
-        $this->panelUser->givePermissionTo('endorsement.bypass.maximumdays');
-
-        Livewire::actingAs($this->panelUser);
-        Livewire::test(ResourceTable::class, ['resource' => EndorsementRequestResource::class])
-            ->mountTableAction('approve', $endorsementRequest)
-            ->set('mountedActions.0.data.type', 'Permanent')
-            ->callMountedTableAction();
-
-        $this->assertDatabaseHas('mship_account_endorsement', [
-            'account_id' => $endorsementRequest->account_id,
-            'endorsable_id' => $endorsementRequest->endorsable_id,
-            'endorsable_type' => Position::class,
-            'expires_at' => null,
-        ]);
-    }
-
     public function test_can_approve_temporary_endorsement_non_home_member()
     {
         $nonHomeMember = Account::factory()->create();

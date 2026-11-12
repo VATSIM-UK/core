@@ -17,10 +17,10 @@
         <li><strong>Date:</strong> {{ $date }}</li>
     </ul>
 
-    @if ($notes)
+    @if ($practicalResult->notes)
         <h4>Examiner Comments:</h4>
         <div style="background-color: #f8f9fa; padding: 10px; border-radius: 3px; margin: 10px 0;">
-            {!! $notes !!}
+            {!! $practicalResult->notes !!}
         </div>
     @endif
 

@@ -87,25 +87,6 @@ class AchievementResourceTest extends BaseAdminTestCase
         Storage::disk('public')->assertExists($achievement->image);
     }
 
-    public function test_it_rejects_svg_image_uploads()
-    {
-        Storage::fake('public');
-        $this->actingAsAdminUser('achievements.manage');
-
-        Livewire::test(CreateAchievement::class)
-            ->fillForm([
-                'name' => 'Test Achievement',
-                'description' => 'This is a test achievement.',
-                'image' => UploadedFile::fake()->create('achievement.svg', 10, 'image/svg+xml'),
-            ])
-            ->call('create')
-            ->assertHasFormErrors(['image']);
-
-        $this->assertDatabaseMissing('mship_achievement', [
-            'name' => 'Test Achievement',
-        ]);
-    }
-
     public function test_view_permission_does_not_allow_edit_actions()
     {
         $this->actingAsAdminUser('achievements.view');

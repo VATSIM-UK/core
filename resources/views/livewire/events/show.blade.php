@@ -12,8 +12,6 @@
 	$actionButton = 'flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-base font-bold';
 	$actionPrimary = 'border border-transparent bg-brand text-white hover:bg-blue-600';
 	$actionPlain = 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50';
-
-	$description = \Illuminate\Support\Str::sanitizeHtml((string) $event->description);
 @endphp
 
 <div class="ev-page mx-auto max-w-6xl px-4 py-6 text-base leading-normal text-gray-900 sm:px-6 lg:px-8">
@@ -59,7 +57,7 @@
 						About this event</p>
 					<div
 						class="ev-prose space-y-3 px-4 py-4 text-base leading-relaxed text-gray-700 [&_a]:text-brand [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-gray-200 [&_blockquote]:pl-4 [&_blockquote]:italic [&_h1]:text-xl [&_h1]:font-bold [&_h2]:text-lg [&_h2]:font-bold [&_h3]:font-semibold [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:mb-3 [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-5">
-						{!! $description !!}
+						{!! $event->description !!}
 					</div>
 				</div>
 

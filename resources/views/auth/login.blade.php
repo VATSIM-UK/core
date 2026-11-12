@@ -29,6 +29,7 @@
 				<div class="col-md-8 col-md-offset-2">
 					<form action="{{ route('auth-secondary.post') }}" method="POST" class="form-horizontal">
 						@csrf
+						<input name="remember" type="hidden" value="true">
 
 						<div class='form-group'>
 							<label class="control-label col-sm-5">Account</label>

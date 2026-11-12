@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Middleware\DenyIfBanned;
-use App\Http\Middleware\MandatoryTwoFactor;
 use Opcodes\LogViewer\Http\Middleware\AuthorizeLogViewer;
 
 return [
@@ -63,8 +61,6 @@ return [
 
     'middleware' => [
         'web',
-        MandatoryTwoFactor::class,
-        DenyIfBanned::class,
         AuthorizeLogViewer::class,
     ],
 
@@ -83,8 +79,6 @@ return [
 
     'api_middleware' => [
         'web',
-        MandatoryTwoFactor::class,
-        DenyIfBanned::class,
         AuthorizeLogViewer::class,
     ],
 

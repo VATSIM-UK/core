@@ -32,13 +32,9 @@
 							</li>
 						@else
 							<li role="presentation" class="active">
-								<form method="POST"
-									action="{{ route('visiting.application.start', [isset($applicationType) ? $applicationType : $application->type]) }}">
-									@csrf
-									<button type="submit" class="btn btn-link"
-										style="padding: 10px 15px; white-space: normal; text-align: left">Stage 1 - T&amp;C
-										Acceptance</button>
-								</form>
+								<a
+									href="{{ route('visiting.application.start', [isset($applicationType) ? $applicationType : $application->type]) }}">Stage
+									1 - T&amp;C Acceptance</a>
 							</li>
 						@endif
 

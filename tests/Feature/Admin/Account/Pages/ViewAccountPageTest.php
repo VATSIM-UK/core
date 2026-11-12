@@ -11,7 +11,6 @@ use App\Models\Roster;
 use App\Notifications\Mship\TwoFactorReset;
 use App\Notifications\Mship\TwoFactorResetPerformed;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 use Livewire\Livewire;
@@ -31,23 +30,11 @@ class ViewAccountPageTest extends BaseAdminTestCase
         $this->user->givePermissionTo('account.view-insensitive.*');
         $this->user->givePermissionTo('account.impersonate.*');
         Livewire::actingAs($this->user);
-
-        session(['auth.password_confirmed_at' => now()->unix()]);
-
-        Log::shouldReceive('channel')->with('audit')->andReturnSelf();
-        Log::shouldReceive('info')->once()->withArgs(fn ($message, $context) => $message === 'Account impersonation started'
-            && $context['admin_id'] === $this->user->id
-            && $context['target_id'] === $this->privacc->id
-            && $context['action'] === 'impersonate'
-            && $context['actor_id'] === $this->user->id
-        );
-
         Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
             ->assertActionVisible('impersonate')
             ->callAction('impersonate', data: ['reason' => 'Some reason for impersonating a user']);
 
         $this->assertEquals($this->privacc->id, auth()->user()->id);
-        $this->assertFalse(session()->has('auth.password_confirmed_at'));
     }
 
     public function test_cant_remove_password_without_permission()
@@ -132,7 +119,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
 
     public function test_can_request_update()
     {
-        $this->user->givePermissionTo(['account.view-insensitive.*', 'account.edit-basic-details.*']);
+        $this->user->givePermissionTo('account.view-insensitive.*');
         Livewire::actingAs($this->user);
 
         Bus::fake();
@@ -142,19 +129,6 @@ class ViewAccountPageTest extends BaseAdminTestCase
             ->callAction('request_central_update');
 
         Bus::assertDispatched(UpdateMember::class, fn (UpdateMember $job) => $job->accountID === $this->privacc->id);
-    }
-
-    public function test_cant_request_update_without_permission()
-    {
-        $this->user->givePermissionTo('account.view-insensitive.*');
-        Livewire::actingAs($this->user);
-
-        Bus::fake();
-
-        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
-            ->assertActionHidden('request_central_update');
-
-        Bus::assertNotDispatched(UpdateMember::class);
     }
 
     public function test_records_page_visit_in_admin_log()

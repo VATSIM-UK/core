@@ -18,7 +18,6 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\View\View;
-use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class CriteriaCategoryTable extends Component implements HasActions, HasForms, HasTable
@@ -27,13 +26,10 @@ class CriteriaCategoryTable extends Component implements HasActions, HasForms, H
     use InteractsWithForms;
     use InteractsWithTable;
 
-    #[Locked]
     public int $currentSessionId;
 
-    #[Locked]
     public array $sessionIds = [];
 
-    #[Locked]
     public string $categoryName;
 
     public function table(Table $table): Table

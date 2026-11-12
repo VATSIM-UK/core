@@ -28,12 +28,9 @@ Route::prefix('auth/two-factor')->middleware(config('fortify.middleware', ['web'
         ->name('two-factor.login.store');
 
     Route::middleware($authMiddleware)->group(function () use ($authMiddleware) {
-        Route::get('setup', [TwoFactorSetupController::class, 'show'])
-            ->middleware('password.confirm')
-            ->name('two-factor.setup');
+        Route::get('setup', [TwoFactorSetupController::class, 'show'])->name('two-factor.setup');
 
         Route::get('backup-codes', [TwoFactorBackupCodesController::class, 'show'])
-            ->middleware('password.confirm')
             ->name('two-factor.backup-codes');
 
         Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])

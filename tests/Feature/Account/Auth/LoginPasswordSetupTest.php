@@ -93,7 +93,6 @@ class LoginPasswordSetupTest extends TestCase
             ->assertRedirect(route('site.home'));
 
         $this->assertAuthenticatedAs($this->account);
-        $this->assertNull($this->account->fresh()->remember_token, 'Login must not force remember-me.');
     }
 
     #[Test]

@@ -24,12 +24,12 @@ class LoginFlow
             return redirect()->route('auth-secondary');
         }
 
-        return self::establishWebSession($request, $account, false);
+        return self::establishWebSession($request, $account, true);
     }
 
     public static function redirectAfterMandatoryPasswordSetup(Request $request, Account $account): Response
     {
-        return self::establishWebSession($request, $account, false, passwordVerified: true);
+        return self::establishWebSession($request, $account, true, passwordVerified: true);
     }
 
     public static function establishWebSession(
@@ -40,7 +40,6 @@ class LoginFlow
     ): Response {
         $intended = Session::pull('url.intended', route('site.home'));
 
-        // Callers never force remember-me, so a recalled session cannot outlive the inactivity timeout.
         Auth::login($account, $remember);
 
         if ($response = TwoFactorLoginRedirect::afterSuccessfulLogin(

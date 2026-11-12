@@ -186,10 +186,6 @@ class EventResource extends Resource
                         ->disabled(fn (): bool => ! auth()->user()->can('events.manage'))
                         ->live()
                         ->afterStateUpdated(function (?Event $record, array $state): void {
-                            // disabled() only governs the rendered form; the write
-                            // permission must be enforced again for the request itself.
-                            abort_unless(auth()->user()->can('events.manage'), 403);
-
                             if ($record === null) {
                                 return;
                             }
