@@ -101,6 +101,32 @@ class ApplicationFacilitySelectionTest extends TestCase
         $this->assertNull($application->fresh()->facility_id);
     }
 
+    #[Test]
+    public function an_old_rejected_application_cannot_be_submitted_whilst_a_new_one_is_in_progress()
+    {
+        $rejected = Application::factory()->visit('atc')->create([
+            'account_id' => $this->user->id,
+            'status' => Application::STATUS_REJECTED,
+            'facility_id' => Facility::factory()->visit('atc')->create()->id,
+        ]);
+
+        $current = Application::factory()->visit('atc')->create([
+            'account_id' => $this->user->id,
+            'status' => Application::STATUS_IN_PROGRESS,
+            'facility_id' => Facility::factory()->visit('atc')->create()->id,
+        ]);
+
+        $this->actingAs($this->user)
+            ->post(route('visiting.application.submit.post', $rejected->public_id), [
+                'submission_terms' => 'on',
+            ])
+            ->assertForbidden();
+
+        $this->assertTrue($rejected->fresh()->is_rejected);
+        $this->assertTrue($current->fresh()->is_in_progress);
+        $this->assertSame(1, $this->user->visitTransferApplications()->open()->count());
+    }
+
     private function inProgressApplication(): Application
     {
         return Application::factory()->visit('atc')->create([
