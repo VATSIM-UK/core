@@ -16,6 +16,7 @@ use App\Models\Roster;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Services\Training\ExamResubmissionService;
 use App\Services\Training\OverrideExamReportService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -61,6 +62,41 @@ class OverrideExamReportServiceTest extends TestCase
         ]);
 
         $this->actor = Account::factory()->create();
+        $this->actor->givePermissionTo('training.exams.override-result');
+    }
+
+    public function test_rejects_actor_without_override_permission(): void
+    {
+        $actor = Account::factory()->create();
+
+        $this->assertThrows(
+            fn () => app(OverrideExamReportService::class)->handle($this->practicalResult, [
+                'exam_result' => ExamResultEnum::Fail->value,
+                'reason' => 'Not allowed',
+                'additional_comments' => $this->practicalResult->notes,
+                'criteria_updates' => [],
+            ], $actor),
+            AuthorizationException::class,
+        );
+
+        $this->assertSame(PracticalResult::PASSED, $this->practicalResult->fresh()->result);
+    }
+
+    public function test_rejects_student_overriding_their_own_result_even_with_permission(): void
+    {
+        $this->studentAccount->givePermissionTo('training.exams.override-result');
+
+        $this->assertThrows(
+            fn () => app(OverrideExamReportService::class)->handle($this->practicalResult, [
+                'exam_result' => ExamResultEnum::Fail->value,
+                'reason' => 'Self issued fail',
+                'additional_comments' => $this->practicalResult->notes,
+                'criteria_updates' => [],
+            ], $this->studentAccount),
+            AuthorizationException::class,
+        );
+
+        $this->assertSame(PracticalResult::PASSED, $this->practicalResult->fresh()->result);
     }
 
     public function test_updates_result_and_logs_note(): void
