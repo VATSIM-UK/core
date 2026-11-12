@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Account\Auth;
 
+use App\Auth\LoginFlow;
 use App\Models\Mship\Account;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
@@ -38,6 +40,37 @@ class LoginTest extends TestCase
         $this->assertStringContainsString('response_type=code', $redirectUrl);
         $this->assertStringContainsString('redirect_uri='.urlencode(route('login.post')), $redirectUrl);
         $this->assertStringContainsString('client_id='.config('services.vatsim-net.connect.id'), $redirectUrl);
+    }
+
+    public function test_vatsim_oauth_login_without_secondary_password_does_not_force_remember_me()
+    {
+        $request = Request::create('/');
+        $request->setLaravelSession($this->app['session.store']);
+
+        LoginFlow::redirectAfterVatsimOAuth($request, $this->account->fresh());
+
+        $this->assertAuthenticatedAs($this->account, 'web');
+        $this->assertNull($this->account->fresh()->remember_token, 'Login must not force remember-me.');
+    }
+
+    public function test_secondary_password_login_does_not_force_remember_me()
+    {
+        $this->account->forceFill(['password' => 'Secret123'])->save();
+
+        $this->actingAs($this->account, 'vatsim-sso')
+            ->post(route('auth-secondary.post'), ['password' => 'Secret123'])
+            ->assertRedirect();
+
+        $this->assertAuthenticatedAs($this->account, 'web');
+        $this->assertNull($this->account->fresh()->remember_token, 'Login must not force remember-me.');
+    }
+
+    public function test_secondary_password_form_does_not_request_remember_me()
+    {
+        $this->actingAs($this->account, 'vatsim-sso')
+            ->get(route('auth-secondary'))
+            ->assertOk()
+            ->assertDontSee('name="remember"', false);
     }
 
     public function test_it_redirects_without_vatsim_sso_on_secondary_login()
