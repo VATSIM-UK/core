@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Http\Responses\Auth\ConfirmedSecondaryPasswordResponse;
 use App\Http\Responses\Auth\TwoFactorConfirmedResponse;
 use App\Http\Responses\Auth\TwoFactorLoginResponse;
+use App\Listeners\Mship\LockTwoFactorChallenge;
 use App\Models\Mship\Account;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -43,7 +44,15 @@ class FortifyServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('two-factor', function (Request $request) {
-            return Limit::perMinute(5)->by($request->session()->get('login.id') ?? $request->ip());
+            $key = $request->session()->get('login.id') ?? $request->ip();
+
+            if (RateLimiter::attempts(LockTwoFactorChallenge::lockKey($key)) > 0) {
+                return redirect()->route('two-factor.login')->withErrors([
+                    'code' => 'Too many failed attempts. Please try again in '.LockTwoFactorChallenge::LOCKOUT_MINUTES.' minutes.',
+                ]);
+            }
+
+            return Limit::perMinute(5)->by($key);
         });
     }
 }
