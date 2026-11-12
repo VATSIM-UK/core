@@ -22,7 +22,7 @@ The content to assist with this exam can be found on our Moodle Platform and the
 Course](https://moodle.vatsim.uk/course/view.php?id=67).
 
 ### Step 2 - Being invited to a group session.
-In order to be invited to an OBS_PT1 Group Session you must have completed the CTS Observer to Student 1 Theory
+In order to be invited to an OBS_PT1 Group Session you must have completed the CTS Observer to Developing Controller Theory
 Exam.
 
 When we are planning the next OBS_PT1 Group Session we will identify the top 30 people on the waiting list that have
