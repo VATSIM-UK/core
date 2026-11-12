@@ -286,6 +286,7 @@ class EndorsementsPageTest extends BaseTrainingPanelTestCase
     {
         $this->panelUser->givePermissionTo('endorsement-request.access');
         $this->panelUser->givePermissionTo('endorsement-request.approve.*');
+        $this->panelUser->givePermissionTo('endorsement-request.reject.*');
 
         $endorsementRequest = EndorsementRequest::factory()->create([
             'endorsable_type' => PositionGroup::class,
@@ -365,6 +366,7 @@ class EndorsementsPageTest extends BaseTrainingPanelTestCase
     {
         $this->panelUser->givePermissionTo('endorsement-request.access');
         $this->panelUser->givePermissionTo('endorsement-request.approve.*');
+        $this->panelUser->givePermissionTo('endorsement-request.reject.*');
 
         $endorsementRequest = EndorsementRequest::factory()->create([
             'endorsable_type' => PositionGroup::class,
