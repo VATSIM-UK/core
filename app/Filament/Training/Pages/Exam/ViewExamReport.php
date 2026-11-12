@@ -101,7 +101,7 @@ class ViewExamReport extends Page implements HasInfolists
                         ->modalDescription('Update the outcome, criteria grades, and comments..')
                         ->modalWidth(Width::SevenExtraLarge)
                         ->modalSubmitActionLabel('Override Exam Result')
-                        ->visible(fn () => auth()->user()->can('training.exams.override-result'))
+                        ->visible(fn () => $this->canOverrideResult())
                         ->schema([
                             Section::make('Outcome')->columns(12)->columnSpanFull()->schema([
                                 Select::make('previous_exam_result')
@@ -239,6 +239,8 @@ class ViewExamReport extends Page implements HasInfolists
 
     public function overrideResult(array $data): void
     {
+        abort_unless($this->canOverrideResult(), 403, 'You may not override this exam report.');
+
         $hasChanges = app(OverrideExamReportService::class)->handle($this->practicalResult, $data, auth()->user());
 
         if (! $hasChanges) {
@@ -256,5 +258,16 @@ class ViewExamReport extends Page implements HasInfolists
             ->body('The exam report and candidate notes have been updated.')
             ->success()
             ->send();
+    }
+
+    private function canOverrideResult(): bool
+    {
+        $user = auth()->user();
+
+        if (! $user->can('training.exams.override-result')) {
+            return false;
+        }
+
+        return (int) $this->practicalResult->student?->cid !== (int) $user->id;
     }
 }
