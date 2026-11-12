@@ -3,8 +3,12 @@
 namespace Tests\Feature\Account\Auth;
 
 use App\Libraries\UKCP;
+use App\Listeners\Mship\LockTwoFactorChallenge;
 use App\Models\Mship\Account;
+use App\Notifications\Mship\TwoFactorChallengeLocked;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 use Laravel\Fortify\Fortify;
 use Mockery\MockInterface;
@@ -373,6 +377,81 @@ class TwoFactorAuthTest extends TestCase
 
         $this->assertAuthenticatedAs($this->account);
         $this->assertNull(session('login.id'));
+    }
+
+    #[Test]
+    public function five_failed_challenges_lock_the_challenge_and_notify_the_member(): void
+    {
+        $this->enableTwoFactorFor($this->account);
+
+        $secret = Fortify::currentEncrypter()->decrypt($this->account->fresh()->two_factor_secret);
+
+        session([
+            'login.id' => $this->account->id,
+            'login.remember' => false,
+        ]);
+
+        for ($attempt = 1; $attempt <= 4; $attempt++) {
+            $this->post(route('two-factor.login.store'), ['code' => '000000'])
+                ->assertSessionHasErrors('code');
+        }
+
+        Notification::assertNotSentTo($this->account, TwoFactorChallengeLocked::class);
+
+        $this->post(route('two-factor.login.store'), ['code' => '000000'])
+            ->assertSessionHasErrors('code');
+
+        Notification::assertSentToTimes($this->account, TwoFactorChallengeLocked::class, 1);
+
+        // Wait out the per-minute limit so only the lockout can block a valid code.
+        $this->travel(2)->minutes();
+
+        $this->post(route('two-factor.login.store'), [
+            'code' => app(Google2FA::class)->getCurrentOtp($secret),
+        ])
+            ->assertRedirect(route('two-factor.login'))
+            ->assertSessionHasErrors('code');
+
+        $this->assertGuest('web');
+        Notification::assertSentToTimes($this->account, TwoFactorChallengeLocked::class, 1);
+
+        // The lock is temporary and lifts after the full 15 minutes.
+        $this->travel(14)->minutes();
+
+        $this->post(route('two-factor.login.store'), [
+            'code' => app(Google2FA::class)->getCurrentOtp($secret),
+        ])
+            ->assertRedirect(route('mship.manage.dashboard'));
+
+        $this->assertAuthenticatedAs($this->account);
+    }
+
+    #[Test]
+    public function valid_challenge_code_clears_the_failure_count(): void
+    {
+        $this->enableTwoFactorFor($this->account);
+
+        $secret = Fortify::currentEncrypter()->decrypt($this->account->fresh()->two_factor_secret);
+
+        session([
+            'login.id' => $this->account->id,
+            'login.remember' => false,
+        ]);
+
+        for ($attempt = 1; $attempt <= 4; $attempt++) {
+            $this->post(route('two-factor.login.store'), ['code' => '000000'])
+                ->assertSessionHasErrors('code');
+        }
+
+        $this->assertSame(4, RateLimiter::attempts(LockTwoFactorChallenge::failuresKey($this->account->id)));
+
+        $this->post(route('two-factor.login.store'), [
+            'code' => app(Google2FA::class)->getCurrentOtp($secret),
+        ])
+            ->assertRedirect(route('mship.manage.dashboard'));
+
+        $this->assertAuthenticatedAs($this->account);
+        $this->assertSame(0, RateLimiter::attempts(LockTwoFactorChallenge::failuresKey($this->account->id)));
     }
 
     protected function enableTwoFactorFor(Account $account): void
