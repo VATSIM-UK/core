@@ -293,7 +293,22 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         'last_login_ip' => '0.0.0.0',
     ];
 
-    protected $untracked = ['calendar_feed_token', 'cert_checked_at', 'last_login', 'remember_token', 'password', 'updated_at'];
+    protected $untracked = [
+        'calendar_feed_token',
+        'cert_checked_at',
+        'last_login',
+        'remember_token',
+        'password',
+        'updated_at',
+        'last_login_ip',
+        'discord_access_token',
+        'discord_refresh_token',
+        'vatsim_access_token',
+        'vatsim_refresh_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'two_factor_confirmed_at',
+    ];
 
     protected $trackedEvents = ['created', 'updated', 'deleted', 'restored'];
 
