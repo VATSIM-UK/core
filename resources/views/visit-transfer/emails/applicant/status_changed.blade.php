@@ -1,12 +1,23 @@
 @extends('visit-transfer.emails.applicant._layout')
 
 @section('email-content')
-	<p>
-		Your {{ $application->type_string }} {{ $application->facility ? '(' . $application->facility_name . ')' : '' }}
-		application to VATSIM UK has changed status to '{{ $application->status_string }}'.
-	</p>
+	@if (!empty($withdrawal))
+		<p>
+			Your {{ $withdrawal['type'] }} {{ $withdrawal['facility_name'] ? '(' . $withdrawal['facility_name'] . ')' : '' }}
+			application to VATSIM UK has changed status to 'Withdrawn'.
+		</p>
+	@else
+		<p>
+			Your {{ $application->type_string }} {{ $application->facility ? '(' . $application->facility_name . ')' : '' }}
+			application to VATSIM UK has changed status to '{{ $application->status_string }}'.
+		</p>
+	@endif
 
-	@if ($application->is_submitted)
+	@if (!empty($withdrawal) || $application->is_withdrawn)
+		<p>
+			Your application will not be processed any further and no further action will be taken.
+		</p>
+	@elseif ($application->is_submitted)
 		<p>
 			Your application will now undergo a series of automated checks to ensure you are compliant with the Visiting
 			&amp; Transferring policy.
@@ -81,10 +92,6 @@
 		<p>
 			The reason provided for this is as follows:<br />
 			{!! nl2br($application->status_note) !!}
-		</p>
-	@elseif($application->is_withdrawn)
-		<p>
-			Your application will not be processed any further and no further action will be taken.
 		</p>
 	@endif
 @stop
