@@ -1,0 +1,170 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "dependencyDashboard": {
+    "osvVulnerabilitySummary": true
+  },
+  "enabledManagers": [
+    "composer",
+    "npm",
+    "github-actions",
+    "nvm",
+    "dockerfile",
+    "docker-compose",
+    "devcontainer"
+  ],
+  "extends": [
+    "config:recommended",
+    ":semanticCommitTypeAll(build)",
+    ":approveMajorUpdates",
+    ":enableVulnerabilityAlerts",
+    ":configMigration",
+    "abandonments:recommended",
+    "helpers:pinGitHubActionDigestsToSemver",
+    "docker:pinDigests"
+  ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "extends": [
+      "schedule:weekly"
+    ]
+  },
+  "minimumReleaseAge": "3 days",
+  "osvVulnerabilityAlerts": true,
+  "packageRules": [
+    {
+      "description": "No age wait for pins, replacements and timestamp-less updates",
+      "matchUpdateTypes": [
+        "pin",
+        "pinDigest",
+        "digest",
+        "replacement",
+        "bump",
+        "lockfileUpdate",
+        "rollback"
+      ],
+      "minimumReleaseAge": null
+    },
+    {
+      "automerge": true,
+      "extends": [
+        "schedule:weekly"
+      ],
+      "groupName": "patch dependencies",
+      "matchUpdateTypes": [
+        "patch"
+      ]
+    },
+    {
+      "description": "Composer + npm minors: one weekly PR, manual merge",
+      "extends": [
+        "schedule:weekly"
+      ],
+      "groupName": "minor dependencies",
+      "matchManagers": [
+        "composer",
+        "npm"
+      ],
+      "matchUpdateTypes": [
+        "minor"
+      ]
+    },
+    {
+      "description": "Keep the vite stack together (parity with Dependabot)",
+      "groupName": "vite stack",
+      "matchManagers": [
+        "npm"
+      ],
+      "matchPackageNames": [
+        "vite",
+        "laravel-vite-plugin"
+      ]
+    },
+    {
+      "automerge": false,
+      "description": "GitHub Actions non-major: one weekly PR, manual merge",
+      "extends": [
+        "schedule:weekly"
+      ],
+      "groupName": "github actions",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest"
+      ]
+    },
+    {
+      "automerge": false,
+      "description": "Docker images: one PR, manual merge",
+      "groupName": "docker images",
+      "matchManagers": [
+        "dockerfile",
+        "docker-compose",
+        "devcontainer"
+      ]
+    },
+    {
+      "allowedVersions": "<9",
+      "description": "MySQL stays on v8",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "mysql"
+      ]
+    },
+    {
+      "description": "PHP stays on 8.4 (composer constraint and devcontainer image); bump by hand",
+      "enabled": false,
+      "matchPackageNames": [
+        "php",
+        "mcr.microsoft.com/devcontainers/php"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "major"
+      ]
+    },
+    {
+      "groupName": "phpunit + paratest",
+      "matchManagers": [
+        "composer"
+      ],
+      "matchPackageNames": [
+        "phpunit/phpunit",
+        "brianium/paratest"
+      ],
+      "separateMajorMinor": false
+    },
+    {
+      "matchDepTypes": [
+        "require",
+        "dependencies"
+      ],
+      "matchManagers": [
+        "composer",
+        "npm"
+      ],
+      "semanticCommitScope": "deps"
+    },
+    {
+      "matchDepTypes": [
+        "require-dev",
+        "devDependencies"
+      ],
+      "matchManagers": [
+        "composer",
+        "npm"
+      ],
+      "semanticCommitScope": "deps-dev"
+    }
+  ],
+  "platformAutomerge": true,
+  "rangeStrategy": "bump",
+  "reviewers": [
+    "kristiankunc"
+  ],
+  "timezone": "Europe/London"
+}
