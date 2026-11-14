@@ -326,109 +326,11 @@ class AccountModelTest extends TestCase
         $this->assertNotEquals($originalUpdatedAt, $this->user->fresh()->updated_at);
     }
 
-    #[Test]
-    public function it_determines_that_password_is_not_set()
-    {
-        $this->assertFalse($this->user->hasPassword());
-
-        $this->assertDatabaseHas('mship_account', [
-            'id' => $this->user->id,
-            'password' => null,
-            'password_set_at' => null,
-            'password_expires_at' => null,
-        ]);
-    }
-
-    #[Test]
-    public function it_stores_a_hashed_password()
-    {
-        $this->mockAuth();
-        $this->user->setPassword('testing123');
-
-        $this->user = $this->user->fresh();
-
-        $this->assertTrue(\Hash::check('testing123', $this->user->password));
-
-        $this->assertDatabaseHas('mship_account', [
-            'id' => $this->user->id,
-            'password' => $this->user->password,
-        ]);
-
-        $this->assertDatabaseMissing('mship_account', [
-            'id' => $this->user->id,
-            'password_set_at' => null,
-            'password_expires_at' => null,
-        ]);
-    }
-
     protected function mockAuth()
     {
         \Auth::shouldReceive('user')->andReturn($this->user);
         \Auth::shouldReceive('check')->andReturn(true);
         \Auth::shouldReceive('id')->andReturn($this->user->id);
-    }
-
-    #[Test]
-    public function it_determines_that_password_is_set()
-    {
-        $this->mockAuth();
-        $this->user->setPassword('testing456');
-
-        $this->user = $this->user->fresh();
-
-        $this->assertTrue($this->user->hasPassword());
-
-        $this->assertDatabaseHas('mship_account', [
-            'id' => $this->user->id,
-            'password' => $this->user->password,
-        ]);
-
-        $this->assertDatabaseMissing('mship_account', [
-            'id' => $this->user->id,
-            'password_set_at' => null,
-            'password_expires_at' => null,
-        ]);
-    }
-
-    #[Test]
-    public function it_determines_that_password_has_expired()
-    {
-        $temporary = true;
-        $this->mockAuth();
-        $this->user->setPassword('testing911', $temporary);
-
-        $this->user = $this->user->fresh();
-
-        $this->assertTrue($this->user->hasPasswordExpired());
-    }
-
-    #[Test]
-    public function it_overwrites_old_password_and_modifies_the_timestamps()
-    {
-        $this->mockAuth();
-        $this->user->setPassword('testing123');
-
-        $oldPassword = $this->user->password;
-        $oldPasswordSetAt = $this->user->password_set_at;
-        $oldPasswordExpiresAt = $this->user->password_expires_at;
-
-        $this->user = $this->user->fresh();
-
-        $this->assertDatabaseHas('mship_account', [
-            'id' => $this->user->id,
-            'password' => $oldPassword,
-            'password_set_at' => $oldPasswordSetAt,
-            'password_expires_at' => $oldPasswordExpiresAt,
-        ]);
-
-        $this->user->setPassword('testing456');
-
-        $this->assertDatabaseMissing('mship_account', [
-            'id' => $this->user->id,
-            'password' => $oldPassword,
-            'password_set_at' => $oldPasswordSetAt,
-            'password_expires_at' => $oldPasswordExpiresAt,
-        ]);
     }
 
     #[Test]
@@ -476,24 +378,6 @@ class AccountModelTest extends TestCase
             'model_id' => $this->user->id,
             'role_id' => $role->id,
         ]);
-    }
-
-    #[Test]
-    public function it_determines_that_password_is_not_mandatory()
-    {
-        $this->assertFalse($this->user->mandatory_password);
-    }
-
-    #[Test]
-    public function it_determines_that_password_is_mandatory()
-    {
-        $role = factory(Role::class)->create(['password_mandatory' => true]);
-
-        $this->user->assignRole($role);
-
-        $this->user = $this->user->fresh();
-
-        $this->assertTrue($this->user->mandatory_password);
     }
 
     #[Test]

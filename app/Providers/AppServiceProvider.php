@@ -216,9 +216,5 @@ class AppServiceProvider extends ServiceProvider
         Validator::replacer('numbers', function ($message, $attribute, $rule, $parameters) {
             return str_replace(':min', $parameters[0], $message);
         });
-
-        Validator::extend('password', function ($attribute, $value, $parameters, $validator) {
-            return \Auth::user()->verifyPassword($value);
-        });
     }
 }

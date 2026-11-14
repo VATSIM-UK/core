@@ -69,20 +69,4 @@ class NotificationTest extends TestCase
             ->assertSee('&lt;script&gt;alert(1)&lt;/script&gt;', false)
             ->assertDontSee('<script>alert(1)</script>', false);
     }
-
-    #[Test]
-    public function test_notification_banner_doesnt_show_on_secondary_login()
-    {
-        factory(Notification::class)->create();
-        $this->user->password = '123';
-        $this->user->save();
-
-        $this->followingRedirects()->actingAs($this->user, 'vatsim-sso')
-            ->get(route('auth-secondary'))
-            ->assertDontSee('You currently have unread notifications');
-
-        $this->followingRedirects()->actingAs($this->user, 'web')
-            ->get(route('mship.manage.dashboard'))
-            ->assertSee('You currently have unread notifications');
-    }
 }

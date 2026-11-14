@@ -12,8 +12,6 @@ class MandatoryTwoFactor
 
     protected $except = [
         'auth/two-factor/*',
-        'password/create',
-        'password/change',
         'logout',
     ];
 

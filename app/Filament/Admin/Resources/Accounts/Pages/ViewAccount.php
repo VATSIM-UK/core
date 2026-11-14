@@ -123,17 +123,6 @@ class ViewAccount extends BaseViewRecordPage
                     ->requiresConfirmation()
                     ->successNotificationTitle('Roster status updated!'),
                 ...$this->getRosterRestrictionActions($roster, $onRoster, $hasRosterRestriction),
-                Action::make('remove_password')
-                    ->visible(fn () => $this->record->hasPassword() && auth()->user()->can('removeSecondaryPassword', $this->record))
-                    ->color('warning')
-                    ->icon('heroicon-o-key')
-                    ->modalHeading('Remove Secondary Password')
-                    ->action(function () {
-                        $this->record->removePassword();
-                        $this->refreshFormData(['has_secondary_password']);
-                    })
-                    ->requiresConfirmation()
-                    ->successNotificationTitle('Password removed'),
                 Action::make('reset_two_factor')
                     ->label('Reset Two-Factor Authentication')
                     ->visible(fn () => $this->record->hasEnabledTwoFactorAuthentication()
@@ -227,9 +216,6 @@ class ViewAccount extends BaseViewRecordPage
                 // Let's do the login!
                 Auth::loginUsingId($this->record->id, false);
                 Session::put('auth_override', true);
-
-                // Never inherit the admin's password confirmation while acting as the target.
-                Session::forget('auth.password_confirmed_at');
 
                 Redirect::to(URL::route('mship.manage.dashboard'))->with('success', 'You are now impersonating this user - your reason has been logged. Be good!');
             });

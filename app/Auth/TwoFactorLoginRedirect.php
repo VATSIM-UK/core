@@ -15,7 +15,6 @@ class TwoFactorLoginRedirect
         Request $request,
         Account $user,
         bool $remember = false,
-        bool $passwordVerified = false,
     ): ?Response {
         if ($user->requiresTwoFactorChallenge()) {
             $request->session()->put([
@@ -23,16 +22,10 @@ class TwoFactorLoginRedirect
                 'login.remember' => $remember,
             ]);
 
-            if ($passwordVerified) {
-                $request->session()->put('auth.password_confirmed_at', now()->unix());
-            }
-
             Auth::guard('web')->logout();
 
             return redirect()->route('two-factor.login');
         }
-
-        $request->session()->put('auth.password_confirmed_at', now()->unix());
 
         return null;
     }

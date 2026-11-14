@@ -4,8 +4,6 @@ use App\Http\Controllers\Auth\TwoFactorBackupCodesController;
 use App\Http\Controllers\Auth\TwoFactorRekeyController;
 use App\Http\Controllers\Auth\TwoFactorSetupController;
 use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Features;
-use Laravel\Fortify\Http\Controllers\ConfirmablePasswordController;
 use Laravel\Fortify\Http\Controllers\ConfirmedTwoFactorAuthenticationController;
 use Laravel\Fortify\Http\Controllers\RecoveryCodeController;
 use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticatedSessionController;
@@ -29,49 +27,37 @@ Route::prefix('auth/two-factor')->middleware(config('fortify.middleware', ['web'
 
     Route::middleware($authMiddleware)->group(function () use ($authMiddleware) {
         Route::get('setup', [TwoFactorSetupController::class, 'show'])
-            ->middleware('password.confirm')
             ->name('two-factor.setup');
 
         Route::get('backup-codes', [TwoFactorBackupCodesController::class, 'show'])
-            ->middleware('password.confirm')
             ->name('two-factor.backup-codes');
 
-        Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
-            ->name('two-factor.confirm-password');
-
-        Route::post('confirm-password', [ConfirmablePasswordController::class, 'store'])
-            ->name('two-factor.confirm-password.store');
-
-        $twoFactorMiddleware = Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword')
-            ? [$authMiddleware, 'password.confirm']
-            : [$authMiddleware];
-
         Route::post('enable', [TwoFactorAuthenticationController::class, 'store'])
-            ->middleware($twoFactorMiddleware)
+            ->middleware($authMiddleware)
             ->name('two-factor.enable');
 
         Route::post('rekey', [TwoFactorRekeyController::class, 'store'])
-            ->middleware($twoFactorMiddleware)
+            ->middleware($authMiddleware)
             ->name('two-factor.rekey');
 
         Route::post('confirm', [ConfirmedTwoFactorAuthenticationController::class, 'store'])
-            ->middleware($twoFactorMiddleware)
+            ->middleware($authMiddleware)
             ->name('two-factor.confirm');
 
         Route::delete('disable', [TwoFactorAuthenticationController::class, 'destroy'])
-            ->middleware($twoFactorMiddleware)
+            ->middleware($authMiddleware)
             ->name('two-factor.disable');
 
         Route::get('qr-code', [TwoFactorQrCodeController::class, 'show'])
-            ->middleware($twoFactorMiddleware)
+            ->middleware($authMiddleware)
             ->name('two-factor.qr-code');
 
         Route::get('recovery-codes', [RecoveryCodeController::class, 'index'])
-            ->middleware($twoFactorMiddleware)
+            ->middleware($authMiddleware)
             ->name('two-factor.recovery-codes');
 
         Route::post('recovery-codes', [RecoveryCodeController::class, 'store'])
-            ->middleware($twoFactorMiddleware)
+            ->middleware($authMiddleware)
             ->name('two-factor.regenerate-recovery-codes');
     });
 });

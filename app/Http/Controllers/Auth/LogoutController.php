@@ -13,7 +13,6 @@ class LogoutController extends BaseController
         $request->session()->forget([
             'login.id',
             'login.remember',
-            'auth.password_confirmed_at',
             'auth_override',
         ]);
 

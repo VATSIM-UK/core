@@ -5,7 +5,7 @@ namespace Tests\Feature\Account\Auth;
 use App\Auth\LoginFlow;
 use App\Models\Mship\Account;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
@@ -42,7 +42,7 @@ class LoginTest extends TestCase
         $this->assertStringContainsString('client_id='.config('services.vatsim-net.connect.id'), $redirectUrl);
     }
 
-    public function test_vatsim_oauth_login_without_secondary_password_does_not_force_remember_me()
+    public function test_vatsim_oauth_login_does_not_force_remember_me()
     {
         $request = Request::create('/');
         $request->setLaravelSession($this->app['session.store']);
@@ -53,33 +53,21 @@ class LoginTest extends TestCase
         $this->assertNull($this->account->fresh()->remember_token, 'Login must not force remember-me.');
     }
 
-    public function test_secondary_password_login_does_not_force_remember_me()
+    public function test_vatsim_oauth_login_redirects_to_two_factor_challenge_when_enabled()
     {
-        $this->account->forceFill(['password' => 'Secret123'])->save();
+        app(EnableTwoFactorAuthentication::class)($this->account, true);
+        $this->account->forceFill(['two_factor_confirmed_at' => now()])->saveQuietly();
 
-        $this->actingAs($this->account, 'vatsim-sso')
-            ->post(route('auth-secondary.post'), ['password' => 'Secret123'])
-            ->assertRedirect();
+        $request = Request::create('/');
+        $request->setLaravelSession($this->app['session.store']);
 
-        $this->assertAuthenticatedAs($this->account, 'web');
-        $this->assertNull($this->account->fresh()->remember_token, 'Login must not force remember-me.');
-    }
+        $response = LoginFlow::redirectAfterVatsimOAuth($request, $this->account->fresh());
 
-    public function test_secondary_password_form_does_not_request_remember_me()
-    {
-        $this->actingAs($this->account, 'vatsim-sso')
-            ->get(route('auth-secondary'))
-            ->assertOk()
-            ->assertDontSee('name="remember"', false);
-    }
-
-    public function test_it_redirects_without_vatsim_sso_on_secondary_login()
-    {
-        $this->assertFalse(Auth::guard('vatsim-sso')->check());
-        $this->post(route('auth-secondary'))
-            ->assertRedirect(route('landing'));
-        $this->get(route('auth-secondary'))
-            ->assertRedirect(route('landing'));
+        $this->assertSame(route('two-factor.login'), $response->headers->get('Location'));
+        $this->assertSame($this->account->id, session('login.id'));
+        $this->assertFalse(session('login.remember'));
+        $this->assertSame(route('site.home'), session('url.intended'));
+        $this->assertGuest('web');
     }
 
     public function test_it_logs_a_user_out()
