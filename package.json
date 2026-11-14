@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@alpinejs/collapse": "^3.17.4",
+    "@alpinejs/collapse": "^3.17.5",
     "alpinejs": "^3.17.5"
   },
   "description": "VATSIM UK Core Framework",
@@ -8,17 +8,17 @@
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/typography": "^0.5.20",
-    "@tailwindcss/vite": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.5",
     "autoprefixer": "^10.6.2",
     "blade-formatter": "^1.44.6",
     "bootstrap": "^5.3.8",
     "bootstrap-sass": "^3.4.3",
-    "jquery-datetimepicker": "^2.5.20",
+    "jquery-datetimepicker": "^2.5.21",
     "laravel-vite-plugin": "^3.2.1",
     "postcss": "^8.5.32",
-    "postcss-nesting": "^14.0.0",
+    "postcss-nesting": "^14.0.3",
     "sass": "^1.105.1",
-    "tailwindcss": "^4.3.0",
+    "tailwindcss": "^4.3.5",
     "vite": "^8.3.8"
   },
   "engines": {
