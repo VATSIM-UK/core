@@ -138,7 +138,7 @@
     "spatie/laravel-ignition": "^2.0",
     "spatie/laravel-ray": "^1.23",
     "symfony/css-selector": "^4.0",
-    "symfony/dom-crawler": "^7.0",
+    "symfony/dom-crawler": "^7.4.22",
     "timacdonald/log-fake": "^2.0"
   },
   "scripts": {
