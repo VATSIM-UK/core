@@ -43,7 +43,6 @@
 							<li class="md:hidden"><a href="{{ route('mship.notification.list') }}"
 									class="nav-dropdown-link">Notifications</a></li>
 							<li class="nav-dropdown-divider"></li>
-							<li class="nav-dropdown-divider"></li>
 							<li><a href="{{ route('mship.manage.email.add') }}" class="nav-dropdown-link">Add Email Address</a></li>
 							<li><a href="{{ route('mship.manage.email.assignments') }}" class="nav-dropdown-link">Email Assignments</a></li>
 							<li class="nav-dropdown-divider"></li>

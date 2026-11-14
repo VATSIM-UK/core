@@ -143,8 +143,8 @@ visibility into server activity.
 IP Address and asymmetric based security settings are used to only allow server access to authorised users or
 servers.
 
-Your VATSIM.net password is never passed to VATSIM UK. Two-factor authentication secrets are stored
-encrypted, and recovery codes are stored as hashes.
+Your VATSIM.net password is never passed to VATSIM UK. Two-factor authentication secrets and recovery
+codes are stored encrypted.
 
 ### 4.4 Business continuity
 

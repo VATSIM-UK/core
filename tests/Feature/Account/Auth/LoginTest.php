@@ -5,6 +5,7 @@ namespace Tests\Feature\Account\Auth;
 use App\Auth\LoginFlow;
 use App\Models\Mship\Account;
 use Illuminate\Http\Request;
+use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
@@ -50,6 +51,23 @@ class LoginTest extends TestCase
 
         $this->assertAuthenticatedAs($this->account, 'web');
         $this->assertNull($this->account->fresh()->remember_token, 'Login must not force remember-me.');
+    }
+
+    public function test_vatsim_oauth_login_redirects_to_two_factor_challenge_when_enabled()
+    {
+        app(EnableTwoFactorAuthentication::class)($this->account, true);
+        $this->account->forceFill(['two_factor_confirmed_at' => now()])->saveQuietly();
+
+        $request = Request::create('/');
+        $request->setLaravelSession($this->app['session.store']);
+
+        $response = LoginFlow::redirectAfterVatsimOAuth($request, $this->account->fresh());
+
+        $this->assertSame(route('two-factor.login'), $response->headers->get('Location'));
+        $this->assertSame($this->account->id, session('login.id'));
+        $this->assertFalse(session('login.remember'));
+        $this->assertSame(route('site.home'), session('url.intended'));
+        $this->assertGuest('web');
     }
 
     public function test_it_logs_a_user_out()

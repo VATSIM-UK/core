@@ -4,6 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Spatie\Permission\PermissionRegistrar;
 
 return new class extends Migration
 {
@@ -27,6 +28,8 @@ return new class extends Migration
         DB::table('mship_permission')
             ->where('name', 'account.remove-password.*')
             ->update(['name' => 'account.reset-two-factor.*']);
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 
     public function down(): void
@@ -42,8 +45,20 @@ return new class extends Migration
             $table->unsignedInteger('password_lifetime')->default(180);
         });
 
+        DB::table('mship_role')
+            ->where('two_factor_mandatory', true)
+            ->update(['password_mandatory' => true]);
+
+        Schema::create('password_resets', function (Blueprint $table) {
+            $table->string('email')->index();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+
         DB::table('mship_permission')
             ->where('name', 'account.reset-two-factor.*')
             ->update(['name' => 'account.remove-password.*']);
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 };

@@ -39,6 +39,21 @@ class RememberMeCookieTest extends TestCase
         $this->assertAuthenticatedAs($account, 'web');
     }
 
+    #[Test]
+    public function it_rejects_a_remember_cookie_with_an_invalid_hash(): void
+    {
+        $account = Account::factory()->createQuietly();
+        $account->forceFill(['remember_token' => 'current-token'])->saveQuietly();
+
+        $recaller = $account->id.'|current-token|'.$this->cookieHash('stale-hash');
+
+        $this->withCookie($this->recallerName(), $recaller)
+            ->get(route('site.join'))
+            ->assertOk();
+
+        $this->assertGuest();
+    }
+
     private function cookieHash(string $passwordHash): string
     {
         return hash_hmac('sha256', $passwordHash, config('app.key'));
