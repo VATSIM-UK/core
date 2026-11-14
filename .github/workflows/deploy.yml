@@ -13,7 +13,7 @@ jobs:
       cancel-in-progress: false
     steps:
       - name: Checkout Codes
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
           ref: ${{ github.event.client_payload.ref }}
@@ -52,7 +52,7 @@ jobs:
             footer: ${{ format('https://github.com/{0}/actions/runs/{1}', github.repository, github.run_id) }}
             webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
 
-      - uses: chrnorm/deployment-action@v2
+      - uses: chrnorm/deployment-action@500aa6a23c81ffa1acf71072aee3cfa2cc2e556a # v2
         name: Create GitHub Deployment
         id: github_deployment
         with:
@@ -62,18 +62,18 @@ jobs:
           ref: ${{ github.event.client_payload.ref }}
 
       - name: Configure PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
           php-version: '8.4'
           tools: composer:v2
 
       - name: Setup Node
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: '24'
 
       - name: Composer Cache
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: vendor
           key: composer-${{ hashFiles('**/composer.lock') }}
@@ -82,7 +82,7 @@ jobs:
             composer-
 
       - name: Node Cache
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: node_modules
           key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -103,7 +103,7 @@ jobs:
         run: rm -rf vendor
 
       - name: Deploy Application
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@7e85c2e09aa21988492acd66466b5d68bda49e2b # master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
@@ -113,7 +113,7 @@ jobs:
           target: ${{ env.RELEASE_DIRECTORY }}
 
       - name: (Remote) Setup .env & install composer dependencies
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@c4f70287fc37c43b14b30b407224bbbc8e8c6327 # master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER}}
@@ -131,7 +131,7 @@ jobs:
           envs: RELEASE_DIRECTORY,APPLICATION_ROOT,TAG,PHP_PATH
 
       - name: (Remote) Setup shared storage
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@c4f70287fc37c43b14b30b407224bbbc8e8c6327 # master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER}}
@@ -149,7 +149,7 @@ jobs:
           envs: RELEASE_DIRECTORY,SHARED_DIRECTORY,APPLICATION_ROOT
 
       - name: (Remote) Prepare and activate release
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@c4f70287fc37c43b14b30b407224bbbc8e8c6327 # master
         env:
           GITHUB_ACTOR: ${{ github.actor }}
         with:
@@ -210,7 +210,7 @@ jobs:
           envs: RELEASE_DIRECTORY,APPLICATION_ROOT,PHP_PATH,PHP_FPM,TAG,COMMIT,GITHUB_ACTOR
 
       - name: Create Sentry release
-        uses: getsentry/action-release@v3
+        uses: getsentry/action-release@d55c8c3b7375607e972b710f12926b676d89d7d2 # v3
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: vatsim-uk
@@ -220,7 +220,7 @@ jobs:
           release: ${{ github.sha }}
 
       - name: Housekeeping
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@c4f70287fc37c43b14b30b407224bbbc8e8c6327 # master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER}}
@@ -254,7 +254,7 @@ jobs:
 
       - name: Update Deployment Status (Failed)
         if: failure()
-        uses: chrnorm/deployment-status@v2
+        uses: chrnorm/deployment-status@6df8d036fd2fee9eb82936733953da1f8382b41e # v2
         with:
           token: ${{ github.token }}
           environment-url: https://www.vatsim.uk
@@ -263,7 +263,7 @@ jobs:
 
       - name: Update Deployment Status (Success)
         if: success()
-        uses: chrnorm/deployment-status@v2
+        uses: chrnorm/deployment-status@6df8d036fd2fee9eb82936733953da1f8382b41e # v2
         with:
           token: ${{ github.token }}
           environment-url: https://www.vatsim.uk
