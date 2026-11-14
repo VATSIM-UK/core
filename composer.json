@@ -101,7 +101,7 @@
     "league/oauth2-client": "^2.4",
     "livewire/livewire": "^4.0",
     "logtail/monolog-logtail": "^3.2",
-    "maatwebsite/excel": "~3.1.17",
+    "maatwebsite/excel": "~4.0.6",
     "malahierba-lab/public-id": "dev-main",
     "ohdearapp/ohdear-php-sdk": "^4.4",
     "opcodesio/log-viewer": "^3.24",
