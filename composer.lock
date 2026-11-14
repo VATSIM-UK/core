@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "07dc5f488ef3cf0851d74aca3fe43c9f",
+    "content-hash": "6c249dbefd85d6ec128b1e22e3538695",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -2426,16 +2426,16 @@
         },
         {
             "name": "filament/actions",
-            "version": "v5.11.3",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/actions.git",
-                "reference": "c9179d3f618dd8a308c24e6b16ff213ff9a87552"
+                "reference": "99f2f89311d34fe0f3d54ef01ff7dd86e996a318"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/actions/zipball/c9179d3f618dd8a308c24e6b16ff213ff9a87552",
-                "reference": "c9179d3f618dd8a308c24e6b16ff213ff9a87552",
+                "url": "https://api.github.com/repos/filamentphp/actions/zipball/99f2f89311d34fe0f3d54ef01ff7dd86e996a318",
+                "reference": "99f2f89311d34fe0f3d54ef01ff7dd86e996a318",
                 "shasum": ""
             },
             "require": {
@@ -2465,27 +2465,27 @@
             "license": [
                 "MIT"
             ],
-            "description": "Encapsulate user interactions and business logic in reusable actions for Livewire.",
+            "description": "Easily add beautiful action modals to any Livewire component.",
             "homepage": "https://github.com/filamentphp/filament",
             "support": {
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-11-13T13:11:09+00:00",
-            "published-time": "2026-11-13T13:11:16+00:00"
+            "time": "2026-10-20T18:26:39+00:00",
+            "published-time": "2026-10-20T18:26:48+00:00"
         },
         {
             "name": "filament/filament",
-            "version": "v5.11.3",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/panels.git",
-                "reference": "d04964a2ae6d18664280be4ba67db26a0192a808"
+                "reference": "4869a1592c0ef037abc429cb9d1db62059e2d455"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/panels/zipball/d04964a2ae6d18664280be4ba67db26a0192a808",
-                "reference": "d04964a2ae6d18664280be4ba67db26a0192a808",
+                "url": "https://api.github.com/repos/filamentphp/panels/zipball/4869a1592c0ef037abc429cb9d1db62059e2d455",
+                "reference": "4869a1592c0ef037abc429cb9d1db62059e2d455",
                 "shasum": ""
             },
             "require": {
@@ -2524,27 +2524,27 @@
             "license": [
                 "MIT"
             ],
-            "description": "An open-source framework for building polished, maintainable business software with Laravel.",
+            "description": "A collection of full-stack components for accelerated Laravel app development.",
             "homepage": "https://github.com/filamentphp/filament",
             "support": {
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-11-13T13:04:11+00:00",
-            "published-time": "2026-11-13T13:04:21+00:00"
+            "time": "2026-10-20T18:30:51+00:00",
+            "published-time": "2026-10-20T18:31:00+00:00"
         },
         {
             "name": "filament/forms",
-            "version": "v5.11.3",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/forms.git",
-                "reference": "a995e283a0828d73c786602739b8808d2ff90da4"
+                "reference": "7a36480602b26ee950ea8f0ce7e844aa076a7a73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/forms/zipball/a995e283a0828d73c786602739b8808d2ff90da4",
-                "reference": "a995e283a0828d73c786602739b8808d2ff90da4",
+                "url": "https://api.github.com/repos/filamentphp/forms/zipball/7a36480602b26ee950ea8f0ce7e844aa076a7a73",
+                "reference": "7a36480602b26ee950ea8f0ce7e844aa076a7a73",
                 "shasum": ""
             },
             "require": {
@@ -2578,27 +2578,27 @@
             "license": [
                 "MIT"
             ],
-            "description": "Build reactive forms with reusable fields and validation for Livewire.",
+            "description": "Easily add beautiful forms to any Livewire component.",
             "homepage": "https://github.com/filamentphp/filament",
             "support": {
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-11-13T12:59:39+00:00",
-            "published-time": "2026-11-13T12:59:51+00:00"
+            "time": "2026-10-20T18:31:40+00:00",
+            "published-time": "2026-10-20T18:31:51+00:00"
         },
         {
             "name": "filament/infolists",
-            "version": "v5.11.3",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/infolists.git",
-                "reference": "139c17f78b6d7487549e313c1e020f0ca7f4da86"
+                "reference": "9a506030fa0f80e09e9de43ae099137cee741d66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/infolists/zipball/139c17f78b6d7487549e313c1e020f0ca7f4da86",
-                "reference": "139c17f78b6d7487549e313c1e020f0ca7f4da86",
+                "url": "https://api.github.com/repos/filamentphp/infolists/zipball/9a506030fa0f80e09e9de43ae099137cee741d66",
+                "reference": "9a506030fa0f80e09e9de43ae099137cee741d66",
                 "shasum": ""
             },
             "require": {
@@ -2624,27 +2624,27 @@
             "license": [
                 "MIT"
             ],
-            "description": "Display read-only information with reusable entries and layouts for Livewire.",
+            "description": "Easily add beautiful read-only infolists to any Livewire component.",
             "homepage": "https://github.com/filamentphp/filament",
             "support": {
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-11-13T12:51:20+00:00",
-            "published-time": "2026-11-13T12:51:29+00:00"
+            "time": "2026-10-20T18:27:56+00:00",
+            "published-time": "2026-10-20T18:28:03+00:00"
         },
         {
             "name": "filament/notifications",
-            "version": "v5.11.3",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/notifications.git",
-                "reference": "3927f0ec6cf4fb1e09a02383c7b5ed7fecdf14c6"
+                "reference": "940afa444265f99ecee0d54acef0cf22076f25f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/notifications/zipball/3927f0ec6cf4fb1e09a02383c7b5ed7fecdf14c6",
-                "reference": "3927f0ec6cf4fb1e09a02383c7b5ed7fecdf14c6",
+                "url": "https://api.github.com/repos/filamentphp/notifications/zipball/940afa444265f99ecee0d54acef0cf22076f25f3",
+                "reference": "940afa444265f99ecee0d54acef0cf22076f25f3",
                 "shasum": ""
             },
             "require": {
@@ -2672,27 +2672,27 @@
             "license": [
                 "MIT"
             ],
-            "description": "Send in-app, database, and broadcast notifications with Livewire.",
+            "description": "Easily add beautiful notifications to any Livewire app.",
             "homepage": "https://github.com/filamentphp/filament",
             "support": {
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-11-13T13:01:40+00:00",
-            "published-time": "2026-11-13T13:01:50+00:00"
+            "time": "2026-10-20T18:26:24+00:00",
+            "published-time": "2026-10-20T18:26:34+00:00"
         },
         {
             "name": "filament/query-builder",
-            "version": "v5.11.3",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/query-builder.git",
-                "reference": "e75f020c16202716fc7c84e60a7d4d9eb7164184"
+                "reference": "f6b34ae663109a01198f316971ac20102b5762f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/query-builder/zipball/e75f020c16202716fc7c84e60a7d4d9eb7164184",
-                "reference": "e75f020c16202716fc7c84e60a7d4d9eb7164184",
+                "url": "https://api.github.com/repos/filamentphp/query-builder/zipball/f6b34ae663109a01198f316971ac20102b5762f5",
+                "reference": "f6b34ae663109a01198f316971ac20102b5762f5",
                 "shasum": ""
             },
             "require": {
@@ -2725,21 +2725,21 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-11-13T13:10:30+00:00",
-            "published-time": "2026-11-13T13:10:36+00:00"
+            "time": "2026-10-20T18:27:08+00:00",
+            "published-time": "2026-10-20T18:27:14+00:00"
         },
         {
             "name": "filament/schemas",
-            "version": "v5.11.3",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/schemas.git",
-                "reference": "b82ac6e5314c2c987cfa163032618784404f0f59"
+                "reference": "957caf8f0e373566046aff90249c6d8e3fe7e4d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/schemas/zipball/b82ac6e5314c2c987cfa163032618784404f0f59",
-                "reference": "b82ac6e5314c2c987cfa163032618784404f0f59",
+                "url": "https://api.github.com/repos/filamentphp/schemas/zipball/957caf8f0e373566046aff90249c6d8e3fe7e4d2",
+                "reference": "957caf8f0e373566046aff90249c6d8e3fe7e4d2",
                 "shasum": ""
             },
             "require": {
@@ -2765,27 +2765,27 @@
             "license": [
                 "MIT"
             ],
-            "description": "Compose interfaces with reusable schema and layout components for Livewire.",
+            "description": "Easily add beautiful UI to any Livewire component.",
             "homepage": "https://github.com/filamentphp/filament",
             "support": {
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-11-13T13:06:00+00:00",
-            "published-time": "2026-11-13T13:06:07+00:00"
+            "time": "2026-10-20T18:28:40+00:00",
+            "published-time": "2026-10-20T18:28:46+00:00"
         },
         {
             "name": "filament/support",
-            "version": "v5.11.3",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/support.git",
-                "reference": "dc2cb8659b75bf2ce6b1ffe230e0eba2b6324f8d"
+                "reference": "ac059bb5443d923702c93e360f2114387ebc0813"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/support/zipball/dc2cb8659b75bf2ce6b1ffe230e0eba2b6324f8d",
-                "reference": "dc2cb8659b75bf2ce6b1ffe230e0eba2b6324f8d",
+                "url": "https://api.github.com/repos/filamentphp/support/zipball/ac059bb5443d923702c93e360f2114387ebc0813",
+                "reference": "ac059bb5443d923702c93e360f2114387ebc0813",
                 "shasum": ""
             },
             "require": {
@@ -2797,7 +2797,7 @@
                 "illuminate/contracts": "^11.28|^12.0|^13.0",
                 "kirschbaum-development/eloquent-power-joins": "^4.0",
                 "league/uri-components": "^7.0",
-                "livewire/livewire": "^4.4.8",
+                "livewire/livewire": "^4.4.7",
                 "nette/php-generator": "^4.0",
                 "php": "^8.2",
                 "ryangjchandler/blade-capture-directive": "^1.0",
@@ -2832,21 +2832,21 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-11-13T13:10:45+00:00",
-            "published-time": "2026-11-13T13:10:53+00:00"
+            "time": "2026-10-20T18:30:41+00:00",
+            "published-time": "2026-10-20T18:30:49+00:00"
         },
         {
             "name": "filament/tables",
-            "version": "v5.11.3",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/tables.git",
-                "reference": "7baa9297f7a713151baa5bf8f5e84ee73169c545"
+                "reference": "229f4ab851519ee22a964ab9ebfda892709750f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/tables/zipball/7baa9297f7a713151baa5bf8f5e84ee73169c545",
-                "reference": "7baa9297f7a713151baa5bf8f5e84ee73169c545",
+                "url": "https://api.github.com/repos/filamentphp/tables/zipball/229f4ab851519ee22a964ab9ebfda892709750f2",
+                "reference": "229f4ab851519ee22a964ab9ebfda892709750f2",
                 "shasum": ""
             },
             "require": {
@@ -2873,27 +2873,27 @@
             "license": [
                 "MIT"
             ],
-            "description": "Build interactive tables with filtering, sorting, actions, and pagination for Livewire.",
+            "description": "Easily add beautiful tables to any Livewire component.",
             "homepage": "https://github.com/filamentphp/filament",
             "support": {
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-11-13T13:22:10+00:00",
-            "published-time": "2026-11-13T13:22:19+00:00"
+            "time": "2026-10-20T18:25:22+00:00",
+            "published-time": "2026-10-20T18:25:34+00:00"
         },
         {
             "name": "filament/widgets",
-            "version": "v5.11.3",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/widgets.git",
-                "reference": "d2fc5ec7decb0e2d948d45130cd1cd25f6100381"
+                "reference": "4abd9b613824311496d86709a257747a30c30fd0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/widgets/zipball/d2fc5ec7decb0e2d948d45130cd1cd25f6100381",
-                "reference": "d2fc5ec7decb0e2d948d45130cd1cd25f6100381",
+                "url": "https://api.github.com/repos/filamentphp/widgets/zipball/4abd9b613824311496d86709a257747a30c30fd0",
+                "reference": "4abd9b613824311496d86709a257747a30c30fd0",
                 "shasum": ""
             },
             "require": {
@@ -2918,14 +2918,14 @@
             "license": [
                 "MIT"
             ],
-            "description": "Build dashboards with charts, statistics, tables, and custom Livewire widgets.",
+            "description": "Easily add beautiful dashboard widgets to any Livewire component.",
             "homepage": "https://github.com/filamentphp/filament",
             "support": {
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-11-13T12:59:18+00:00",
-            "published-time": "2026-11-13T12:59:26+00:00"
+            "time": "2026-10-20T18:33:06+00:00",
+            "published-time": "2026-10-20T18:33:13+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -6135,7 +6135,7 @@
             "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "https://github.com/VATSIM-UK/public-id.git",
+                "url": "git@github.com:VATSIM-UK/public-id.git",
                 "reference": "df06990cb79dcb58a557685a8ca16fe6a3fa4b88"
             },
             "dist": {
@@ -8199,7 +8199,7 @@
             "version": "1.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/VATSIM-UK/ts3phpframework.git",
+                "url": "git@github.com:VATSIM-UK/ts3phpframework.git",
                 "reference": "b3629a35a5ec0eb093128ec688a10486125cf1ae"
             },
             "dist": {
