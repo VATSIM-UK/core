@@ -360,7 +360,7 @@ class AccountsRelationManager extends RelationManager
                     ->modalDescription('Please provide a reason for removing this user.')
                     ->modalSubmitActionLabel('Remove')
                     ->modalCancelActionLabel('Cancel')
-                    ->visible(fn ($record) => $this->can('removeAccounts', $record->waitingList)),
+                    ->visible(fn ($record) => $this->can('removeAccount', $record->waitingList)),
                 ActionGroup::make([
                     Action::make('manualSetupTrainingPlace')
                         ->label('Manual Setup Training Place')
