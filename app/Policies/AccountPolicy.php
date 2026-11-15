@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Mship\Account;
+use App\Services\Roles\PrivilegeCeiling;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
@@ -130,7 +131,8 @@ class AccountPolicy
     /** Determine whether the user can impersonate the subject account */
     public function impersonate(Account $actor, Account $subject)
     {
-        return $actor->can("account.impersonate.{$subject->id}");
+        return $actor->can("account.impersonate.{$subject->id}")
+            && app(PrivilegeCeiling::class)->canImpersonate($actor, $subject);
     }
 
     protected function passesSelfCheck(Account $actor, Account $subject)

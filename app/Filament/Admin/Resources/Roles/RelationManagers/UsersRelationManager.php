@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Roles\RelationManagers;
 
 use App\Filament\Admin\Resources\Accounts\AccountResource;
+use App\Services\Roles\DelegateRoleManagementService;
 use Filament\Actions\AttachAction;
 use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
@@ -19,12 +20,19 @@ class UsersRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
+        // Attaching or detaching accounts changes who holds this role, so it needs
+        // the same delegation permission as assigning the role from an account.
+        $canManageUsers = fn (): bool => auth()->user()->can(
+            (new DelegateRoleManagementService)->delegatePermissionName($this->getOwnerRecord())
+        );
+
         return $table
             ->columns([
                 TextColumn::make('name')->searchable(),
             ])
             ->headerActions([
                 AttachAction::make()
+                    ->visible($canManageUsers)
                     ->recordSelectSearchColumns(AccountResource::getGloballySearchableAttributes())
                     ->recordTitle(fn ($record) => "$record->name ($record->id)")
                     ->using(function ($record, $livewire) {
@@ -36,12 +44,14 @@ class UsersRelationManager extends RelationManager
             ->recordActions([
                 ViewAction::make()->resource(AccountResource::class),
                 DetachAction::make()
+                    ->visible($canManageUsers)
                     ->using(function ($record, $livewire) {
                         $record->removeRole($livewire->ownerRecord);
                     }),
             ])
             ->toolbarActions([
                 DetachBulkAction::make()
+                    ->visible($canManageUsers)
                     ->using(function ($records, $livewire) {
                         $records->forEach(fn ($record) => $record->removeRole($livewire->ownerRecord));
                     }),

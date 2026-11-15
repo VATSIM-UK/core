@@ -5,16 +5,19 @@ namespace Tests\Feature\Admin\Account\Pages;
 use App\Filament\Admin\Resources\Accounts\Pages\ViewAccount;
 use App\Jobs\UpdateMember;
 use App\Models\Contact;
+use App\Models\Mship\Account;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\State;
 use App\Models\Roster;
 use App\Notifications\Mship\TwoFactorReset;
 use App\Notifications\Mship\TwoFactorResetPerformed;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 use Livewire\Livewire;
+use Spatie\Permission\Models\Role;
 use Tests\Feature\Admin\BaseAdminTestCase;
 
 class ViewAccountPageTest extends BaseAdminTestCase
@@ -28,6 +31,8 @@ class ViewAccountPageTest extends BaseAdminTestCase
 
     public function test_can_impersonate_with_permission()
     {
+        $target = Account::factory()->createQuietly();
+
         $this->user->givePermissionTo('account.view-insensitive.*');
         $this->user->givePermissionTo('account.impersonate.*');
         Livewire::actingAs($this->user);
@@ -35,16 +40,56 @@ class ViewAccountPageTest extends BaseAdminTestCase
         Log::shouldReceive('channel')->with('audit')->andReturnSelf();
         Log::shouldReceive('info')->once()->withArgs(fn ($message, $context) => $message === 'Account impersonation started'
             && $context['admin_id'] === $this->user->id
-            && $context['target_id'] === $this->privacc->id
+            && $context['target_id'] === $target->id
             && $context['action'] === 'impersonate'
             && $context['actor_id'] === $this->user->id
         );
 
-        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+        Livewire::test(ViewAccount::class, ['record' => $target->id])
             ->assertActionVisible('impersonate')
             ->callAction('impersonate', data: ['reason' => 'Some reason for impersonating a user']);
 
-        $this->assertEquals($this->privacc->id, auth()->user()->id);
+        $this->assertEquals($target->id, auth()->user()->id);
+    }
+
+    public function test_cant_impersonate_a_more_privileged_account()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo('account.impersonate.*');
+        Livewire::actingAs($this->user);
+
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+            ->assertActionHidden('impersonate')
+            ->mountAction('impersonate')
+            ->assertActionNotMounted();
+
+        $this->assertEquals($this->user->id, auth()->user()->id);
+    }
+
+    public function test_super_admin_can_impersonate_another_super_admin()
+    {
+        $target = Account::factory()->createQuietly();
+        DB::table('mship_account_role')->insert([
+            'model_type' => Account::class,
+            'model_id' => $target->id,
+            'role_id' => Role::findByName('privacc')->id,
+        ]);
+
+        $this->actingAsSuperUser();
+
+        Log::shouldReceive('channel')->with('audit')->andReturnSelf();
+        Log::shouldReceive('info')->once()->withArgs(fn ($message, $context) => $message === 'Account impersonation started'
+            && $context['admin_id'] === $this->privacc->id
+            && $context['target_id'] === $target->id
+            && $context['action'] === 'impersonate'
+            && $context['actor_id'] === $this->privacc->id
+        );
+
+        Livewire::test(ViewAccount::class, ['record' => $target->id])
+            ->assertActionVisible('impersonate')
+            ->callAction('impersonate', data: ['reason' => 'Some reason for impersonating a user']);
+
+        $this->assertEquals($target->id, auth()->user()->id);
     }
 
     public function test_cant_see_email_address_without_permission()
@@ -372,7 +417,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
             ->assertActionHidden('grant_visiting_status');
     }
 
-    protected function enableTwoFactorFor(\App\Models\Mship\Account $account): void
+    protected function enableTwoFactorFor(Account $account): void
     {
         app(EnableTwoFactorAuthentication::class)($account, true);
 
