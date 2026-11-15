@@ -92,7 +92,7 @@ class Management extends \App\Http\Controllers\BaseController
 
         $validator = Validator::make(
             ['email' => $email],
-            ['email' => ['required', 'email']]
+            ['email' => ['required', 'email:rfc,strict']]
         );
 
         if ($validator->fails()) {
