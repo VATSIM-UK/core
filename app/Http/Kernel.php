@@ -21,6 +21,7 @@ class Kernel extends HttpKernel
         Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         Middleware\SecurityHeaders::class,
+        Middleware\ExpireLegacyCookies::class,
     ];
 
     /**
