@@ -58,6 +58,9 @@ jobs:
       - name: Install PHP dependencies
         uses: ramsey/composer-install@v4
 
+      - name: Audit dependencies
+        run: composer audit --locked
+
       - name: Run Prek
         uses: j178/prek-action@44924fe9ef4a6f88253c4b6b1bf11c689d3ce53d # v3.1.0
 
