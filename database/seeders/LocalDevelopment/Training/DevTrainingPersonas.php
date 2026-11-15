@@ -44,6 +44,8 @@ final class DevTrainingPersonas
         'training-places.create-adhoc',
         'training-places.revoke.*',
         'training-places.restore.*',
+        'endorsement.create.temporary',
+        'endorsement.view.*',
     ];
 
     /**
