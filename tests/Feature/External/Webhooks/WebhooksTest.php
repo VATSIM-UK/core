@@ -13,6 +13,38 @@ class WebhooksTest extends TestCase
 {
     use WaitingListTestHelper;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        config(['services.vatsim-net.webhook.key' => 'test-webhook-key']);
+    }
+
+    public function test_webhook_rejects_every_request_when_no_key_is_configured()
+    {
+        \Bus::fake();
+        config(['services.vatsim-net.webhook.key' => '']);
+
+        $this->post(route('external.vatsim-net.webhook'), $this->buildChangedSample(), [])
+            ->assertStatus(403);
+        $this->post(route('external.vatsim-net.webhook'), $this->buildChangedSample(), ['Authorization' => ''])
+            ->assertStatus(403);
+        $this->post(route('external.vatsim-net.webhook'), $this->buildChangedSample(), ['Authorization' => 'anything'])
+            ->assertStatus(403);
+    }
+
+    public function test_webhook_rejects_missing_or_empty_authorization_header()
+    {
+        \Bus::fake();
+
+        $this->post(route('external.vatsim-net.webhook'), $this->buildChangedSample(), [])
+            ->assertStatus(403);
+        $this->post(route('external.vatsim-net.webhook'), $this->buildChangedSample(), ['Authorization' => ''])
+            ->assertStatus(403);
+        $this->post(route('external.vatsim-net.webhook'), $this->buildChangedSample(), ['Authorization' => 'wrong-key'])
+            ->assertStatus(403);
+    }
+
     public function test_changed_action_get_dispatched()
     {
         \Queue::fake();
@@ -142,6 +174,20 @@ class WebhooksTest extends TestCase
         $this->assertNotEquals('GBR', $account->primary_state->pivot->division);
 
         $this->assertFalse($waitingList->includesAccount($account));
+    }
+
+    public function test_update_cannot_change_account_id()
+    {
+        $this->test_creation_handler();
+
+        $webhook = $this->buildChangedSample();
+        $accountId = $webhook['resource'];
+        $webhook['actions'][0]['deltas'][] = ['field' => 'id', 'before' => $accountId, 'after' => 9999999];
+
+        MemberChangedAction::dispatchSync($accountId, $webhook['actions'][0]);
+
+        $this->assertNotNull(Account::find($accountId));
+        $this->assertNull(Account::find(9999999));
     }
 
     private function authHeaders(): array

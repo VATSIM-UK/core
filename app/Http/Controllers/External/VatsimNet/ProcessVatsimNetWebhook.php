@@ -64,7 +64,9 @@ class ProcessVatsimNetWebhook extends BaseController
 
     private function validateAuth(Request $request)
     {
-        if ($request->header('Authorization') !== config('services.vatsim-net.webhook.key')) {
+        $key = config('services.vatsim-net.webhook.key');
+
+        if (blank($key) || ! hash_equals($key, (string) $request->header('Authorization'))) {
             abort(403);
         }
     }
