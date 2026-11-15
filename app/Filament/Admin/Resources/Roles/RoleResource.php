@@ -9,6 +9,8 @@ use App\Filament\Admin\Resources\Roles\RelationManagers\DelegatesRelationManager
 use App\Filament\Admin\Resources\Roles\RelationManagers\RoleDelegatesRelationManager;
 use App\Filament\Admin\Resources\Roles\RelationManagers\UsersRelationManager;
 use App\Jobs\UpdateMember;
+use App\Services\Roles\PrivilegeCeiling;
+use Closure;
 use DB;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
@@ -28,6 +30,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -134,7 +137,32 @@ class RoleResource extends Resource
                             ->dehydrated(false),
                     ]),
                 CheckboxList::make('permissions')
-                    ->relationship('permissions', 'name')
+                    ->relationship(
+                        'permissions',
+                        'name',
+                        modifyQueryUsing: function (Builder $query, ?Role $record) {
+                            // Keep permissions the role already has in the list so an
+                            // editor without them cannot strip them by saving.
+                            return $query->whereIn('id', [
+                                ...app(PrivilegeCeiling::class)->grantablePermissionIds(auth()->user()),
+                                ...($record?->permissions()->pluck('id')->all() ?? []),
+                            ]);
+                        },
+                    )
+                    ->rule(function (?Role $record) {
+                        $allowed = [
+                            ...app(PrivilegeCeiling::class)->grantablePermissionIds(auth()->user()),
+                            ...($record?->permissions()->pluck('id')->all() ?? []),
+                        ];
+
+                        return function (string $attribute, $value, Closure $fail) use ($allowed): void {
+                            foreach ((array) $value as $permissionId) {
+                                if (! in_array((int) $permissionId, $allowed, true)) {
+                                    $fail('You may only assign permissions you hold yourself.');
+                                }
+                            }
+                        };
+                    })
                     ->columns(3)
                     ->searchable()
                     ->bulkToggleable()
@@ -179,7 +207,21 @@ class RoleResource extends Resource
                     ->visible(fn () => auth()->user()?->can('role.edit.*'))
                     ->form([
                         CheckboxList::make('permissions')
-                            ->options(Permission::orderBy('name')->pluck('name', 'name'))
+                            ->options(fn () => Permission::query()
+                                ->whereIn('id', app(PrivilegeCeiling::class)->grantablePermissionIds(auth()->user()))
+                                ->orderBy('name')
+                                ->pluck('name', 'name'))
+                            ->rule(function () {
+                                $ceiling = app(PrivilegeCeiling::class);
+
+                                return function (string $attribute, $value, Closure $fail) use ($ceiling): void {
+                                    foreach ((array) $value as $permissionName) {
+                                        if (! $ceiling->canGrantPermission(auth()->user(), (string) $permissionName)) {
+                                            $fail('You may only assign permissions you hold yourself.');
+                                        }
+                                    }
+                                };
+                            })
                             ->columns(3)
                             ->searchable()
                             ->bulkToggleable()
