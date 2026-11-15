@@ -190,8 +190,21 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
             ->exists();
     }
 
+    private function canForwardForExam(): bool
+    {
+        $user = Auth::user();
+
+        return $user !== null
+            && ! $this->trainingPlace->trashed()
+            && $this->trainingPlace->trainable !== null
+            && $user->can('training.exams.setup')
+            && ! $this->hasPendingExam();
+    }
+
     public function forwardForExam(int $positionId): void
     {
+        abort_unless($this->canForwardForExam(), 403, 'You may not forward this member for an exam.');
+
         try {
             // Get the position from the provided ID
             $trainingPosition = TrainingPosition::where('position_id', $positionId)->firstOrFail();
@@ -290,6 +303,9 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
 
     public function forwardPilotForExam(string $examType): void
     {
+        abort_unless($this->canForwardForExam(), 403, 'You may not forward this member for an exam.');
+        abort_unless(in_array($examType, PilotExamType::values(), true), 403, 'Invalid pilot exam type.');
+
         try {
             $ctsMember = $this->trainingPlace->account->member;
 
