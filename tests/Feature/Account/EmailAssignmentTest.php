@@ -68,6 +68,35 @@ class EmailAssignmentTest extends TestCase
     }
 
     #[Test]
+    public function test_quoted_local_part_email_is_rejected_on_post()
+    {
+        $payload = '"<svg/onload=alert(1)>"@attacker.tld';
+
+        $this->actingAs($this->user)
+            ->post(route('mship.manage.email.add.post'), [
+                'new_email' => $payload,
+                'new_email2' => $payload,
+            ])
+            ->assertRedirect(route('mship.manage.email.add'))
+            ->assertSessionHas('error', 'You have entered an invalid email address.');
+
+        $this->assertDatabaseMissing('mship_account_email', ['email' => $payload]);
+    }
+
+    #[Test]
+    public function test_email_verification_flash_escapes_the_email_address()
+    {
+        $payload = '"<svg/onload=alert(1)>"@attacker.tld';
+        $email = $this->user->secondaryEmails()->create(['email' => $payload]);
+
+        $this->actingAs($this->user->fresh())
+            ->followingRedirects()
+            ->get(route('mship.manage.email.verify', $email->tokens->first()))
+            ->assertDontSee('<svg/onload=alert(1)>', false)
+            ->assertSee(e($payload), false);
+    }
+
+    #[Test]
     public function test_successful_post_email()
     {
         $data = [
