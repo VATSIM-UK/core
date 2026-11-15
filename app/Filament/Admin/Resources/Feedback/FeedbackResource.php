@@ -7,6 +7,7 @@ use App\Filament\Admin\Resources\Feedback\Pages\ListFeedback;
 use App\Filament\Admin\Resources\Feedback\Pages\ViewFeedback;
 use App\Filament\Admin\Resources\Feedback\Widgets\FeedbackOverview;
 use App\Filament\Support\NameColumn;
+use App\Models\Mship\Account;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Mship\Feedback\Form as FeedbackForm;
 use App\Models\Mship\Qualification;
@@ -43,9 +44,23 @@ class FeedbackResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery()->withTrashed();
+        $query = self::baseQuery();
 
-        return $query->with(['account', 'submitter', 'form']);
+        $user = auth()->user();
+
+        return $user instanceof Account ? $query->visibleTo($user) : $query;
+    }
+
+    public static function getRecordRouteBindingEloquentQuery(): Builder
+    {
+        // Records are authorised individually by FeedbackPolicy, so keep resolving
+        // records outside the list scope and let the policy deny access.
+        return self::baseQuery();
+    }
+
+    private static function baseQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withTrashed()->with(['account', 'submitter', 'form']);
     }
 
     public static function form(Schema $schema): Schema
@@ -199,7 +214,8 @@ class FeedbackResource extends Resource
                         : []),
             ])
             ->recordActions([
-                ViewAction::make(),
+                ViewAction::make()
+                    ->mutateRecordDataUsing(fn (array $data) => self::withoutSubmitterData($data)),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -232,10 +248,20 @@ class FeedbackResource extends Resource
         return auth()->user()->can('seeSubmitter', self::getModel());
     }
 
+    public static function withoutSubmitterData(array $data): array
+    {
+        if (! self::canSeeSubmitter()) {
+            unset($data['submitter_account_id']);
+        }
+
+        return $data;
+    }
+
     private static function configureBulkAction(BulkAction $action): BulkAction
     {
         return $action
             ->visible(fn () => auth()->user()->can('actionFeedback', Feedback::class))
+            ->authorizeIndividualRecords('view')
             ->requiresConfirmation()
             ->deselectRecordsAfterCompletion();
     }

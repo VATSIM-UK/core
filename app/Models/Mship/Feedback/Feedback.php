@@ -3,6 +3,7 @@
 namespace App\Models\Mship\Feedback;
 
 use App\Models\Model;
+use App\Models\Mship\Account;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
@@ -24,14 +25,14 @@ use Illuminate\Notifications\Notifiable;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property int|null $deleted_by
- * @property-read \App\Models\Mship\Account $account
- * @property-read \App\Models\Mship\Account $actioner
- * @property-read \App\Models\Mship\Account|null $deleter
+ * @property-read Account $account
+ * @property-read Account $actioner
+ * @property-read Account|null $deleter
  * @property-read \Illuminate\Database\Eloquent\Collection|Answer[] $answers
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sys\Data\Change[] $dataChanges
  * @property-read Form $form
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read \App\Models\Mship\Account $submitter
+ * @property-read Account $submitter
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback aTC()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Mship\Feedback\Feedback actioned()
@@ -87,6 +88,20 @@ class Feedback extends Model
         return $query->where('form_id', $form->id);
     }
 
+    /**
+     * Restrict the query to feedback the given account may view, mirroring FeedbackPolicy::view.
+     */
+    public function scopeVisibleTo($query, Account $account)
+    {
+        $visibleSlugs = Form::query()
+            ->pluck('slug')
+            ->filter(fn (string $slug) => $account->checkPermissionTo("feedback.view-type.{$slug}", 'web'));
+
+        return $query
+            ->whereHas('form', fn ($query) => $query->whereIn('slug', $visibleSlugs))
+            ->whereNotIn('account_id', $account->hiddenFeedbackUsers());
+    }
+
     public function scopeActioned($query)
     {
         return $query->whereNotNull('actioned_at');
@@ -133,27 +148,27 @@ class Feedback extends Model
 
     public function account()
     {
-        return $this->belongsTo(\App\Models\Mship\Account::class);
+        return $this->belongsTo(Account::class);
     }
 
     public function submitter()
     {
-        return $this->hasOne(\App\Models\Mship\Account::class, 'id', 'submitter_account_id');
+        return $this->hasOne(Account::class, 'id', 'submitter_account_id');
     }
 
     public function actioner()
     {
-        return $this->hasOne(\App\Models\Mship\Account::class, 'id', 'actioned_by_id');
+        return $this->hasOne(Account::class, 'id', 'actioned_by_id');
     }
 
     public function sender()
     {
-        return $this->hasOne(\App\Models\Mship\Account::class, 'id', 'sent_by_id');
+        return $this->hasOne(Account::class, 'id', 'sent_by_id');
     }
 
     public function deleter()
     {
-        return $this->hasOne(\App\Models\Mship\Account::class, 'id', 'deleted_by');
+        return $this->hasOne(Account::class, 'id', 'deleted_by');
     }
 
     public function isATC()

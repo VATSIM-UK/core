@@ -64,6 +64,7 @@ class AccountResource extends Resource implements DefinesGatedAttributes
         return [
             'email' => auth()->user()->can('viewSensitive', $record),
             'secondaryEmails' => auth()->user()->can('viewSensitive', $record),
+            'last_login_ip' => auth()->user()->can('viewSensitive', $record),
         ];
     }
 

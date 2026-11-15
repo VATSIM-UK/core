@@ -39,9 +39,9 @@ Route::group([
         // Legacy beta URL, retained as a redirect for existing bookmarks.
         Route::get('dashboard/beta')->uses('Management@getDashboardBeta')->name('dashboard.beta');
         Route::get('cert/update')->uses('Management@requestCertCheck')->name('cert.update');
-        Route::get('email/verify/{code}')->uses('Management@getVerifyEmail')->name('email.verify');
+        Route::get('email/verify/{code}')->uses('Management@getVerifyEmail')->middleware('throttle:10,1')->name('email.verify');
         Route::get('email/add')->uses('Management@getEmailAdd')->name('email.add');
-        Route::post('email/add')->uses('Management@postEmailAdd')->name('email.add.post');
+        Route::post('email/add')->uses('Management@postEmailAdd')->middleware('throttle:10,1')->name('email.add.post');
         Route::get('email/delete/{email}')->uses('Management@getEmailDelete')->name('email.delete');
         Route::post('email/delete/{email}')->uses('Management@postEmailDelete')->name('email.delete.post');
         Route::get('email/assignments')->uses('Management@getEmailAssignments')->name('email.assignments');
