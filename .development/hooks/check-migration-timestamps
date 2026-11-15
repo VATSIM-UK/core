@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# Laravel runs migrations in filename order, so a timestamp shared with another
+# migration, or older than the newest merged one, applies in a different order
+# on a fresh database. Migrations dated before ENFORCED_FROM are exempt.
+
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)"
+
+ENFORCED_FROM="2026_11_15_000000"
+
+fail() {
+    printf 'error: %s\nUse php artisan make:migration: timestamps must be unique and >= %s.\n' "$1" "$ENFORCED_FROM" >&2
+    exit 1
+}
+
+# Timestamps are fixed-width and zero-padded, so they compare correctly as strings.
+names=$(for file in database/migrations/*.php; do echo "${file##*/}"; done)
+
+for prefix in $(echo "$names" | cut -c1-17 | sort | uniq -d); do
+    [[ $prefix < $ENFORCED_FROM ]] || fail "duplicate migration timestamp '${prefix}':
+$(printf '    %s\n' database/migrations/"$prefix"*.php)"
+done
+
+for file in $(git diff --cached --name-only --diff-filter=A -- database/migrations/); do
+    [[ ${file##*/} < $ENFORCED_FROM ]] && fail "$file is dated before the enforcement cutoff."
+done
+
+exit 0
