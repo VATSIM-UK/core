@@ -19,11 +19,6 @@ class ViewFeedback extends BaseViewRecordPage
         return 'ViewFeedback';
     }
 
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        return FeedbackResource::withoutSubmitterData(parent::mutateFormDataBeforeFill($data));
-    }
-
     protected function getHeaderActions(): array
     {
         return [

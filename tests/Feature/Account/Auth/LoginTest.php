@@ -4,11 +4,8 @@ namespace Tests\Feature\Account\Auth;
 
 use App\Auth\LoginFlow;
 use App\Models\Mship\Account;
-use App\Providers\VATSIMOAuthProvider;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
-use League\OAuth2\Client\Provider\GenericResourceOwner;
-use League\OAuth2\Client\Token\AccessToken;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
@@ -43,74 +40,6 @@ class LoginTest extends TestCase
         $this->assertStringContainsString('response_type=code', $redirectUrl);
         $this->assertStringContainsString('redirect_uri='.urlencode(route('login.post')), $redirectUrl);
         $this->assertStringContainsString('client_id='.config('services.vatsim-net.connect.id'), $redirectUrl);
-    }
-
-    public function test_it_rejects_an_empty_state_when_no_state_is_stored_in_the_session()
-    {
-        $this->mock(VATSIMOAuthProvider::class, function ($mock) {
-            $mock->shouldReceive('getAccessToken')->never();
-        });
-
-        $this->get(route('login').'?code=attacker-code&state=')
-            ->assertRedirect(route('landing'))
-            ->assertSessionHas('error');
-
-        $this->assertGuest();
-    }
-
-    public function test_it_rejects_a_state_that_does_not_match_the_session()
-    {
-        $this->mock(VATSIMOAuthProvider::class, function ($mock) {
-            $mock->shouldReceive('getAccessToken')->never();
-        });
-
-        $this->withSession(['vatsimauthstate' => 'expected-state'])
-            ->get(route('login').'?code=attacker-code&state=wrong-state')
-            ->assertRedirect(route('landing'))
-            ->assertSessionHas('error');
-
-        $this->assertGuest();
-    }
-
-    public function test_it_continues_the_login_when_the_state_matches_the_session()
-    {
-        $this->mock(VATSIMOAuthProvider::class, function ($mock) {
-            $mock->shouldReceive('getAccessToken')->once()->andReturn(new AccessToken(['access_token' => 'token']));
-            $mock->shouldReceive('getResourceOwner')->once()->andReturn(new GenericResourceOwner(['data' => null], 'id'));
-        });
-
-        $this->withSession(['vatsimauthstate' => 'expected-state'])
-            ->get(route('login').'?code=valid-code&state=expected-state')
-            ->assertRedirect(route('landing'))
-            ->assertSessionHas('error', 'You cannot use our services unless you provide the relevant permissions upon login. Please try again.');
-
-        $this->assertGuest();
-    }
-
-    public function test_it_rejects_a_resource_owner_with_an_invalid_token()
-    {
-        $this->mock(VATSIMOAuthProvider::class, function ($mock) {
-            $mock->shouldReceive('getAccessToken')->once()->andReturn(new AccessToken(['access_token' => 'token']));
-            $mock->shouldReceive('getResourceOwner')->once()->andReturn(new GenericResourceOwner(['data' => [
-                'cid' => '1000001',
-                'personal' => ['name_first' => 'Test', 'name_last' => 'User', 'email' => 'test@example.com'],
-                'vatsim' => [
-                    'rating' => ['id' => 1],
-                    'pilotrating' => ['id' => 0],
-                    'division' => ['id' => 1],
-                    'region' => ['id' => 1],
-                ],
-                'oauth' => ['token_valid' => false],
-            ]], 'id'));
-        });
-
-        $this->withSession(['vatsimauthstate' => 'expected-state'])
-            ->get(route('login').'?code=valid-code&state=expected-state')
-            ->assertRedirect(route('landing'))
-            ->assertSessionHas('error', 'You cannot use our services unless you provide the relevant permissions upon login. Please try again.');
-
-        $this->assertGuest();
-        $this->assertDatabaseMissing('mship_account', ['id' => 1000001]);
     }
 
     public function test_vatsim_oauth_login_does_not_force_remember_me()

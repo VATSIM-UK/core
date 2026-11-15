@@ -148,9 +148,7 @@ return [
     |
     */
 
-    // Deliberately host-only: a shared .vatsim.uk cookie would be sent to every
-    // sibling site and would make them same-site for SameSite=lax.
-    'domain' => null,
+    'domain' => env('SESSION_DOMAIN', null),
 
     /*
     |--------------------------------------------------------------------------

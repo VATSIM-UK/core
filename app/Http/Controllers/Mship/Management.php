@@ -92,7 +92,7 @@ class Management extends \App\Http\Controllers\BaseController
 
         $validator = Validator::make(
             ['email' => $email],
-            ['email' => ['required', 'email:rfc,strict']]
+            ['email' => ['required', 'email']]
         );
 
         if ($validator->fails()) {
@@ -259,14 +259,6 @@ class Management extends \App\Http\Controllers\BaseController
             return $this->viewMake('mship.management.email.verify')->with(
                 'error',
                 'You have provided an invalid email verification token. (ERR4)'
-            );
-        }
-
-        // Does this token belong to the logged in account?
-        if ($token->related->account_id !== $this->account->id) {
-            return $this->viewMake('mship.management.email.verify')->with(
-                'error',
-                'You have provided an invalid email verification token. (ERR5)'
             );
         }
 

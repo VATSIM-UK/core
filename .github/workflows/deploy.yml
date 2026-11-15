@@ -43,7 +43,7 @@ jobs:
           DISCORD_TRAINING_ALERTS_CHANNEL_ID: ${{ secrets.DISCORD_TRAINING_ALERTS_CHANNEL_ID }}
 
       - name: Discord Notification (Start)
-        uses: rjstone/discord-webhook-notify@132f73d6641aefdf9e0a1612c8a0ff237b9590d2 # v2.3.1
+        uses: rjstone/discord-webhook-notify@v2
         with:
             severity: warn
             description: ${{ format('Starting Deployment of **{0}**', github.repository) }}
@@ -103,7 +103,7 @@ jobs:
         run: rm -rf vendor
 
       - name: Deploy Application
-        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1.0.0
+        uses: appleboy/scp-action@7e85c2e09aa21988492acd66466b5d68bda49e2b # master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
@@ -113,7 +113,7 @@ jobs:
           target: ${{ env.RELEASE_DIRECTORY }}
 
       - name: (Remote) Setup .env & install composer dependencies
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        uses: appleboy/ssh-action@c4f70287fc37c43b14b30b407224bbbc8e8c6327 # master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER}}
@@ -131,7 +131,7 @@ jobs:
           envs: RELEASE_DIRECTORY,APPLICATION_ROOT,TAG,PHP_PATH
 
       - name: (Remote) Setup shared storage
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        uses: appleboy/ssh-action@c4f70287fc37c43b14b30b407224bbbc8e8c6327 # master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER}}
@@ -149,7 +149,7 @@ jobs:
           envs: RELEASE_DIRECTORY,SHARED_DIRECTORY,APPLICATION_ROOT
 
       - name: (Remote) Prepare and activate release
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        uses: appleboy/ssh-action@c4f70287fc37c43b14b30b407224bbbc8e8c6327 # master
         env:
           GITHUB_ACTOR: ${{ github.actor }}
         with:
@@ -220,7 +220,7 @@ jobs:
           release: ${{ github.sha }}
 
       - name: Housekeeping
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        uses: appleboy/ssh-action@c4f70287fc37c43b14b30b407224bbbc8e8c6327 # master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER}}
@@ -272,7 +272,7 @@ jobs:
 
       - name: Discord Notification (Failed)
         if: failure()
-        uses: rjstone/discord-webhook-notify@132f73d6641aefdf9e0a1612c8a0ff237b9590d2 # v2.3.1
+        uses: rjstone/discord-webhook-notify@v2
         with:
             severity: error
             description: ${{ format('Deployment **FAILED** of **{0}**', github.repository) }}
@@ -283,7 +283,7 @@ jobs:
 
       - name: Discord Notification (Success)
         if: success()
-        uses: rjstone/discord-webhook-notify@132f73d6641aefdf9e0a1612c8a0ff237b9590d2 # v2.3.1
+        uses: rjstone/discord-webhook-notify@v2
         with:
             severity: info
             description: ${{ format('Deployment **SUCCEEDED** of **{0}**', github.repository) }}

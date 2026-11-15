@@ -4,7 +4,6 @@ namespace App\Models\Sys;
 
 use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes as SoftDeletingTrait;
-use Illuminate\Support\Str;
 
 /**
  * App\Models\Sys\Token.
@@ -124,7 +123,7 @@ class Token extends Model
         $token = new self;
         $token->type = $type;
         $token->expires_at = \Carbon\Carbon::now()->addMinutes($expireMinutes)->toDateTimeString();
-        $token->code = Str::random(40);
+        $token->code = uniqid(uniqid());
 
         if ($relation != null) {
             $relation->tokens()->save($token);

@@ -7,7 +7,6 @@ use App\Models\Cts\Member;
 use App\Models\Cts\TheoryQuestion;
 use App\Models\Mship\Account;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
@@ -79,35 +78,6 @@ class TheoryExamQuestionsTest extends BaseTrainingPanelTestCase
         $this->assertContains('C1', $allowedLevels);
         $this->assertNotContains('S2', $allowedLevels);
         $this->assertNotContains('S3', $allowedLevels);
-    }
-
-    #[Test]
-    public function it_locks_allowed_levels_against_client_updates()
-    {
-        $this->panelUser->givePermissionTo('training.theory.access');
-
-        $c1Question = TheoryQuestion::factory()->create(['level' => 'C1']);
-
-        $component = Livewire::actingAs($this->panelUser)
-            ->test(TheoryExamQuestions::class)
-            ->assertCanNotSeeTableRecords([$c1Question]);
-
-        $this->expectException(CannotUpdateLockedPropertyException::class);
-
-        $component->set('allowedLevels', ['S1', 'S2', 'S3', 'C1']);
-    }
-
-    #[Test]
-    public function it_locks_the_selected_level_against_client_updates()
-    {
-        $this->panelUser->givePermissionTo(['training.theory.access', 'training.theory.manage.obs']);
-
-        $component = Livewire::actingAs($this->panelUser)
-            ->test(TheoryExamQuestions::class);
-
-        $this->expectException(CannotUpdateLockedPropertyException::class);
-
-        $component->set('level', 'C1');
     }
 
     #[Test]

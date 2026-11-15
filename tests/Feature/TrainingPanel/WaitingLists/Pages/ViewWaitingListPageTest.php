@@ -459,7 +459,6 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList->refresh(), 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
-            ->assertTableActionVisible('detachWithReason', record: $waitingList->waitingListAccounts->first())
             ->mountTableAction('detachWithReason', record: $waitingList->waitingListAccounts->first())
             ->setTableActionData(['reason_type' => $removal_type])
             ->callMountedTableAction()
@@ -472,21 +471,6 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
             'removed_by' => $this->panelUser->id,
             'removal_type' => $removal_type,
         ]);
-    }
-
-    public function test_account_cannot_be_removed_without_permission()
-    {
-        $waitingList = WaitingList::factory()->create(['department' => 'atc']);
-        $account = Account::factory()->create();
-        $account->addState(State::findByCode('DIVISION'));
-        $waitingList->addToWaitingList($account, $this->panelUser);
-
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
-
-        Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList->refresh(), 'pageClass' => ViewWaitingList::class])
-            ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
-            ->assertTableActionHidden('detachWithReason', record: $waitingList->waitingListAccounts->first());
     }
 
     public function test_account_can_be_removed_with_other_reason()

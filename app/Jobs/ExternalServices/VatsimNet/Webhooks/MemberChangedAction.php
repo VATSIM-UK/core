@@ -24,7 +24,7 @@ class MemberChangedAction implements ShouldQueue
 
         foreach ($data->get('deltas', []) as $delta) {
             match ($delta['field']) {
-                'name_first', 'name_last', 'email', 'reg_date' => $this->processAccountChange($delta['field'], $delta['after']),
+                'id', 'name_first', 'name_last', 'email', 'reg_date' => $this->processAccountChange($delta['field'], $delta['after']),
                 'rating' => $this->processAtcRatingChange($delta['after']),
                 'pilotrating' => $this->processPilotRatingChange($delta['after']),
                 'division_id', 'region_id' => $this->processStateChange(),

@@ -129,6 +129,7 @@
     "ext-json": "*",
     "fakerphp/faker": "^1.24.1",
     "laravel/boost": "^2.10.4",
+    "laravel/homestead": "^15.0.3",
     "laravel/legacy-factories": "^1.4.2",
     "laravel/pint": "^1.32.2",
     "mockery/mockery": "1.6.15",
