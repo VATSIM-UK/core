@@ -200,12 +200,66 @@ class EmailAssignmentTest extends TestCase
     #[Test]
     public function test_existing_authenticated_user_can_verify_email_via_get()
     {
-        $email = factory(Email::class)->states('unverified')->create();
+        $email = $this->user->secondaryEmails()->create(['email' => 'verify.own@example.com']);
 
         $this->actingAs($this->user)
             ->get(route('mship.manage.email.verify', $email->tokens->first()))
             ->assertRedirect(route('mship.manage.dashboard'))
             ->assertSessionHas('success', 'Your new email address ('.$email->email.') has been verified!');
+
+        $this->assertTrue($email->fresh()->is_verified);
+    }
+
+    #[Test]
+    public function test_user_cannot_verify_another_users_email()
+    {
+        $email = $this->userOther->secondaryEmails()->create(['email' => $this->emailOther]);
+        $token = $email->tokens->first();
+
+        $this->actingAs($this->user)
+            ->get(route('mship.manage.email.verify', $token))
+            ->assertSee('You have provided an invalid email verification token. (ERR5)');
+
+        $this->assertFalse($email->fresh()->is_verified);
+        $this->assertNull($token->fresh()->used_at);
+    }
+
+    #[Test]
+    public function test_email_verification_token_is_random()
+    {
+        $email = $this->user->secondaryEmails()->create(['email' => 'random.token@example.com']);
+
+        $this->assertMatchesRegularExpression('/^[A-Za-z0-9]{40}$/', $email->tokens->first()->code);
+    }
+
+    #[Test]
+    public function test_email_verification_is_throttled()
+    {
+        $this->actingAs($this->user);
+
+        for ($attempt = 0; $attempt < 10; $attempt++) {
+            $this->get(route('mship.manage.email.verify', 'invalid-token'))->assertOk();
+        }
+
+        $this->get(route('mship.manage.email.verify', 'invalid-token'))->assertStatus(429);
+    }
+
+    #[Test]
+    public function test_email_add_is_throttled()
+    {
+        $this->actingAs($this->user);
+
+        for ($attempt = 0; $attempt < 10; $attempt++) {
+            $this->post(route('mship.manage.email.add.post'), [
+                'new_email' => 'not-an-email',
+                'new_email2' => 'not-an-email',
+            ])->assertRedirect(route('mship.manage.email.add'));
+        }
+
+        $this->post(route('mship.manage.email.add.post'), [
+            'new_email' => 'not-an-email',
+            'new_email2' => 'not-an-email',
+        ])->assertStatus(429);
     }
 
     #[Test]

@@ -262,6 +262,14 @@ class Management extends \App\Http\Controllers\BaseController
             );
         }
 
+        // Does this token belong to the logged in account?
+        if ($token->related->account_id !== $this->account->id) {
+            return $this->viewMake('mship.management.email.verify')->with(
+                'error',
+                'You have provided an invalid email verification token. (ERR5)'
+            );
+        }
+
         // Let's now consume this token.
         $token->consume();
 
