@@ -36,6 +36,7 @@ use Filament\Support\Enums\Alignment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\Session;
 
 class ConductExam extends Page implements HasForms, HasInfolists
@@ -56,6 +57,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
     public ?array $examResultData = [];
 
+    #[Locked]
     public int $examId;
 
     public ExamBooking $examBooking;
@@ -76,21 +78,13 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
     public function mount(): void
     {
-        $exitErrorMessage = 'You do not have permission to conduct this exam.';
         try {
             $this->examBooking = ExamBooking::findOrFail($this->examId);
         } catch (ModelNotFoundException) {
-            abort(403, $exitErrorMessage);
+            abort(403, 'You do not have permission to conduct this exam.');
         }
 
-        $permissionSafeExam = Str::lower($this->examBooking->exam);
-        if (! auth()->user()->can("training.exams.conduct.{$permissionSafeExam}")) {
-            abort(403, $exitErrorMessage);
-        }
-
-        if ($this->examBooking->finished == ExamBooking::FINISHED_FLAG || $this->examBooking->taken == 0) {
-            abort(403, $exitErrorMessage);
-        }
+        $this->assertCanConductExam();
 
         $existingExamCriteriaAssessmentById = ExamCriteriaAssessment::where('examid', $this->examId)->get()
             ->mapWithKeys(
@@ -122,6 +116,33 @@ class ConductExam extends Page implements HasForms, HasInfolists
         $this->form->fill(['form' => $existingAssessmentData]);
 
         $this->examResultForm->fill();
+    }
+
+    private function assertCanConductExam(): void
+    {
+        $exitErrorMessage = 'You do not have permission to conduct this exam.';
+
+        $user = auth()->user();
+
+        if (! $user->can('training.exams.conduct.'.Str::lower($this->examBooking->exam))) {
+            abort(403, $exitErrorMessage);
+        }
+
+        if ($this->examBooking->finished == ExamBooking::FINISHED_FLAG || $this->examBooking->taken == 0) {
+            abort(403, $exitErrorMessage);
+        }
+
+        $examiners = $this->examBooking->examiners;
+
+        $isAssignedExaminer = $examiners && in_array(
+            $user->member?->id,
+            array_map('intval', array_filter([$examiners->senior, $examiners->other, $examiners->trainee])),
+            true
+        );
+
+        if (! $isAssignedExaminer || (int) $this->examBooking->student?->cid === $user->id) {
+            abort(403, $exitErrorMessage);
+        }
     }
 
     protected function getHeaderActions(): array
@@ -258,6 +279,9 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
     public function completeExam()
     {
+        $this->examBooking->refresh();
+
+        $this->assertCanConductExam();
 
         $examResultFormData = $this->examResultForm->getState();
 
@@ -293,7 +317,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
         $this->redirect(Exams::getUrl());
     }
 
-    public function validateGradesBeforeSubmission(string $result): bool
+    protected function validateGradesBeforeSubmission(string $result): bool
     {
         // Pilot exams should pass validation always
         if ($this->examBooking->isPilotExam()) {
@@ -351,7 +375,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
 
         collect($flattenedFormData)->each(
             fn ($item) => (new ExamAssessmentRepository)->upsertExamCriteriaAssessment(
-                examId: $this->examId,
+                examId: $this->examBooking->id,
                 criteriaId: $item['criteria_id'],
                 grade: $item['grade'],
                 comments: $item['comments'] !== '' ? $item['comments'] : null,
@@ -371,7 +395,7 @@ class ConductExam extends Page implements HasForms, HasInfolists
         }
     }
 
-    public function removeTrainingPlace()
+    protected function removeTrainingPlace(): void
     {
         $studentAccount = $this->examBooking->studentAccount();
 
