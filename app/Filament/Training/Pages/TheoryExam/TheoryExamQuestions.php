@@ -22,6 +22,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Livewire\Attributes\Locked;
 
 class TheoryExamQuestions extends Page implements HasTable
 {
@@ -33,28 +34,39 @@ class TheoryExamQuestions extends Page implements HasTable
 
     protected static string|\UnitEnum|null $navigationGroup = 'Theory';
 
+    protected const LEVEL_PERMISSIONS = [
+        'S1' => 'training.theory.manage.obs',
+        'S2' => 'training.theory.manage.twr',
+        'S3' => 'training.theory.manage.app',
+        'C1' => 'training.theory.manage.ctr',
+    ];
+
+    #[Locked]
     public string $level = 'S1';
 
     public array $levels = ['S1', 'S2', 'S3', 'C1'];
 
-    protected array $userPermissionsTruthTable = [];
-
+    #[Locked]
     public array $allowedLevels = [];
 
     public function mount(): void
     {
-        $this->userPermissionsTruthTable = [
-            's1' => auth()->user()->can('training.theory.manage.obs'),
-            's2' => auth()->user()->can('training.theory.manage.twr'),
-            's3' => auth()->user()->can('training.theory.manage.app'),
-            'c1' => auth()->user()->can('training.theory.manage.ctr'),
-        ];
-        $this->allowedLevels = collect($this->userPermissionsTruthTable)->filter(fn ($value) => $value)->keys()->map(fn ($level) => strtoupper($level))->all();
+        $this->allowedLevels = array_keys(array_filter(
+            self::LEVEL_PERMISSIONS,
+            fn (string $permission) => auth()->user()->can($permission),
+        ));
 
         $levelParam = request()->get('level');
         $requestedLevel = is_string($levelParam) ? strtoupper($levelParam) : null;
 
         $this->level = in_array($requestedLevel, $this->allowedLevels) ? $requestedLevel : $this->allowedLevels[0] ?? 'S1';
+    }
+
+    protected function canManageLevel(?string $level): bool
+    {
+        $permission = self::LEVEL_PERMISSIONS[$level] ?? null;
+
+        return $permission !== null && auth()->user()->can($permission);
     }
 
     public static function canAccess(): bool
@@ -80,6 +92,8 @@ class TheoryExamQuestions extends Page implements HasTable
             ->schema($this->getQuestionFormSchema())
             ->color('success')
             ->using(function (array $data, $action) {
+                abort_unless($this->canManageLevel($data['level'] ?? null), 403);
+
                 TheoryQuestion::create([
                     ...$data,
                     'status' => 1,
@@ -134,6 +148,7 @@ class TheoryExamQuestions extends Page implements HasTable
             ->recordActions([
                 Action::make('edit')
                     ->schema($this->getQuestionFormSchema())
+                    ->authorize(fn (TheoryQuestion $record) => $this->canManageLevel($record->level))
                     ->icon('heroicon-o-pencil')
                     ->color('primary')
                     ->modalHeading('Edit Question')
@@ -155,6 +170,7 @@ class TheoryExamQuestions extends Page implements HasTable
                     })->successNotificationTitle('Question updated'),
                 ActionGroup::make([
                     Action::make('toggleStatus')
+                        ->authorize(fn (TheoryQuestion $record) => $this->canManageLevel($record->level))
                         ->icon(fn ($record) => $record->status ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
                         ->label(fn ($record) => $record->status ? 'Disable' : 'Enable')
                         ->color(fn ($record) => $record->status ? 'danger' : 'success')
@@ -167,6 +183,7 @@ class TheoryExamQuestions extends Page implements HasTable
                             $action->success();
                         })->successNotificationTitle('Question status updated'),
                     Action::make('stats')
+                        ->authorize(fn (TheoryQuestion $record) => $this->canManageLevel($record->level))
                         ->icon('heroicon-o-chart-bar')
                         ->label('Stats')
                         ->color('warning')
@@ -177,6 +194,7 @@ class TheoryExamQuestions extends Page implements HasTable
                         ->schema(fn ($record) => $this->getQuestionStatsSchema($record)),
                     Action::make('delete')
                         ->color('danger')
+                        ->authorize(fn (TheoryQuestion $record) => $this->canManageLevel($record->level))
                         ->requiresConfirmation()
                         ->icon('heroicon-o-trash')
                         ->action(function ($record, $action) {
