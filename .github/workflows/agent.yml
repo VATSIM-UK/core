@@ -55,7 +55,7 @@ jobs:
           JSON
 
       - name: Open Code Review Action
-        uses: alibaba/open-code-review@b1dcffb0729f3f2e3e47170968a5014a2e035580 # v1.13.7
+        uses: alibaba/open-code-review@4236c871fe8130aa840a2a1c0922f469e87e0416 # v1.13.8
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           llm_url: "https://opencode.ai/zen/go/v1"
