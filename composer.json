@@ -125,7 +125,7 @@
     "wohali/oauth2-discord-new": "^1.2.1"
   },
   "require-dev": {
-    "brianium/paratest": "^7.17.0",
+    "brianium/paratest": "^7.28.0",
     "ext-json": "*",
     "fakerphp/faker": "^1.24.1",
     "laravel/boost": "^2.10.4",
@@ -133,7 +133,7 @@
     "laravel/pint": "^1.32.2",
     "mockery/mockery": "1.6.15",
     "nunomaduro/collision": "^8.9.6",
-    "phpunit/phpunit": "^12.1",
+    "phpunit/phpunit": "^13.4.6",
     "spatie/laravel-ignition": "^2.12.0",
     "spatie/laravel-ray": "^1.43.9",
     "symfony/css-selector": "^8.1.10",
