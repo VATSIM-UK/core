@@ -11,7 +11,7 @@
     "@tailwindcss/vite": "^4.3.5",
     "autoprefixer": "^10.6.2",
     "blade-formatter": "^1.44.6",
-    "bootstrap": "^5.3.8",
+    "bootstrap": "^5.3.9",
     "bootstrap-sass": "^3.4.3",
     "jquery-datetimepicker": "^2.5.21",
     "laravel-vite-plugin": "^3.2.1",
