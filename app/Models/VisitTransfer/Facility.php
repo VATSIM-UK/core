@@ -208,7 +208,7 @@ class Facility extends Model
     public function addTrainingSpace()
     {
         if ($this->training_required == 1 && $this->training_spaces !== null) {
-            $this->increment('training_spaces');
+            return $this->increment('training_spaces');
         }
     }
 
