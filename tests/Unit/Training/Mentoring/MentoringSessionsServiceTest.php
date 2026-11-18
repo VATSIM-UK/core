@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Training\Mentoring;
 
+use App\Libraries\UKCP;
 use App\Models\Atc\Position;
 use App\Models\Booking;
 use App\Models\Cts\Booking as CtsBooking;
@@ -35,6 +36,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\View;
 use InvalidArgumentException;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -119,6 +121,130 @@ class MentoringSessionsServiceTest extends TestCase
         ]);
         Notification::assertSentTo($this->studentAccount, MentoringSessionAcceptedStudentNotification::class);
         Notification::assertSentTo($this->mentorAccount, MentoringSessionAcceptedMentorNotification::class);
+    }
+
+    #[Test]
+    public function create_session_uses_top_down_position_for_bookings_but_training_position_for_the_session(): void
+    {
+        Notification::fake();
+
+        $trainingPosition = TrainingPosition::factory()->create([
+            'cts_positions' => ['TST_CTR'],
+            'cts_primary_position' => 'TST_CTR',
+        ]);
+
+        $place = TrainingPlace::withoutEvents(fn () => TrainingPlace::factory()->create([
+            'account_id' => $this->studentAccount->id,
+            'training_position_id' => $trainingPosition->id,
+        ]));
+
+        CtsPosition::factory()->create([
+            'callsign' => 'TST_CTR',
+            'rts_id' => 9,
+            'prog_sheet_id' => 3,
+        ]);
+
+        CtsPosition::factory()->create([
+            'callsign' => 'TST_S_CTR',
+        ]);
+
+        $topDownPosition = Position::factory()->create([
+            'callsign' => 'TST_S_CTR',
+        ]);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) {
+            $mock->shouldReceive('getTopDownPositionsForPosition')
+                ->with('TST_CTR')
+                ->andReturn(collect([
+                    (object) ['callsign' => 'TST_S_CTR'],
+                ]));
+        });
+
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow()->format('Y-m-d'))->timeRange('10:00:00', '14:00:00')->create();
+
+        $this->assertTrue($this->service->createSession(
+            $place,
+            $availability,
+            $this->mentorAccount,
+            'TST_CTR',
+            '10:00',
+            '12:00',
+            'TST_S_CTR',
+        ));
+
+        $session = Session::query()
+            ->where('student_id', $this->studentMember->id)
+            ->where('mentor_id', $this->mentorMember->id)
+            ->latest('id')
+            ->first();
+
+        $this->assertNotNull($session);
+        $this->assertSame('TST_CTR', $session->position);
+        $this->assertSame(9, (int) $session->rts_id);
+        $this->assertSame(3, (int) $session->progress_sheet_id);
+
+        $ctsBookingId = Booking::where('bookable_type', Session::class)
+            ->where('bookable_id', $session->id)
+            ->value('cts_booking_id');
+
+        $ctsBooking = CtsBooking::query()->find($ctsBookingId);
+
+        $this->assertNotNull($ctsBooking);
+        $this->assertSame('TST_S_CTR', $ctsBooking->position);
+
+        $this->assertDatabaseHas('bookings', [
+            'bookable_type' => Session::class,
+            'bookable_id' => $session->id,
+            'position_id' => $topDownPosition->id,
+            'type' => Booking::TYPE_MENTORING,
+        ]);
+    }
+
+    #[Test]
+    public function create_session_rejects_a_top_down_position_that_does_not_belong_to_the_training_position(): void
+    {
+        $trainingPosition = TrainingPosition::factory()->create([
+            'cts_positions' => ['TST_CTR'],
+            'cts_primary_position' => 'TST_CTR',
+        ]);
+
+        $place = TrainingPlace::withoutEvents(fn () => TrainingPlace::factory()->create([
+            'account_id' => $this->studentAccount->id,
+            'training_position_id' => $trainingPosition->id,
+        ]));
+
+        CtsPosition::factory()->create([
+            'callsign' => 'TST_CTR',
+            'rts_id' => 9,
+            'prog_sheet_id' => 3,
+        ]);
+
+        CtsPosition::factory()->create([
+            'callsign' => 'TST_N_CTR',
+        ]);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) {
+            $mock->shouldReceive('getTopDownPositionsForPosition')
+                ->with('TST_CTR')
+                ->andReturn(collect([
+                    (object) ['callsign' => 'TST_S_CTR'],
+                ]));
+        });
+
+        $availability = Availability::factory()->forAccount($this->studentAccount->id)->onDate(Carbon::tomorrow()->format('Y-m-d'))->timeRange('10:00:00', '14:00:00')->create();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The selected top-down position is not valid for this training place.');
+
+        $this->service->createSession(
+            $place,
+            $availability,
+            $this->mentorAccount,
+            'TST_CTR',
+            '10:00',
+            '12:00',
+            'TST_N_CTR',
+        );
     }
 
     #[Test]
@@ -1203,6 +1329,40 @@ class MentoringSessionsServiceTest extends TestCase
         $this->assertInstanceOf(Session::class, $result);
         $this->assertSame('10:00:00', $result->taken_from);
         $this->assertSame('12:00:00', $result->taken_to);
+    }
+
+    #[Test]
+    public function check_for_overlapping_bookings_matches_any_of_the_given_callsigns(): void
+    {
+        Session::factory()->create([
+            'student_id' => $this->studentMember->id,
+            'position' => 'EGLL_APP',
+            'mentor_id' => $this->mentorMember->id,
+            'taken' => 1,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'cancelled_datetime' => null,
+        ]);
+
+        ExamBooking::factory()->create([
+            'position_1' => 'EGLL_S_APP',
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'taken_date' => Carbon::tomorrow()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+        ]);
+
+        $result = $this->service->checkForOverlappingBookings(
+            ['EGLL_S_APP', 'EGLL_APP'],
+            Carbon::tomorrow()->format('Y-m-d'),
+            '11:00',
+            '13:00',
+        );
+
+        $this->assertInstanceOf(Session::class, $result);
+        $this->assertSame('EGLL_APP', $result->position);
     }
 
     #[Test]

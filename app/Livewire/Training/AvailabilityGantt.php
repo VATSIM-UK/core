@@ -9,6 +9,7 @@ use App\Models\Cts\Session;
 use App\Models\Training\Availability;
 use App\Models\Training\Mentoring\MentoringScope;
 use App\Models\Training\TrainingPlace\TrainingPlace;
+use App\Services\Training\MentoringPositionService;
 use App\Services\Training\MentoringSessionsService;
 use App\Services\Training\MentorPermissionService;
 use App\Services\Training\TrainingPlaceService;
@@ -513,8 +514,8 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                         }),
 
                     Callout::make('overlapping_booking')
-                        ->heading(function (Get $get) use ($availability) {
-                            $overlap = $this->getOverlappingBooking($get, $availability);
+                        ->heading(function (Get $get) use ($availability, $place) {
+                            $overlap = $this->getOverlappingBooking($get, $availability, $place);
 
                             if (! $overlap) {
                                 return '';
@@ -522,8 +523,8 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
 
                             return app(MentoringSessionsService::class)->overlapHeading($overlap);
                         })
-                        ->description(function (Get $get) use ($availability) {
-                            $overlap = $this->getOverlappingBooking($get, $availability);
+                        ->description(function (Get $get) use ($availability, $place) {
+                            $overlap = $this->getOverlappingBooking($get, $availability, $place);
 
                             if (! $overlap) {
                                 return '';
@@ -532,8 +533,8 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                             return app(MentoringSessionsService::class)->overlapDescription($overlap);
                         })
                         ->danger()
-                        ->visible(function (Get $get) use ($availability) {
-                            return $this->getOverlappingBooking($get, $availability) !== null;
+                        ->visible(function (Get $get) use ($availability, $place) {
+                            return $this->getOverlappingBooking($get, $availability, $place) !== null;
                         }),
 
                     Callout::make('mentor_overlapping_session')
@@ -582,14 +583,32 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
                     return;
                 }
 
+                $selectedPosition = $data['position'];
+                $trainingPosition = app(MentoringPositionService::class)->trainingPositionFor(
+                    $place,
+                    $selectedPosition,
+                    $this->getAllowedCallsigns(),
+                );
+
+                if ($trainingPosition === null) {
+                    Notification::make()
+                        ->title('Booking Failed')
+                        ->body('The selected position is not available for this training place.')
+                        ->danger()
+                        ->send();
+
+                    return;
+                }
+
                 try {
                     $success = $mentoringService->createSession(
                         $place,
                         $availability,
                         auth()->user(),
-                        $data['position'],
+                        $trainingPosition,
                         $data['taken_from'],
                         $data['taken_to'],
+                        $selectedPosition === $trainingPosition ? null : $selectedPosition,
                     );
                 } catch (\Throwable $e) {
                     Notification::make()
@@ -655,15 +674,21 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             return [];
         }
 
-        $options = array_values(array_intersect(
-            $place->trainableCtsPositions(),
-            $this->getAllowedCallsigns(),
-        ));
+        $positionService = app(MentoringPositionService::class);
+        $options = [];
 
-        return array_combine($options, $options) ?: [];
+        foreach (array_intersect($place->trainableCtsPositions(), $this->getAllowedCallsigns()) as $parentCallsign) {
+            $options[$parentCallsign] = $parentCallsign;
+
+            foreach ($positionService->topDownCallsignsFor($parentCallsign) as $topDownCallsign) {
+                $options[$topDownCallsign] ??= $topDownCallsign;
+            }
+        }
+
+        return $options;
     }
 
-    protected function getOverlappingBooking(Get $get, Availability $availability): Session|ExamBooking|null
+    protected function getOverlappingBooking(Get $get, Availability $availability, ?TrainingPlace $place = null): Session|ExamBooking|null
     {
         $takenFrom = $get('taken_from');
         $takenTo = $get('taken_to');
@@ -673,8 +698,22 @@ class AvailabilityGantt extends Component implements HasActions, HasForms
             return null;
         }
 
+        $positions = [$position];
+
+        if ($place !== null) {
+            $trainingPosition = app(MentoringPositionService::class)->trainingPositionFor(
+                $place,
+                $position,
+                $this->getAllowedCallsigns(),
+            );
+
+            if ($trainingPosition !== null) {
+                $positions[] = $trainingPosition;
+            }
+        }
+
         return app(MentoringSessionsService::class)->checkForOverlappingBookings(
-            $position,
+            array_values(array_unique($positions)),
             $availability->startsAt()->toDateString(),
             $takenFrom,
             $takenTo,
