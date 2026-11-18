@@ -14,68 +14,68 @@ class WaitingListPolicy
 
     public function viewAny(Account $account)
     {
-        return $account->hasAnyPermission('waiting-lists.access');
+        return $account->hasAnyPermission('training.waiting-lists.access');
     }
 
     public function view(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.view.%s']);
+        return $this->checkHasPermissionForList($account, $waitingList, ['training.waiting-lists.view.%s']);
     }
 
     public function addAccounts(Account $account, WaitingList $waitingList)
     {
         return ! $waitingList->isAtCapacity() &&
-            $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.add-accounts.%s']);
+            $this->checkHasPermissionForList($account, $waitingList, ['training.waiting-lists.add-accounts.%s']);
     }
 
     public function addAccountsAdmin(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.add-accounts-admin.%s']);
+        return $this->checkHasPermissionForList($account, $waitingList, ['training.waiting-lists.add-accounts-admin.%s']);
     }
 
     public function updateAccounts(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.update-accounts.%s']);
+        return $this->checkHasPermissionForList($account, $waitingList, ['training.waiting-lists.update-accounts.%s']);
     }
 
     public function removeAccount(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.remove-accounts.%s']);
+        return $this->checkHasPermissionForList($account, $waitingList, ['training.waiting-lists.remove-accounts.%s']);
     }
 
     public function offerTrainingPlace(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.training-place.offer.%s']);
+        return $this->checkHasPermissionForList($account, $waitingList, ['training.waiting-lists.training-place.offer.%s']);
     }
 
     public function viewTrainingPlaceOffer(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.training-place.view-offer.%s']);
+        return $this->checkHasPermissionForList($account, $waitingList, ['training.waiting-lists.training-place.view-offer.%s']);
     }
 
     public function rescindTrainingPlaceOffer(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.training-place.rescind-offer.%s']);
+        return $this->checkHasPermissionForList($account, $waitingList, ['training.waiting-lists.training-place.rescind-offer.%s']);
     }
 
     public function addFlags(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.add-flags.%s']);
+        return $this->checkHasPermissionForList($account, $waitingList, ['training.waiting-lists.add-flags.%s']);
     }
 
     public function update(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.admin.%s']);
+        return $this->checkHasPermissionForList($account, $waitingList, ['training.waiting-lists.admin.%s']);
     }
 
     public function delete(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, ['waiting-lists.delete.%s']);
+        return $this->checkHasPermissionForList($account, $waitingList, ['training.waiting-lists.delete.%s']);
     }
 
     public function create(Account $account)
     {
-        return $account->hasAnyPermission(['waiting-lists.create']);
+        return $account->hasAnyPermission(['training.waiting-lists.create']);
     }
 
     public function selfEnrol(Account $account, WaitingList $waitingList)
@@ -85,8 +85,8 @@ class WaitingListPolicy
 
     public function trainingPlacesManualSetup(Account $account, WaitingList $waitingList)
     {
-        return $this->checkHasPermissionForList($account, $waitingList, 'training-places.manual-setup.%s')
-            || $account->hasPermissionTo('training-places.manual-setup');
+        return $this->checkHasPermissionForList($account, $waitingList, 'training.training-places.manual-setup.%s')
+            || $account->hasPermissionTo('training.training-places.manual-setup');
     }
 
     /**

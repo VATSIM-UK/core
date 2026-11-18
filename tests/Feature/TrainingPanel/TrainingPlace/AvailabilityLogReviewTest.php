@@ -23,7 +23,7 @@ class AvailabilityLogReviewTest extends BaseTrainingPanelTestCase
     {
         parent::setUp();
 
-        $this->panelUser->givePermissionTo('training-places.view.*');
+        $this->panelUser->givePermissionTo('training.training-places.view.*');
 
         $this->place = TrainingPlace::factory()->createQuietly();
     }

@@ -24,6 +24,12 @@ $(printf '    %s\n' database/migrations/"$prefix"*.php)"
 done
 
 for file in $(git diff --cached --name-only --diff-filter=A -- database/migrations/); do
+    # A merge stages every migration from the incoming branch as added. Those
+    # files already landed; only reject a timestamp this commit introduces.
+    if [[ -f .git/MERGE_HEAD ]] && git cat-file -e "MERGE_HEAD:${file}" 2>/dev/null; then
+        continue
+    fi
+
     [[ ${file##*/} < $ENFORCED_FROM ]] && fail "$file is dated before the enforcement cutoff."
 done
 

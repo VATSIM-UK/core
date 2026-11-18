@@ -27,8 +27,8 @@ class ViewTrainingPlaceRestoreIntegrationTest extends BaseTrainingPanelTestCase
     {
         parent::setUp();
 
-        $this->panelUser->givePermissionTo('training-places.view.*');
-        $this->panelUser->givePermissionTo('training-places.restore.*');
+        $this->panelUser->givePermissionTo('training.training-places.view.*');
+        $this->panelUser->givePermissionTo('training.training-places.restore.*');
 
         Livewire::actingAs($this->panelUser);
     }

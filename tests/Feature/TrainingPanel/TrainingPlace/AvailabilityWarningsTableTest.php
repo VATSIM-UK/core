@@ -48,7 +48,7 @@ class AvailabilityWarningsTableTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_can_delete_availability_warning_when_user_has_permission(): void
     {
-        $this->panelUser->givePermissionTo('training-places.availability-warnings.delete');
+        $this->panelUser->givePermissionTo('training.training-places.availability-warnings.delete');
 
         ['trainingPlace' => $trainingPlace, 'warning' => $warning, 'check' => $check] = $this->createTrainingPlaceWithWarning();
 
