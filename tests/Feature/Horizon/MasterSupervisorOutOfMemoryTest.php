@@ -6,6 +6,7 @@ use App\Libraries\Discord;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Laravel\Horizon\Events\MasterSupervisorOutOfMemory;
 use Laravel\Horizon\MasterSupervisor;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -23,7 +24,7 @@ class MasterSupervisorOutOfMemoryTest extends TestCase
                 return true;
             });
 
-        $master = new MasterSupervisor('testing');
+        $master = $this->master();
 
         event(new MasterSupervisorOutOfMemory($master));
         event(new MasterSupervisorOutOfMemory($master));
@@ -50,9 +51,18 @@ class MasterSupervisorOutOfMemoryTest extends TestCase
                 return true;
             });
 
-        $master = new MasterSupervisor('testing');
+        $master = $this->master();
 
         event(new MasterSupervisorOutOfMemory($master));
         event(new MasterSupervisorOutOfMemory($master));
+    }
+
+    private function master(): MasterSupervisor
+    {
+        $master = Mockery::mock(MasterSupervisor::class);
+        $master->name = 'testing-master';
+        $master->shouldReceive('memoryUsage')->andReturn(65);
+
+        return $master;
     }
 }
