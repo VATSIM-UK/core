@@ -54,7 +54,7 @@ class PurgeWithdrawnApplicationsTest extends TestCase
         $activitiesBefore = Activity::count();
         Event::fake([ApplicationWithdrawn::class]);
 
-        $migration = require database_path('migrations/2026_11_01_000000_purge_withdrawn_vt_applications.php');
+        $migration = require database_path('migrations/2026_11_18_000000_purge_withdrawn_vt_applications.php');
         $migration->up();
         $this->assertDatabaseMissing('vt_application', ['id' => $applications[15]->id]);
         $this->assertDatabaseMissing('vt_application', ['id' => $trashed->id]);
