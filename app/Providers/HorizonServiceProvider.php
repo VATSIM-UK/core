@@ -2,7 +2,13 @@
 
 namespace App\Providers;
 
+use App\Libraries\Discord;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
+use Laravel\Horizon\Events\MasterSupervisorOutOfMemory;
 use Laravel\Horizon\Horizon;
 use Laravel\Horizon\HorizonApplicationServiceProvider;
 
@@ -18,6 +24,68 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
         parent::boot();
 
         Horizon::routeMailNotificationsTo('privileged-access@vatsim.uk');
+
+        Event::listen(function (MasterSupervisorOutOfMemory $event) {
+            $this->reportMasterOutOfMemory($event);
+        });
+    }
+
+    protected function reportMasterOutOfMemory(MasterSupervisorOutOfMemory $event): void
+    {
+        if (! Cache::add('horizon:master-out-of-memory', true, now()->addMinutes(10))) {
+            return;
+        }
+
+        $master = $event->master;
+        $memoryMb = (int) ceil($master->memoryUsage());
+        $limitMb = (int) config('horizon.memory_limit');
+
+        Bugsnag::notifyError(
+            'Horizon master out of memory',
+            "Horizon master {$master->name} exceeded its memory limit ({$memoryMb}/{$limitMb}MB).",
+            function ($report) use ($master, $memoryMb, $limitMb) {
+                $report->setSeverity('error');
+                $report->setMetaData([
+                    'horizon' => [
+                        'master' => $master->name,
+                        'memory_mb' => $memoryMb,
+                        'memory_limit_mb' => $limitMb,
+                    ],
+                ]);
+            }
+        );
+
+        $this->notifyDiscordOfMasterOutOfMemory($master->name, $memoryMb, $limitMb);
+    }
+
+    protected function notifyDiscordOfMasterOutOfMemory(string $masterName, int $memoryMb, int $limitMb): void
+    {
+        $channelId = config('services.discord.critical_alerts_channel_id');
+
+        if (! $channelId) {
+            return;
+        }
+
+        $roleId = config('services.discord.technology_role_id');
+        $message = "Horizon master {$masterName} exceeded its memory limit ({$memoryMb}/{$limitMb}MB).";
+
+        if ($roleId) {
+            $message = "<@&{$roleId}> {$message}";
+        }
+
+        try {
+            app(Discord::class)->sendMessageToChannel($channelId, [
+                'content' => $message,
+                'allowed_mentions' => [
+                    'parse' => [],
+                    'roles' => $roleId ? [$roleId] : [],
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Failed to send Horizon out-of-memory Discord alert', [
+                'exception' => $e,
+            ]);
+        }
     }
 
     /**
