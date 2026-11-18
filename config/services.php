@@ -52,6 +52,8 @@ return [
         'base_discord_uri' => env('DISCORD_API_BASE', 'https://discord.com/api/v10'),
         'suspended_member_role_id' => env('DISCORD_SUSPENDED_MEMBER_ROLE_ID', '1511158845987229737'),
         'training_alerts_channel_id' => env('DISCORD_TRAINING_ALERTS_CHANNEL_ID', null),
+        'critical_alerts_channel_id' => env('DISCORD_CRITICAL_ALERTS_CHANNEL_ID', '1572681448220000377'),
+        'technology_role_id' => env('DISCORD_TECHNOLOGY_ROLE_ID', '705514418049384559'),
         'booster_role_id' => env('DISCORD_BOOSTER_ROLE_ID', '740539876889591878'),
         'enroute_controller_role_id' => env('DISCORD_ENROUTE_CONTROLLER_ROLE_ID', '742094602760224800'),
         'honeypot_channel_id' => env('DISCORD_HONEYPOT_CHANNEL_ID', '1518675437973409854'),
