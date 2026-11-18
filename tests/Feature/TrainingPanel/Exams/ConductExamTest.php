@@ -16,6 +16,7 @@ use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
 use App\Models\Training\WaitingList;
 use Illuminate\Support\Facades\Event;
+use Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
@@ -124,6 +125,125 @@ class ConductExamTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->panelUser)
             ->test(ConductExam::class, ['examId' => $exam->id])
             ->assertForbidden();
+    }
+
+    #[Test]
+    public function test_unauthorised_when_not_the_assigned_examiner()
+    {
+        $account = Account::factory()->create();
+        $student = Member::factory()->forAccount($account)->create();
+        $exam = ExamBooking::factory()->create([
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'exam' => 'TWR',
+            'student_id' => $student->id,
+            'student_rating' => Qualification::code('S1')->first()->vatsim,
+        ]);
+        $exam->examiners()->create([
+            'examid' => $exam->id,
+            'senior' => Member::factory()->create()->id,
+        ]);
+
+        $this->panelUser->givePermissionTo('training.exams.conduct.twr');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ConductExam::class, ['examId' => $exam->id])
+            ->assertForbidden();
+    }
+
+    #[Test]
+    public function test_unauthorised_when_the_student_is_also_the_assigned_examiner()
+    {
+        $account = Account::factory()->create();
+        $student = Member::factory()->forAccount($account)->create();
+        $exam = ExamBooking::factory()->create([
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'exam' => 'TWR',
+            'student_id' => $student->id,
+            'student_rating' => Qualification::code('S1')->first()->vatsim,
+        ]);
+        $exam->examiners()->create([
+            'examid' => $exam->id,
+            'senior' => $student->id,
+        ]);
+
+        $account->givePermissionTo(['training.access', 'training.exams.conduct.twr']);
+
+        Livewire::actingAs($account)
+            ->test(ConductExam::class, ['examId' => $exam->id])
+            ->assertForbidden();
+    }
+
+    #[Test]
+    public function test_exam_id_cannot_be_changed_from_the_client()
+    {
+        $account = Account::factory()->create();
+        $student = Member::factory()->forAccount($account)->create();
+        $exam = ExamBooking::factory()->create([
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'exam' => 'TWR',
+            'student_id' => $student->id,
+            'student_rating' => Qualification::code('S1')->first()->vatsim,
+        ]);
+        $exam->examiners()->create([
+            'examid' => $exam->id,
+            'senior' => $this->panelUser->member->id,
+        ]);
+
+        $this->panelUser->givePermissionTo('training.exams.conduct.twr');
+
+        $component = Livewire::actingAs($this->panelUser)
+            ->test(ConductExam::class, ['examId' => $exam->id])
+            ->assertSuccessful();
+
+        $this->expectException(CannotUpdateLockedPropertyException::class);
+
+        $component->set('examId', $exam->id + 1);
+    }
+
+    #[Test]
+    public function test_exam_cannot_be_completed_twice()
+    {
+        $account = Account::factory()->create();
+        $student = Member::factory()->forAccount($account)->create();
+        $exam = ExamBooking::factory()->create([
+            'taken' => 1,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+            'exam' => 'TWR',
+            'student_id' => $student->id,
+            'student_rating' => Qualification::code('S1')->first()->vatsim,
+        ]);
+        $exam->examiners()->create([
+            'examid' => $exam->id,
+            'senior' => $this->panelUser->member->id,
+        ]);
+
+        $this->panelUser->givePermissionTo('training.exams.conduct.twr');
+
+        ExamCriteria::create([
+            'exam' => 'TWR',
+            'criteria' => 'Test Criteria',
+            'deleted' => 0,
+        ]);
+
+        $component = Livewire::actingAs($this->panelUser)
+            ->test(ConductExam::class, ['examId' => $exam->id])
+            ->fillForm(function () use ($exam) {
+                return ['form' => ExamCriteria::byType($exam->exam)->get()->mapWithKeys(
+                    fn ($criteria) => [$criteria->id => ['comments' => '', 'grade' => 'P']]
+                )->toArray()];
+            })
+            ->set('examResultData.exam_result', PracticalResult::PASSED)
+            ->call('completeExam')
+            ->assertHasNoFormErrors();
+
+        $this->assertSame(1, PracticalResult::where('examid', $exam->id)->count());
+
+        $component->call('completeExam')->assertForbidden();
+
+        $this->assertSame(1, PracticalResult::where('examid', $exam->id)->count());
     }
 
     #[Test]

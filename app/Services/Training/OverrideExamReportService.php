@@ -11,6 +11,7 @@ use App\Models\Mship\Account;
 use App\Models\Mship\State;
 use App\Models\Roster;
 use App\Repositories\Cts\ExamAssessmentRepository;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class OverrideExamReportService
 {
@@ -23,6 +24,11 @@ class OverrideExamReportService
 
     public function handle(PracticalResult $practicalResult, array $data, Account $actor): bool
     {
+        if ((int) $practicalResult->student?->cid === (int) $actor->id
+            || ! $actor->can('training.exams.override-result')) {
+            throw new AuthorizationException('You may not override this exam report.');
+        }
+
         $newResult = ExamResultEnum::from($data['exam_result']);
         $reason = trim((string) ($data['reason'] ?? ''));
         $account = $practicalResult->examBooking->student->account;

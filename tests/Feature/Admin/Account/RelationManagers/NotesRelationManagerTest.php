@@ -31,4 +31,22 @@ class NotesRelationManagerTest extends BaseAdminTestCase
 
         $this->assertDatabaseHas('mship_account_note', ['account_id' => $account->id, 'writer_id' => $this->privacc->id, 'content' => 'the content', 'attachment_id' => null, 'attachment_type' => null, 'note_type_id' => $generalTypeId]);
     }
+
+    public function test_it_hides_internal_notes_without_sensitive_permission()
+    {
+        $account = Account::factory()->create();
+        $generalNote = $account->addNote(Type::where('name', 'General')->first(), 'a public note', $this->adminUser);
+        $internalNote = $account->addNote('discipline', 'an internal ban note', $this->adminUser);
+
+        $this->actingAsAdminUser('account.view-insensitive.*');
+
+        Livewire::test(NotesRelationManager::class, ['ownerRecord' => $account, 'pageClass' => ViewRecord::class])
+            ->assertCanSeeTableRecords([$generalNote])
+            ->assertCanNotSeeTableRecords([$internalNote]);
+
+        $this->adminUser->givePermissionTo('account.view-sensitive.*');
+
+        Livewire::test(NotesRelationManager::class, ['ownerRecord' => $account, 'pageClass' => ViewRecord::class])
+            ->assertCanSeeTableRecords([$generalNote, $internalNote]);
+    }
 }

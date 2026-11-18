@@ -170,4 +170,39 @@ class MentoringAnnouncementServiceTest extends TestCase
         $this->assertStringNotContainsString('<@&111>', $message);
         $this->assertStringContainsString('<@&222>', $message);
     }
+
+    #[Test]
+    public function it_restricts_mentions_to_the_injected_roles(): void
+    {
+        config()->set('training.discord.mentoring_announce_channel_id', '123456789');
+        config()->set('training.discord.mentoring_pilot_role_id', '111');
+        config()->set('training.discord.mentoring_controller_role_id', '222');
+
+        $discord = $this->mock(Discord::class);
+        $discord->shouldReceive('sendMessageToChannel')
+            ->once()
+            ->withArgs(fn (string $channelId, array $payload) => $channelId === '123456789'
+                && $payload['allowed_mentions'] === ['parse' => [], 'roles' => ['111']]
+                && str_contains($payload['content'], '<@&111>'));
+
+        (new MentoringAnnouncementService($discord, $this->makeAtcPermissionService()))
+            ->postAnnouncement($this->makeSession(), ['ping_pilot' => true, 'notes' => '@everyone <@&999>']);
+    }
+
+    #[Test]
+    public function it_allows_no_mentions_when_no_role_is_pinged(): void
+    {
+        config()->set('training.discord.mentoring_announce_channel_id', '123456789');
+        config()->set('training.discord.mentoring_pilot_role_id', '111');
+        config()->set('training.discord.mentoring_controller_role_id', '222');
+
+        $discord = $this->mock(Discord::class);
+        $discord->shouldReceive('sendMessageToChannel')
+            ->once()
+            ->withArgs(fn (string $channelId, array $payload) => $channelId === '123456789'
+                && $payload['allowed_mentions'] === ['parse' => [], 'roles' => []]);
+
+        (new MentoringAnnouncementService($discord, $this->makeAtcPermissionService()))
+            ->postAnnouncement($this->makeSession(), ['notes' => '@everyone <@&999>']);
+    }
 }

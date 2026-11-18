@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Roles\RelationManagers;
 
 use App\Models\Mship\Account;
 use App\Services\Roles\DelegateRoleManagementService;
+use Closure;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
@@ -58,6 +59,17 @@ class DelegatesRelationManager extends RelationManager
                             ->searchable()
                             ->getSearchResultsUsing(fn (string $search) => $service->getPotentialDelegates($search))
                             ->getOptionLabelUsing(fn ($value): ?string => Account::find($value)?->name)
+                            // The search above is a convenience only; never trust the
+                            // submitted id to be an existing, eligible staff member.
+                            ->rules([
+                                fn (): Closure => function (string $attribute, mixed $value, Closure $fail) {
+                                    $account = Account::find($value);
+
+                                    if ($account === null || ! $account->can('admin.access')) {
+                                        $fail('The selected member is not eligible to be delegated this role.');
+                                    }
+                                },
+                            ])
                             ->required(),
                     ])
                     ->modalHeading(fn () => "Delegate '{$this->getOwnerRecord()->name}'")

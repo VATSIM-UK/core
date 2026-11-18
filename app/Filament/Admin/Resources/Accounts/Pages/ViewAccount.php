@@ -47,7 +47,13 @@ class ViewAccount extends BaseViewRecordPage
                 ->color('gray')
                 ->icon('heroicon-o-cloud-arrow-down')
                 ->label('Sync Member')
+                ->visible(fn () => auth()->user()->can('update', $this->record))
                 ->action(function ($action) {
+                    // visible() governs rendering only, so re-check here: the sync
+                    // overwrites the member's details and must require the same
+                    // permission as editing them.
+                    abort_unless(auth()->user()->can('update', $this->record), 403);
+
                     UpdateMember::dispatch($this->record->id);
                     $action->success();
                 })
@@ -117,17 +123,6 @@ class ViewAccount extends BaseViewRecordPage
                     ->requiresConfirmation()
                     ->successNotificationTitle('Roster status updated!'),
                 ...$this->getRosterRestrictionActions($roster, $onRoster, $hasRosterRestriction),
-                Action::make('remove_password')
-                    ->visible(fn () => $this->record->hasPassword() && auth()->user()->can('removeSecondaryPassword', $this->record))
-                    ->color('warning')
-                    ->icon('heroicon-o-key')
-                    ->modalHeading('Remove Secondary Password')
-                    ->action(function () {
-                        $this->record->removePassword();
-                        $this->refreshFormData(['has_secondary_password']);
-                    })
-                    ->requiresConfirmation()
-                    ->successNotificationTitle('Password removed'),
                 Action::make('reset_two_factor')
                     ->label('Reset Two-Factor Authentication')
                     ->visible(fn () => $this->record->hasEnabledTwoFactorAuthentication()
@@ -210,6 +205,13 @@ class ViewAccount extends BaseViewRecordPage
                 // Notify Privellged users that a user has been impersonated
                 Contact::where('key', 'PRIVACC')->first()
                     ->notify(new UserImpersonated($this->record, auth()->user(), $data['reason']));
+
+                // Audited before the login below so the actor is the admin, not the target.
+                audit('Account impersonation started', [
+                    'admin_id' => auth()->user()->id,
+                    'target_id' => $this->record->id,
+                    'action' => 'impersonate',
+                ]);
 
                 // Let's do the login!
                 Auth::loginUsingId($this->record->id, false);

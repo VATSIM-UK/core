@@ -13,7 +13,7 @@ jobs:
       cancel-in-progress: false
     steps:
       - name: Checkout Codes
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           ref: ${{ github.event.client_payload.ref }}
@@ -43,7 +43,7 @@ jobs:
           DISCORD_TRAINING_ALERTS_CHANNEL_ID: ${{ secrets.DISCORD_TRAINING_ALERTS_CHANNEL_ID }}
 
       - name: Discord Notification (Start)
-        uses: rjstone/discord-webhook-notify@v2
+        uses: rjstone/discord-webhook-notify@132f73d6641aefdf9e0a1612c8a0ff237b9590d2 # v2.3.1
         with:
             severity: warn
             description: ${{ format('Starting Deployment of **{0}**', github.repository) }}
@@ -52,7 +52,7 @@ jobs:
             footer: ${{ format('https://github.com/{0}/actions/runs/{1}', github.repository, github.run_id) }}
             webhookUrl: ${{ secrets.ACTIONS_DISCORD_WEBHOOK }}
 
-      - uses: chrnorm/deployment-action@v2
+      - uses: chrnorm/deployment-action@500aa6a23c81ffa1acf71072aee3cfa2cc2e556a # v2.0.8
         name: Create GitHub Deployment
         id: github_deployment
         with:
@@ -62,18 +62,18 @@ jobs:
           ref: ${{ github.event.client_payload.ref }}
 
       - name: Configure PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
           php-version: '8.4'
           tools: composer:v2
 
       - name: Setup Node
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24'
+          node-version: '24.22.3'
 
       - name: Composer Cache
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: vendor
           key: composer-${{ hashFiles('**/composer.lock') }}
@@ -82,7 +82,7 @@ jobs:
             composer-
 
       - name: Node Cache
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: node_modules
           key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -103,7 +103,7 @@ jobs:
         run: rm -rf vendor
 
       - name: Deploy Application
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
@@ -113,7 +113,7 @@ jobs:
           target: ${{ env.RELEASE_DIRECTORY }}
 
       - name: (Remote) Setup .env & install composer dependencies
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER}}
@@ -131,7 +131,7 @@ jobs:
           envs: RELEASE_DIRECTORY,APPLICATION_ROOT,TAG,PHP_PATH
 
       - name: (Remote) Setup shared storage
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER}}
@@ -149,7 +149,7 @@ jobs:
           envs: RELEASE_DIRECTORY,SHARED_DIRECTORY,APPLICATION_ROOT
 
       - name: (Remote) Prepare and activate release
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         env:
           GITHUB_ACTOR: ${{ github.actor }}
         with:
@@ -210,7 +210,7 @@ jobs:
           envs: RELEASE_DIRECTORY,APPLICATION_ROOT,PHP_PATH,PHP_FPM,TAG,COMMIT,GITHUB_ACTOR
 
       - name: Create Sentry release
-        uses: getsentry/action-release@v3
+        uses: getsentry/action-release@d55c8c3b7375607e972b710f12926b676d89d7d2 # v3.8.0
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: vatsim-uk
@@ -220,7 +220,7 @@ jobs:
           release: ${{ github.sha }}
 
       - name: Housekeeping
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER}}
@@ -254,7 +254,7 @@ jobs:
 
       - name: Update Deployment Status (Failed)
         if: failure()
-        uses: chrnorm/deployment-status@v2
+        uses: chrnorm/deployment-status@6df8d036fd2fee9eb82936733953da1f8382b41e # v2.0.4
         with:
           token: ${{ github.token }}
           environment-url: https://www.vatsim.uk
@@ -263,7 +263,7 @@ jobs:
 
       - name: Update Deployment Status (Success)
         if: success()
-        uses: chrnorm/deployment-status@v2
+        uses: chrnorm/deployment-status@6df8d036fd2fee9eb82936733953da1f8382b41e # v2.0.4
         with:
           token: ${{ github.token }}
           environment-url: https://www.vatsim.uk
@@ -272,7 +272,7 @@ jobs:
 
       - name: Discord Notification (Failed)
         if: failure()
-        uses: rjstone/discord-webhook-notify@v2
+        uses: rjstone/discord-webhook-notify@132f73d6641aefdf9e0a1612c8a0ff237b9590d2 # v2.3.1
         with:
             severity: error
             description: ${{ format('Deployment **FAILED** of **{0}**', github.repository) }}
@@ -283,7 +283,7 @@ jobs:
 
       - name: Discord Notification (Success)
         if: success()
-        uses: rjstone/discord-webhook-notify@v2
+        uses: rjstone/discord-webhook-notify@132f73d6641aefdf9e0a1612c8a0ff237b9590d2 # v2.3.1
         with:
             severity: info
             description: ${{ format('Deployment **SUCCEEDED** of **{0}**', github.repository) }}

@@ -68,6 +68,35 @@ class EmailAssignmentTest extends TestCase
     }
 
     #[Test]
+    public function test_quoted_local_part_email_is_rejected_on_post()
+    {
+        $payload = '"<svg/onload=alert(1)>"@attacker.tld';
+
+        $this->actingAs($this->user)
+            ->post(route('mship.manage.email.add.post'), [
+                'new_email' => $payload,
+                'new_email2' => $payload,
+            ])
+            ->assertRedirect(route('mship.manage.email.add'))
+            ->assertSessionHas('error', 'You have entered an invalid email address.');
+
+        $this->assertDatabaseMissing('mship_account_email', ['email' => $payload]);
+    }
+
+    #[Test]
+    public function test_email_verification_flash_escapes_the_email_address()
+    {
+        $payload = '"<svg/onload=alert(1)>"@attacker.tld';
+        $email = $this->user->secondaryEmails()->create(['email' => $payload]);
+
+        $this->actingAs($this->user->fresh())
+            ->followingRedirects()
+            ->get(route('mship.manage.email.verify', $email->tokens->first()))
+            ->assertDontSee('<svg/onload=alert(1)>', false)
+            ->assertSee(e($payload), false);
+    }
+
+    #[Test]
     public function test_successful_post_email()
     {
         $data = [
@@ -171,12 +200,66 @@ class EmailAssignmentTest extends TestCase
     #[Test]
     public function test_existing_authenticated_user_can_verify_email_via_get()
     {
-        $email = factory(Email::class)->states('unverified')->create();
+        $email = $this->user->secondaryEmails()->create(['email' => 'verify.own@example.com']);
 
         $this->actingAs($this->user)
             ->get(route('mship.manage.email.verify', $email->tokens->first()))
             ->assertRedirect(route('mship.manage.dashboard'))
             ->assertSessionHas('success', 'Your new email address ('.$email->email.') has been verified!');
+
+        $this->assertTrue($email->fresh()->is_verified);
+    }
+
+    #[Test]
+    public function test_user_cannot_verify_another_users_email()
+    {
+        $email = $this->userOther->secondaryEmails()->create(['email' => $this->emailOther]);
+        $token = $email->tokens->first();
+
+        $this->actingAs($this->user)
+            ->get(route('mship.manage.email.verify', $token))
+            ->assertSee('You have provided an invalid email verification token. (ERR5)');
+
+        $this->assertFalse($email->fresh()->is_verified);
+        $this->assertNull($token->fresh()->used_at);
+    }
+
+    #[Test]
+    public function test_email_verification_token_is_random()
+    {
+        $email = $this->user->secondaryEmails()->create(['email' => 'random.token@example.com']);
+
+        $this->assertMatchesRegularExpression('/^[A-Za-z0-9]{40}$/', $email->tokens->first()->code);
+    }
+
+    #[Test]
+    public function test_email_verification_is_throttled()
+    {
+        $this->actingAs($this->user);
+
+        for ($attempt = 0; $attempt < 10; $attempt++) {
+            $this->get(route('mship.manage.email.verify', 'invalid-token'))->assertOk();
+        }
+
+        $this->get(route('mship.manage.email.verify', 'invalid-token'))->assertStatus(429);
+    }
+
+    #[Test]
+    public function test_email_add_is_throttled()
+    {
+        $this->actingAs($this->user);
+
+        for ($attempt = 0; $attempt < 10; $attempt++) {
+            $this->post(route('mship.manage.email.add.post'), [
+                'new_email' => 'not-an-email',
+                'new_email2' => 'not-an-email',
+            ])->assertRedirect(route('mship.manage.email.add'));
+        }
+
+        $this->post(route('mship.manage.email.add.post'), [
+            'new_email' => 'not-an-email',
+            'new_email2' => 'not-an-email',
+        ])->assertStatus(429);
     }
 
     #[Test]
@@ -198,14 +281,15 @@ class EmailAssignmentTest extends TestCase
     #[Test]
     public function test_it_triggers_an_update_when_un_assigning_sso_email()
     {
-        $sso_email = factory(\App\Models\Sso\Email::class)->create();
+        $email = factory(Email::class)->create(['account_id' => $this->user->id]);
+        $sso_email = factory(\App\Models\Sso\Email::class)->create(['account_email_id' => $email->id]);
 
         $initialDispatcher = Event::getFacadeRoot();
         Event::fake();
         Model::setEventDispatcher($initialDispatcher);
 
         $this->actingAs($this->user)
-            ->post(route('mship.manage.email.assignments.post', ['assign_'.$sso_email->ssoAccount->id => 'pri']));
+            ->post(route('mship.manage.email.assignments.post', ['assign_'.$sso_email->sso_account_id => 'pri']));
 
         Event::assertDispatched(AccountAltered::class);
     }

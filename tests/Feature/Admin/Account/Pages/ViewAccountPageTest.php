@@ -5,15 +5,19 @@ namespace Tests\Feature\Admin\Account\Pages;
 use App\Filament\Admin\Resources\Accounts\Pages\ViewAccount;
 use App\Jobs\UpdateMember;
 use App\Models\Contact;
+use App\Models\Mship\Account;
 use App\Models\Mship\Note\Type;
 use App\Models\Mship\State;
 use App\Models\Roster;
 use App\Notifications\Mship\TwoFactorReset;
 use App\Notifications\Mship\TwoFactorResetPerformed;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 use Livewire\Livewire;
+use Spatie\Permission\Models\Role;
 use Tests\Feature\Admin\BaseAdminTestCase;
 
 class ViewAccountPageTest extends BaseAdminTestCase
@@ -27,46 +31,65 @@ class ViewAccountPageTest extends BaseAdminTestCase
 
     public function test_can_impersonate_with_permission()
     {
+        $target = Account::factory()->createQuietly();
+
         $this->user->givePermissionTo('account.view-insensitive.*');
         $this->user->givePermissionTo('account.impersonate.*');
         Livewire::actingAs($this->user);
-        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+
+        Log::shouldReceive('channel')->with('audit')->andReturnSelf();
+        Log::shouldReceive('info')->once()->withArgs(fn ($message, $context) => $message === 'Account impersonation started'
+            && $context['admin_id'] === $this->user->id
+            && $context['target_id'] === $target->id
+            && $context['action'] === 'impersonate'
+            && $context['actor_id'] === $this->user->id
+        );
+
+        Livewire::test(ViewAccount::class, ['record' => $target->id])
             ->assertActionVisible('impersonate')
             ->callAction('impersonate', data: ['reason' => 'Some reason for impersonating a user']);
 
-        $this->assertEquals($this->privacc->id, auth()->user()->id);
+        $this->assertEquals($target->id, auth()->user()->id);
     }
 
-    public function test_cant_remove_password_without_permission()
+    public function test_cant_impersonate_a_more_privileged_account()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->privacc->setPassword('123');
+        $this->user->givePermissionTo('account.impersonate.*');
         Livewire::actingAs($this->user);
-        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])->assertActionHidden('remove_password');
-    }
 
-    public function test_can_remove_password_with_permission()
-    {
-        $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('account.remove-password.*');
-        $this->privacc->setPassword('123');
-        $this->assertTrue($this->privacc->fresh()->hasPassword());
-
-        Livewire::actingAs($this->user);
         Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
-            ->assertActionVisible('remove_password')
-            ->callAction('remove_password');
+            ->assertActionHidden('impersonate')
+            ->mountAction('impersonate')
+            ->assertActionNotMounted();
 
-        $this->assertFalse($this->privacc->fresh()->hasPassword());
+        $this->assertEquals($this->user->id, auth()->user()->id);
     }
 
-    public function test_can_remove_password_not_visible_when_no_password()
+    public function test_super_admin_can_impersonate_another_super_admin()
     {
-        $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('account.remove-password.*');
-        Livewire::actingAs($this->user);
-        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
-            ->assertActionHidden('remove_password');
+        $target = Account::factory()->createQuietly();
+        DB::table('mship_account_role')->insert([
+            'model_type' => Account::class,
+            'model_id' => $target->id,
+            'role_id' => Role::findByName('privacc')->id,
+        ]);
+
+        $this->actingAsSuperUser();
+
+        Log::shouldReceive('channel')->with('audit')->andReturnSelf();
+        Log::shouldReceive('info')->once()->withArgs(fn ($message, $context) => $message === 'Account impersonation started'
+            && $context['admin_id'] === $this->privacc->id
+            && $context['target_id'] === $target->id
+            && $context['action'] === 'impersonate'
+            && $context['actor_id'] === $this->privacc->id
+        );
+
+        Livewire::test(ViewAccount::class, ['record' => $target->id])
+            ->assertActionVisible('impersonate')
+            ->callAction('impersonate', data: ['reason' => 'Some reason for impersonating a user']);
+
+        $this->assertEquals($target->id, auth()->user()->id);
     }
 
     public function test_cant_see_email_address_without_permission()
@@ -119,7 +142,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
 
     public function test_can_request_update()
     {
-        $this->user->givePermissionTo('account.view-insensitive.*');
+        $this->user->givePermissionTo(['account.view-insensitive.*', 'account.edit-basic-details.*']);
         Livewire::actingAs($this->user);
 
         Bus::fake();
@@ -129,6 +152,19 @@ class ViewAccountPageTest extends BaseAdminTestCase
             ->callAction('request_central_update');
 
         Bus::assertDispatched(UpdateMember::class, fn (UpdateMember $job) => $job->accountID === $this->privacc->id);
+    }
+
+    public function test_cant_request_update_without_permission()
+    {
+        $this->user->givePermissionTo('account.view-insensitive.*');
+        Livewire::actingAs($this->user);
+
+        Bus::fake();
+
+        Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
+            ->assertActionHidden('request_central_update');
+
+        Bus::assertNotDispatched(UpdateMember::class);
     }
 
     public function test_records_page_visit_in_admin_log()
@@ -381,7 +417,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
             ->assertActionHidden('grant_visiting_status');
     }
 
-    protected function enableTwoFactorFor(\App\Models\Mship\Account $account): void
+    protected function enableTwoFactorFor(Account $account): void
     {
         app(EnableTwoFactorAuthentication::class)($account, true);
 
@@ -417,7 +453,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
     public function test_reset_two_factor_hidden_when_two_factor_disabled()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('account.remove-password.*');
+        $this->user->givePermissionTo('account.reset-two-factor.*');
 
         Livewire::actingAs($this->user);
         Livewire::test(ViewAccount::class, ['record' => $this->privacc->id])
@@ -427,7 +463,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
     public function test_can_reset_two_factor_with_permission()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('account.remove-password.*');
+        $this->user->givePermissionTo('account.reset-two-factor.*');
         $this->enableTwoFactorFor($this->privacc);
 
         $this->assertTrue($this->privacc->fresh()->hasEnabledTwoFactorAuthentication());
@@ -448,7 +484,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
     public function test_reset_two_factor_creates_a_security_note()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('account.remove-password.*');
+        $this->user->givePermissionTo('account.reset-two-factor.*');
         $this->enableTwoFactorFor($this->privacc);
 
         Livewire::actingAs($this->user);
@@ -466,7 +502,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
     public function test_reset_two_factor_notifies_the_member()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('account.remove-password.*');
+        $this->user->givePermissionTo('account.reset-two-factor.*');
         $this->enableTwoFactorFor($this->privacc);
 
         Livewire::actingAs($this->user);
@@ -479,7 +515,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
     public function test_reset_two_factor_notifies_privileged_users()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('account.remove-password.*');
+        $this->user->givePermissionTo('account.reset-two-factor.*');
         $this->enableTwoFactorFor($this->privacc);
 
         Livewire::actingAs($this->user);
@@ -495,7 +531,7 @@ class ViewAccountPageTest extends BaseAdminTestCase
     public function test_reset_two_factor_requires_a_reason()
     {
         $this->user->givePermissionTo('account.view-insensitive.*');
-        $this->user->givePermissionTo('account.remove-password.*');
+        $this->user->givePermissionTo('account.reset-two-factor.*');
         $this->enableTwoFactorFor($this->privacc);
 
         Livewire::actingAs($this->user);

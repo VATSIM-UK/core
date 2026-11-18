@@ -172,7 +172,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'account.view-insensitive.*',
             'account.view-sensitive.*',
             'account.edit-basic-details.*',
-            'account.remove-password.*',
+            'account.reset-two-factor.*',
             'account.unlink-discord.*',
             'account.impersonate.*',
             'account.edit-roles.*',

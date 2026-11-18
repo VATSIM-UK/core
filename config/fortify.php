@@ -3,7 +3,7 @@
 /**
  * Laravel Fortify — two-factor authentication only.
  *
- * VATSIM OAuth and secondary passwords remain the application's login flow.
+ * VATSIM OAuth is the application's login flow.
  * Fortify's default routes are disabled; 2FA HTTP endpoints live in
  * routes/fortify-two-factor.php and App\Providers\FortifyServiceProvider.
  */
@@ -80,14 +80,12 @@ return [
     |--------------------------------------------------------------------------
     |
     | Do not add registration, resetPasswords, updatePasswords, passkeys, etc.
-    | confirmPassword gates enable/disable behind secondary-password confirmation.
     |
     */
 
     'features' => [
         Features::twoFactorAuthentication([
             'confirm' => true,
-            'confirmPassword' => true,
         ]),
     ],
 

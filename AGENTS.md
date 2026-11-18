@@ -16,7 +16,7 @@ php artisan test --filter=TestName  # focused
 npm run build                       # REQUIRED before tests — some Blade views reference Vite assets
 ```
 
-- Node 24 required (`.nvmrc`, `package.json` engines). Git hooks via `prek install` (Pint, blade-formatter, markdownlint, yaml/json checks).
+- Node 24 required (`.nvmrc`, `package.json` engines). Git hooks via `prek install` (Pint, blade-formatter, markdownlint, yaml/json checks, migration timestamps).
 
 ## Local setup
 
@@ -50,6 +50,7 @@ Two MySQL connections are **always active** — never assume data is in the defa
 - `mysql` (default) — core app DB (`DB_MYSQL_NAME`). Tables carry `mship_`, `vt_`, `sys_` prefixes.
 - `cts` — Controller Training System DB (`CTS_DATABASE`, or `CTS_DATABASE_URL`). Access via `App\Models\Cts\*` models and `App\Repositories\Cts\*`; CTS models use `->on('cts')` or `protected $connection = 'cts'`.
 - In `testing` with `TEST_TOKEN` set, the CTS DB name is suffixed `_test_<token>` (see `config/database.php`) so parallel processes don't collide.
+- Migrations run in filename order: use `php artisan make:migration` so timestamps stay unique and newer than everything on `main`. The `migration-timestamps` prek hook enforces this for migrations dated `2026_11_15_000000` and later.
 
 ## Architecture
 

@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Accounts\RelationManagers;
 
 use App\Filament\Admin\Resources\Roles\RoleResource;
 use App\Services\Roles\DelegateRoleManagementService;
+use App\Services\Roles\PrivilegeCeiling;
 use Filament\Actions\AttachAction;
 use Filament\Actions\BulkAction;
 use Filament\Actions\DetachAction;
@@ -41,13 +42,16 @@ class RolesRelationManager extends RelationManager
                     ->recordSelectOptionsQuery(function (Builder $query) {
                         $service = new DelegateRoleManagementService;
 
-                        return $service->getManageableRolesQuery($query, auth()->user());
+                        return $service->getManageableRolesQuery($query, auth()->user())
+                            ->whereIn('id', app(PrivilegeCeiling::class)->grantableRoleIds(auth()->user()));
                     })
                     ->before(function (AttachAction $action, array $data) {
                         $service = new DelegateRoleManagementService;
                         $role = Role::find($data['recordId']);
 
-                        if (! auth()->user()->can($service->delegatePermissionName($role))) {
+                        if (! $role
+                            || ! auth()->user()->can($service->delegatePermissionName($role))
+                            || ! app(PrivilegeCeiling::class)->canGrantRole(auth()->user(), $role)) {
                             Notification::make()
                                 ->danger()
                                 ->title('Permission denied')

@@ -11,7 +11,7 @@ Route::group([
         'prefix' => 'vatsim-net',
         'as' => 'vatsim-net.',
     ], function () {
-        Route::post('webhook', ProcessVatsimNetWebhook::class)->name('webhook');
+        Route::post('webhook', ProcessVatsimNetWebhook::class)->middleware('throttle:60,1')->name('webhook');
     });
 
 });

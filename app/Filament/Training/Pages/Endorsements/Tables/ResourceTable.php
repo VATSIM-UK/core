@@ -12,6 +12,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class ResourceTable extends Component implements HasActions, HasForms, HasTable
@@ -20,6 +21,7 @@ class ResourceTable extends Component implements HasActions, HasForms, HasTable
     use InteractsWithForms;
     use InteractsWithTable;
 
+    #[Locked]
     public string $resource;
 
     protected const ALLOWED_RESOURCES = [
@@ -30,16 +32,24 @@ class ResourceTable extends Component implements HasActions, HasForms, HasTable
 
     public function table(Table $table): Table
     {
-        abort_unless(in_array($this->resource, self::ALLOWED_RESOURCES, true), 403);
+        $this->authorizeTableResource();
 
         return ($this->resource)::table($table);
     }
 
     protected function getTableQuery(): ?Builder
     {
-        abort_unless(in_array($this->resource, self::ALLOWED_RESOURCES, true), 403);
+        $this->authorizeTableResource();
 
         return ($this->resource)::getEloquentQuery();
+    }
+
+    private function authorizeTableResource(): void
+    {
+        abort_unless(
+            in_array($this->resource, self::ALLOWED_RESOURCES, true) && $this->resource::canAccess(),
+            403,
+        );
     }
 
     public function render()

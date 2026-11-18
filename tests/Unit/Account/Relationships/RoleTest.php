@@ -27,22 +27,6 @@ class RoleTest extends TestCase
     }
 
     #[Test]
-    public function it_correctly_determines_if_the_password_is_mandatory()
-    {
-        $role = factory(Role::class)->create(['password_mandatory' => true]);
-
-        $this->assertTrue($role->password_mandatory);
-    }
-
-    #[Test]
-    public function it_correctly_determines_if_a_password_lifetime_exists()
-    {
-        $role = factory(Role::class)->create(['password_lifetime' => 30]);
-
-        $this->assertEquals($role->password_lifetime, 30);
-    }
-
-    #[Test]
     public function it_correctly_determines_that_the_role_has_a_session_timeout()
     {
         $role = factory(Role::class)->create(['session_timeout' => 60]);

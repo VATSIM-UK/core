@@ -216,55 +216,6 @@
 				</div>
 			</div>
 			<div class="panel panel-ukblue">
-				<div class="panel-heading"><i class="fa fa-lock"></i> &thinsp; Secondary Password
-				</div>
-				<div class="panel-body">
-					<!-- Content Of Panel [START] -->
-					<!-- Top Row [START] -->
-					<div class="row">
-						<div class="col-xs-12">
-							Your authentication for VATSIM UK is largely handled by VATSIM.net's certificate server.
-							From time to time this can go offline,
-							which will prevent you from accessing any UK service. In order to avoid being impacted
-							by this, members are encouraged to set
-							a secondary password. In doing so, you will be asked for this password after every login
-							and when the certificate server is offline.
-						</div>
-					</div>
-					<!-- Top Row [END] -->
-					<br />
-					<!-- Second Row [START] -->
-					<div class="row">
-						<div class="col-xs-4">
-							<b>STATUS: </b>
-							@if ($_account->password)
-								ENABLED
-							@else
-								DISABLED
-							@endif
-						</div>
-						@if ($_account->password)
-							<div class="col-xs-4">
-								<a href="{{ route('password.change') }}">Click to Modify</a>
-							</div>
-							<div class="col-xs-4">
-								@if (!$_account->mandatory_password)
-									<a href="{{ route('password.delete') }}">Click to Disable</a>
-								@else
-									Cannot be disabled.
-								@endif
-							</div>
-						@else
-							<div class="col-xs-4">
-								<a href="{{ route('password.create') }}">Click to Enable</a>
-							</div>
-						@endif
-					</div>
-					<!-- Second Row [END] -->
-					<!-- Content Of Panel [END] -->
-				</div>
-			</div>
-			<div class="panel panel-ukblue">
 				<div class="panel-heading"><i class="fa fa-graduation-cap"></i> &thinsp; ATC & Pilot Qualifications
 
 					<div class="pull-right">
@@ -395,8 +346,12 @@
 												<strong>LAST LOGIN</strong>: {{ $tsreg->last_login }}<br />
 												<strong>OPERATING SYSTEM</strong>: {{ $tsreg->last_os }}<br />
 											@endif
-											[ <a href="{{ route('teamspeak.delete', [$tsreg->id]) }}">Remove
-												Registration</a>
+											[ <form method="POST" action="{{ route('teamspeak.delete', [$tsreg->id]) }}" style="display: inline">
+												@csrf
+												@method('DELETE')
+												<button type="submit" class="btn btn-link p-0" style="vertical-align: baseline">Remove
+													Registration</button>
+											</form>
 											]<br />&nbsp;
 										</div>
 									@endforeach
@@ -451,7 +406,11 @@
 										{{ $_account->discord_user ? '@' . ($_account->discord_user['username'] ?? 'Unknown') : $_account->discord_id }}.
 									</button>
 								</a>
-								<p class="text-center"><a href="{{ route('discord.destroy') }}">Unlink Account</a></p>
+								<form method="POST" action="{{ route('discord.destroy') }}" class="text-center" style="margin: 0">
+									@csrf
+									@method('DELETE')
+									<button type="submit" class="btn btn-link p-0">Unlink Account</button>
+								</form>
 							@endif
 						</div>
 					</div>
@@ -468,9 +427,10 @@
 							<b>UK CONTROLLER<br />PLUGIN KEYS</b>
 							@if (count($pluginKeys))
 								<div class="text-center pt-4">
-									<a class="btn btn-warning btn-sm" href="{{ route('ukcp.token.invalidate') }}">
-										Invalidate Token(s)
-									</a>
+									<form method="POST" action="{{ route('ukcp.token.invalidate') }}">
+										@csrf
+										<button type="submit" class="btn btn-warning btn-sm">Invalidate Token(s)</button>
+									</form>
 									</br>
 									<small>
 										Note: If you are currently online, some operations, such as squawk assignments, will

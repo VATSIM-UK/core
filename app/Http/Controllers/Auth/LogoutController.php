@@ -13,11 +13,14 @@ class LogoutController extends BaseController
         $request->session()->forget([
             'login.id',
             'login.remember',
-            'auth.password_confirmed_at',
+            'auth_override',
         ]);
 
         Auth::guard('web')->logout();
         Auth::guard('vatsim-sso')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect()->route('site.home');
     }
