@@ -481,8 +481,8 @@ class ViewWaitingListPageTest extends BaseTrainingPanelTestCase
         $account->addState(State::findByCode('DIVISION'));
         $waitingList->addToWaitingList($account, $this->panelUser);
 
-        $this->panelUser->givePermissionTo('waiting-lists.view.atc');
-        $this->panelUser->givePermissionTo('waiting-lists.access');
+        $this->panelUser->givePermissionTo('training.waiting-lists.view.atc');
+        $this->panelUser->givePermissionTo('training.waiting-lists.access');
 
         Livewire::test(AccountsRelationManager::class, ['ownerRecord' => $waitingList->refresh(), 'pageClass' => ViewWaitingList::class])
             ->assertCanSeeTableRecords([$waitingList->waitingListAccounts->first()])
