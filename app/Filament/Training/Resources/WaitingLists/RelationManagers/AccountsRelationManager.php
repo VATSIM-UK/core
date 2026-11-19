@@ -82,7 +82,7 @@ class AccountsRelationManager extends RelationManager
                     ]),
 
                 Fieldset::make('cts_theory_exam')
-                    ->label('CTS Theory Exam')
+                    ->label('Theory Exam')
                     ->columnSpanFull()
                     ->schema(function (WaitingListAccount $record) {
                         return [
@@ -121,7 +121,7 @@ class AccountsRelationManager extends RelationManager
                 TextColumn::make('created_at')->label('Added On')->dateTime(),
                 IconColumn::make('cts_theory_exam')
                     ->boolean()
-                    ->label('CTS Theory Exam')
+                    ->label('Theory Exam')
                     ->getStateUsing(fn (WaitingListAccount $record) => $record->account->hasPassedTheoryExam($record->waitingList->cts_theory_exam_level))
                     ->visible(fn () => $this->ownerRecord->feature_toggles['check_cts_theory_exam'] ?? true),
                 ...$this->getFlagColumns(),

@@ -81,7 +81,7 @@ class WaitingListResource extends Resource
                             ->default(true),
 
                         Toggle::make('feature_toggles.check_cts_theory_exam')
-                            ->label('Display CTS Theory Exam')
+                            ->label('Display Theory Exam')
                             ->default(true),
 
                         Toggle::make('requires_roster_membership')
