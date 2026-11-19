@@ -89,7 +89,9 @@ class ViewSeminar extends ViewRecord
                             ->send();
                     }
                 })
-                ->visible(fn () => ! $this->record->isClosed() && auth()->user()->can('update', $this->record)),
+                ->visible(fn () => $this->record->training_group === 'OBS to S1 Training'
+                    && ! $this->record->isClosed()
+                    && auth()->user()->can('update', $this->record)),
 
             Action::make('manualClose')
                 ->label(fn () => $this->record->closed_at ? 'Closed' : 'Close Seminar')
