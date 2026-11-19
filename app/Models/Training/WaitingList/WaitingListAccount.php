@@ -3,13 +3,11 @@
 namespace App\Models\Training\WaitingList;
 
 use App\Enums\TrainingPlaceOfferStatus;
-use App\Models\Cts\TheoryResult;
 use App\Models\Model;
 use App\Models\Mship\Account;
 use App\Models\Training\TrainingPlace\TrainingPlaceOffer;
 use App\Models\Training\WaitingList;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -157,26 +155,8 @@ class WaitingListAccount extends Model
 
     public function theoryExamPassed(): Attribute
     {
-        $passed = false;
-
-        if ($this->waitingList?->department === WaitingList::ATC_DEPARTMENT) {
-            try {
-                $result = TheoryResult::forAccount($this->account_id);
-            } catch (ModelNotFoundException) {
-                return Attribute::make(
-                    get: fn () => false,
-                );
-            }
-
-            if ($result && $result->count()) {
-                $passed = $result
-                    ->where('exam', $this->waitingList->cts_theory_exam_level)
-                    ->where('pass', true)->count() > 0;
-            }
-        }
-
         return Attribute::make(
-            get: fn () => $passed,
+            get: fn () => $this->account?->hasPassedTheoryExam($this->waitingList?->cts_theory_exam_level) ?? false,
         );
     }
 
