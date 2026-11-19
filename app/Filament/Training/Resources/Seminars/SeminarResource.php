@@ -22,6 +22,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -62,12 +63,12 @@ class SeminarResource extends Resource
 
     public static function scopeCallout(): Callout
     {
-        return Callout::make('OBS -> S1 Seminars Only')
+        return Callout::make('Seminar Training Groups')
             ->info()
             ->columnSpanFull()
             ->description(
-                'This functionality can work for seminars beyond OBS > S1 training, but there is currently ONLY copy text for OBS > S1 seminars. '.
-                'If you would like to use it for other TGs, whether Pilot or ATC, please contact the Technology Team.'
+                'Seminars can be run for the following training groups: '.implode(', ', Seminar::ALLOWED_TRAINING_GROUPS).'. '.
+                'The invitation and theory exam reminder copy text used depends on the training group selected.'
             );
     }
 
@@ -79,10 +80,19 @@ class SeminarResource extends Resource
                     Grid::make(2)->schema([
                         TextInput::make('name')->required()->maxLength(255),
 
+                        Select::make('training_group')
+                            ->label('Training Group')
+                            ->options(array_combine(Seminar::ALLOWED_TRAINING_GROUPS, Seminar::ALLOWED_TRAINING_GROUPS))
+                            ->required()
+                            ->live()
+                            ->afterStateUpdated(fn (callable $set) => $set('waiting_list_id', null)),
+
                         Select::make('waiting_list_id')
                             ->label('Waiting List')
-                            ->options(WaitingList::query()
-                                ->where('department', WaitingList::ATC_DEPARTMENT)
+                            ->options(fn (Get $get) => WaitingList::query()
+                                ->where('department', $get('training_group') === 'OBS to S1 Training'
+                                    ? WaitingList::ATC_DEPARTMENT
+                                    : WaitingList::PILOT_DEPARTMENT)
                                 ->orderBy('name')
                                 ->pluck('name', 'id'))
                             ->searchable()

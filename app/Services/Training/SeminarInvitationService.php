@@ -119,7 +119,7 @@ class SeminarInvitationService
                 'status' => SeminarTheoryReminderStatus::Pending,
             ]);
 
-            $waitingListAccount->account->notify(new SeminarTheoryExamReminderNotification);
+            $waitingListAccount->account->notify(new SeminarTheoryExamReminderNotification($seminar));
         });
     }
 

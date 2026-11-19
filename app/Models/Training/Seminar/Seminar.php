@@ -22,6 +22,56 @@ class Seminar extends Model
 
     public const ADMISSIONS_CLOSE_MINUTES = 30;
 
+    /** Training groups that support seminars. */
+    public const ALLOWED_TRAINING_GROUPS = [
+        'OBS to S1 Training',
+        'P1 Training',
+        'P2 Training',
+        'P3 Training',
+        'P4 Training',
+    ];
+
+    /**
+     * Email subjects and views used for each training group's seminar emails.
+     */
+    public const SEMINAR_EMAIL_COPY = [
+        'OBS to S1 Training' => [
+            'invitation_subject' => 'OBS > S1 Seminar Invitation',
+            'short_notice_subject' => 'OBS > S1 Seminar Invitation',
+            'invitation_view' => 'emails.training.seminar_invitation',
+            'theory_exam_subject' => 'OBS > S1 Seminar - Theory Exam Required',
+            'theory_exam_view' => 'emails.training.seminar_theory_exam_reminder',
+        ],
+        'P1 Training' => [
+            'invitation_subject' => 'Seminar Invitation',
+            'short_notice_subject' => 'Seminar Invitation - Short Notice',
+            'invitation_view' => 'emails.training.seminar_invitation_pilot',
+            'theory_exam_subject' => 'PTD - Theory Exam Required',
+            'theory_exam_view' => 'emails.training.seminar_theory_exam_reminder_pilot',
+        ],
+        'P2 Training' => [
+            'invitation_subject' => 'Seminar Invitation',
+            'short_notice_subject' => 'Seminar Invitation - Short Notice',
+            'invitation_view' => 'emails.training.seminar_invitation_pilot',
+            'theory_exam_subject' => 'PTD - Theory Exam Required',
+            'theory_exam_view' => 'emails.training.seminar_theory_exam_reminder_pilot',
+        ],
+        'P3 Training' => [
+            'invitation_subject' => 'Seminar Invitation',
+            'short_notice_subject' => 'Seminar Invitation - Short Notice',
+            'invitation_view' => 'emails.training.seminar_invitation_pilot',
+            'theory_exam_subject' => 'PTD - Theory Exam Required',
+            'theory_exam_view' => 'emails.training.seminar_theory_exam_reminder_pilot',
+        ],
+        'P4 Training' => [
+            'invitation_subject' => 'Seminar Invitation',
+            'short_notice_subject' => 'Seminar Invitation - Short Notice',
+            'invitation_view' => 'emails.training.seminar_invitation_pilot',
+            'theory_exam_subject' => 'PTD - Theory Exam Required',
+            'theory_exam_view' => 'emails.training.seminar_theory_exam_reminder_pilot',
+        ],
+    ];
+
     /**
      * TODO: This is currently hardcoded to the OBS > S1 mentors channel. If seminars are
      *       created for other training groups, capture the mentors channel ID for each
@@ -102,6 +152,16 @@ class Seminar extends Model
     public function isShortNotice(): bool
     {
         return $this->startsAt()->lessThanOrEqualTo(now()->addHours(self::SHORT_NOTICE_THRESHOLD_HOURS));
+    }
+
+    public static function seminarEmailCopyFor(?string $trainingGroup): array
+    {
+        return self::SEMINAR_EMAIL_COPY[$trainingGroup] ?? self::SEMINAR_EMAIL_COPY['OBS to S1 Training'];
+    }
+
+    public function seminarEmailCopy(): array
+    {
+        return self::seminarEmailCopyFor($this->training_group);
     }
 
     public function startsAt()
