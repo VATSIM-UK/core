@@ -121,10 +121,11 @@ class UpdateRoster extends Command
             ->each
             ->remove($rosterUpdate);
 
-        // On an ATC waiting list, not on the roster, need to be removed...
+        $onRoster = Roster::withoutGlobalScopes()->pluck('account_id');
+
         $removeFromWaitingList = WaitingListAccount::with('waitingList', 'account')
             ->whereIn('list_id', WaitingList::where('department', WaitingList::ATC_DEPARTMENT)->where('requires_roster_membership', true)->get('id'))
-            ->whereNotIn('account_id', $rosterMembers)
+            ->whereNotIn('account_id', $onRoster)
             ->get();
 
         $removal = new WaitingList\Removal(WaitingList\RemovalReason::Inactivity, null, 'Triggered by roster removal');
@@ -137,12 +138,6 @@ class UpdateRoster extends Command
                     'waiting_list_id' => $waitingListAccount->waitingList->id,
                 ]);
             });
-
-        // Not on the roster, need to be on...
-        Roster::upsert(
-            $eligible->map(fn ($value) => ['account_id' => $value])->toArray(),
-            ['account_id']
-        );
 
         $rosterUpdate->update([
             'data' => [
