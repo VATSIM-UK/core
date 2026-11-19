@@ -27,6 +27,7 @@ use App\Models\Mship\Concerns\HasRoles;
 use App\Models\Mship\Concerns\HasSeminarInvitations;
 use App\Models\Mship\Concerns\HasStates;
 use App\Models\Mship\Concerns\HasTeamSpeakRegistrations;
+use App\Models\Mship\Concerns\HasTheoryExamResults;
 use App\Models\Mship\Concerns\HasTwoFactor;
 use App\Models\Mship\Concerns\HasVisitTransferApplications;
 use App\Models\Mship\Concerns\HasWaitingLists;
@@ -253,6 +254,7 @@ class Account extends Model implements AuthenticatableContract, AuthorizableCont
         HasSeminarInvitations,
         HasStates,
         HasTeamSpeakRegistrations,
+        HasTheoryExamResults,
         HasTwoFactor,
         HasVisitTransferApplications,
         HasWaitingLists,
