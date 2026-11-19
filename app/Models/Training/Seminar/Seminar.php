@@ -31,6 +31,15 @@ class Seminar extends Model
         'P4 Training',
     ];
 
+    /** Department used to scope seminar access to a training group. */
+    public const TRAINING_GROUP_DEPARTMENTS = [
+        'OBS to S1 Training' => WaitingList::ATC_DEPARTMENT,
+        'P1 Training' => WaitingList::PILOT_DEPARTMENT,
+        'P2 Training' => WaitingList::PILOT_DEPARTMENT,
+        'P3 Training' => WaitingList::PILOT_DEPARTMENT,
+        'P4 Training' => WaitingList::PILOT_DEPARTMENT,
+    ];
+
     /**
      * Email subjects and views used for each training group's seminar emails.
      */

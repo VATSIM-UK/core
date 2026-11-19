@@ -41,7 +41,7 @@ class ViewSeminar extends ViewRecord
                         app(SeminarInvitationService::class)->topUpAutomaticInvitations($this->record);
                     });
                 })
-                ->visible(fn () => ! $this->record->isSendingCutoffReached() && ! $this->record->automatic_invitations_enabled && auth()->user()->can('training.seminars.manage.*')),
+                ->visible(fn () => ! $this->record->isSendingCutoffReached() && ! $this->record->automatic_invitations_enabled && auth()->user()->can('update', $this->record)),
 
             Action::make('disableAutoInvite')
                 ->label('Disable Automatic Invitations')
@@ -58,7 +58,7 @@ class ViewSeminar extends ViewRecord
                 ->action(function (): void {
                     $this->record->update(['automatic_invitations_enabled' => false]);
                 })
-                ->visible(fn () => $this->record->automatic_invitations_enabled && auth()->user()->can('training.seminars.manage.*')),
+                ->visible(fn () => $this->record->automatic_invitations_enabled && auth()->user()->can('update', $this->record)),
 
             Action::make('announceToMentors')
                 ->label('Announce to Mentors')
@@ -89,7 +89,7 @@ class ViewSeminar extends ViewRecord
                             ->send();
                     }
                 })
-                ->visible(fn () => ! $this->record->isClosed() && auth()->user()->can('training.seminars.manage.*')),
+                ->visible(fn () => ! $this->record->isClosed() && auth()->user()->can('update', $this->record)),
 
             Action::make('manualClose')
                 ->label(fn () => $this->record->closed_at ? 'Closed' : 'Close Seminar')
@@ -111,17 +111,17 @@ class ViewSeminar extends ViewRecord
                         'closed_at' => now(),
                     ]);
                 })
-                ->visible(fn () => auth()->user()->can('training.seminars.manage.*')),
+                ->visible(fn () => auth()->user()->can('update', $this->record)),
 
             ActionGroup::make([
                 EditAction::make()
                     ->label('Edit Seminar')
-                    ->visible(fn () => auth()->user()->can('training.seminars.manage.*')),
+                    ->visible(fn () => auth()->user()->can('update', $this->record)),
             ])
                 ->label('Actions')
                 ->icon('heroicon-o-cog-6-tooth')
                 ->color('gray')
-                ->visible(fn () => auth()->user()->can('training.seminars.manage.*')),
+                ->visible(fn () => auth()->user()->can('update', $this->record)),
 
         ];
     }

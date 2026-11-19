@@ -37,7 +37,7 @@ class AttendeesRelationManager extends RelationManager
                     ->modalDescription('Manually create a training place for this student. This does not send an offer email.')
                     ->color(fn (SeminarAttendee $record) => $this->hasTrainingPlace($record) ? 'gray' : 'success')
                     ->disabled(fn (SeminarAttendee $record) => $this->hasTrainingPlace($record))
-                    ->visible(fn () => auth()->user()->can('training.seminars.manage.*')
+                    ->visible(fn () => auth()->user()->can('update', $this->ownerRecord)
                         && ($this->ownerRecord->relationLoaded('waitingList')
                             ? $this->ownerRecord->waitingList !== null
                             : $this->ownerRecord->waitingList()->exists()))

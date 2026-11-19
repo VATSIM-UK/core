@@ -116,7 +116,11 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Seminar Permissions
             'training.seminars.view.*',
+            'training.seminars.view.atc',
+            'training.seminars.view.pilot',
             'training.seminars.manage.*',
+            'training.seminars.manage.atc',
+            'training.seminars.manage.pilot',
 
             // Waiting List Permissions
             'training.waiting-lists.access',

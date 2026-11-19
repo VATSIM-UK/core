@@ -11,6 +11,7 @@ use App\Filament\Training\Resources\Seminars\RelationManagers\InvitationsRelatio
 use App\Filament\Training\Resources\Seminars\RelationManagers\WaitingListRelationManager;
 use App\Models\Training\Seminar\Seminar;
 use App\Models\Training\WaitingList;
+use App\Policies\Training\SeminarPolicy;
 use Carbon\Carbon;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
@@ -43,22 +44,30 @@ class SeminarResource extends Resource
 
     public static function canAccess(): bool
     {
-        return auth()->user()->can('training.seminars.view.*');
+        return auth()->user()->can('viewAny', Seminar::class);
     }
 
     public static function canCreate(): bool
     {
-        return auth()->user()->can('training.seminars.manage.*');
+        return auth()->user()->can('create', Seminar::class);
     }
 
     public static function canEdit($record): bool
     {
-        return auth()->user()->can('training.seminars.manage.*');
+        return auth()->user()->can('update', $record);
     }
 
     public static function canDelete($record): bool
     {
-        return auth()->user()->can('training.seminars.manage.*');
+        return auth()->user()->can('delete', $record);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->whereIn(
+            'training_group',
+            app(SeminarPolicy::class)->allowedTrainingGroups(auth()->user(), 'view')
+        );
     }
 
     public static function scopeCallout(): Callout
@@ -82,7 +91,9 @@ class SeminarResource extends Resource
 
                         Select::make('training_group')
                             ->label('Training Group')
-                            ->options(array_combine(Seminar::ALLOWED_TRAINING_GROUPS, Seminar::ALLOWED_TRAINING_GROUPS))
+                            ->options(fn () => collect(app(SeminarPolicy::class)->allowedTrainingGroups(auth()->user(), 'manage'))
+                                ->mapWithKeys(fn (string $trainingGroup) => [$trainingGroup => $trainingGroup])
+                                ->all())
                             ->required()
                             ->live()
                             ->afterStateUpdated(fn (callable $set) => $set('waiting_list_id', null)),
