@@ -36,7 +36,7 @@ class PositionGroupPolicy
      */
     public function update(Account $account, PositionGroup $positionGroup): bool
     {
-        return true;
+        return false;
     }
 
     /**

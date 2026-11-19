@@ -241,6 +241,41 @@ class UKCP
         }
     }
 
+    /**
+     * Fetch the positions below the given controller position in UKCP's top-down orders.
+     *
+     * @return Collection<object{id: int, callsign: string, frequency: float}>|null
+     */
+    public function getTopDownPositionsForPosition(string $callsign): ?Collection
+    {
+        return Cache::remember(
+            "ukcp:top-down:{$callsign}",
+            now()->addHour(),
+            function () use ($callsign) {
+                try {
+                    $response = $this->client->get(
+                        config('services.ukcp.url').'/api/controller/'.rawurlencode($callsign).'/top-down',
+                        [
+                            'headers' => [
+                                'Authorization' => 'Bearer '.$this->apiKey,
+                            ],
+                            'timeout' => 15,
+                        ]
+                    );
+
+                    return collect(json_decode($response->getBody()->getContents()));
+                } catch (ClientException|GuzzleException $e) {
+                    Log::error('Failed to fetch UKCP top-down positions.', [
+                        'exception' => $e,
+                        'callsign' => $callsign,
+                    ]);
+
+                    return null;
+                }
+            }
+        );
+    }
+
     private function getStandStatusCacheKey(string $airfieldIcao): string
     {
         return sprintf('UKCP_STAND_STATUS_%s', $airfieldIcao);

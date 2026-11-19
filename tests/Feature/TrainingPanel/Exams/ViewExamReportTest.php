@@ -431,6 +431,70 @@ class ViewExamReportTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function test_examiner_without_override_permission_cannot_call_override_result_directly()
+    {
+        $this->panelUser->givePermissionTo([
+            'training.exams.access',
+            'training.exams.conduct.twr',
+        ]);
+
+        $this->practicalResult->update(['result' => PracticalResult::FAILED]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewExamReport::class, ['examId' => $this->examBooking->id])
+            ->call('overrideResult', [
+                'exam_result' => PracticalResult::PASSED,
+                'reason' => 'Bypassing the hidden action',
+            ])
+            ->assertForbidden();
+
+        $this->assertSame(PracticalResult::FAILED, $this->practicalResult->fresh()->result);
+    }
+
+    #[Test]
+    public function test_student_cannot_override_their_own_exam_result()
+    {
+        $this->student->givePermissionTo('training.access');
+        $this->practicalResult->update(['result' => PracticalResult::FAILED]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewExamReport::class, ['examId' => $this->examBooking->id])
+            ->assertSuccessful()
+            ->assertDontSeeHtml('override_result')
+            ->call('overrideResult', [
+                'exam_result' => PracticalResult::PASSED,
+                'reason' => 'Self issued pass',
+            ])
+            ->assertForbidden();
+
+        $this->assertSame(PracticalResult::FAILED, $this->practicalResult->fresh()->result);
+    }
+
+    #[Test]
+    public function test_student_with_override_permission_cannot_override_their_own_exam_result()
+    {
+        $this->student->givePermissionTo([
+            'training.access',
+            'training.exams.access',
+            'training.exams.conduct.twr',
+            'training.exams.override-result',
+        ]);
+        $this->practicalResult->update(['result' => PracticalResult::FAILED]);
+
+        Livewire::actingAs($this->student)
+            ->test(ViewExamReport::class, ['examId' => $this->examBooking->id])
+            ->assertSuccessful()
+            ->assertDontSeeHtml('override_result')
+            ->call('overrideResult', [
+                'exam_result' => PracticalResult::PASSED,
+                'reason' => 'Self issued pass',
+            ])
+            ->assertForbidden();
+
+        $this->assertSame(PracticalResult::FAILED, $this->practicalResult->fresh()->result);
+    }
+
+    #[Test]
     public function test_override_result_updates_practical_result()
     {
         $this->panelUser->givePermissionTo([

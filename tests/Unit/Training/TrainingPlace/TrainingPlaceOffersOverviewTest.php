@@ -61,7 +61,7 @@ class TrainingPlaceOffersOverviewTest extends TestCase
     #[Test]
     public function it_renders_the_widget()
     {
-        $this->actingAsWithPermission('waiting-lists.training-place.view-offer.atc');
+        $this->actingAsWithPermission('training.waiting-lists.training-place.view-offer.atc');
 
         Livewire::test(TrainingPlaceOffersOverview::class)
             ->assertSuccessful();
@@ -70,7 +70,7 @@ class TrainingPlaceOffersOverviewTest extends TestCase
     #[Test]
     public function it_shows_offers_for_authorised_waiting_lists()
     {
-        $this->actingAsWithPermission('waiting-lists.training-place.view-offer.atc');
+        $this->actingAsWithPermission('training.waiting-lists.training-place.view-offer.atc');
 
         $atcOffer = $this->createOffer($this->atcWaitingList);
         $pilotOffer = $this->createOffer($this->pilotWaitingList);
@@ -84,8 +84,8 @@ class TrainingPlaceOffersOverviewTest extends TestCase
     public function rescind_action_is_visible_for_pending_offers_with_permission()
     {
         $this->actingAsWithPermission(
-            'waiting-lists.training-place.view-offer.atc',
-            'waiting-lists.training-place.rescind-offer.atc',
+            'training.waiting-lists.training-place.view-offer.atc',
+            'training.waiting-lists.training-place.rescind-offer.atc',
         );
 
         $offer = $this->createOffer($this->atcWaitingList, ['status' => TrainingPlaceOfferStatus::Pending]);
@@ -98,8 +98,8 @@ class TrainingPlaceOffersOverviewTest extends TestCase
     public function rescind_action_is_hidden_for_non_pending_offers()
     {
         $this->actingAsWithPermission(
-            'waiting-lists.training-place.view-offer.atc',
-            'waiting-lists.training-place.rescind-offer.atc',
+            'training.waiting-lists.training-place.view-offer.atc',
+            'training.waiting-lists.training-place.rescind-offer.atc',
         );
 
         $declinedOffer = $this->createOffer($this->atcWaitingList, ['status' => TrainingPlaceOfferStatus::Declined]);
@@ -114,7 +114,7 @@ class TrainingPlaceOffersOverviewTest extends TestCase
     public function rescind_action_is_hidden_without_permission()
     {
         $this->actingAsWithPermission(
-            'waiting-lists.training-place.view-offer.atc',
+            'training.waiting-lists.training-place.view-offer.atc',
         );
 
         $offer = $this->createOffer($this->atcWaitingList, ['status' => TrainingPlaceOfferStatus::Pending]);
@@ -127,9 +127,9 @@ class TrainingPlaceOffersOverviewTest extends TestCase
     public function rescind_and_remove_action_is_visible_with_correct_permissions()
     {
         $this->actingAsWithPermission(
-            'waiting-lists.training-place.view-offer.atc',
-            'waiting-lists.training-place.rescind-offer.atc',
-            'waiting-lists.remove-accounts.atc',
+            'training.waiting-lists.training-place.view-offer.atc',
+            'training.waiting-lists.training-place.rescind-offer.atc',
+            'training.waiting-lists.remove-accounts.atc',
         );
 
         $offer = $this->createOffer($this->atcWaitingList, ['status' => TrainingPlaceOfferStatus::Pending]);
@@ -142,8 +142,8 @@ class TrainingPlaceOffersOverviewTest extends TestCase
     public function rescind_and_remove_action_is_hidden_without_remove_permission()
     {
         $this->actingAsWithPermission(
-            'waiting-lists.training-place.view-offer.atc',
-            'waiting-lists.training-place.rescind-offer.atc',
+            'training.waiting-lists.training-place.view-offer.atc',
+            'training.waiting-lists.training-place.rescind-offer.atc',
         );
 
         $offer = $this->createOffer($this->atcWaitingList, ['status' => TrainingPlaceOfferStatus::Pending]);

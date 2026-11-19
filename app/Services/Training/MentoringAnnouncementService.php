@@ -36,6 +36,10 @@ class MentoringAnnouncementService
 
         $this->discord->sendMessageToChannel($channelId, [
             'content' => $this->buildMessage($session, $data),
+            'allowed_mentions' => [
+                'parse' => [],
+                'roles' => $this->mentionedRoleIds($data),
+            ],
         ]);
     }
 
@@ -88,12 +92,19 @@ class MentoringAnnouncementService
 
     private function buildMentions(array $data): string
     {
-        $pilotRoleId = config('training.discord.mentoring_pilot_role_id');
-        $controllerRoleId = config('training.discord.mentoring_controller_role_id');
+        return collect($this->mentionedRoleIds($data))
+            ->map(fn (string $roleId) => "<@&{$roleId}>")
+            ->implode(' ');
+    }
 
-        $pingPilot = ! empty($data['ping_pilot']);
-        $pingController = ! empty($data['ping_controller']);
-
-        return collect([$pingPilot && filled($pilotRoleId) ? "<@&{$pilotRoleId}>" : null, $pingController && filled($controllerRoleId) ? "<@&{$controllerRoleId}>" : null])->filter()->implode(' ');
+    /**
+     * Role IDs the announcement is allowed to ping; user-supplied notes may not mention anyone.
+     */
+    private function mentionedRoleIds(array $data): array
+    {
+        return array_values(array_filter([
+            ! empty($data['ping_pilot']) ? config('training.discord.mentoring_pilot_role_id') : null,
+            ! empty($data['ping_controller']) ? config('training.discord.mentoring_controller_role_id') : null,
+        ]));
     }
 }

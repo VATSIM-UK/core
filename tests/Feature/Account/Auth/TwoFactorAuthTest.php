@@ -3,8 +3,12 @@
 namespace Tests\Feature\Account\Auth;
 
 use App\Libraries\UKCP;
+use App\Listeners\Mship\LockTwoFactorChallenge;
 use App\Models\Mship\Account;
+use App\Notifications\Mship\TwoFactorChallengeLocked;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 use Laravel\Fortify\Fortify;
 use Mockery\MockInterface;
@@ -22,7 +26,6 @@ class TwoFactorAuthTest extends TestCase
         parent::setUp();
 
         $this->account = Account::factory()->create([
-            'password' => 'secret-password',
         ]);
     }
 
@@ -71,27 +74,11 @@ class TwoFactorAuthTest extends TestCase
     }
 
     #[Test]
-    public function secondary_login_redirects_to_two_factor_challenge_when_enabled(): void
-    {
-        $this->enableTwoFactorFor($this->account);
-
-        $this->actingAs($this->account, 'vatsim-sso')
-            ->post(route('auth-secondary.post'), [
-                'password' => 'secret-password',
-            ])
-            ->assertRedirect(route('two-factor.login'));
-
-        $this->assertGuest('web');
-        $this->assertEquals($this->account->id, session('login.id'));
-    }
-
-    #[Test]
     public function logout_clears_partial_two_factor_session(): void
     {
         session([
             'login.id' => $this->account->id,
             'login.remember' => false,
-            'auth.password_confirmed_at' => now()->unix(),
         ]);
 
         $this->actingAs($this->account)
@@ -100,7 +87,6 @@ class TwoFactorAuthTest extends TestCase
 
         $this->assertGuest();
         $this->assertNull(session('login.id'));
-        $this->assertNull(session('auth.password_confirmed_at'));
     }
 
     #[Test]
@@ -178,20 +164,6 @@ class TwoFactorAuthTest extends TestCase
     }
 
     #[Test]
-    public function secondary_login_sets_password_confirmed_at_before_two_factor_challenge(): void
-    {
-        $this->enableTwoFactorFor($this->account);
-
-        $this->actingAs($this->account, 'vatsim-sso')
-            ->post(route('auth-secondary.post'), [
-                'password' => 'secret-password',
-            ])
-            ->assertRedirect(route('two-factor.login'));
-
-        $this->assertNotNull(session('auth.password_confirmed_at'));
-    }
-
-    #[Test]
     public function setup_page_displays_manual_secret_when_pending_confirmation(): void
     {
         app(EnableTwoFactorAuthentication::class)($this->account, true);
@@ -211,7 +183,6 @@ class TwoFactorAuthTest extends TestCase
         app(EnableTwoFactorAuthentication::class)($this->account, true);
 
         $this->actingAs($this->account)
-            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->from(route('two-factor.setup'))
             ->post(route('two-factor.confirm'), ['code' => '000000'])
             ->assertRedirect(route('two-factor.setup'))
@@ -226,27 +197,9 @@ class TwoFactorAuthTest extends TestCase
     }
 
     #[Test]
-    public function setup_does_not_require_password_confirmation_when_no_secondary_password_is_set(): void
+    public function account_can_complete_two_factor_setup(): void
     {
-        $account = Account::factory()->create(['password' => null]);
-        $role = factory(Role::class)->create(['two_factor_mandatory' => true]);
-        $account->assignRole($role);
-
-        $response = $this->actingAs($account)
-            ->post(route('two-factor.enable'));
-
-        $response->assertRedirect();
-        $this->assertStringNotContainsString(
-            'auth/two-factor/confirm-password',
-            (string) $response->headers->get('Location')
-        );
-        $this->assertNotNull($account->fresh()->two_factor_secret);
-    }
-
-    #[Test]
-    public function passwordless_account_can_complete_two_factor_setup(): void
-    {
-        $account = Account::factory()->create(['password' => null]);
+        $account = Account::factory()->create();
         $role = factory(Role::class)->create(['two_factor_mandatory' => true]);
         $account->assignRole($role);
 
@@ -265,47 +218,6 @@ class TwoFactorAuthTest extends TestCase
     }
 
     #[Test]
-    public function setup_still_requires_password_confirmation_when_a_secondary_password_is_set(): void
-    {
-        $role = factory(Role::class)->create(['two_factor_mandatory' => true]);
-        $this->account->assignRole($role);
-
-        $response = $this->actingAs($this->account)
-            ->post(route('two-factor.enable'));
-
-        $response->assertRedirect();
-        $this->assertStringContainsString(
-            'auth/two-factor/confirm-password',
-            (string) $response->headers->get('Location')
-        );
-        $this->assertNull($this->account->fresh()->two_factor_secret);
-    }
-
-    #[Test]
-    public function confirm_password_redirect_accepts_same_host_urls(): void
-    {
-        $redirect = route('site.home');
-
-        $this->actingAs($this->account)
-            ->post(route('two-factor.confirm-password.store'), [
-                'password' => 'secret-password',
-                'redirect' => $redirect,
-            ])
-            ->assertRedirect($redirect);
-    }
-
-    #[Test]
-    public function confirm_password_redirect_rejects_external_urls(): void
-    {
-        $this->actingAs($this->account)
-            ->post(route('two-factor.confirm-password.store'), [
-                'password' => 'secret-password',
-                'redirect' => 'https://example.com/phishing',
-            ])
-            ->assertRedirect(route('mship.manage.dashboard'));
-    }
-
-    #[Test]
     public function confirming_two_factor_redirects_to_backup_codes_page(): void
     {
         app(EnableTwoFactorAuthentication::class)($this->account, true);
@@ -315,7 +227,6 @@ class TwoFactorAuthTest extends TestCase
         $recoveryCode = $this->account->fresh()->recoveryCodes()[0];
 
         $this->actingAs($this->account)
-            ->withSession(['auth.password_confirmed_at' => now()->unix()])
             ->post(route('two-factor.confirm'), ['code' => $code])
             ->assertRedirect(route('two-factor.backup-codes'))
             ->assertSessionHas('success');
@@ -373,6 +284,81 @@ class TwoFactorAuthTest extends TestCase
 
         $this->assertAuthenticatedAs($this->account);
         $this->assertNull(session('login.id'));
+    }
+
+    #[Test]
+    public function five_failed_challenges_lock_the_challenge_and_notify_the_member(): void
+    {
+        $this->enableTwoFactorFor($this->account);
+
+        $secret = Fortify::currentEncrypter()->decrypt($this->account->fresh()->two_factor_secret);
+
+        session([
+            'login.id' => $this->account->id,
+            'login.remember' => false,
+        ]);
+
+        for ($attempt = 1; $attempt <= 4; $attempt++) {
+            $this->post(route('two-factor.login.store'), ['code' => '000000'])
+                ->assertSessionHasErrors('code');
+        }
+
+        Notification::assertNotSentTo($this->account, TwoFactorChallengeLocked::class);
+
+        $this->post(route('two-factor.login.store'), ['code' => '000000'])
+            ->assertSessionHasErrors('code');
+
+        Notification::assertSentToTimes($this->account, TwoFactorChallengeLocked::class, 1);
+
+        // Wait out the per-minute limit so only the lockout can block a valid code.
+        $this->travel(2)->minutes();
+
+        $this->post(route('two-factor.login.store'), [
+            'code' => app(Google2FA::class)->getCurrentOtp($secret),
+        ])
+            ->assertRedirect(route('two-factor.login'))
+            ->assertSessionHasErrors('code');
+
+        $this->assertGuest('web');
+        Notification::assertSentToTimes($this->account, TwoFactorChallengeLocked::class, 1);
+
+        // The lock is temporary and lifts after the full 15 minutes.
+        $this->travel(14)->minutes();
+
+        $this->post(route('two-factor.login.store'), [
+            'code' => app(Google2FA::class)->getCurrentOtp($secret),
+        ])
+            ->assertRedirect(route('mship.manage.dashboard'));
+
+        $this->assertAuthenticatedAs($this->account);
+    }
+
+    #[Test]
+    public function valid_challenge_code_clears_the_failure_count(): void
+    {
+        $this->enableTwoFactorFor($this->account);
+
+        $secret = Fortify::currentEncrypter()->decrypt($this->account->fresh()->two_factor_secret);
+
+        session([
+            'login.id' => $this->account->id,
+            'login.remember' => false,
+        ]);
+
+        for ($attempt = 1; $attempt <= 4; $attempt++) {
+            $this->post(route('two-factor.login.store'), ['code' => '000000'])
+                ->assertSessionHasErrors('code');
+        }
+
+        $this->assertSame(4, RateLimiter::attempts(LockTwoFactorChallenge::failuresKey($this->account->id)));
+
+        $this->post(route('two-factor.login.store'), [
+            'code' => app(Google2FA::class)->getCurrentOtp($secret),
+        ])
+            ->assertRedirect(route('mship.manage.dashboard'));
+
+        $this->assertAuthenticatedAs($this->account);
+        $this->assertSame(0, RateLimiter::attempts(LockTwoFactorChallenge::failuresKey($this->account->id)));
     }
 
     protected function enableTwoFactorFor(Account $account): void

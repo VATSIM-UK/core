@@ -7,7 +7,6 @@ use App\Http\Controllers\BaseController;
 use App\Models\Mship\Account;
 use App\Providers\VATSIMOAuthProvider;
 use Carbon\Carbon;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -19,8 +18,6 @@ use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
  */
 class LoginController extends BaseController
 {
-    use AuthenticatesUsers;
-
     protected $provider;
 
     /**
@@ -44,7 +41,10 @@ class LoginController extends BaseController
             return redirect()->away($authorizationUrl);
         }
 
-        if ($request->input('state') !== session()->pull('vatsimauthstate')) {
+        $storedState = $request->session()->pull('vatsimauthstate');
+        $state = $request->input('state');
+
+        if (! is_string($state) || ! is_string($storedState) || $storedState === '' || ! hash_equals($storedState, $state)) {
             return redirect()->route('landing')->withError('Something went wrong, please try again.');
         }
 
@@ -71,7 +71,7 @@ class LoginController extends BaseController
             ! optional($resourceOwner->data->personal)->name_last ||
             ! optional($resourceOwner->data->personal)->email ||
             ! $resourceOwner->data->vatsim ||
-            ! $resourceOwner->data->oauth->token_valid === 'true'
+            ! $resourceOwner->data->oauth->token_valid
         ) {
             return redirect()->route('landing')->withError('You cannot use our services unless you provide the relevant permissions upon login. Please try again.');
         }

@@ -98,6 +98,14 @@ class EventServiceProvider extends ServiceProvider
         \Laravel\Fortify\Events\RecoveryCodeReplaced::class => [
             \App\Listeners\Mship\NotifyOfRecoveryCodeUse::class,
         ],
+
+        \Laravel\Fortify\Events\TwoFactorAuthenticationFailed::class => [
+            \App\Listeners\Mship\LockTwoFactorChallenge::class,
+        ],
+
+        \Laravel\Fortify\Events\ValidTwoFactorAuthenticationCodeProvided::class => [
+            \App\Listeners\Mship\LockTwoFactorChallenge::class,
+        ],
     ];
 
     /**

@@ -56,18 +56,17 @@ class NotificationTest extends TestCase
     }
 
     #[Test]
-    public function test_notification_banner_doesnt_show_on_secondary_login()
+    public function test_notification_content_is_escaped_and_preserves_line_breaks()
     {
-        factory(Notification::class)->create();
-        $this->user->password = '123';
-        $this->user->save();
+        $notification = factory(Notification::class)->create([
+            'content' => "Line one\n<script>alert(1)</script>",
+        ]);
 
-        $this->followingRedirects()->actingAs($this->user, 'vatsim-sso')
-            ->get(route('auth-secondary'))
-            ->assertDontSee('You currently have unread notifications');
-
-        $this->followingRedirects()->actingAs($this->user, 'web')
-            ->get(route('mship.manage.dashboard'))
-            ->assertSee('You currently have unread notifications');
+        $this->actingAs($this->user)
+            ->get(route('mship.notification.list'))
+            ->assertOk()
+            ->assertSee('Line one<br />', false)
+            ->assertSee('&lt;script&gt;alert(1)&lt;/script&gt;', false)
+            ->assertDontSee('<script>alert(1)</script>', false);
     }
 }

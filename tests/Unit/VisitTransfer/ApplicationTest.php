@@ -3,6 +3,7 @@
 namespace Tests\Unit\VisitTransfer;
 
 use App\Enums\VTCheckStatus;
+use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeEditedException;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\NetworkData\Atc;
@@ -231,6 +232,21 @@ class ApplicationTest extends TestCase
 
         $this->assertNotEquals(VTCheckStatus::NotRequired, $application->fresh()->check_outcome_90_day);
         $this->assertNotEquals(VTCheckStatus::NotRequired, $application->fresh()->check_outcome_50_hours);
+    }
+
+    #[Test]
+    public function set_facility_throws_when_the_application_is_not_in_progress()
+    {
+        $this->expectException(ApplicationCannotBeEditedException::class);
+
+        $facility = Facility::factory()->visit('atc')->create();
+
+        $application = Application::factory()->visit('atc')->create([
+            'account_id' => $this->user->id,
+            'status' => Application::STATUS_SUBMITTED,
+        ]);
+
+        $application->setFacility($facility);
     }
 
     public static function providerCancelTest()

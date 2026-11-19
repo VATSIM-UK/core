@@ -36,6 +36,12 @@ use App\Models\Model;
  */
 class Note extends Model
 {
+    /**
+     * Note types whose contents must not be shown below the sensitive
+     * account permission tier (ban notes, 2FA reset reasons).
+     */
+    public const SENSITIVE_TYPE_SHORT_CODES = ['discipline', 'security'];
+
     protected $table = 'mship_account_note';
 
     protected $primaryKey = 'id';
@@ -69,5 +75,10 @@ class Note extends Model
     public function attachment()
     {
         return $this->morphTo();
+    }
+
+    public function isSensitive(): bool
+    {
+        return in_array($this->type?->short_code, self::SENSITIVE_TYPE_SHORT_CODES, true);
     }
 }

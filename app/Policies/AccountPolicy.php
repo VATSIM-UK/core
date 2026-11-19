@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Mship\Account;
+use App\Services\Roles\PrivilegeCeiling;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
@@ -74,24 +75,11 @@ class AccountPolicy
     }
 
     /**
-     * Whether the user can remove another user's secondary password
-     *
-     * @return void
-     */
-    public function removeSecondaryPassword(Account $actor, Account $subject)
-    {
-        return $actor->can("account.remove-password.{$subject->id}") && $this->passesSelfCheck($actor, $subject);
-    }
-
-    /**
      * Whether the user can reset another user's two-factor authentication.
-     *
-     * Deliberately reuses the remove-password permission: both are account
-     * recovery powers exercised by the same people.
      */
     public function resetTwoFactor(Account $actor, Account $subject)
     {
-        return $actor->can("account.remove-password.{$subject->id}") && $this->passesSelfCheck($actor, $subject);
+        return $actor->can("account.reset-two-factor.{$subject->id}") && $this->passesSelfCheck($actor, $subject);
     }
 
     /**
@@ -143,7 +131,8 @@ class AccountPolicy
     /** Determine whether the user can impersonate the subject account */
     public function impersonate(Account $actor, Account $subject)
     {
-        return $actor->can("account.impersonate.{$subject->id}");
+        return $actor->can("account.impersonate.{$subject->id}")
+            && app(PrivilegeCeiling::class)->canImpersonate($actor, $subject);
     }
 
     protected function passesSelfCheck(Account $actor, Account $subject)

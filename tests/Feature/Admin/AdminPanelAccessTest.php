@@ -2,8 +2,11 @@
 
 namespace Tests\Feature\Admin\Filament;
 
+use App\Http\Middleware\AdminPanelFilamentAccessMiddleware;
 use App\Models\Mship\Account;
+use App\Models\Mship\Account\Ban;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -49,5 +52,22 @@ class AdminPanelAccessTest extends TestCase
         $this->actingAs($account);
 
         $this->get('/admin')->assertStatus(200);
+    }
+
+    #[Test]
+    public function it_redirects_banned_accounts_to_the_ban_page()
+    {
+        $account = Account::factory()->has(Ban::factory())->create();
+        $account->givePermissionTo('admin.access');
+
+        $this->actingAs($account);
+
+        $this->get('/admin')->assertRedirect(route('banned.local'));
+    }
+
+    #[Test]
+    public function it_reapplies_panel_access_middleware_on_livewire_updates()
+    {
+        $this->assertContains(AdminPanelFilamentAccessMiddleware::class, Livewire::getPersistentMiddleware());
     }
 }

@@ -42,6 +42,13 @@ class CreateEndorsementRequest extends CreateRecord
             });
     }
 
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['requested_by'] = auth()->id();
+
+        return $data;
+    }
+
     protected function afterCreate(): void
     {
         if ($this->approvalData === null) {

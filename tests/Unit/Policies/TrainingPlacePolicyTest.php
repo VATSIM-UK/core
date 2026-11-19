@@ -29,10 +29,10 @@ class TrainingPlacePolicyTest extends TestCase
     public function view_any_allows_when_user_has_atc_or_pilot_view_permission(): void
     {
         $atcOnly = Account::factory()->create();
-        $atcOnly->givePermissionTo('training-places.view.atc');
+        $atcOnly->givePermissionTo('training.training-places.view.atc');
 
         $pilotOnly = Account::factory()->create();
-        $pilotOnly->givePermissionTo('training-places.view.pilot');
+        $pilotOnly->givePermissionTo('training.training-places.view.pilot');
 
         $neither = Account::factory()->create();
 
@@ -45,7 +45,7 @@ class TrainingPlacePolicyTest extends TestCase
     public function view_any_allows_wildcard_view_permission(): void
     {
         $account = Account::factory()->create();
-        $account->givePermissionTo('training-places.view.*');
+        $account->givePermissionTo('training.training-places.view.*');
 
         $this->assertTrue($this->policy->viewAny($account));
     }
@@ -65,10 +65,10 @@ class TrainingPlacePolicyTest extends TestCase
             ->create());
 
         $atcOnly = Account::factory()->create();
-        $atcOnly->givePermissionTo('training-places.view.atc');
+        $atcOnly->givePermissionTo('training.training-places.view.atc');
 
         $pilotOnly = Account::factory()->create();
-        $pilotOnly->givePermissionTo('training-places.view.pilot');
+        $pilotOnly->givePermissionTo('training.training-places.view.pilot');
 
         $this->assertTrue($this->policy->view($atcOnly, $atcPlace));
         $this->assertFalse($this->policy->view($atcOnly, $pilotPlace));
@@ -92,7 +92,7 @@ class TrainingPlacePolicyTest extends TestCase
             ->create());
 
         $account = Account::factory()->create();
-        $account->givePermissionTo('training-places.view.*');
+        $account->givePermissionTo('training.training-places.view.*');
 
         $this->assertTrue($this->policy->view($account, $atcPlace));
         $this->assertTrue($this->policy->view($account, $pilotPlace));
@@ -116,8 +116,8 @@ class TrainingPlacePolicyTest extends TestCase
 
         $account = Account::factory()->create();
         $account->givePermissionTo([
-            'training-places.view.atc',
-            'training-places.view.pilot',
+            'training.training-places.view.atc',
+            'training.training-places.view.pilot',
         ]);
 
         $this->assertTrue($this->policy->viewAny($account));
@@ -129,7 +129,7 @@ class TrainingPlacePolicyTest extends TestCase
     public function create_adhoc_with_atc_permission_allows_atc_department_via_gate(): void
     {
         $account = Account::factory()->create();
-        $account->givePermissionTo('training-places.create-adhoc.atc');
+        $account->givePermissionTo('training.training-places.create-adhoc.atc');
 
         $this->assertTrue($account->can('createAdhoc', [TrainingPlace::class, WaitingList::ATC_DEPARTMENT]));
         $this->assertFalse($account->can('createAdhoc', [TrainingPlace::class, WaitingList::PILOT_DEPARTMENT]));
@@ -139,7 +139,7 @@ class TrainingPlacePolicyTest extends TestCase
     public function create_adhoc_with_pilot_permission_allows_pilot_department_via_gate(): void
     {
         $account = Account::factory()->create();
-        $account->givePermissionTo('training-places.create-adhoc.pilot');
+        $account->givePermissionTo('training.training-places.create-adhoc.pilot');
 
         $this->assertTrue($account->can('createAdhoc', [TrainingPlace::class, WaitingList::PILOT_DEPARTMENT]));
         $this->assertFalse($account->can('createAdhoc', [TrainingPlace::class, WaitingList::ATC_DEPARTMENT]));
@@ -149,7 +149,7 @@ class TrainingPlacePolicyTest extends TestCase
     public function create_adhoc_with_bare_permission_allows_either_department(): void
     {
         $account = Account::factory()->create();
-        $account->givePermissionTo('training-places.create-adhoc');
+        $account->givePermissionTo('training.training-places.create-adhoc');
 
         $this->assertTrue($account->can('createAdhoc', [TrainingPlace::class, WaitingList::ATC_DEPARTMENT]));
         $this->assertTrue($account->can('createAdhoc', [TrainingPlace::class, WaitingList::PILOT_DEPARTMENT]));

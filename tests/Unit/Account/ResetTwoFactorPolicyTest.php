@@ -18,10 +18,10 @@ class ResetTwoFactorPolicyTest extends TestCase
     }
 
     #[Test]
-    public function it_allows_reset_with_the_remove_password_permission(): void
+    public function it_allows_reset_with_the_reset_two_factor_permission(): void
     {
         $actor = Account::factory()->create();
-        $actor->givePermissionTo('account.remove-password.*');
+        $actor->givePermissionTo('account.reset-two-factor.*');
         $subject = Account::factory()->create();
 
         $this->assertTrue($actor->fresh()->can('resetTwoFactor', $subject));
@@ -31,7 +31,7 @@ class ResetTwoFactorPolicyTest extends TestCase
     public function it_denies_self_reset_without_the_self_permission(): void
     {
         $actor = Account::factory()->create();
-        $actor->givePermissionTo('account.remove-password.*');
+        $actor->givePermissionTo('account.reset-two-factor.*');
 
         $this->assertFalse($actor->fresh()->can('resetTwoFactor', $actor));
     }
@@ -40,7 +40,7 @@ class ResetTwoFactorPolicyTest extends TestCase
     public function it_allows_self_reset_with_the_self_permission(): void
     {
         $actor = Account::factory()->create();
-        $actor->givePermissionTo('account.remove-password.*');
+        $actor->givePermissionTo('account.reset-two-factor.*');
         $actor->givePermissionTo('account.self');
 
         $this->assertTrue($actor->fresh()->can('resetTwoFactor', $actor));

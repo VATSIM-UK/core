@@ -43,6 +43,35 @@ class ViewFeedbackPageTest extends BaseAdminTestCase
             ->assertSee($feedback->submitter->name);
     }
 
+    public function test_submitter_account_id_not_in_form_state_without_permission()
+    {
+        $form = factory(Form::class)->create(['slug' => 'atc']);
+        $feedback = factory(Feedback::class)->create(['form_id' => $form->id]);
+
+        $this->adminUser->givePermissionTo('feedback.access');
+        $this->adminUser->givePermissionTo('feedback.view-type.atc');
+
+        Livewire::actingAs($this->adminUser);
+        $component = Livewire::test(ViewFeedback::class, ['record' => $feedback->id]);
+
+        $this->assertArrayNotHasKey('submitter_account_id', $component->get('data'));
+    }
+
+    public function test_submitter_account_id_in_form_state_with_permission()
+    {
+        $form = factory(Form::class)->create(['slug' => 'atc']);
+        $feedback = factory(Feedback::class)->create(['form_id' => $form->id]);
+
+        $this->adminUser->givePermissionTo('feedback.access');
+        $this->adminUser->givePermissionTo('feedback.view-type.atc');
+        $this->adminUser->givePermissionTo('feedback.view-submitter');
+
+        Livewire::actingAs($this->adminUser);
+        $component = Livewire::test(ViewFeedback::class, ['record' => $feedback->id]);
+
+        $this->assertEquals($feedback->submitter_account_id, $component->get('data')['submitter_account_id']);
+    }
+
     public function test_cant_view_own_feedback_without_permission()
     {
         $form = factory(Form::class)->create(['slug' => 'atc']);

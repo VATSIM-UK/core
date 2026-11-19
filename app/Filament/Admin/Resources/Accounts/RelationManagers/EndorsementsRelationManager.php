@@ -90,10 +90,12 @@ class EndorsementsRelationManager extends RelationManager
             ->groupingSettingsHidden()
             ->recordActions([
                 EditAction::make()
+                    ->authorize('update')
                     ->visible(fn ($record) => $record->expires_at),
                 Action::make('revoke')
                     ->label('Revoke')
                     ->color('danger')
+                    ->authorize('delete')
                     ->requiresConfirmation()
                     ->icon('heroicon-o-no-symbol')
                     ->modalHeading('Revoke Endorsement')

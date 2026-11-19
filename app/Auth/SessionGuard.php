@@ -30,16 +30,7 @@ class SessionGuard extends BaseSessionGuard
             return null;
         }
 
-        $passwordHash = $user->getAuthPassword();
-        $recallerHash = $recaller->hash();
-
-        if ($passwordHash === null) {
-            // Password-less accounts are remembered via the MAC of an empty string.
-            return hash_equals($this->hashPasswordForCookie(''), $recallerHash) ? $user : null;
-        }
-
-        return (hash_equals($this->hashPasswordForCookie($passwordHash), $recallerHash)
-                || hash_equals($passwordHash, $recallerHash))
-            ? $user : null;
+        // Accounts have no password, so the recaller is verified against the MAC of an empty string.
+        return hash_equals($this->hashPasswordForCookie(''), $recaller->hash()) ? $user : null;
     }
 }

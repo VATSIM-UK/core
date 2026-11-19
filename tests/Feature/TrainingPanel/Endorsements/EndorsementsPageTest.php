@@ -107,6 +107,15 @@ class EndorsementsPageTest extends BaseTrainingPanelTestCase
             ->assertDontSee('Solo Endorsements');
     }
 
+    public function test_resource_table_forbids_a_tab_resource_the_user_cannot_access(): void
+    {
+        $user = $this->createUser(['endorsement-request.access']);
+
+        Livewire::actingAs($user);
+        Livewire::test(ResourceTable::class, ['resource' => PositionGroupResource::class])
+            ->assertForbidden();
+    }
+
     public function test_requests_and_solo_tabs_visible_without_tiers_permission(): void
     {
         $user = $this->createUser(['endorsement-request.access', 'endorsement.view.*']);
@@ -286,6 +295,7 @@ class EndorsementsPageTest extends BaseTrainingPanelTestCase
     {
         $this->panelUser->givePermissionTo('endorsement-request.access');
         $this->panelUser->givePermissionTo('endorsement-request.approve.*');
+        $this->panelUser->givePermissionTo('endorsement-request.reject.*');
 
         $endorsementRequest = EndorsementRequest::factory()->create([
             'endorsable_type' => PositionGroup::class,
@@ -365,6 +375,7 @@ class EndorsementsPageTest extends BaseTrainingPanelTestCase
     {
         $this->panelUser->givePermissionTo('endorsement-request.access');
         $this->panelUser->givePermissionTo('endorsement-request.approve.*');
+        $this->panelUser->givePermissionTo('endorsement-request.reject.*');
 
         $endorsementRequest = EndorsementRequest::factory()->create([
             'endorsable_type' => PositionGroup::class,

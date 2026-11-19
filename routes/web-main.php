@@ -9,10 +9,6 @@ Route::get('/dashboard')->uses('Mship\Management@getLanding')->name('landing');
 // Authentication
 Route::get('login')->uses('Auth\LoginController@login')->name('login');
 Route::post('login')->uses('Auth\LoginController@login')->name('login.post');
-Route::get('login-secondary')->uses('Auth\LoginController@showLoginForm')->middleware('auth:vatsim-sso')->name('auth-secondary');
-Route::post('login-secondary')->uses('Auth\SecondaryLoginController@loginSecondary')->middleware('auth:vatsim-sso')->name('auth-secondary.post');
-Route::get('login/password/setup')->uses('Auth\LoginPasswordSetupController@show')->middleware('auth:vatsim-sso')->name('login.password.setup');
-Route::post('login/password/setup')->uses('Auth\LoginPasswordSetupController@store')->middleware('auth:vatsim-sso')->name('login.password.setup.store');
 Route::post('logout')->uses('Auth\LogoutController')->name('logout');
 
 require base_path('routes/fortify-two-factor.php');
@@ -20,34 +16,7 @@ require base_path('routes/fortify-two-factor.php');
 Route::get('/staff')->uses('Site\StaffPageController@staff')->middleware('auth_full_group')->name('site.staff');
 
 Route::view('banned-network', 'errors.banned-network')->name('banned.network');
-Route::get('banned-local')->uses('Auth\LocalBanDisplayController')->name('banned.local');
-
-// Password
-Route::group([
-    'as' => 'password.',
-    'prefix' => 'password',
-], function () {
-    // Reset
-    Route::group([
-        'middleware' => 'auth:vatsim-sso',
-    ], function () {
-        Route::post('email')->uses('Auth\ForgotPasswordController@sendResetLinkEmail')->name('email');
-        Route::get('reset/{token}')->uses('Auth\ResetPasswordController@showResetForm')->name('reset');
-        Route::post('reset')->uses('Auth\ResetPasswordController@reset')->name('request');
-    });
-
-    // Change
-    Route::group([
-        'middleware' => 'auth_full_group',
-    ], function () {
-        Route::get('create')->uses('Auth\ChangePasswordController@showCreateForm')->name('create');
-        Route::post('create')->uses('Auth\ChangePasswordController@create');
-        Route::get('change')->uses('Auth\ChangePasswordController@showChangeForm')->name('change');
-        Route::post('change')->uses('Auth\ChangePasswordController@change');
-        Route::get('delete', 'Auth\ChangePasswordController@showDeleteForm')->name('delete');
-        Route::post('delete')->uses('Auth\ChangePasswordController@delete');
-    });
-});
+Route::get('banned-local')->uses('Auth\LocalBanDisplayController')->middleware('auth')->name('banned.local');
 
 // Members
 Route::group([
@@ -70,9 +39,9 @@ Route::group([
         // Legacy beta URL, retained as a redirect for existing bookmarks.
         Route::get('dashboard/beta')->uses('Management@getDashboardBeta')->name('dashboard.beta');
         Route::get('cert/update')->uses('Management@requestCertCheck')->name('cert.update');
-        Route::get('email/verify/{code}')->uses('Management@getVerifyEmail')->name('email.verify');
+        Route::get('email/verify/{code}')->uses('Management@getVerifyEmail')->middleware('throttle:10,1')->name('email.verify');
         Route::get('email/add')->uses('Management@getEmailAdd')->name('email.add');
-        Route::post('email/add')->uses('Management@postEmailAdd')->name('email.add.post');
+        Route::post('email/add')->uses('Management@postEmailAdd')->middleware('throttle:10,1')->name('email.add.post');
         Route::get('email/delete/{email}')->uses('Management@getEmailDelete')->name('email.delete');
         Route::post('email/delete/{email}')->uses('Management@postEmailDelete')->name('email.delete.post');
         Route::get('email/assignments')->uses('Management@getEmailAssignments')->name('email.assignments');
@@ -140,7 +109,7 @@ Route::get('atcfb', function () {
     return redirect()
         ->route('mship.feedback.new.form', [
             'form' => 'atc',
-            'cid' => request()->get('cid'),
+            'cid' => request()->integer('cid') ?: null,
         ]);
 })->name('mship.feedback.redirect.atc');
 
@@ -153,7 +122,8 @@ Route::group([
     Route::model('tsreg', App\Models\TeamSpeak\Registration::class);
     Route::get('new', ['as' => 'teamspeak.new', 'uses' => 'Registration@getNew']);
     Route::get('success', ['as' => 'teamspeak.success', 'uses' => 'Registration@getConfirmed']);
-    Route::get('{mshipRegistration}/delete', ['as' => 'teamspeak.delete', 'uses' => 'Registration@getDelete']);
+    Route::get('{registration}/delete', fn () => redirect()->route('landing'));
+    Route::delete('{mshipRegistration}/delete', ['as' => 'teamspeak.delete', 'uses' => 'Registration@getDelete']);
     Route::post('{mshipRegistration}/status', ['as' => 'teamspeak.status', 'uses' => 'Registration@postStatus']);
 });
 
@@ -167,7 +137,8 @@ Route::group([
     Route::get('/')->uses('Registration@show')->name('show');
     Route::get('/create')->uses('Registration@create')->name('create');
     Route::get('/store')->uses('Registration@store')->name('store');
-    Route::get('/destroy')->uses('Registration@destroy')->name('destroy');
+    Route::get('/destroy', fn () => redirect()->route('landing'));
+    Route::delete('/destroy')->uses('Registration@destroy')->name('destroy');
 });
 
 // UKCP
@@ -178,7 +149,8 @@ Route::group([
     'middleware' => 'auth_full_group',
 ], function () {
     Route::get('/')->uses('Token@show')->name('guide');
-    Route::get('/token/invalidate')->uses('Token@invalidate')->name('token.invalidate');
+    Route::get('/token/invalidate', fn () => redirect()->route('landing'));
+    Route::post('/token/invalidate')->uses('Token@invalidate')->name('token.invalidate');
 });
 
 // Controllers
@@ -215,8 +187,9 @@ Route::group([
         'prefix' => 'application',
     ], function () {
         // Start
-        Route::get('start/{type}/{team}')->uses('Application@getStart')->name('start')->where('type', "\d+");
-        Route::post('start/{type}/{team}')->uses('Application@postStart')->name('start.post')->where('type', "\d+");
+        Route::get('start/{type}/{team}', fn () => redirect()->route('landing'))->where('type', "\d+");
+        Route::post('start/{type}/{team}')->uses('Application@getStart')->name('start')->where('type', "\d+");
+        Route::post('start/{type}/{team}/submit')->uses('Application@postStart')->name('start.post')->where('type', "\d+");
 
         // Continue
         Route::group([

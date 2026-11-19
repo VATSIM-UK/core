@@ -64,6 +64,7 @@ class AccountResource extends Resource implements DefinesGatedAttributes
         return [
             'email' => auth()->user()->can('viewSensitive', $record),
             'secondaryEmails' => auth()->user()->can('viewSensitive', $record),
+            'last_login_ip' => auth()->user()->can('viewSensitive', $record),
         ];
     }
 
@@ -111,10 +112,6 @@ class AccountResource extends Resource implements DefinesGatedAttributes
                             ->listWithLineBreaks()
                             ->copyable()
                             ->visible(fn (Account $record) => auth()->user()->can('viewSensitive', $record)),
-
-                        TextEntry::make('has_secondary_password')
-                            ->label('Has Secondary Password')
-                            ->getStateUsing(fn (Account $record) => $record->hasPassword() ? 'Yes' : 'No'),
                         TextEntry::make('two_factor_enabled')
                             ->label('Two-Factor Enabled')
                             ->getStateUsing(fn (Account $record) => $record->hasEnabledTwoFactorAuthentication() ? 'Yes' : 'No'),

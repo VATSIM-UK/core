@@ -18,6 +18,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class PendingMentoringReportsTable extends Component implements HasActions, HasForms, HasTable
@@ -26,6 +27,7 @@ class PendingMentoringReportsTable extends Component implements HasActions, HasF
     use InteractsWithForms;
     use InteractsWithTable;
 
+    #[Locked]
     public string $category = '';
 
     public function table(Table $table): Table

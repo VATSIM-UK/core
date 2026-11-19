@@ -68,6 +68,33 @@ class CtsRichEditorNotesTest extends TestCase
     }
 
     #[Test]
+    public function it_strips_unquoted_event_handlers_and_malformed_tags_when_saving(): void
+    {
+        $html = '<p>Hello <span onmouseover=alert(1)>there</span></p><p/onclick=alert(2)>Click</p>';
+
+        $saved = $this->ctsRichContentNotesForCts($html);
+
+        $this->assertStringNotContainsString('onmouseover', $saved);
+        $this->assertStringNotContainsString('onclick', $saved);
+        $this->assertStringContainsString('Hello <span>there</span>', $saved);
+        $this->assertStringContainsString('<p>Click</p>', $saved);
+    }
+
+    #[Test]
+    public function it_preserves_editor_text_colours_and_alignment_when_saving(): void
+    {
+        $html = '<p style="text-align: center;">'
+            .'<span data-color="improvement" class="color" style="--color: #16a34a; --dark-color: #4ade80">Improved</span>'
+            .'</p>';
+
+        $saved = $this->ctsRichContentNotesForCts($html);
+
+        $this->assertStringContainsString('text-align: center', $saved);
+        $this->assertStringContainsString('data-color="improvement"', $saved);
+        $this->assertStringContainsString('--color: #16a34a', $saved);
+    }
+
+    #[Test]
     public function it_hydrates_plain_text_notes_as_paragraph_html(): void
     {
         $this->assertSame(

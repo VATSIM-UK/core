@@ -86,7 +86,7 @@ class AvailabilityWarningsTable extends Component implements HasActions, HasForm
                         ->modalDescription('Are you sure you want to delete this availability warning? This action cannot be undone. The linked availability check will be updated to passed.')
                         ->modalSubmitActionLabel('Delete')
                         ->modalCancelActionLabel('Cancel')
-                        ->visible(fn () => auth()->user()?->can('training-places.availability-warnings.delete'))
+                        ->visible(fn () => auth()->user()?->can('training.training-places.availability-warnings.delete'))
                         ->action(fn (AvailabilityWarning $record) => AvailabilityWarnings::deleteWarning($record)),
                 ]),
             ])

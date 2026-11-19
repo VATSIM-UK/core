@@ -33,7 +33,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
     {
         parent::setUp();
 
-        $this->panelUser->givePermissionTo('training-places.view.*');
+        $this->panelUser->givePermissionTo('training.training-places.view.*');
 
         Livewire::actingAs($this->panelUser);
 
@@ -59,7 +59,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
     {
         $trainingPlace = $this->createTrainingPlace();
 
-        // Create a user without the training-places.view.* permission
+        // Create a user without the training.training-places.view.* permission
         $userWithoutPermission = Account::factory()->create();
         Member::factory()->forAccount($userWithoutPermission)->create();
         $userWithoutPermission->givePermissionTo('training.access'); // Has training panel access but not training places
@@ -73,11 +73,11 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
     {
         $trainingPlace = $this->createTrainingPlace();
 
-        // Create a user with the training-places.view.* permission
+        // Create a user with the training.training-places.view.* permission
         $userWithPermission = Account::factory()->create();
         Member::factory()->forAccount($userWithPermission)->create();
         $userWithPermission->givePermissionTo('training.access');
-        $userWithPermission->givePermissionTo('training-places.view.*');
+        $userWithPermission->givePermissionTo('training.training-places.view.*');
 
         Livewire::actingAs($userWithPermission)
             ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
@@ -98,7 +98,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         $atcUser = Account::factory()->create();
         Member::factory()->forAccount($atcUser)->create();
         $atcUser->givePermissionTo('training.access');
-        $atcUser->givePermissionTo('training-places.view.atc');
+        $atcUser->givePermissionTo('training.training-places.view.atc');
 
         Livewire::actingAs($atcUser)
             ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $pilotPlace->id])
@@ -107,7 +107,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
         $pilotUser = Account::factory()->create();
         Member::factory()->forAccount($pilotUser)->create();
         $pilotUser->givePermissionTo('training.access');
-        $pilotUser->givePermissionTo('training-places.view.pilot');
+        $pilotUser->givePermissionTo('training.training-places.view.pilot');
 
         Livewire::actingAs($pilotUser)
             ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $atcPlace->id])
@@ -456,6 +456,106 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
     }
 
     #[Test]
+    public function it_rejects_forwarding_for_exam_without_setup_permission()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+
+        $position = Position::factory()->create([
+            'callsign' => 'EGKK_TWR',
+            'type' => Position::TYPE_TOWER,
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->call('forwardForExam', $position->id)
+            ->assertForbidden();
+
+        $this->assertDatabaseMissing('exam_setup', [
+            'student_id' => $trainingPlace->account->member->id,
+        ], 'cts');
+    }
+
+    #[Test]
+    public function it_rejects_forwarding_for_pilot_exam_without_setup_permission()
+    {
+        $trainingPlace = $this->createPilotTrainingPlace('PPL');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->call('forwardPilotForExam', 'P1')
+            ->assertForbidden();
+
+        $this->assertDatabaseMissing('exam_setup', [
+            'student_id' => $trainingPlace->account->member->id,
+        ], 'cts');
+    }
+
+    #[Test]
+    public function it_rejects_forwarding_for_pilot_exam_with_invalid_exam_type()
+    {
+        $trainingPlace = $this->createPilotTrainingPlace('PPL');
+        $this->panelUser->givePermissionTo('training.exams.setup');
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->call('forwardPilotForExam', 'not-a-pilot-exam-type')
+            ->assertForbidden();
+
+        $this->assertDatabaseMissing('exam_setup', [
+            'student_id' => $trainingPlace->account->member->id,
+        ], 'cts');
+    }
+
+    #[Test]
+    public function it_rejects_forwarding_for_exam_when_member_has_pending_exam()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $this->panelUser->givePermissionTo('training.exams.setup');
+
+        ExamBooking::factory()->create([
+            'student_id' => $trainingPlace->account->member->id,
+            'finished' => ExamBooking::NOT_FINISHED_FLAG,
+        ]);
+
+        $position = Position::factory()->create([
+            'callsign' => 'EGKK_TWR',
+            'type' => Position::TYPE_TOWER,
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->call('forwardForExam', $position->id)
+            ->assertForbidden();
+
+        $this->assertDatabaseMissing('exam_setup', [
+            'student_id' => $trainingPlace->account->member->id,
+        ], 'cts');
+    }
+
+    #[Test]
+    public function it_rejects_forwarding_for_exam_on_a_revoked_training_place()
+    {
+        $trainingPlace = $this->createTrainingPlace();
+        $this->panelUser->givePermissionTo('training.exams.setup');
+
+        $trainingPlace->delete();
+
+        $position = Position::factory()->create([
+            'callsign' => 'EGKK_TWR',
+            'type' => Position::TYPE_TOWER,
+        ]);
+
+        Livewire::actingAs($this->panelUser)
+            ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
+            ->call('forwardForExam', $position->id)
+            ->assertForbidden();
+
+        $this->assertDatabaseMissing('exam_setup', [
+            'student_id' => $trainingPlace->account->member->id,
+        ], 'cts');
+    }
+
+    #[Test]
     public function it_shows_error_when_member_lacks_atc_qualification()
     {
         $trainingPlace = $this->createTrainingPlace();
@@ -573,7 +673,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
     public function it_shows_revoke_training_place_action_when_user_has_permission()
     {
         $trainingPlace = $this->createTrainingPlace();
-        $this->panelUser->givePermissionTo('training-places.revoke.*');
+        $this->panelUser->givePermissionTo('training.training-places.revoke.*');
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertActionVisible('revokeTrainingPlace');
@@ -583,7 +683,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
     public function it_can_revoke_training_place_with_reason()
     {
         $trainingPlace = $this->createTrainingPlace();
-        $this->panelUser->givePermissionTo('training-places.revoke.*');
+        $this->panelUser->givePermissionTo('training.training-places.revoke.*');
 
         Livewire::actingAs($this->panelUser)
             ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
@@ -598,7 +698,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
     public function it_adds_a_note_to_account_when_revoking_training_place()
     {
         $trainingPlace = $this->createTrainingPlace();
-        $this->panelUser->givePermissionTo('training-places.revoke.*');
+        $this->panelUser->givePermissionTo('training.training-places.revoke.*');
         $reason = 'test reason.';
 
         Livewire::actingAs($this->panelUser)
@@ -721,7 +821,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
 
         $this->panelUser->roles()->detach();
         $this->panelUser->refresh();
-        $this->panelUser->givePermissionTo('training-places.view.*');
+        $this->panelUser->givePermissionTo('training.training-places.view.*');
 
         Livewire::actingAs($this->panelUser)
             ->test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
@@ -732,7 +832,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
     public function it_hides_restore_training_place_action_when_training_place_is_active()
     {
         $trainingPlace = $this->createTrainingPlace();
-        $this->panelUser->givePermissionTo('training-places.restore.*');
+        $this->panelUser->givePermissionTo('training.training-places.restore.*');
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertActionHidden('restoreTrainingPlace');
@@ -743,7 +843,7 @@ class ViewTrainingPlaceTest extends BaseTrainingPanelTestCase
     {
         $trainingPlace = $this->createTrainingPlace();
         $trainingPlace->delete();
-        $this->panelUser->givePermissionTo('training-places.restore.*');
+        $this->panelUser->givePermissionTo('training.training-places.restore.*');
 
         Livewire::test(ViewTrainingPlace::class, ['trainingPlaceId' => $trainingPlace->id])
             ->assertActionVisible('restoreTrainingPlace');

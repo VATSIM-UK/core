@@ -16,17 +16,31 @@ class TeamspeakManagementTest extends TestCase
     #[Test]
     public function test_user_can_delete_own_registration()
     {
-        $this->from(route('mship.manage.dashboard'))->followingRedirects()->actingAs($this->registration->account)
+        $this->from(route('mship.manage.dashboard'))->actingAs($this->registration->account)
+            ->delete(route('teamspeak.delete', ['mshipRegistration' => $this->registration->id]))
+            ->assertRedirect(route('mship.manage.dashboard'));
+
+        $this->assertSoftDeleted('teamspeak_registration', ['id' => $this->registration->id]);
+    }
+
+    #[Test]
+    public function test_get_does_not_delete_own_registration()
+    {
+        $this->actingAs($this->registration->account)
             ->get(route('teamspeak.delete', ['mshipRegistration' => $this->registration->id]))
-            ->assertSuccessful();
+            ->assertRedirect(route('landing'));
+
+        $this->assertNotSoftDeleted('teamspeak_registration', ['id' => $this->registration->id]);
     }
 
     #[Test]
     public function test_user_cant_delete_others_registration()
     {
-        $this->followingRedirects()->actingAs($this->user)
-            ->get(route('teamspeak.delete', $this->registration))
+        $this->from(route('mship.manage.dashboard'))->actingAs($this->user)
+            ->delete(route('teamspeak.delete', $this->registration))
             ->assertNotFound();
+
+        $this->assertNotSoftDeleted('teamspeak_registration', ['id' => $this->registration->id]);
     }
 
     #[Test]

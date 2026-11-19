@@ -129,7 +129,7 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
                 ->label('Restore Training Place')
                 ->icon('heroicon-o-arrow-uturn-left')
                 ->color('success')
-                ->visible(fn () => $this->trainingPlace->trashed() && $user->can('training-places.restore.*'))
+                ->visible(fn () => $this->trainingPlace->trashed() && $user->can('training.training-places.restore.*'))
                 ->modalHeading('Restore Training Place')
                 ->modalDescription('This will make the training place active again and re-assign mentoring permissions. The student will not be re-added to any waiting list.')
                 ->modalSubmitActionLabel('Restore')
@@ -153,7 +153,7 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
                 ->label('Revoke Training Place')
                 ->icon('heroicon-o-x-circle')
                 ->color('danger')
-                ->visible(fn () => ! $this->trainingPlace->trashed() && $user->can('training-places.revoke.*'))
+                ->visible(fn () => ! $this->trainingPlace->trashed() && $user->can('training.training-places.revoke.*'))
                 ->modalHeading('Revoke Training Place')
                 ->modalDescription('Are you sure you want to revoke this members training place?')
                 ->modalSubmitActionLabel('Revoke Training Place')
@@ -190,8 +190,21 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
             ->exists();
     }
 
+    private function canForwardForExam(): bool
+    {
+        $user = Auth::user();
+
+        return $user !== null
+            && ! $this->trainingPlace->trashed()
+            && $this->trainingPlace->trainable !== null
+            && $user->can('training.exams.setup')
+            && ! $this->hasPendingExam();
+    }
+
     public function forwardForExam(int $positionId): void
     {
+        abort_unless($this->canForwardForExam(), 403, 'You may not forward this member for an exam.');
+
         try {
             // Get the position from the provided ID
             $trainingPosition = TrainingPosition::where('position_id', $positionId)->firstOrFail();
@@ -290,6 +303,9 @@ class ViewTrainingPlace extends BaseMentoringHistoryPage implements HasInfolists
 
     public function forwardPilotForExam(string $examType): void
     {
+        abort_unless($this->canForwardForExam(), 403, 'You may not forward this member for an exam.');
+        abort_unless(in_array($examType, PilotExamType::values(), true), 403, 'Invalid pilot exam type.');
+
         try {
             $ctsMember = $this->trainingPlace->account->member;
 

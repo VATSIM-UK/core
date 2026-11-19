@@ -4,6 +4,7 @@ hooks = [
     { id = "laravel-pint", name = "Laravel Pint", language = "system", entry = ".development/hooks/pre-commit", types = [
         "php",
     ], pass_filenames = false },
+    { id = "migration-timestamps", name = "Migration Timestamps", language = "system", entry = ".development/hooks/check-migration-timestamps", files = "^database/migrations/.*\\.php$", pass_filenames = false, always_run = true },
 ]
 
 [[repos]]

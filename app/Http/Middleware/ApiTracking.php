@@ -33,7 +33,6 @@ class ApiTracking
                 ->orderBy('created_at', 'DESC')->firstOrFail();
 
             $apiRequest->response_code = $response->status();
-            $apiRequest->response_full = $response->content();
             $apiRequest->save();
         }
     }
