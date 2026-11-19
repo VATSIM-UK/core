@@ -8,7 +8,7 @@
 
 ## Section 1 | Scope
 
-This document outlines the syllabus and lesson structure for VATSIM United Kingdom Division Observer to Student 1 controller training (OBS-S1).
+This document outlines the syllabus and lesson structure for VATSIM United Kingdom Division Observer to Developing Controller training (OBS-S1).
 
 ## Section 2 | Grading
 

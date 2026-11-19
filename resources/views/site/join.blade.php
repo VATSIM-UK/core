@@ -73,7 +73,7 @@
 						Refer to <a href="{{ route('site.atc.newController') }}">Becoming a Controller</a> for
 						information on what to do next to get training for a
 						rating
-						upgrade to Student 1 and begin controlling some traffic!
+						upgrade to Developing Controller and begin controlling some traffic!
 					</p>
 				</div>
 			</div>
