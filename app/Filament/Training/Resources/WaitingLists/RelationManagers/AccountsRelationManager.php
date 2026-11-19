@@ -82,7 +82,7 @@ class AccountsRelationManager extends RelationManager
                     ]),
 
                 Fieldset::make('cts_theory_exam')
-                    ->label('CTS Theory Exam')
+                    ->label('Theory Exam')
                     ->columnSpanFull()
                     ->schema(function (WaitingListAccount $record) {
                         return [
@@ -111,7 +111,7 @@ class AccountsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->with(['account', 'account.roster', 'account.qualifications', 'waitingList', 'flags']))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['account', 'account.roster', 'account.qualifications', 'account.theoryExamResults', 'waitingList', 'flags']))
             ->columns([
                 TextColumn::make('position')->getStateUsing(fn (WaitingListAccount $record) => $this->ownerRecord->positionOf($record) ?? '-')->label('Position'),
                 TextColumn::make('account_id')->label('CID')->searchable(),
@@ -119,7 +119,11 @@ class AccountsRelationManager extends RelationManager
                 TextColumn::make('atc_rating')->label('ATC')->badge()->getStateUsing(fn (WaitingListAccount $record) => $record->account->qualification_atc?->code ?? 'Missing')->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('on_roster')->boolean()->label('On Roster')->getStateUsing(fn (WaitingListAccount $record) => $record->account->onRoster())->visible(fn () => $this->ownerRecord->feature_toggles['display_on_roster'] ?? true),
                 TextColumn::make('created_at')->label('Added On')->dateTime(),
-                IconColumn::make('cts_theory_exam')->boolean()->label('CTS Theory Exam')->getStateUsing(fn (WaitingListAccount $record) => $record->theory_exam_passed)->visible(fn () => $this->ownerRecord->feature_toggles['check_cts_theory_exam'] ?? true),
+                IconColumn::make('cts_theory_exam')
+                    ->boolean()
+                    ->label('Theory Exam')
+                    ->getStateUsing(fn (WaitingListAccount $record) => $record->account->hasPassedTheoryExam($record->waitingList->cts_theory_exam_level))
+                    ->visible(fn () => $this->ownerRecord->feature_toggles['check_cts_theory_exam'] ?? true),
                 ...$this->getFlagColumns(),
                 IconColumn::make('has_notes')->label('')->getStateUsing(fn (WaitingListAccount $record) => filled($record->notes))->icon(fn (WaitingListAccount $record) => filled($record->notes) ? 'heroicon-o-exclamation-triangle' : null)->color('warning')->tooltip('This user has notes on their waiting list account'),
             ])
