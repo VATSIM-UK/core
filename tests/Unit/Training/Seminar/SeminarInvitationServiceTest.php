@@ -6,12 +6,11 @@ namespace Tests\Unit\Training\Seminar;
 
 use App\Enums\SeminarInvitationStatus;
 use App\Enums\SeminarTheoryReminderStatus;
-use App\Models\Cts\Member;
-use App\Models\Cts\TheoryResult;
 use App\Models\Mship\Account;
 use App\Models\Training\Seminar\Seminar;
 use App\Models\Training\Seminar\SeminarAttendee;
 use App\Models\Training\Seminar\SeminarInvitation;
+use App\Models\Training\TheoryExamResult;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\RemovalReason;
 use App\Models\Training\WaitingList\WaitingListAccount;
@@ -75,19 +74,11 @@ class SeminarInvitationServiceTest extends TestCase
 
     private function passTheoryExam(WaitingListAccount $waitingListAccount): void
     {
-        $member = Member::factory()->create(['cid' => $waitingListAccount->account_id]);
-
-        TheoryResult::create([
+        TheoryExamResult::createQuietly([
+            'account_id' => $waitingListAccount->account_id,
             'exam' => 'S1',
-            'student_id' => $member->id,
-            'pass' => 1,
-            'questions' => 40,
-            'time_mins' => 60,
-            'passmark' => 75,
-            'correct' => 35,
-            'started' => now()->subDay(),
-            'submitted' => 1,
-            'submitted_time' => now()->subDay(),
+            'exam_datetime' => now()->subDay(),
+            'result' => TheoryExamResult::PASS,
         ]);
     }
 
@@ -667,18 +658,11 @@ class SeminarInvitationServiceTest extends TestCase
         $student = Account::factory()->create();
         $waitingListAccount = $waitingList->addToWaitingList($student, $this->privacc);
 
-        $member = Member::factory()->create(['cid' => $student->id]);
-        TheoryResult::create([
+        TheoryExamResult::createQuietly([
+            'account_id' => $student->id,
             'exam' => 'S1',
-            'student_id' => $member->id,
-            'pass' => 1,
-            'questions' => 40,
-            'time_mins' => 60,
-            'passmark' => 75,
-            'correct' => 35,
-            'started' => now()->subDay(),
-            'submitted' => 1,
-            'submitted_time' => now()->subDay(),
+            'exam_datetime' => now()->subDay(),
+            'result' => TheoryExamResult::PASS,
         ]);
 
         Notification::fake();

@@ -2,10 +2,9 @@
 
 namespace Tests\Unit\Training\WaitingList;
 
-use App\Models\Cts\Member;
-use App\Models\Cts\TheoryResult;
 use App\Models\Mship\Account;
 use App\Models\Mship\State;
+use App\Models\Training\TheoryExamResult;
 use App\Models\Training\WaitingList;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\Test;
@@ -15,18 +14,15 @@ class WaitingListAccountCtsTheoryTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private Member $member;
-
     private Account $account;
+
+    private int $theoryResultCount = 0;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        // create the member first as for some reason the CID is not overwritten
-        // when using a factory
-        $this->member = Member::Factory()->create();
-        $this->account = Account::factory()->create(['id' => $this->member->cid]);
+        $this->account = Account::factory()->create();
         $this->account->addState(State::findByCode('DIVISION'));
 
         $this->actingAs($this->privacc);
@@ -39,12 +35,13 @@ class WaitingListAccountCtsTheoryTest extends TestCase
         return $waitingList->addToWaitingList($this->account->fresh(), $this->privacc);
     }
 
-    private function createTheoryResult(string $ctsLevel, bool $pass)
+    private function createTheoryResult(string $examLevel, bool $pass)
     {
-        TheoryResult::factory()->create([
-            'student_id' => $this->member->id,
-            'exam' => $ctsLevel,
-            'pass' => $pass,
+        TheoryExamResult::createQuietly([
+            'account_id' => $this->account->id,
+            'exam' => $examLevel,
+            'exam_datetime' => now()->subMinutes(++$this->theoryResultCount),
+            'result' => $pass ? TheoryExamResult::PASS : TheoryExamResult::FAIL,
         ]);
     }
 
@@ -67,11 +64,12 @@ class WaitingListAccountCtsTheoryTest extends TestCase
     }
 
     #[Test]
-    public function it_should_return_false_when_pilot_waiting_list()
+    public function it_should_detect_when_theory_exam_passed_on_a_pilot_waiting_list()
     {
-        $waitingListAccount = $this->setupWaitingList(null, WaitingList::PILOT_DEPARTMENT);
+        $waitingListAccount = $this->setupWaitingList('P1', WaitingList::PILOT_DEPARTMENT);
+        $this->createTheoryResult('P1', true);
 
-        $this->assertFalse($waitingListAccount->theoryExamPassed);
+        $this->assertTrue($waitingListAccount->theoryExamPassed);
     }
 
     #[Test]
