@@ -16,7 +16,11 @@ class RoleStaffPosition extends Model
 
     public const ATC_TRAINING_DEPARTMENT = 'ATC Training';
 
+    public const PILOT_TRAINING_DEPARTMENT = 'Pilot Training';
+
     public const TECHNOLOGY_DEPARTMENT = 'Technology';
+
+    public const COMMUNITY_DEPARTMENT = 'Community';
 
     protected $table = 'mship_role_staff_position';
 

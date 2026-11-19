@@ -12,6 +12,7 @@ use App\Events\VisitTransfer\ApplicationSubmitted;
 use App\Events\VisitTransfer\ApplicationUnderReview;
 use App\Events\VisitTransfer\ApplicationWithdrawn;
 use App\Exceptions\VisitTransfer\Application\ApplicationAlreadySubmittedException;
+use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeEditedException;
 use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeExpiredException;
 use App\Exceptions\VisitTransfer\Application\ApplicationCannotBeWithdrawnException;
 use App\Exceptions\VisitTransfer\Application\ApplicationNotAcceptedException;
@@ -534,6 +535,27 @@ class Application extends Model
         return $this->ratingFallsInRange($userRating, $minQual, $maxQual);
     }
 
+    public function facilityIsPermitted(Facility $facility): bool
+    {
+        if ($this->is_transfer && (! $facility->training_required || ! $facility->can_transfer)) {
+            return false;
+        }
+
+        if ($this->is_visit && ! $facility->can_visit) {
+            return false;
+        }
+
+        if (strcasecmp($facility->training_team, $this->training_team) !== 0) {
+            return false;
+        }
+
+        if ($facility->training_required && $facility->training_spaces !== null && $facility->training_spaces < 1) {
+            return false;
+        }
+
+        return true;
+    }
+
     private function ratingFallsInRange(int $rating, ?int $minQual, ?int $maxQual): bool
     {
         if ($minQual && $rating < $minQual) {
@@ -551,6 +573,8 @@ class Application extends Model
     public function setFacility(Facility $facility, bool $overrideRestrictions = false)
     {
         if (! $overrideRestrictions) {
+            $this->guardAgainstInvalidFacilitySelection();
+
             $this->guardAgainstTransferringToANonTrainingFacility($facility);
 
             $this->guardAgainstApplyingToAFacilityWithNoCapacity($facility);
@@ -879,6 +903,15 @@ class Application extends Model
     }
 
     /** Guards */
+    private function guardAgainstInvalidFacilitySelection()
+    {
+        if ($this->is_editable) {
+            return;
+        }
+
+        throw new ApplicationCannotBeEditedException($this);
+    }
+
     private function guardAgainstTransferringToANonTrainingFacility(Facility $requestedFacility)
     {
         if ($this->is_transfer && $requestedFacility->training_required == 0) {

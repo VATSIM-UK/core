@@ -13,6 +13,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class NotesRelationManager extends RelationManager
@@ -64,6 +65,9 @@ class NotesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => auth()->user()?->can('viewSensitive', $this->getOwnerRecord())
+                ? $query
+                : $query->whereDoesntHave('type', fn (Builder $query) => $query->whereIn('short_code', Note::SENSITIVE_TYPE_SHORT_CODES)))
             ->columns([
                 TextColumn::make('type.name'),
                 TextColumn::make('content')->wrap(),

@@ -3,7 +3,6 @@
 namespace App\Http\Requests\VisitTransfer;
 
 use App\Models\VisitTransfer\Facility;
-use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
@@ -42,34 +41,19 @@ class ApplicationFacilitySelectedRequested extends FormRequest
      */
     public function authorize()
     {
-        return Gate::allows('select-facility', Auth::user()->visit_transfer_current);
+        return Gate::allows('select-facility', $this->route('applicationByPublicId'));
     }
 
     protected function getValidatorInstance()
     {
         $data = $this->all();
-        $data['permitted'] = true;
+        $data['permitted'] = false;
 
         $facility = Facility::find(array_get($data, 'facility_id', null));
+        $application = $this->route('applicationByPublicId');
 
-        if (Auth::user()->visit_transfer_current->is_transfer && ! $facility->training_required) {
-            $data['permitted'] = false;
-        }
-
-        if (Auth::user()->visit_transfer_current->is_transfer && ! $facility->can_transfer) {
-            $data['permitted'] = false;
-        }
-
-        if (Auth::user()->visit_transfer_current->is_visit && ! $facility->can_visit) {
-            $data['permitted'] = false;
-        }
-
-        if (strcasecmp($facility->training_team, Auth::user()->visit_transfer_current->training_team) != 0) {
-            $data['permitted'] = false;
-        }
-
-        if ($facility->training_spaces < 1 && $facility->training_spaces !== null && $facility->training_required) {
-            $data['permitted'] = false;
+        if ($facility && $application && $application->facilityIsPermitted($facility)) {
+            $data['permitted'] = true;
         }
 
         $this->getInputSource()->replace($data);

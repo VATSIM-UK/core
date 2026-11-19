@@ -24,8 +24,8 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_shows_create_adhoc_training_place_action_when_user_has_permission()
     {
-        $this->panelUser->givePermissionTo('training-places.view.*');
-        $this->panelUser->givePermissionTo('training-places.create-adhoc');
+        $this->panelUser->givePermissionTo('training.training-places.view.*');
+        $this->panelUser->givePermissionTo('training.training-places.create-adhoc');
 
         Livewire::actingAs($this->panelUser)
             ->test(ListTrainingPlaces::class)
@@ -36,7 +36,7 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_hides_create_adhoc_training_place_action_without_permission()
     {
-        $this->panelUser->givePermissionTo('training-places.view.*');
+        $this->panelUser->givePermissionTo('training.training-places.view.*');
 
         Livewire::actingAs($this->panelUser)
             ->test(ListTrainingPlaces::class)
@@ -47,8 +47,8 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_can_create_an_adhoc_training_place_from_the_list_page()
     {
-        $this->panelUser->givePermissionTo('training-places.view.*');
-        $this->panelUser->givePermissionTo('training-places.create-adhoc');
+        $this->panelUser->givePermissionTo('training.training-places.view.*');
+        $this->panelUser->givePermissionTo('training.training-places.create-adhoc');
 
         $ctsPosition = CtsPosition::factory()->create(['callsign' => 'EGLL_GND']);
         $trainingPosition = TrainingPosition::factory()->withCtsPositions([$ctsPosition->callsign])->create();
@@ -87,8 +87,8 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_can_create_an_adhoc_qualification_training_place_from_the_list_page()
     {
-        $this->panelUser->givePermissionTo('training-places.view.*');
-        $this->panelUser->givePermissionTo('training-places.create-adhoc.pilot');
+        $this->panelUser->givePermissionTo('training.training-places.view.*');
+        $this->panelUser->givePermissionTo('training.training-places.create-adhoc.pilot');
 
         $qualification = Qualification::firstWhere('code', 'PPL')
             ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
@@ -121,8 +121,8 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_can_create_an_adhoc_tfp_virtual_qualification_training_place()
     {
-        $this->panelUser->givePermissionTo('training-places.view.*');
-        $this->panelUser->givePermissionTo('training-places.create-adhoc.pilot');
+        $this->panelUser->givePermissionTo('training.training-places.view.*');
+        $this->panelUser->givePermissionTo('training.training-places.create-adhoc.pilot');
 
         $qualification = Qualification::firstWhere('code', 'TFP')
             ?? Qualification::factory()->pilotVirtual()->create(['code' => 'TFP']);
@@ -153,8 +153,8 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_rejects_adhoc_qualification_creation_with_only_atc_permission()
     {
-        $this->panelUser->givePermissionTo('training-places.view.*');
-        $this->panelUser->givePermissionTo('training-places.create-adhoc.atc');
+        $this->panelUser->givePermissionTo('training.training-places.view.*');
+        $this->panelUser->givePermissionTo('training.training-places.create-adhoc.atc');
 
         $qualification = Qualification::firstWhere('code', 'PPL')
             ?? Qualification::factory()->create(['code' => 'PPL', 'type' => 'pilot']);
@@ -181,8 +181,8 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_rejects_adhoc_creation_for_non_pilot_qualifications()
     {
-        $this->panelUser->givePermissionTo('training-places.view.*');
-        $this->panelUser->givePermissionTo('training-places.create-adhoc');
+        $this->panelUser->givePermissionTo('training.training-places.view.*');
+        $this->panelUser->givePermissionTo('training.training-places.create-adhoc');
 
         $qualification = Qualification::factory()->atc()->create();
 
@@ -208,7 +208,7 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     #[Test]
     public function it_rejects_non_pilot_qualifications_when_resolving_adhoc_trainable()
     {
-        $this->panelUser->givePermissionTo('training-places.view.*');
+        $this->panelUser->givePermissionTo('training.training-places.view.*');
 
         $qualification = Qualification::factory()->atc()->create();
 
@@ -276,7 +276,7 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     {
         // Arrange
         $user = Account::factory()->create();
-        $user->givePermissionTo('training-places.view.*');
+        $user->givePermissionTo('training.training-places.view.*');
 
         // Act & Assert
         Livewire::actingAs($user)
@@ -320,7 +320,7 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
 
         $atcUser = Account::factory()->create();
         $atcUser->givePermissionTo('training.access');
-        $atcUser->givePermissionTo('training-places.view.atc');
+        $atcUser->givePermissionTo('training.training-places.view.atc');
 
         Livewire::actingAs($atcUser)
             ->test(ListTrainingPlaces::class)
@@ -329,7 +329,7 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
 
         $pilotUser = Account::factory()->create();
         $pilotUser->givePermissionTo('training.access');
-        $pilotUser->givePermissionTo('training-places.view.pilot');
+        $pilotUser->givePermissionTo('training.training-places.view.pilot');
 
         Livewire::actingAs($pilotUser)
             ->test(ListTrainingPlaces::class)
@@ -373,7 +373,7 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
 
         $user = Account::factory()->create();
         $user->givePermissionTo('training.access');
-        $user->givePermissionTo('training-places.view.*');
+        $user->givePermissionTo('training.training-places.view.*');
 
         Livewire::actingAs($user)
             ->test(ListTrainingPlaces::class)
@@ -586,8 +586,8 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     public function it_shows_table_restore_action_for_deleted_training_place_when_user_has_permission()
     {
         $user = Account::factory()->create();
-        $user->givePermissionTo('training-places.view.*');
-        $user->givePermissionTo('training-places.restore.*');
+        $user->givePermissionTo('training.training-places.view.*');
+        $user->givePermissionTo('training.training-places.restore.*');
 
         $deletedTrainingPlace = $this->createTrainingPlace();
         $deletedTrainingPlace->delete();
@@ -602,7 +602,7 @@ class ListTrainingPlacesTest extends BaseTrainingPanelTestCase
     public function it_hides_table_restore_action_for_deleted_training_place_without_restore_permission()
     {
         $user = Account::factory()->create();
-        $user->givePermissionTo('training-places.view.*');
+        $user->givePermissionTo('training.training-places.view.*');
 
         $deletedTrainingPlace = $this->createTrainingPlace();
         $deletedTrainingPlace->delete();

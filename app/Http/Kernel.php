@@ -15,11 +15,13 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
+        Middleware\TrustProxies::class,
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         Middleware\SecurityHeaders::class,
+        Middleware\ExpireLegacyCookies::class,
     ];
 
     /**
@@ -52,7 +54,6 @@ class Kernel extends HttpKernel
         'auth_full_group' => [
             'auth',
             'auth.record-info',
-            'mandatorypasswords',
             'mandatorytwofactor',
             'denyifbanned',
             'user.must.read.notifications',
@@ -81,9 +82,7 @@ class Kernel extends HttpKernel
         'user.must.read.notifications' => Middleware\UserMustReadNotifications::class,
         'api.tracking' => Middleware\ApiTracking::class,
         'denyifbanned' => Middleware\DenyIfBanned::class,
-        'mandatorypasswords' => Middleware\MandatoryPasswords::class,
         'mandatorytwofactor' => Middleware\MandatoryTwoFactor::class,
-        'password.confirm' => Middleware\RequirePasswordConfirmation::class,
         'redirecttointended' => Middleware\RedirectToIntended::class,
         'auth.record-info' => RecordLoginInfo::class,
     ];

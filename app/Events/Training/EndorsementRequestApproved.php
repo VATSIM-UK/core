@@ -32,4 +32,9 @@ class EndorsementRequestApproved
 
         return now()->addDays($this->days)->endOfDay();
     }
+
+    public function getDays(): ?int
+    {
+        return $this->days;
+    }
 }

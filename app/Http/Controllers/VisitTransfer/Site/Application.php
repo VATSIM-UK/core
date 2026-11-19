@@ -45,7 +45,7 @@ class Application extends BaseController
         try {
             $application = $this->startApplication(Request::input('application_type'), Request::input('training_team'));
         } catch (Exception $e) {
-            return Redirect::route('visiting.application.start', [Request::input('application_type')])->withError($e->getMessage());
+            return Redirect::route('visiting.landing')->withError($e->getMessage());
         }
 
         return Redirect::route('visiting.application.facility', [$application->public_id])->withSuccess('Application started! Please complete all sections to submit your application.');
@@ -93,6 +93,8 @@ class Application extends BaseController
 
     public function postManualFacility(Request $request, \App\Models\VisitTransfer\Application $application)
     {
+        $this->authorize('select-facility', $application);
+
         $validator = Validator::make(Request::all(), [
             'facility-code' => 'required|alpha_num',
         ]);
@@ -106,6 +108,12 @@ class Application extends BaseController
         if (! $facility) {
             return Redirect::back()
                 ->withError('That facility code is invalid.')
+                ->withInput();
+        }
+
+        if (! $application->facilityIsPermitted($facility)) {
+            return Redirect::back()
+                ->withError('You are not permitted to apply to this facility.')
                 ->withInput();
         }
 

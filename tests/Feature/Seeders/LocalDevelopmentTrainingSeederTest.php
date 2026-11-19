@@ -53,7 +53,7 @@ class LocalDevelopmentTrainingSeederTest extends TestCase
         $staff = Account::findOrFail(DevTrainingPersonas::STAFF_CID);
         $this->assertTrue($staff->hasRole(DevTrainingPersonas::STAFF_ROLE));
         $this->assertTrue($staff->hasPermissionTo('training.exams.setup'));
-        $this->assertTrue($staff->hasPermissionTo('waiting-lists.view.atc'));
+        $this->assertTrue($staff->hasPermissionTo('training.waiting-lists.view.atc'));
 
         $student = Account::findOrFail(DevTrainingPersonas::STUDENT_CID);
         $this->assertTrue($student->hasRole(DevTrainingPersonas::STUDENT_ROLE));

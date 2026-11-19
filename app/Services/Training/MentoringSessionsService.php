@@ -49,8 +49,9 @@ class MentoringSessionsService
         string $position,
         string $takenFrom,
         string $takenTo,
+        ?string $topDownPosition = null,
     ): bool {
-        return DB::transaction(function () use ($trainingPlace, $availability, $mentorAccount, $position, $takenFrom, $takenTo) {
+        return DB::transaction(function () use ($trainingPlace, $availability, $mentorAccount, $position, $takenFrom, $takenTo, $topDownPosition) {
             $trainingPlace->loadMissing(['trainable', 'account']);
 
             $mentorMember = Member::where('cid', $mentorAccount->id)->firstOrFail();
@@ -64,6 +65,13 @@ class MentoringSessionsService
 
             if (! in_array($position, $placeCallsigns, true)) {
                 throw new InvalidArgumentException('The selected position is not valid for this training place.');
+            }
+
+            $bookedPosition = filled($topDownPosition) ? strtoupper(trim($topDownPosition)) : $position;
+
+            if ($bookedPosition !== $position
+                && ! app(MentoringPositionService::class)->isTopDownOf($position, $bookedPosition)) {
+                throw new InvalidArgumentException('The selected top-down position is not valid for this training place.');
             }
 
             if ($mentorAccount->cannot('create', [Session::class, $position])) {
@@ -80,6 +88,14 @@ class MentoringSessionsService
 
             if (! $ctsPosition) {
                 throw new InvalidArgumentException("CTS position not found for callsign [{$position}].");
+            }
+
+            if ($bookedPosition !== $position) {
+                $bookedCtsPosition = CtsPosition::query()->where('callsign', $bookedPosition)->first();
+
+                if (! $bookedCtsPosition) {
+                    throw new InvalidArgumentException("CTS position not found for callsign [{$bookedPosition}].");
+                }
             }
 
             $session = Session::query()->create([
@@ -102,7 +118,7 @@ class MentoringSessionsService
                 $this->notifyParticipants($session, 'accepted');
             });
 
-            $this->createCoreBooking($session);
+            $this->createCoreBooking($session, $bookedPosition);
 
             return true;
         });
@@ -325,10 +341,19 @@ class MentoringSessionsService
         }
     }
 
-    public function checkForOverlappingBookings(string $callsign, string $date, string $takenFrom, string $takenTo, ?int $ignoreSessionId = null): Session|ExamBooking|null
+    public function checkForOverlappingBookings(string|array $callsigns, string $date, string $takenFrom, string $takenTo, ?int $ignoreSessionId = null): Session|ExamBooking|null
     {
+        $callsigns = array_values(array_unique(array_filter(
+            (array) $callsigns,
+            fn ($callsign): bool => filled($callsign),
+        )));
+
+        if ($callsigns === []) {
+            return null;
+        }
+
         $overlappingSession = Session::query()
-            ->where('position', $callsign)
+            ->whereIn('position', $callsigns)
             ->whereDate('taken_date', $date)
             ->where('taken_from', '<', $takenTo)
             ->where('taken_to', '>', $takenFrom)
@@ -343,7 +368,7 @@ class MentoringSessionsService
         }
 
         return ExamBooking::query()
-            ->where('position_1', $callsign)
+            ->whereIn('position_1', $callsigns)
             ->whereDate('taken_date', $date)
             ->where('taken_from', '<', $takenTo)
             ->where('taken_to', '>', $takenFrom)
@@ -458,9 +483,10 @@ class MentoringSessionsService
         }
     }
 
-    private function createCoreBooking(Session $session): void
+    private function createCoreBooking(Session $session, ?string $bookedPosition = null): void
     {
         $studentMember = Member::find($session->student_id);
+        $bookedPosition ??= $session->position;
 
         // Create the CTS booking first - it is the source of truth for the callsign,
         // since training positions may not exist in the core positions table.
@@ -468,13 +494,13 @@ class MentoringSessionsService
             'date' => $session->taken_date,
             'from' => $session->taken_from,
             'to' => $session->taken_to,
-            'position' => $session->position,
+            'position' => $bookedPosition,
             'member_id' => $session->student_id,
             'type' => 'ME',
         ]);
 
         Booking::create([
-            'position_id' => Position::where('callsign', $session->position)->value('id'),
+            'position_id' => Position::where('callsign', $bookedPosition)->value('id'),
             'member_id' => $studentMember?->cid,
             'type' => Booking::TYPE_MENTORING,
             'starts_at' => Carbon::parse($session->taken_date)->format('Y-m-d').' '.$session->taken_from,

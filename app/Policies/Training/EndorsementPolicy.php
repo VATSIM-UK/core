@@ -18,7 +18,7 @@ class EndorsementPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(Account $account, Endorsement $Endorsement): bool
+    public function view(Account $account, Endorsement $endorsement): bool
     {
         return true;
     }
@@ -28,38 +28,38 @@ class EndorsementPolicy
      */
     public function create(Account $account): bool
     {
-        return true;
+        return $account->hasAnyPermission('endorsement.create.*');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(Account $account, Endorsement $Endorsement): bool
+    public function update(Account $account, Endorsement $endorsement): bool
     {
-        return true;
+        return $account->hasAnyPermission('endorsement.temporary.edit.*');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(Account $account, Endorsement $Endorsement): bool
+    public function delete(Account $account, Endorsement $endorsement): bool
     {
-        return true;
+        return $account->hasAnyPermission('endorsement.create.*');
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(Account $account, Endorsement $Endorsement): bool
+    public function restore(Account $account, Endorsement $endorsement): bool
     {
-        return true;
+        return false;
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(Account $account, Endorsement $Endorsement): bool
+    public function forceDelete(Account $account, Endorsement $endorsement): bool
     {
-        return true;
+        return false;
     }
 }

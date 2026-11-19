@@ -25,6 +25,7 @@ class UKCPLibraryTest extends TestCase
     protected function tearDown(): void
     {
         Cache::forget('UKCP_STAND_STATUS_EGLL');
+        Cache::forget('ukcp:top-down:SCO_CTR');
         parent::tearDown();
     }
 
@@ -161,5 +162,61 @@ class UKCPLibraryTest extends TestCase
         $egllTwr = $positions->firstWhere('id', 2);
         $this->assertEquals('EGLL_TWR', $egllTwr->callsign);
         $this->assertEquals([], $egllTwr->top_down);
+    }
+
+    #[Test]
+    public function it_can_fetch_top_down_positions_for_a_controller_position(): void
+    {
+        $this->mock(Client::class, function (MockInterface $mock) {
+            $mock->shouldReceive('get')
+                ->with('https://ukcp.vatsim.uk/api/controller/SCO_CTR/top-down', [
+                    'headers' => [
+                        'Authorization' => 'Bearer '.config('services.ukcp.key'),
+                    ],
+                    'timeout' => 15,
+                ])
+                ->andReturn(
+                    new Response(200, [], json_encode([
+                        [
+                            'id' => 10,
+                            'callsign' => 'SCL_TMA_CTR',
+                            'frequency' => 123.400,
+                        ],
+                    ]))
+                );
+        });
+
+        $positions = $this->app->get(UKCP::class)->getTopDownPositionsForPosition('SCO_CTR');
+
+        $this->assertInstanceOf(Collection::class, $positions);
+        $this->assertCount(1, $positions);
+        $this->assertEquals('SCL_TMA_CTR', $positions->first()->callsign);
+        $this->assertNotNull(Cache::get('ukcp:top-down:SCO_CTR'));
+    }
+
+    #[Test]
+    public function it_returns_null_when_top_down_positions_cannot_be_fetched(): void
+    {
+        $this->mock(Client::class, function (MockInterface $mock) {
+            $mock->shouldReceive('get')
+                ->with('https://ukcp.vatsim.uk/api/controller/SCO_CTR/top-down', [
+                    'headers' => [
+                        'Authorization' => 'Bearer '.config('services.ukcp.key'),
+                    ],
+                    'timeout' => 15,
+                ])
+                ->andThrow(
+                    new ClientException(
+                        'Bang',
+                        new Request('GET', 'https://ukcp.vatsim.uk/api/controller/SCO_CTR/top-down'),
+                        new Response(500, [], 'Bang')
+                    )
+                );
+        });
+
+        $this->assertNull(
+            $this->app->get(UKCP::class)->getTopDownPositionsForPosition('SCO_CTR')
+        );
+        $this->assertNull(Cache::get('ukcp:top-down:SCO_CTR'));
     }
 }

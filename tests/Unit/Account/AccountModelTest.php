@@ -326,109 +326,11 @@ class AccountModelTest extends TestCase
         $this->assertNotEquals($originalUpdatedAt, $this->user->fresh()->updated_at);
     }
 
-    #[Test]
-    public function it_determines_that_password_is_not_set()
-    {
-        $this->assertFalse($this->user->hasPassword());
-
-        $this->assertDatabaseHas('mship_account', [
-            'id' => $this->user->id,
-            'password' => null,
-            'password_set_at' => null,
-            'password_expires_at' => null,
-        ]);
-    }
-
-    #[Test]
-    public function it_stores_a_hashed_password()
-    {
-        $this->mockAuth();
-        $this->user->setPassword('testing123');
-
-        $this->user = $this->user->fresh();
-
-        $this->assertTrue(\Hash::check('testing123', $this->user->password));
-
-        $this->assertDatabaseHas('mship_account', [
-            'id' => $this->user->id,
-            'password' => $this->user->password,
-        ]);
-
-        $this->assertDatabaseMissing('mship_account', [
-            'id' => $this->user->id,
-            'password_set_at' => null,
-            'password_expires_at' => null,
-        ]);
-    }
-
     protected function mockAuth()
     {
         \Auth::shouldReceive('user')->andReturn($this->user);
         \Auth::shouldReceive('check')->andReturn(true);
         \Auth::shouldReceive('id')->andReturn($this->user->id);
-    }
-
-    #[Test]
-    public function it_determines_that_password_is_set()
-    {
-        $this->mockAuth();
-        $this->user->setPassword('testing456');
-
-        $this->user = $this->user->fresh();
-
-        $this->assertTrue($this->user->hasPassword());
-
-        $this->assertDatabaseHas('mship_account', [
-            'id' => $this->user->id,
-            'password' => $this->user->password,
-        ]);
-
-        $this->assertDatabaseMissing('mship_account', [
-            'id' => $this->user->id,
-            'password_set_at' => null,
-            'password_expires_at' => null,
-        ]);
-    }
-
-    #[Test]
-    public function it_determines_that_password_has_expired()
-    {
-        $temporary = true;
-        $this->mockAuth();
-        $this->user->setPassword('testing911', $temporary);
-
-        $this->user = $this->user->fresh();
-
-        $this->assertTrue($this->user->hasPasswordExpired());
-    }
-
-    #[Test]
-    public function it_overwrites_old_password_and_modifies_the_timestamps()
-    {
-        $this->mockAuth();
-        $this->user->setPassword('testing123');
-
-        $oldPassword = $this->user->password;
-        $oldPasswordSetAt = $this->user->password_set_at;
-        $oldPasswordExpiresAt = $this->user->password_expires_at;
-
-        $this->user = $this->user->fresh();
-
-        $this->assertDatabaseHas('mship_account', [
-            'id' => $this->user->id,
-            'password' => $oldPassword,
-            'password_set_at' => $oldPasswordSetAt,
-            'password_expires_at' => $oldPasswordExpiresAt,
-        ]);
-
-        $this->user->setPassword('testing456');
-
-        $this->assertDatabaseMissing('mship_account', [
-            'id' => $this->user->id,
-            'password' => $oldPassword,
-            'password_set_at' => $oldPasswordSetAt,
-            'password_expires_at' => $oldPasswordExpiresAt,
-        ]);
     }
 
     #[Test]
@@ -476,24 +378,6 @@ class AccountModelTest extends TestCase
             'model_id' => $this->user->id,
             'role_id' => $role->id,
         ]);
-    }
-
-    #[Test]
-    public function it_determines_that_password_is_not_mandatory()
-    {
-        $this->assertFalse($this->user->mandatory_password);
-    }
-
-    #[Test]
-    public function it_determines_that_password_is_mandatory()
-    {
-        $role = factory(Role::class)->create(['password_mandatory' => true]);
-
-        $this->user->assignRole($role);
-
-        $this->user = $this->user->fresh();
-
-        $this->assertTrue($this->user->mandatory_password);
     }
 
     #[Test]
@@ -574,5 +458,39 @@ class AccountModelTest extends TestCase
     public function it_detects_not_on_roster()
     {
         $this->assertFalse($this->user->onRoster());
+    }
+
+    #[Test]
+    public function it_does_not_track_sensitive_attributes()
+    {
+        $this->user->vatsim_access_token = 'vatsim-access-token';
+        $this->user->vatsim_refresh_token = 'vatsim-refresh-token';
+        $this->user->discord_access_token = 'discord-access-token';
+        $this->user->discord_refresh_token = 'discord-refresh-token';
+        $this->user->two_factor_secret = 'two-factor-secret';
+        $this->user->two_factor_recovery_codes = 'two-factor-recovery-codes';
+        $this->user->two_factor_confirmed_at = now();
+        $this->user->last_login_ip = '127.0.0.1';
+        $this->user->nickname = 'New Nickname';
+        $this->user->save();
+
+        $this->assertSame('vatsim-access-token', $this->user->fresh()->vatsim_access_token);
+
+        $this->assertSame(0, $this->user->dataChanges()
+            ->whereIn('data_key', [
+                'vatsim_access_token',
+                'vatsim_refresh_token',
+                'discord_access_token',
+                'discord_refresh_token',
+                'two_factor_secret',
+                'two_factor_recovery_codes',
+                'two_factor_confirmed_at',
+                'last_login_ip',
+            ])
+            ->count());
+
+        $this->assertSame(1, $this->user->dataChanges()
+            ->where('data_key', 'nickname')
+            ->count());
     }
 }

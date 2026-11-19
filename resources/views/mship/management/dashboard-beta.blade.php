@@ -209,39 +209,6 @@
 							</div>
 						@endif
 
-						<div class="px-5 py-3 flex flex-col sm:flex-row sm:items-start gap-3 sm:justify-between">
-							<div class="flex gap-3">
-								<div class="size-9 shrink-0 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600">
-									<i class="fa fa-lock"></i>
-								</div>
-								<div>
-									<p class="text-sm font-semibold text-gray-900 m-0">Secondary password</p>
-									<p class="mt-1 text-base text-gray-500 max-w-prose mb-0">
-										Fallback when VATSIM.net certificate services are unavailable. When enabled, you may be asked for this password
-										after login.
-									</p>
-								</div>
-							</div>
-							<div class="flex flex-col items-start sm:items-end gap-2 sm:pl-4 shrink-0">
-								@if ($_account->password)
-									<span
-										class="inline-flex items-center rounded-full bg-green-50 px-2.5 py-0.5 text-sm font-semibold text-green-700 ring-1 ring-inset ring-green-600/20">Enabled</span>
-									<a href="{{ route('password.change') }}"
-										class="text-base font-medium text-brand hover:text-sky-700 no-underline">Modify password</a>
-									@if (!$_account->mandatory_password)
-										<a href="{{ route('password.delete') }}"
-											class="text-sm text-gray-500 hover:text-gray-700 no-underline">Disable</a>
-									@else
-										<span class="text-sm text-gray-400">Cannot be disabled</span>
-									@endif
-								@else
-									<span
-										class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-sm font-semibold text-gray-600 ring-1 ring-inset ring-gray-300">Disabled</span>
-									<a href="{{ route('password.create') }}"
-										class="text-base font-medium text-brand hover:text-sky-700 no-underline">Enable password</a>
-								@endif
-							</div>
-						</div>
 					</div>
 				</x-mship.dashboard.card>
 
@@ -339,8 +306,12 @@
 								<article class="rounded-lg bg-gray-50 p-4 ring-1 ring-gray-200/60">
 									<div class="flex items-center justify-between gap-2">
 										<span class="text-sm font-semibold text-gray-900">Registration #{{ $tsreg->id }}</span>
-										<a href="{{ route('teamspeak.delete', [$tsreg->id]) }}"
-											class="text-sm font-medium text-red-600 hover:text-red-700 no-underline">Remove</a>
+										<form method="POST" action="{{ route('teamspeak.delete', [$tsreg->id]) }}" class="m-0">
+											@csrf
+											@method('DELETE')
+											<button type="submit"
+												class="cursor-pointer border-0 bg-transparent p-0 text-sm font-medium text-red-600 hover:text-red-700 no-underline">Remove</button>
+										</form>
 									</div>
 									<dl class="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-sm mb-0">
 										<div>
@@ -418,10 +389,15 @@
 									@endif
 								</span>
 							</div>
-							<p class="text-center mb-0">
-								<a href="{{ route('discord.destroy') }}"
-									class="text-base font-medium text-gray-600 hover:text-red-600 no-underline">Unlink account</a>
-							</p>
+							<div class="text-center mb-0">
+								<form method="POST" action="{{ route('discord.destroy') }}" class="m-0 inline">
+									@csrf
+									@method('DELETE')
+									<button type="submit"
+										class="cursor-pointer border-0 bg-transparent p-0 text-base font-medium text-gray-600 hover:text-red-600 no-underline">Unlink
+										account</button>
+								</form>
+							</div>
 						@endif
 					</div>
 				</x-mship.dashboard.card>
@@ -450,10 +426,13 @@
 									</li>
 								@endforeach
 							</ul>
-							<a href="{{ route('ukcp.token.invalidate') }}"
-								class="flex w-full items-center justify-center rounded-md bg-amber-50 px-3 py-2 text-base font-semibold text-amber-900 ring-1 ring-inset ring-amber-600/20 hover:bg-amber-100 no-underline">
-								Invalidate token(s)
-							</a>
+							<form method="POST" action="{{ route('ukcp.token.invalidate') }}">
+								@csrf
+								<button type="submit"
+									class="flex w-full cursor-pointer items-center justify-center rounded-md border-0 bg-amber-50 px-3 py-2 text-base font-semibold text-amber-900 ring-1 ring-inset ring-amber-600/20 hover:bg-amber-100 no-underline">
+									Invalidate token(s)
+								</button>
+							</form>
 							<p class="text-sm text-gray-500 mb-0">
 								If you are currently online, some operations such as squawk assignments may fail.
 							</p>

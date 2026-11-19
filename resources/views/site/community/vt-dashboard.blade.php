@@ -164,16 +164,18 @@
 								<li><strong>do not</strong> wish to leave your current division</li>
 							</ul>
 
-							<p class="text-center">
+							<div class="text-center">
 								@if (!\App\Models\VisitTransfer\Facility::isPossibleToVisitPilot())
 									<button class="btn btn-danger"
 										disabled="disabled">{{ trans('application.dashboard.apply.pilot.visit.no_places') }}</button>
 								@else
 									@can('create', new \App\Models\VisitTransfer\Application())
-										<a
-											href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_VISIT, 'pilot']) }}">
-											<button class="btn btn-success">{{ trans('application.dashboard.apply.pilot.visit.start') }}</button>
-										</a>
+										<form method="POST"
+											action="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_VISIT, 'pilot']) }}">
+											@csrf
+											<button type="submit"
+												class="btn btn-success">{{ trans('application.dashboard.apply.pilot.visit.start') }}</button>
+										</form>
 									@elseif($currentVisitApplication && $currentVisitApplication->is_in_progress && $currentVisitApplication->is_pilot)
 										<a href="{{ route('visiting.application.continue', [$currentVisitApplication->public_id]) }}">
 											<button class="btn btn-primary" href="">{{ trans('application.continue') }}</button>
@@ -185,7 +187,7 @@
 											disabled="disabled">{{ trans('application.dashboard.apply.pilot.visit.unable') }}</button>
 									@endcan
 								@endif
-							</p>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -218,7 +220,7 @@
 								<li><strong>do not</strong> wish to leave your current division</li>
 							</ul>
 							</p>
-							<p class="text-center">
+							<div class="text-center">
 								@if (!\App\Models\VisitTransfer\Facility::isPossibleToVisitAtc())
 									<button class="btn btn-danger"
 										disabled="disabled">{{ trans('application.dashboard.apply.atc.visit.no_places') }}</button>
@@ -236,10 +238,12 @@
 											<button class="btn btn-danger"
 												disabled="disabled">{{ trans('application.dashboard.apply.xfer_open') }}</button>
 										@else
-											<a
-												href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_VISIT, 'atc']) }}">
-												<button class="btn btn-success">{{ trans('application.dashboard.apply.atc.visit.start') }}</button>
-											</a>
+											<form method="POST"
+												action="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_VISIT, 'atc']) }}">
+												@csrf
+												<button type="submit"
+													class="btn btn-success">{{ trans('application.dashboard.apply.atc.visit.start') }}</button>
+											</form>
 										@endif
 									@else
 										<button class="btn btn-danger"
@@ -247,7 +251,7 @@
 									@endcan
 								@endif
 
-							</p>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -283,17 +287,18 @@
 								<li>are happy to <strong>leave your current division</strong></li>
 							</ul>
 							</p>
-							<p class="text-center">
+							<div class="text-center">
 								@if (!\App\Models\VisitTransfer\Facility::isPossibleToTransfer())
 									<button class="btn btn-danger"
 										disabled="disabled">{{ trans('application.dashboard.apply.atc.transfer.no_places') }}</button>
 								@else
 									@can('create', new \App\Models\VisitTransfer\Application())
-										<a
-											href="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_TRANSFER, 'atc']) }}">
-											<button class="btn btn-success"
+										<form method="POST"
+											action="{{ route('visiting.application.start', [\App\Models\VisitTransfer\Application::TYPE_TRANSFER, 'atc']) }}">
+											@csrf
+											<button type="submit" class="btn btn-success"
 												href="">{{ trans('application.dashboard.apply.atc.transfer.start') }}</button>
-										</a>
+										</form>
 									@elseif($currentTransferApplication)
 										<a href="{{ route('visiting.application.continue', [$currentTransferApplication->public_id]) }}">
 											<button class="btn btn-primary">{{ trans('application.continue') }}</button>
@@ -306,7 +311,7 @@
 											disabled="disabled">{{ trans('application.dashboard.apply.atc.transfer.unable') }}</button>
 									@endcan
 								@endif
-							</p>
+							</div>
 
 						</div>
 					</div>

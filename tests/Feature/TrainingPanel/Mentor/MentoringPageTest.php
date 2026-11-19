@@ -2,10 +2,14 @@
 
 namespace Tests\Feature\TrainingPanel\Mentor;
 
+use App\Libraries\UKCP;
 use App\Livewire\Training\AcceptedMentoringSessionsTable;
 use App\Livewire\Training\AvailabilityGantt;
+use App\Models\Atc\Position;
+use App\Models\Cts\Booking as CtsBooking;
 use App\Models\Cts\ExamBooking;
 use App\Models\Cts\Member;
+use App\Models\Cts\Position as CtsPosition;
 use App\Models\Cts\Session;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
@@ -17,6 +21,7 @@ use App\Models\Training\TrainingPosition\TrainingPosition;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Livewire\Livewire;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\TrainingPanel\BaseTrainingPanelTestCase;
 
@@ -33,6 +38,10 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->mock(UKCP::class, function (MockInterface $mock) {
+            $mock->shouldReceive('getTopDownPositionsForPosition')->andReturn(collect());
+        });
 
         $this->mentor = Account::factory()->create();
         $this->mentorMember = Member::factory()->forAccount($this->mentor)->create();
@@ -982,7 +991,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
         Carbon::setTestNow(Carbon::today()->setTime(10, 0));
 
         $busyStudent = Member::factory()->create(['name' => 'Already Booked Student']);
-        $pickupStudent = $this->memberWithSlotAccount(['name' => 'New Pickup Student']);
+        $pickupStudent = $this->createBookableStudent();
 
         Session::factory()->create([
             'student_id' => $busyStudent->id,
@@ -1035,7 +1044,7 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
         Carbon::setTestNow(Carbon::today()->setTime(10, 0));
 
         $busyStudent = Member::factory()->create(['name' => 'Already Booked Student']);
-        $pickupStudent = $this->memberWithSlotAccount(['name' => 'Clear Pickup Student']);
+        $pickupStudent = $this->createBookableStudent();
 
         Session::factory()->create([
             'student_id' => $busyStudent->id,
@@ -1076,6 +1085,121 @@ class MentoringPageTest extends BaseTrainingPanelTestCase
         $this->assertNull($overlap);
 
         Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function accept_session_can_book_a_top_down_sector(): void
+    {
+        Carbon::setTestNow(Carbon::today()->setTime(9, 0));
+
+        CtsPosition::factory()->create([
+            'callsign' => 'EGLL_APP',
+            'rts_id' => 9,
+            'prog_sheet_id' => 3,
+        ]);
+
+        CtsPosition::factory()->create([
+            'callsign' => 'EGLL_S_APP',
+        ]);
+
+        $topDownPosition = Position::factory()->create([
+            'callsign' => 'EGLL_S_APP',
+        ]);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) {
+            $mock->shouldReceive('getTopDownPositionsForPosition')
+                ->with('EGLL_APP')
+                ->andReturn(collect([
+                    (object) ['callsign' => 'EGLL_S_APP'],
+                    (object) ['callsign' => 'EGLL_TWR'],
+                ]));
+        });
+
+        $student = $this->createBookableStudent();
+        $availability = Availability::forAccount($student->cid)->firstOrFail();
+
+        Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->mountAction('acceptSession', ['availability_id' => $availability->id])
+            ->assertMountedActionModalSee('EGLL_S_APP')
+            ->assertMountedActionModalDontSee('EGLL_TWR')
+            ->setActionData([
+                'position' => 'EGLL_S_APP',
+                'taken_from' => '10:00',
+                'taken_to' => '12:00',
+            ])
+            ->callMountedAction()
+            ->assertHasNoActionErrors();
+
+        $session = Session::query()->where('student_id', $student->id)->firstOrFail();
+
+        $this->assertSame('EGLL_APP', $session->position);
+
+        $ctsBooking = CtsBooking::query()->where('position', 'EGLL_S_APP')->firstOrFail();
+
+        $this->assertDatabaseHas('bookings', [
+            'bookable_type' => Session::class,
+            'bookable_id' => $session->id,
+            'position_id' => $topDownPosition->id,
+            'cts_booking_id' => $ctsBooking->id,
+        ]);
+
+        Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function accept_session_shows_overlap_when_the_training_position_is_booked_but_a_top_down_sector_is_selected(): void
+    {
+        Carbon::setTestNow(Carbon::today()->setTime(9, 0));
+
+        CtsPosition::factory()->create(['callsign' => 'EGLL_APP']);
+        CtsPosition::factory()->create(['callsign' => 'EGLL_S_APP']);
+
+        $this->mock(UKCP::class, function (MockInterface $mock) {
+            $mock->shouldReceive('getTopDownPositionsForPosition')
+                ->with('EGLL_APP')
+                ->andReturn(collect([
+                    (object) ['callsign' => 'EGLL_S_APP'],
+                ]));
+        });
+
+        Session::factory()->create([
+            'student_id' => Member::factory()->create()->id,
+            'mentor_id' => $this->mentorMember->id,
+            'position' => 'EGLL_APP',
+            'taken' => 1,
+            'taken_date' => Carbon::today()->format('Y-m-d'),
+            'taken_from' => '10:00:00',
+            'taken_to' => '12:00:00',
+            'cancelled_datetime' => null,
+        ]);
+
+        $student = $this->createBookableStudent();
+        $availability = Availability::forAccount($student->cid)->firstOrFail();
+
+        Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->mountAction('acceptSession', ['availability_id' => $availability->id])
+            ->setActionData([
+                'position' => 'EGLL_S_APP',
+                'taken_from' => '10:00',
+                'taken_to' => '12:00',
+            ])
+            ->assertMountedActionModalSee('Overlapping Session Detected');
+
+        Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function accept_session_is_forbidden_for_a_student_outside_the_mentors_scope(): void
+    {
+        $outOfScopeStudent = $this->memberWithSlotAccount(['name' => 'Out Of Scope Student']);
+        $availability = $this->slotFor($outOfScopeStudent, Carbon::today(), '10:00:00', '12:00:00');
+
+        Livewire::actingAs($this->mentor)
+            ->test(AvailabilityGantt::class)
+            ->mountAction('acceptSession', ['availability_id' => $availability->id])
+            ->assertForbidden();
     }
 
     /**

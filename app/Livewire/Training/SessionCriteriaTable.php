@@ -17,6 +17,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\View\View;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class SessionCriteriaTable extends Component implements HasActions, HasForms, HasTable
@@ -25,6 +26,7 @@ class SessionCriteriaTable extends Component implements HasActions, HasForms, Ha
     use InteractsWithForms;
     use InteractsWithTable;
 
+    #[Locked]
     public int $sessionId;
 
     public function table(Table $table): Table

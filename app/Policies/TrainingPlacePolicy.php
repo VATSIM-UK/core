@@ -54,22 +54,22 @@ class TrainingPlacePolicy
      */
     public function restore(Account $account, TrainingPlace $trainingPlace): bool
     {
-        return $account->hasPermissionTo('training-places.restore.*');
+        return $account->hasPermissionTo('training.training-places.restore.*');
     }
 
     public function createAdhoc(Account $account, ?string $department = null): bool
     {
         if ($department !== null) {
             return $account->hasAnyPermission([
-                'training-places.create-adhoc',
-                sprintf('training-places.create-adhoc.%s', $department),
+                'training.training-places.create-adhoc',
+                sprintf('training.training-places.create-adhoc.%s', $department),
             ]);
         }
 
         return $account->hasAnyPermission([
-            'training-places.create-adhoc',
-            'training-places.create-adhoc.atc',
-            'training-places.create-adhoc.pilot',
+            'training.training-places.create-adhoc',
+            'training.training-places.create-adhoc.atc',
+            'training.training-places.create-adhoc.pilot',
         ]);
     }
 
@@ -82,14 +82,14 @@ class TrainingPlacePolicy
     }
 
     /**
-     * Wildcard (`training-places.view.*`) grants both departments; otherwise require the
+     * Wildcard (`training.training-places.view.*`) grants both departments; otherwise require the
      * department-specific permission.
      */
     public function canViewDepartment(Account $account, string $department): bool
     {
         return $account->hasAnyPermission([
-            'training-places.view.*',
-            sprintf('training-places.view.%s', $department),
+            'training.training-places.view.*',
+            sprintf('training.training-places.view.%s', $department),
         ]);
     }
 }

@@ -19,9 +19,7 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        'webhook/*',
-        'frame.php',
-        'livewire/*',
+        // Posted by VATSIM.net from an external system, so it cannot carry a session token.
         'external/*',
     ];
 }

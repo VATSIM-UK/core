@@ -79,7 +79,7 @@
 							<div class="alert alert-warning" role="alert">
 								<p>
 									Your application has been rejected. The reason provided was:<br />
-									{!! nl2br($application->status_note) !!}
+									{!! nl2br(e($application->status_note)) !!}
 								</p>
 							</div>
 						@elseif($application->is_accepted)

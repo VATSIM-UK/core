@@ -130,16 +130,21 @@ class Feedback extends \App\Http\Controllers\BaseController
         return Redirect::route('mship.feedback.new.form', [$request->input('feedback_type')]);
     }
 
+    private function formIsAvailable(Form $form): bool
+    {
+        return $form->enabled && $form->public && $form->isEligibleFor(\Auth::user());
+    }
+
     public function getFeedback(Form $form)
     {
-        if (! $form->isEligibleFor(\Auth::user())) {
+        if (! $this->formIsAvailable($form)) {
             return Redirect::route('mship.feedback.new')
                 ->withError('You do not meet the requirements to complete this feedback form.');
         }
 
         /** @var Question[] $questions */
         $questions = $form->questions()->orderBy('page')->orderBy('sequence')->get();
-        if (! $questions || ! $form->enabled) {
+        if (! $questions) {
             // We have no questions to display!
             return Redirect::route('mship.manage.dashboard')
                 ->withError('There was an issue loading the requested form');
@@ -156,14 +161,14 @@ class Feedback extends \App\Http\Controllers\BaseController
                 $options['values'] = $callsigns;
                 $question->options = $options;
 
-                $selectHtml = sprintf('<select class="form-control searchable-select" name="%1$s" id="%1$s">', $question->slug);
+                $selectHtml = sprintf('<select class="form-control searchable-select" name="%1$s" id="%1$s">', $this->escape($question->slug));
                 $selectHtml .= '<option value=""></option>';
                 foreach ($callsigns as $key => $value) {
                     $selected = '';
                     if (old($question->slug) == $value) {
                         $selected = 'selected';
                     }
-                    $selectHtml .= sprintf($question->type->code, $question->slug, old($question->slug), $value, $value, $selected);
+                    $selectHtml .= sprintf($question->type->code, $this->escape($question->slug), $this->escape(old($question->slug)), $this->escape($value), $this->escape($value), $selected);
                 }
                 $selectHtml .= '</select>';
                 $question->form_html = $selectHtml;
@@ -178,7 +183,7 @@ class Feedback extends \App\Http\Controllers\BaseController
                         if (old($question->slug) == $value) {
                             $selected = 'checked';
                         }
-                        $question->form_html .= sprintf($question->type->code, $question->slug, old($question->slug), $value, $value, $selected);
+                        $question->form_html .= sprintf($question->type->code, $this->escape($question->slug), $this->escape(old($question->slug)), $this->escape($value), $this->escape($value), $selected);
                     }
 
                     continue;
@@ -188,10 +193,10 @@ class Feedback extends \App\Http\Controllers\BaseController
                 continue;
             }
 
-            $defaultValues = ['usercid' => request()->get('cid')];
+            $defaultValues = ['usercid' => request()->integer('cid') ?: null];
             $question->form_html .= sprintf($question->type->code,
-                $question->slug,
-                old($question->slug, array_get($defaultValues, $question->slug))
+                $this->escape($question->slug),
+                $this->escape(old($question->slug, array_get($defaultValues, $question->slug)))
             );
         }
 
@@ -200,9 +205,14 @@ class Feedback extends \App\Http\Controllers\BaseController
         return $this->viewMake('mship.feedback.form')->with(['form' => $form, 'questions' => $questions]);
     }
 
+    private function escape(mixed $value): string
+    {
+        return e(is_scalar($value) ? (string) $value : '');
+    }
+
     public function postFeedback(Form $form, Request $request)
     {
-        if (! $form->isEligibleFor(\Auth::user())) {
+        if (! $this->formIsAvailable($form)) {
             return Redirect::route('mship.feedback.new')
                 ->withError('You do not meet the requirements to complete this feedback form.');
         }
@@ -234,7 +244,10 @@ class Feedback extends \App\Http\Controllers\BaseController
 
             // Proccess rules
 
-            if ($question->type->rules != null) {
+            if ($question->type->name == 'datetime') {
+                // Only accept the format produced by the datetime picker.
+                $rules = ['date_format:Y/m/d H:i'];
+            } elseif ($question->type->rules != null) {
                 $rules = explode('|', $question->type->rules);
             }
 
