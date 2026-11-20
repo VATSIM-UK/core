@@ -100,12 +100,18 @@ class SeminarResource extends Resource
 
                         Select::make('waiting_list_id')
                             ->label('Waiting List')
-                            ->options(fn (Get $get) => WaitingList::query()
-                                ->where('department', $get('training_group') === 'OBS to S1 Training'
-                                    ? WaitingList::ATC_DEPARTMENT
-                                    : WaitingList::PILOT_DEPARTMENT)
-                                ->orderBy('name')
-                                ->pluck('name', 'id'))
+                            ->options(function (Get $get) {
+                                $department = Seminar::TRAINING_GROUP_DEPARTMENTS[$get('training_group')] ?? null;
+
+                                if ($department === null) {
+                                    return [];
+                                }
+
+                                return WaitingList::query()
+                                    ->where('department', $department)
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id');
+                            })
                             ->searchable()
                             ->required(),
                     ]),
