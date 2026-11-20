@@ -13,6 +13,7 @@ use App\Models\Mship\Account\Note;
 use App\Models\Mship\Feedback\Feedback;
 use App\Models\Training\Mentoring\ManageMentorsScope;
 use App\Models\Training\Mentoring\MentoringScope;
+use App\Models\Training\Seminar\Seminar;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListRetentionCheck;
@@ -27,6 +28,7 @@ use App\Policies\RolePolicy;
 use App\Policies\Training\EndorsementPolicy;
 use App\Policies\Training\Mentoring\ManageMentorsPolicy;
 use App\Policies\Training\Mentoring\MentoringPolicy;
+use App\Policies\Training\SeminarPolicy;
 use App\Policies\Training\WaitingList\WaitingListRetentionChecksPolicy;
 use App\Policies\Training\WaitingListPolicy;
 use App\Policies\TrainingPlacePolicy;
@@ -62,6 +64,7 @@ class AuthServiceProvider extends ServiceProvider
         Endorsement::class => EndorsementPolicy::class,
         WaitingListRetentionCheck::class => WaitingListRetentionChecksPolicy::class,
         TrainingPlace::class => TrainingPlacePolicy::class,
+        Seminar::class => SeminarPolicy::class,
         Session::class => MentoringPolicy::class,
         MentoringScope::class => MentoringPolicy::class,
         ManageMentorsScope::class => ManageMentorsPolicy::class,

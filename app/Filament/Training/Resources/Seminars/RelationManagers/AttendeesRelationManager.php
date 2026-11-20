@@ -3,6 +3,7 @@
 namespace App\Filament\Training\Resources\Seminars\RelationManagers;
 
 use App\Filament\Training\Pages\TrainingPlace\ViewTrainingPlace;
+use App\Models\Mship\Qualification;
 use App\Models\Training\Seminar\SeminarAttendee;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
@@ -15,6 +16,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class AttendeesRelationManager extends RelationManager
 {
@@ -37,20 +39,16 @@ class AttendeesRelationManager extends RelationManager
                     ->modalDescription('Manually create a training place for this student. This does not send an offer email.')
                     ->color(fn (SeminarAttendee $record) => $this->hasTrainingPlace($record) ? 'gray' : 'success')
                     ->disabled(fn (SeminarAttendee $record) => $this->hasTrainingPlace($record))
-                    ->visible(fn () => auth()->user()->can('training.seminars.manage.*')
+                    ->visible(fn () => auth()->user()->can('update', $this->ownerRecord)
                         && ($this->ownerRecord->relationLoaded('waitingList')
                             ? $this->ownerRecord->waitingList !== null
                             : $this->ownerRecord->waitingList()->exists()))
                     ->schema([
-                        Select::make('training_position_id')
-                            ->label('Training Position')
-                            ->options(fn () => $this->ownerRecord
-                                ->loadMissing('waitingList.trainingPositions.position')
-                                ->waitingList?->trainingPositions
-                                ->mapWithKeys(fn ($tp) => [$tp->id => $tp->position?->callsign ?? "Position #{$tp->id}"])
-                                ->toArray() ?? [])
+                        Select::make('trainable')
+                            ->label('Training Position / Qualification')
+                            ->options(fn () => $this->trainableOptions())
                             ->required()
-                            ->helperText('Select the training position to assign to this member.'),
+                            ->helperText('Select the training position or qualification to assign to this member.'),
                     ])
                     ->action(function (SeminarAttendee $record, array $data) {
                         $waitingListAccount = WaitingListAccount::query()
@@ -68,9 +66,20 @@ class AttendeesRelationManager extends RelationManager
                             return;
                         }
 
-                        $trainingPosition = TrainingPosition::query()->findOrFail($data['training_position_id']);
-                        $service = app(TrainingPlaceService::class);
-                        $trainingPlace = $service->createManualTrainingPlace($waitingListAccount, $trainingPosition);
+                        $trainable = $this->resolveTrainable($data['trainable']);
+
+                        if (! $trainable) {
+                            Notification::make()
+                                ->title('Cannot create training place')
+                                ->body('The selected training position or qualification is not linked to this waiting list.')
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
+                        $trainingPlace = app(TrainingPlaceService::class)
+                            ->createManualTrainingPlace($waitingListAccount, $trainable);
 
                         Notification::make()
                             ->title('Training place created')
@@ -88,20 +97,55 @@ class AttendeesRelationManager extends RelationManager
 
     protected function hasTrainingPlace(SeminarAttendee $record): bool
     {
-        $availablePositionIds = $this->ownerRecord
-            ->loadMissing('waitingList.trainingPositions')
-            ->waitingList?->trainingPositions
-            ->pluck('id')
-            ->toArray() ?? [];
+        $trainables = $this->trainables();
 
-        if (empty($availablePositionIds)) {
+        if ($trainables->isEmpty()) {
             return false;
         }
 
-        return TrainingPlace::query()
+        $existingPlaces = TrainingPlace::query()
             ->where('account_id', $record->account_id)
-            ->where('trainable_type', TrainingPosition::class)
-            ->whereIn('trainable_id', $availablePositionIds)
-            ->exists();
+            ->get(['trainable_type', 'trainable_id']);
+
+        return $trainables->contains(fn (TrainingPosition|Qualification $trainable) => $existingPlaces->contains(
+            fn (TrainingPlace $place) => $place->trainable_type === $trainable->getMorphClass()
+                && (int) $place->trainable_id === (int) $trainable->getKey()
+        ));
+    }
+
+    private function trainables(): Collection
+    {
+        return $this->ownerRecord
+            ->loadMissing('waitingList.trainingPositions.position', 'waitingList.qualifications')
+            ->waitingList?->trainables ?? collect();
+    }
+
+    private function trainableOptions(): array
+    {
+        return $this->trainables()
+            ->mapWithKeys(fn (TrainingPosition|Qualification $trainable) => [
+                $this->trainableKey($trainable) => $this->trainableLabel($trainable),
+            ])
+            ->all();
+    }
+
+    private function resolveTrainable(?string $key): TrainingPosition|Qualification|null
+    {
+        return $this->trainables()
+            ->first(fn (TrainingPosition|Qualification $trainable) => $this->trainableKey($trainable) === $key);
+    }
+
+    private function trainableKey(TrainingPosition|Qualification $trainable): string
+    {
+        return $trainable->getMorphClass().':'.$trainable->getKey();
+    }
+
+    private function trainableLabel(TrainingPosition|Qualification $trainable): string
+    {
+        if ($trainable instanceof Qualification) {
+            return "{$trainable->name_long} ({$trainable->code})";
+        }
+
+        return $trainable->position?->callsign ?? "Position #{$trainable->getKey()}";
     }
 }

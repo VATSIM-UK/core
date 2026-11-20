@@ -11,6 +11,7 @@ use App\Filament\Training\Resources\Seminars\RelationManagers\InvitationsRelatio
 use App\Filament\Training\Resources\Seminars\RelationManagers\WaitingListRelationManager;
 use App\Models\Training\Seminar\Seminar;
 use App\Models\Training\WaitingList;
+use App\Policies\Training\SeminarPolicy;
 use Carbon\Carbon;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
@@ -22,6 +23,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -42,32 +44,40 @@ class SeminarResource extends Resource
 
     public static function canAccess(): bool
     {
-        return auth()->user()->can('training.seminars.view.*');
+        return auth()->user()->can('viewAny', Seminar::class);
     }
 
     public static function canCreate(): bool
     {
-        return auth()->user()->can('training.seminars.manage.*');
+        return auth()->user()->can('create', Seminar::class);
     }
 
     public static function canEdit($record): bool
     {
-        return auth()->user()->can('training.seminars.manage.*');
+        return auth()->user()->can('update', $record);
     }
 
     public static function canDelete($record): bool
     {
-        return auth()->user()->can('training.seminars.manage.*');
+        return auth()->user()->can('delete', $record);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->whereIn(
+            'training_group',
+            app(SeminarPolicy::class)->allowedTrainingGroups(auth()->user(), 'view')
+        );
     }
 
     public static function scopeCallout(): Callout
     {
-        return Callout::make('OBS -> S1 Seminars Only')
+        return Callout::make('Seminar Training Groups')
             ->info()
             ->columnSpanFull()
             ->description(
-                'This functionality can work for seminars beyond OBS > S1 training, but there is currently ONLY copy text for OBS > S1 seminars. '.
-                'If you would like to use it for other TGs, whether Pilot or ATC, please contact the Technology Team.'
+                'Seminars can be run for the following training groups: '.implode(', ', Seminar::ALLOWED_TRAINING_GROUPS).'. '.
+                'The invitation and theory exam reminder copy text used depends on the training group selected.'
             );
     }
 
@@ -79,12 +89,29 @@ class SeminarResource extends Resource
                     Grid::make(2)->schema([
                         TextInput::make('name')->required()->maxLength(255),
 
+                        Select::make('training_group')
+                            ->label('Training Group')
+                            ->options(fn () => collect(app(SeminarPolicy::class)->allowedTrainingGroups(auth()->user(), 'manage'))
+                                ->mapWithKeys(fn (string $trainingGroup) => [$trainingGroup => $trainingGroup])
+                                ->all())
+                            ->required()
+                            ->live()
+                            ->afterStateUpdated(fn (callable $set) => $set('waiting_list_id', null)),
+
                         Select::make('waiting_list_id')
                             ->label('Waiting List')
-                            ->options(WaitingList::query()
-                                ->where('department', WaitingList::ATC_DEPARTMENT)
-                                ->orderBy('name')
-                                ->pluck('name', 'id'))
+                            ->options(function (Get $get) {
+                                $department = Seminar::TRAINING_GROUP_DEPARTMENTS[$get('training_group')] ?? null;
+
+                                if ($department === null) {
+                                    return [];
+                                }
+
+                                return WaitingList::query()
+                                    ->where('department', $department)
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id');
+                            })
                             ->searchable()
                             ->required(),
                     ]),
