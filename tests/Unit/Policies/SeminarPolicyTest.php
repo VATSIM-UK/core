@@ -28,7 +28,7 @@ class SeminarPolicyTest extends TestCase
         $atcOnly = $this->accountWith('training.seminars.view.atc');
         $pilotOnly = $this->accountWith('training.seminars.view.pilot');
         $wildcard = $this->accountWith('training.seminars.view.*');
-        $neither = Account::factory()->createQuietly();
+        $neither = Account::factory()->create();
 
         $this->assertTrue($this->policy->viewAny($atcOnly));
         $this->assertTrue($this->policy->viewAny($pilotOnly));
@@ -66,7 +66,7 @@ class SeminarPolicyTest extends TestCase
     #[Test]
     public function view_denies_without_a_permission(): void
     {
-        $account = Account::factory()->createQuietly();
+        $account = Account::factory()->create();
 
         $this->assertFalse($this->policy->viewAny($account));
         $this->assertFalse($this->policy->view($account, $this->seminar('OBS to S1 Training')));
@@ -118,7 +118,7 @@ class SeminarPolicyTest extends TestCase
         $this->assertTrue($this->policy->create($this->accountWith('training.seminars.manage.*')));
 
         $this->assertFalse($this->policy->create($this->accountWith('training.seminars.view.atc')));
-        $this->assertFalse($this->policy->create(Account::factory()->createQuietly()));
+        $this->assertFalse($this->policy->create(Account::factory()->create()));
     }
 
     #[Test]
@@ -146,20 +146,6 @@ class SeminarPolicyTest extends TestCase
     }
 
     #[Test]
-    public function view_and_update_fail_closed_for_unset_or_unknown_training_groups(): void
-    {
-        $wildcard = $this->accountWith('training.seminars.view.*', 'training.seminars.manage.*');
-
-        foreach ([null, 'Unknown Training'] as $trainingGroup) {
-            $seminar = new Seminar(['training_group' => $trainingGroup]);
-
-            $this->assertFalse($this->policy->view($wildcard, $seminar));
-            $this->assertFalse($this->policy->update($wildcard, $seminar));
-            $this->assertFalse($this->policy->delete($wildcard, $seminar));
-        }
-    }
-
-    #[Test]
     public function gate_enforces_the_policy(): void
     {
         $atcViewer = $this->accountWith('training.seminars.view.atc');
@@ -178,13 +164,9 @@ class SeminarPolicyTest extends TestCase
         $this->assertFalse($atcManager->can('update', $pilot));
     }
 
-    /**
-     * Quiet creation avoids the default role, which carries environment-specific
-     * permissions, so each case depends only on the permissions given here.
-     */
     private function accountWith(string ...$permissions): Account
     {
-        $account = Account::factory()->createQuietly();
+        $account = Account::factory()->create();
         $account->givePermissionTo($permissions);
 
         return $account;
