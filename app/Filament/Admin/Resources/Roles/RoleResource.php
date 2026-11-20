@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Roles;
 use App\Filament\Admin\Resources\Roles\Pages\CreateRole;
 use App\Filament\Admin\Resources\Roles\Pages\EditRole;
 use App\Filament\Admin\Resources\Roles\Pages\ListRoles;
+use App\Filament\Admin\Resources\Roles\Pages\ViewRole;
 use App\Filament\Admin\Resources\Roles\RelationManagers\DelegatesRelationManager;
 use App\Filament\Admin\Resources\Roles\RelationManagers\RoleDelegatesRelationManager;
 use App\Filament\Admin\Resources\Roles\RelationManagers\UsersRelationManager;
@@ -22,6 +23,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
@@ -170,6 +172,24 @@ class RoleResource extends Resource
             ]);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                TextEntry::make('name')
+                    ->label('Name'),
+                Section::make('Permissions')
+                    ->columnSpanFull()
+                    ->schema([
+                        TextEntry::make('permissions.name')
+                            ->hiddenLabel()
+                            ->listWithLineBreaks()
+                            ->state(fn (?Role $record): array => $record?->permissions()->orderBy('name')->pluck('name')->all() ?? [])
+                            ->placeholder('This role has no permissions.'),
+                    ]),
+            ]);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -256,6 +276,7 @@ class RoleResource extends Resource
         return [
             'index' => ListRoles::route('/'),
             'create' => CreateRole::route('/create'),
+            'view' => ViewRole::route('/{record}'),
             'edit' => EditRole::route('/{record}/edit'),
         ];
     }
