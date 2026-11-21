@@ -23,7 +23,7 @@ return [
     | Rate limiters must not depend on the application cache: a health check
     | has to keep answering when the cache (Redis) is down.
     */
-    'limiter' => 'file',
+    'limiter' => env('CACHE_LIMITER', 'file'),
 
     /*
     |--------------------------------------------------------------------------
