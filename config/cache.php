@@ -20,6 +20,12 @@ return [
     'default' => env('CACHE_DRIVER', 'file'),
 
     /*
+    | Rate limiters must not depend on the application cache: a health check
+    | has to keep answering when the cache (Redis) is down.
+    */
+    'limiter' => env('CACHE_LIMITER', 'file'),
+
+    /*
     |--------------------------------------------------------------------------
     | Cache Stores
     |--------------------------------------------------------------------------
