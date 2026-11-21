@@ -36,9 +36,19 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
+        $this->mapHealthRoutes();
         $this->mapPassportRoutes();
         $this->mapWebRoutes();
         $this->mapApiRoutes();
+    }
+
+    /**
+     * Health endpoints are stateless: no session, cookies or auth middleware.
+     */
+    protected function mapHealthRoutes()
+    {
+        Route::middleware('throttle:30,1')
+            ->group(base_path('routes/health.php'));
     }
 
     /**
