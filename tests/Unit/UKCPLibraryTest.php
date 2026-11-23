@@ -195,6 +195,33 @@ class UKCPLibraryTest extends TestCase
     }
 
     #[Test]
+    public function it_returns_empty_collection_when_top_down_position_is_not_found(): void
+    {
+        $this->mock(Client::class, function (MockInterface $mock) {
+            $mock->shouldReceive('get')
+                ->with('https://ukcp.vatsim.uk/api/controller/SCO_CTR/top-down', [
+                    'headers' => [
+                        'Authorization' => 'Bearer '.config('services.ukcp.key'),
+                    ],
+                    'timeout' => 15,
+                ])
+                ->andThrow(
+                    new ClientException(
+                        'Not Found',
+                        new Request('GET', 'https://ukcp.vatsim.uk/api/controller/SCO_CTR/top-down'),
+                        new Response(404, [], '{"message":"Controller position not found"}')
+                    )
+                );
+        });
+
+        $positions = $this->app->get(UKCP::class)->getTopDownPositionsForPosition('SCO_CTR');
+
+        $this->assertInstanceOf(Collection::class, $positions);
+        $this->assertCount(0, $positions);
+        $this->assertInstanceOf(Collection::class, Cache::get('ukcp:top-down:SCO_CTR'));
+    }
+
+    #[Test]
     public function it_returns_null_when_top_down_positions_cannot_be_fetched(): void
     {
         $this->mock(Client::class, function (MockInterface $mock) {

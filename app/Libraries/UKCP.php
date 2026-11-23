@@ -265,6 +265,10 @@ class UKCP
 
                     return collect(json_decode($response->getBody()->getContents()));
                 } catch (ClientException|GuzzleException $e) {
+                    if ($e instanceof ClientException && $e->getResponse()?->getStatusCode() === 404) {
+                        return collect();
+                    }
+
                     Log::error('Failed to fetch UKCP top-down positions.', [
                         'exception' => $e,
                         'callsign' => $callsign,
