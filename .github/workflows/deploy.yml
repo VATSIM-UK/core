@@ -210,7 +210,7 @@ jobs:
           envs: RELEASE_DIRECTORY,APPLICATION_ROOT,PHP_PATH,PHP_FPM,TAG,COMMIT,GITHUB_ACTOR
 
       - name: Create Sentry release
-        uses: getsentry/action-release@d55c8c3b7375607e972b710f12926b676d89d7d2 # v3.8.0
+        uses: getsentry/action-release@2e505a70ff06dac263413242aa3617fec90134e5 # v3.9.1
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: vatsim-uk
