@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/devcontainers/php:1-8.4-bookworm@sha256:5b7eb0fa180636ba5a610bb0757a202c95de7665bb7e45e9f7961ee331889dd8
 
-COPY --from=mlocati/php-extension-installer@sha256:4fd45396c16685266d32bf147a24ecd5e81029d3820295895bf4a90131190ac9 /usr/bin/install-php-extensions /usr/local/bin/
+COPY --from=mlocati/php-extension-installer@sha256:edda5f9d936fba9b495bdc96ecd19cc8fda7c2574f85db4574795644ae57b456 /usr/bin/install-php-extensions /usr/local/bin/
 
 RUN rm -f /etc/apt/sources.list.d/yarn.list /etc/apt/sources.list.d/yarn.sources \
     && apt-get update \
