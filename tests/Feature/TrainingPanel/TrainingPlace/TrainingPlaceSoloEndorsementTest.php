@@ -61,6 +61,7 @@ class TrainingPlaceSoloEndorsementTest extends BaseTrainingPanelTestCase
 
         Livewire::test(TrainingPlaceSoloEndorsement::class, ['trainingPlace' => $trainingPlace])
             ->mountTableAction('issue_solo_endorsement')
+            ->setTableActionData(['position_id' => $topDownPosition->id])
             ->assertMountedActionModalSee('SCL_TMA_CTR')
             ->assertMountedActionModalDontSee($otherPosition->callsign);
     }
