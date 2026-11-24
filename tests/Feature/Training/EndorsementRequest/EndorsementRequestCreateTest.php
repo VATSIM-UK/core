@@ -82,9 +82,9 @@ class EndorsementRequestCreateTest extends BaseTrainingPanelTestCase
         Livewire::test(CreateEndorsementRequest::class)
             // check if the position group is visible
             ->set('data.endorsable_type', 'App\Models\Atc\PositionGroup')
-            ->assertSee($positionGroup->name)
             ->set('data.account_id', $accountRequestingFor->id)
             ->set('data.endorsable_id', $positionGroup->id)
+            ->assertSee($positionGroup->name)
             ->set('data.notes', 'This is a test note')
             ->call('create');
 
@@ -108,10 +108,10 @@ class EndorsementRequestCreateTest extends BaseTrainingPanelTestCase
         Livewire::actingAs($this->panelUser);
         Livewire::test(CreateEndorsementRequest::class)
             ->set('data.endorsable_type', 'App\Models\Atc\Position')
-            ->assertSee($position->callsign)
-            ->assertDontSee($nonTemporarilyEndorsablePosition->name)
             ->set('data.account_id', $accountRequestingFor->id)
             ->set('data.endorsable_id', $position->id)
+            ->assertSee($position->callsign)
+            ->assertDontSee($nonTemporarilyEndorsablePosition->name)
             ->set('data.notes', 'This is a test note')
             ->call('create');
 
