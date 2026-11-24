@@ -22,8 +22,7 @@
     ":enableVulnerabilityAlerts",
     ":configMigration",
     "abandonments:recommended",
-    "helpers:pinGitHubActionDigestsToSemver",
-    "docker:pinDigests"
+    "helpers:pinGitHubActionDigestsToSemver"
   ],
   "lockFileMaintenance": {
     "enabled": true,
