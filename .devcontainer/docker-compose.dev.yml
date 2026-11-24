@@ -24,7 +24,7 @@ services:
       - "3306"
 
   pma:
-    image: phpmyadmin@sha256:89b2fdaba2b77c373e0539cf859fa85a7fc46af8b6dc219c114b904470d5b710
+    image: phpmyadmin@sha256:cb397b351fe66dcdf3676dcec30a0ce2fb0f4ad3b2f63d4897bedd3f3070e06c
     ports:
       - "8090:80"
     environment:
