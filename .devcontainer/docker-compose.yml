@@ -30,7 +30,7 @@ services:
         condition: service_healthy
 
   mysql:
-    image: mysql:8.4@sha256:8c233bad33d520a7aae1c1e619c3a9775f4a1ba2d463d692fada04ec7f40be00
+    image: mysql:8.4
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: core
@@ -47,11 +47,11 @@ services:
       start_period: 30s
 
   redis:
-    image: redis:7-alpine@sha256:7f7d30b7fdd09467bac58198a1f166dd69789d348d4fe859cccb20e0cf287fbe
+    image: redis:7-alpine
     command: redis-server --requirepass root
 
   pma:
-    image: phpmyadmin@sha256:89b2fdaba2b77c373e0539cf859fa85a7fc46af8b6dc219c114b904470d5b710
+    image: phpmyadmin:5
     environment:
       - PMA_HOST=mysql
       - PMA_PORT=3306
