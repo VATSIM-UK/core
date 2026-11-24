@@ -51,7 +51,7 @@ services:
     command: redis-server --requirepass root
 
   pma:
-    image: phpmyadmin@sha256:ae3d553347a8c5ecde652ab2fef12fbae172150c9b88ca3b4524fb87554a3ba7
+    image: phpmyadmin@sha256:89b2fdaba2b77c373e0539cf859fa85a7fc46af8b6dc219c114b904470d5b710
     environment:
       - PMA_HOST=mysql
       - PMA_PORT=3306
