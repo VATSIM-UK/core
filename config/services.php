@@ -141,7 +141,7 @@ return [
             'S2' => null,
             'S3' => null,
             'C1' => null,
-            'P1' => 167, // P1 Entry Exam
+            'P1' => 167, // Theory Content Exam
             'P2' => 170, // Theory Exam
             'P3' => 225, // P3 Theory Exam
             'P4' => 244, // P4 Theory Exam
