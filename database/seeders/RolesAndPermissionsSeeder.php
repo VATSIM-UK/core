@@ -166,6 +166,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'training.training-places.loas.create.*',
             'training.training-places.loas.end-early.*',
             'training.training-places.availability-warnings.delete',
+            'training.shutdowns.manage.*',
+            'training.shutdowns.manage.atc',
+            'training.shutdowns.manage.pilot',
 
             // Account Permissions
             'account.self',

@@ -32,8 +32,8 @@ class CheckAvailability implements ShouldQueue
      */
     public function handle(AvailabilityService $availabilityService): void
     {
-        // During leave of absence, record the check as on leave but do not send any warnings
-        if ($this->trainingPlace->isOnLeaveOfAbsence()) {
+        // During leave of absence or a department shutdown, record the check as on leave but do not send any warnings
+        if ($this->trainingPlace->isOnLeaveOfAbsence() || $this->trainingPlace->isOnGlobalShutdown()) {
             AvailabilityCheck::create([
                 'training_place_id' => $this->trainingPlace->id,
                 'status' => AvailabilityCheckStatus::OnLeave,

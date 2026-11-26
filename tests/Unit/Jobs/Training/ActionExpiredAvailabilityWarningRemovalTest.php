@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Jobs\Training;
 
+use App\Enums\AvailabilityCheckStatus;
 use App\Jobs\Training\ActionExpiredAvailabilityWarningRemoval;
 use App\Models\Cts\Member;
 use App\Models\Mship\Account;
@@ -11,6 +12,7 @@ use App\Models\Training\TrainingPlace\AvailabilityCheck;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPosition\TrainingPosition;
+use App\Models\Training\TrainingShutdown;
 use App\Models\Training\WaitingList;
 use App\Notifications\Training\TrainingPlaceRemovedDueToExpiredAvailability;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -49,7 +51,7 @@ class ActionExpiredAvailabilityWarningRemovalTest extends TestCase
             'expires_at' => now()->subDay(),
         ]);
 
-        return ['account' => $account, 'trainingPlace' => $trainingPlace, 'warning' => $warning];
+        return ['account' => $account, 'trainingPlace' => $trainingPlace, 'warning' => $warning, 'availabilityCheck' => $availabilityCheck];
     }
 
     #[Test]
@@ -81,6 +83,34 @@ class ActionExpiredAvailabilityWarningRemovalTest extends TestCase
                 return $notification->availabilityWarning->id === $scenario['warning']->id;
             }
         );
+    }
+
+    #[Test]
+    public function it_keeps_the_training_place_when_the_warning_expires_during_a_department_shutdown(): void
+    {
+        $scenario = $this->createExpiredWarningScenario();
+
+        TrainingShutdown::create([
+            'department' => WaitingList::ATC_DEPARTMENT,
+            'begins_at' => now()->subDays(3),
+            'ends_at' => now()->addDays(3),
+            'reason' => 'Christmas shutdown',
+        ]);
+
+        (new ActionExpiredAvailabilityWarningRemoval($scenario['warning']))->handle();
+
+        Notification::assertNothingSent();
+
+        $scenario['trainingPlace']->refresh();
+        $this->assertNull($scenario['trainingPlace']->deleted_at);
+
+        $scenario['warning']->refresh();
+        $this->assertSame('resolved', $scenario['warning']->status);
+        $this->assertNotNull($scenario['warning']->resolved_at);
+        $this->assertSame($scenario['warning']->availability_check_id, $scenario['warning']->resolved_availability_check_id);
+
+        $scenario['availabilityCheck']->refresh();
+        $this->assertSame(AvailabilityCheckStatus::Passed, $scenario['availabilityCheck']->status);
     }
 
     #[Test]

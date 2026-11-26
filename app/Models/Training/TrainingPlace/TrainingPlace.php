@@ -7,6 +7,7 @@ use App\Models\Cts\Session as CtsSession;
 use App\Models\Mship\Account;
 use App\Models\Mship\Qualification;
 use App\Models\Training\TrainingPosition\TrainingPosition;
+use App\Models\Training\TrainingShutdown;
 use App\Models\Training\WaitingList;
 use App\Models\Training\WaitingList\WaitingListAccount;
 use App\Observers\Training\TrainingPlaceObserver;
@@ -242,6 +243,11 @@ class TrainingPlace extends Model
     public function isOnLeaveOfAbsence()
     {
         return $this->leaveOfAbsences()->current()->exists();
+    }
+
+    public function isOnGlobalShutdown(): bool
+    {
+        return TrainingShutdown::currentForDepartment($this->department) !== null;
     }
 
     public function availabilityCheckGracePeriodEndsAt(): Carbon
