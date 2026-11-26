@@ -75,10 +75,10 @@ class WaitingListRetentionCreateCommandTest extends TestCase
         $account = Account::factory()->create();
         $waitingListAccount = $waitingList->addToWaitingList($account, $this->privacc, now()->subMonths(7));
 
-        // Create an existing retention check that's 4 months old
+        // Create an existing retention check that's 4 months old and has since expired
         $existingCheck = WaitingListRetentionCheck::factory()->create([
             'waiting_list_account_id' => $waitingListAccount->id,
-            'status' => WaitingListRetentionCheck::STATUS_PENDING,
+            'status' => WaitingListRetentionCheck::STATUS_EXPIRED,
             'created_at' => now()->subMonths(4)->subDays(2),
             'email_sent_at' => now()->subMonths(4),
             'token' => 'existing-token',
