@@ -95,6 +95,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('waiting-lists:create-retention-checks')
             ->dailyAt('07:00')
+            ->withoutOverlapping()
             ->graceTimeInMinutes(15);
 
         $schedule->command('waiting-lists:check-for-expired-retention-checks')
