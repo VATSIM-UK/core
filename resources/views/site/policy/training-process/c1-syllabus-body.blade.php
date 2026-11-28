@@ -8,7 +8,7 @@
 
 ## Scope
 
-This document details the training syllabus for VATSIM UK Controller 1 training (S3->C1)
+This document details the training syllabus for VATSIM UK Enroute Controller training (S3->C1)
 
 ---
 

@@ -8,7 +8,7 @@
 
 ## Scope
 
-This document outlines the Senior Student (S3) training syllabus for students training in VATSIM UK.
+This document outlines the Terminal Controller (S3) training syllabus for students training in VATSIM UK.
 
 ---
 

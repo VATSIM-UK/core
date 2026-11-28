@@ -7,7 +7,7 @@
 ---
 
 ## Scope
-This document details the training syllabus for VATSIM UK Student 2 controller training (S1->S2)
+This document details the training syllabus for VATSIM UK Aerodrome Controller training (S1->S2)
 
 ---
 

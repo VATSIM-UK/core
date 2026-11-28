@@ -24,16 +24,16 @@ class AccountInfoWidget extends Widget
     protected function getViewData(): array
     {
         $atcMap = [
-            'S1' => 'New Controller (S1)',
-            'S2' => 'Tower (S2)',
-            'S3' => 'Approach (S3)',
-            'C1' => 'Enroute (C1)',
+            'S1' => 'Developing Controller (S1)',
+            'S2' => 'Aerodrome Controller (S2)',
+            'S3' => 'Terminal Controller (S3)',
+            'C1' => 'Enroute Controller (C1)',
             'HEATHROW' => 'Heathrow',
 
-            'OBS' => 'New Controller (S1)',
-            'TWR' => 'Tower (S2)',
-            'APP' => 'Approach (S3)',
-            'CTR' => 'Enroute (C1)',
+            'OBS' => 'Observer (OBS)',
+            'TWR' => 'Aerodrome Controller (S2)',
+            'APP' => 'Terminal Controller (S3)',
+            'CTR' => 'Enroute Controller (C1)',
         ];
 
         $pilotMap = [
