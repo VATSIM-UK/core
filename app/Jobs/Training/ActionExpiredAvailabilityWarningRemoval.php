@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Jobs\Training;
 
+use App\Enums\AvailabilityCheckStatus;
 use App\Models\Training\TrainingPlace\AvailabilityWarning;
+use App\Models\Training\TrainingShutdown;
 use App\Notifications\Training\TrainingPlaceRemovedDueToExpiredAvailability;
 use App\Services\Training\AvailabilityWarnings;
 use Exception;
@@ -42,6 +44,24 @@ class ActionExpiredAvailabilityWarningRemoval implements ShouldQueue
 
         if (! $trainingPlace) {
             Log::warning('Training place not found for availability warning. Cannot process removal', ['availability_warning_id' => $this->availabilityWarning->id]);
+
+            return;
+        }
+
+        if (TrainingShutdown::suppressesRemoval($trainingPlace->department, $this->availabilityWarning->expires_at)) {
+            $this->availabilityWarning->availabilityCheck->update([
+                'status' => AvailabilityCheckStatus::Passed->value,
+            ]);
+
+            AvailabilityWarnings::markWarningAsResolved(
+                $this->availabilityWarning,
+                $this->availabilityWarning->availability_check_id,
+            );
+
+            Log::info('Availability warning waived during a training shutdown; training place retained', [
+                'availability_warning_id' => $this->availabilityWarning->id,
+                'training_place_id' => $trainingPlace->id,
+            ]);
 
             return;
         }

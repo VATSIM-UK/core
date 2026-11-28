@@ -18,6 +18,7 @@ use App\Models\Training\TrainingPlace\AvailabilityWarning;
 use App\Models\Training\TrainingPlace\TrainingPlace;
 use App\Models\Training\TrainingPlace\TrainingPlaceLeaveOfAbsence;
 use App\Models\Training\TrainingPosition\TrainingPosition;
+use App\Models\Training\TrainingShutdown;
 use App\Models\Training\WaitingList;
 use App\Notifications\Training\AvailabilityWarningCreated;
 use App\Services\Training\AvailabilityService;
@@ -136,6 +137,32 @@ class CheckAvailabilityTest extends TestCase
             'training_place_id' => $this->trainingPlace->id,
             'status' => AvailabilityCheckStatus::OnLeave->value,
         ]);
+        Notification::assertNothingSent();
+    }
+
+    #[Test]
+    public function it_records_an_on_leave_check_and_sends_no_warning_during_a_department_shutdown(): void
+    {
+        TrainingShutdown::create([
+            'department' => WaitingList::ATC_DEPARTMENT,
+            'begins_at' => now()->subDay(),
+            'ends_at' => now()->addDays(7),
+            'reason' => 'Christmas shutdown',
+        ]);
+
+        Notification::fake();
+
+        (new CheckAvailability($this->trainingPlace))->handle(app(AvailabilityService::class));
+
+        $this->assertDatabaseHas('availability_checks', [
+            'training_place_id' => $this->trainingPlace->id,
+            'status' => AvailabilityCheckStatus::OnLeave->value,
+        ]);
+
+        $this->assertDatabaseMissing('availability_warnings', [
+            'training_place_id' => $this->trainingPlace->id,
+        ]);
+
         Notification::assertNothingSent();
     }
 

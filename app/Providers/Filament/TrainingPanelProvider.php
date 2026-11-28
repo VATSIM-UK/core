@@ -76,6 +76,7 @@ class TrainingPanelProvider extends PanelProvider
                 'Endorsements',
                 'Statistics',
                 'Training',
+                'Training Shutdowns',
                 'Theory',
             ])
             ->navigationItems([
