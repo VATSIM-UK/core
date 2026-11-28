@@ -107,7 +107,7 @@ class WaitingListRelationManager extends RelationManager
 
                         $this->refreshInvitations();
                     })
-                    ->visible(fn () => $this->ownerRecord->canInvite() && auth()->user()->can('training.seminars.manage.*')),
+                    ->visible(fn () => $this->ownerRecord->canInvite() && auth()->user()->can('update', $this->ownerRecord)),
             ])
             ->recordActions([
                 Action::make('manualInvite')
@@ -142,7 +142,7 @@ class WaitingListRelationManager extends RelationManager
                     ->modalIcon('heroicon-o-envelope')
                     ->modalIconColor('primary')
                     ->modalSubmitActionLabel('Send Invitation')
-                    ->visible(fn () => auth()->user()->can('training.seminars.manage.*')),
+                    ->visible(fn () => auth()->user()->can('update', $this->ownerRecord)),
             ]);
     }
 

@@ -19,11 +19,12 @@ class SeminarInvitationNotification extends Notification
     {
         $invitation = $this->invitation->loadMissing('seminar');
         $seminar = $invitation->seminar;
+        $copy = $seminar->seminarEmailCopy();
 
         return (new MailMessage)
             ->from(config('mail.from.address'), 'VATSIM UK - Training Department')
-            ->subject('OBS > S1 Seminar Invitation')
-            ->view('emails.training.seminar_invitation', [
+            ->subject($invitation->is_short_notice ? $copy['short_notice_subject'] : $copy['invitation_subject'])
+            ->view($copy['invitation_view'], [
                 'recipient' => $notifiable,
                 'seminar' => $seminar,
                 'invitation' => $invitation,

@@ -17,6 +17,7 @@ class SeminarFactory extends Factory
         return [
             'waiting_list_id' => WaitingList::factory(),
             'name' => fake()->words(3, true),
+            'training_group' => 'OBS to S1 Training',
             'date' => now()->addWeeks(2)->format('Y-m-d'),
             'from' => '10:00',
             'to' => '16:00',
