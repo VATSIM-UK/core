@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Mship\Account;
+use App\Services\Roles\DelegateRoleManagementService;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Spatie\Permission\Models\Role;
 
@@ -27,7 +28,8 @@ class RolePolicy
      */
     public function view(Account $account, Role $role)
     {
-        return $account->can("role.view.$role->id");
+        return $account->can("role.view.$role->id")
+            || $account->can(app(DelegateRoleManagementService::class)->delegatePermissionName($role));
     }
 
     /**

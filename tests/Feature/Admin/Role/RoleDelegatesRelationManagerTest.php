@@ -3,6 +3,7 @@
 namespace Tests\Feature\Admin\Role\RelationManagers;
 
 use App\Filament\Admin\Resources\Roles\Pages\EditRole;
+use App\Filament\Admin\Resources\Roles\Pages\ViewRole;
 use App\Filament\Admin\Resources\Roles\RelationManagers\RoleDelegatesRelationManager;
 use App\Models\Mship\Account;
 use App\Services\Roles\DelegateRoleManagementService;
@@ -30,6 +31,25 @@ class RoleDelegatesRelationManagerTest extends BaseAdminTestCase
         $this->service = new DelegateRoleManagementService;
         $this->role = Role::create(['name' => 'Managed Role', 'guard_name' => 'web']);
         $this->delegateRole = Role::create(['name' => 'Delegate Role', 'guard_name' => 'web']);
+    }
+
+    public function test_hides_the_table_from_a_pure_delegate(): void
+    {
+        $this->service->createDelegatePermission($this->role);
+        $this->user->givePermissionTo($this->service->delegatePermissionName($this->role));
+
+        $this->actingAs($this->user);
+
+        $this->assertFalse(RoleDelegatesRelationManager::canViewForRecord($this->role, ViewRole::class));
+    }
+
+    public function test_shows_the_table_to_a_role_viewer(): void
+    {
+        $this->user->givePermissionTo('role.view.*');
+
+        $this->actingAs($this->user);
+
+        $this->assertTrue(RoleDelegatesRelationManager::canViewForRecord($this->role, ViewRole::class));
     }
 
     public function test_role_members_inherit_delegate_permission()

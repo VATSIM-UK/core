@@ -10,6 +10,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Models\Role;
 
 class RoleDelegatesRelationManager extends RelationManager
@@ -19,6 +20,19 @@ class RoleDelegatesRelationManager extends RelationManager
     protected static ?string $title = 'Roles';
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+        $user = auth()->user();
+
+        if ($user === null) {
+            return false;
+        }
+
+        return $user->can("role.view.{$ownerRecord->getKey()}")
+            || $user->can("role.edit.{$ownerRecord->getKey()}")
+            || $user->can('role.manage-delegates.*');
+    }
 
     public function table(Table $table): Table
     {

@@ -4,8 +4,10 @@ namespace Tests\Feature\Admin\Role;
 
 use App\Filament\Admin\Resources\Roles\Pages\EditRole;
 use App\Filament\Admin\Resources\Roles\Pages\ListRoles;
+use App\Filament\Admin\Resources\Roles\Pages\ViewRole;
 use App\Filament\Admin\Resources\Roles\RoleResource;
 use App\Policies\RolePolicy;
+use App\Services\Roles\DelegateRoleManagementService;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Permission;
@@ -137,5 +139,126 @@ class RoleResourceTest extends BaseAdminResourceTestCase
             ->assertHasNoActionErrors();
 
         $this->assertTrue($role->fresh()->hasPermissionTo('*'));
+    }
+
+    #[Test]
+    public function it_lists_assigned_permissions_for_a_delegated_role_manager(): void
+    {
+        $service = new DelegateRoleManagementService;
+        $role = $this->roleWithPermissions();
+        $service->createDelegatePermission($role);
+
+        $this->actingAsAdminUser([
+            $service->delegatePermissionName($role),
+        ]);
+
+        Livewire::test(ViewRole::class, ['record' => $role->id])
+            ->assertSuccessful()
+            ->assertSee($role->name)
+            ->assertSeeInOrder(['account.ban.create', 'account.view-insensitive.*'])
+            ->assertDontSee('role.delete.*')
+            ->assertActionHidden('edit');
+
+        Livewire::test(EditRole::class, ['record' => $role->id])
+            ->assertForbidden();
+
+        Livewire::test(ListRoles::class)
+            ->assertForbidden();
+    }
+
+    #[Test]
+    public function it_lists_assigned_permissions_for_a_manager_delegated_through_a_role(): void
+    {
+        $service = new DelegateRoleManagementService;
+        $role = $this->roleWithPermissions();
+        $delegateRole = Role::create(['name' => 'Inherited Delegate Role', 'guard_name' => 'web']);
+
+        $service->createDelegatePermission($role);
+        $service->grantDelegate($delegateRole, $role);
+        $this->adminUser->assignRole($delegateRole);
+
+        $this->actingAsAdminUser();
+
+        Livewire::test(ViewRole::class, ['record' => $role->id])
+            ->assertSuccessful()
+            ->assertSeeInOrder(['account.ban.create', 'account.view-insensitive.*']);
+    }
+
+    #[Test]
+    public function it_lists_assigned_permissions_for_a_wildcard_role_manager(): void
+    {
+        $role = $this->roleWithPermissions();
+
+        $this->actingAsAdminUser(['account.edit-roles.*']);
+
+        Livewire::test(ViewRole::class, ['record' => $role->id])
+            ->assertSuccessful()
+            ->assertSee('account.ban.create');
+    }
+
+    #[Test]
+    public function it_forbids_a_delegated_manager_from_viewing_a_role_they_do_not_manage(): void
+    {
+        $service = new DelegateRoleManagementService;
+        $role = $this->roleWithPermissions();
+        $other = Role::create(['name' => 'Unmanaged Role', 'guard_name' => 'web']);
+
+        $service->createDelegatePermission($role);
+        $service->createDelegatePermission($other);
+
+        $this->actingAsAdminUser([
+            $service->delegatePermissionName($role),
+        ]);
+
+        Livewire::test(ViewRole::class, ['record' => $other->id])
+            ->assertForbidden();
+    }
+
+    #[Test]
+    public function it_lists_assigned_permissions_for_a_role_viewer(): void
+    {
+        $role = $this->roleWithPermissions();
+
+        $this->actingAsAdminUser(['role.view.*']);
+
+        Livewire::test(ViewRole::class, ['record' => $role->id])
+            ->assertSuccessful()
+            ->assertSeeInOrder(['account.ban.create', 'account.view-insensitive.*'])
+            ->assertActionHidden('edit');
+    }
+
+    #[Test]
+    public function it_shows_the_edit_action_to_a_role_editor(): void
+    {
+        $role = $this->roleWithPermissions();
+
+        $this->actingAsAdminUser(['role.view.*', 'role.edit.*']);
+
+        Livewire::test(ViewRole::class, ['record' => $role->id])
+            ->assertSuccessful()
+            ->assertActionVisible('edit');
+    }
+
+    #[Test]
+    public function it_shows_a_placeholder_when_a_role_has_no_permissions(): void
+    {
+        $role = Role::create(['name' => 'Role Without Permissions', 'guard_name' => 'web']);
+
+        $this->actingAsAdminUser(['role.view.*']);
+
+        Livewire::test(ViewRole::class, ['record' => $role->id])
+            ->assertSuccessful()
+            ->assertSee('This role has no permissions.');
+    }
+
+    private function roleWithPermissions(): Role
+    {
+        $role = Role::create(['name' => 'Role With Listed Permissions', 'guard_name' => 'web']);
+        $role->givePermissionTo([
+            Permission::findByName('account.view-insensitive.*'),
+            Permission::findByName('account.ban.create'),
+        ]);
+
+        return $role;
     }
 }
