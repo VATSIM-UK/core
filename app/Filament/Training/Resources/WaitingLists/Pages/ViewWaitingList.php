@@ -17,8 +17,10 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -27,6 +29,11 @@ use Illuminate\Support\Facades\Log;
 class ViewWaitingList extends ViewRecord
 {
     protected static string $resource = WaitingListResource::class;
+
+    protected ?array $moodleCourseOptions = null;
+
+    /** @var array<string, array<int, string>> */
+    protected array $moodleQuizOptions = [];
 
     protected function getHeaderWidgets(): array
     {
@@ -97,7 +104,9 @@ class ViewWaitingList extends ViewRecord
                 ->action(function ($data, $action) {
                     $flag = WaitingListFlag::create([
                         'name' => $data['name'],
-                        'position_group_id' => $data['position_group_id'],
+                        'position_group_id' => $data['position_group_id'] ?? null,
+                        'moodle_course_idnumber' => $data['moodle_course_idnumber'] ?? null,
+                        'moodle_quiz_id' => $data['moodle_quiz_id'] ?? null,
                         'display_in_table' => $data['display_in_table'] ?? false,
                     ]);
 
@@ -113,7 +122,25 @@ class ViewWaitingList extends ViewRecord
 
                     Select::make('position_group_id')->label('Position Group')->options(fn () => PositionGroup::all()->mapWithKeys(function ($item) {
                         return [$item['id'] => $item['name']];
-                    }))->hint('If an option is chosen here, this will be an automated flag. This cannot be reversed.'),
+                    }))->hint('If an option is chosen here, this will be an automated flag. This cannot be reversed.')->live()->disabled(fn (Get $get): bool => filled($get('moodle_course_idnumber'))),
+
+                    Select::make('moodle_course_idnumber')
+                        ->label('Moodle Course')
+                        ->options(fn () => $this->moodleCourseOptions())
+                        ->searchable()
+                        ->live()
+                        ->afterStateUpdated(fn (callable $set) => $set('moodle_quiz_id', null))
+                        ->disabled(fn (Get $get): bool => filled($get('position_group_id')))
+                        ->visible(fn () => filled(config('services.moodle.database'))),
+
+                    Select::make('moodle_quiz_id')
+                        ->label('Moodle Exam')
+                        ->options(fn (Get $get): array => $this->moodleQuizOptions($get('moodle_course_idnumber')))
+                        ->searchable()
+                        ->disabled(fn (Get $get): bool => blank($get('moodle_course_idnumber')) || filled($get('position_group_id')))
+                        ->required(fn (Get $get): bool => filled($get('moodle_course_idnumber')))
+                        ->placeholder('Select an exam')
+                        ->visible(fn () => filled(config('services.moodle.database'))),
 
                     Toggle::make('display_in_table')
                         ->label('Display in Waiting List Table')
@@ -123,5 +150,72 @@ class ViewWaitingList extends ViewRecord
             EditAction::make()->label('Edit settings')->visible(fn () => auth()->user()->can('update', $this->record)),
             DeleteAction::make()->label('Delete Waiting List')->requiresConfirmation()->visible(fn () => auth()->user()->can('delete', $this->record)),
         ];
+    }
+
+    /**
+     * The Moodle courses that can be passed.
+     *
+     * Only courses with an exam that has a grade to pass configured are listed, because any
+     * other course could never make a flag tick.
+     */
+    protected function moodleCourseOptions(): array
+    {
+        if (! is_null($this->moodleCourseOptions)) {
+            return $this->moodleCourseOptions;
+        }
+
+        $moodleDatabase = config('services.moodle.database');
+
+        if (! $moodleDatabase) {
+            return $this->moodleCourseOptions = [];
+        }
+
+        return $this->moodleCourseOptions = DB::table($moodleDatabase.'.mdl_course as course')
+            ->join($moodleDatabase.'.mdl_quiz as quiz', 'quiz.course', '=', 'course.id')
+            ->join($moodleDatabase.'.mdl_grade_items as grade_items', function ($join) {
+                $join->on('grade_items.iteminstance', '=', 'quiz.id')
+                    ->where('grade_items.itemtype', '=', 'mod')
+                    ->where('grade_items.itemmodule', '=', 'quiz');
+            })
+            ->where('grade_items.gradepass', '>', 0)
+            ->where('course.idnumber', '!=', '')
+            ->orderBy('course.fullname')
+            ->get(['course.idnumber', 'course.fullname'])
+            ->unique('idnumber')
+            ->mapWithKeys(fn ($course) => [$course->idnumber => "{$course->fullname} ({$course->idnumber})"])
+            ->all();
+    }
+
+    /**
+     * The exams within the given Moodle course that can be passed.
+     *
+     * Only exams with a grade to pass configured are listed, because any other exam could never
+     * make a flag tick.
+     */
+    protected function moodleQuizOptions(?string $courseIdnumber): array
+    {
+        $moodleDatabase = config('services.moodle.database');
+
+        if (! $moodleDatabase || blank($courseIdnumber)) {
+            return [];
+        }
+
+        if (array_key_exists($courseIdnumber, $this->moodleQuizOptions)) {
+            return $this->moodleQuizOptions[$courseIdnumber];
+        }
+
+        return $this->moodleQuizOptions[$courseIdnumber] = DB::table($moodleDatabase.'.mdl_quiz as quiz')
+            ->join($moodleDatabase.'.mdl_course as course', 'course.id', '=', 'quiz.course')
+            ->join($moodleDatabase.'.mdl_grade_items as grade_items', function ($join) {
+                $join->on('grade_items.iteminstance', '=', 'quiz.id')
+                    ->where('grade_items.itemtype', '=', 'mod')
+                    ->where('grade_items.itemmodule', '=', 'quiz');
+            })
+            ->where('course.idnumber', $courseIdnumber)
+            ->where('grade_items.gradepass', '>', 0)
+            ->orderBy('quiz.name')
+            ->get(['quiz.id', 'quiz.name', 'grade_items.gradepass'])
+            ->mapWithKeys(fn ($quiz) => [$quiz->id => $quiz->name])
+            ->all();
     }
 }
