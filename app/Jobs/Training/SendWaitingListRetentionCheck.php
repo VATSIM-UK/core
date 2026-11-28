@@ -8,6 +8,7 @@ use App\Services\Training\WaitingListRetentionChecks as WaitingListRetentionChec
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -34,7 +35,19 @@ class SendWaitingListRetentionCheck implements ShouldQueue
     {
         DB::beginTransaction();
 
-        $retentionCheck = WaitingListRetentionChecksService::createRetentionCheckRecord($this->waitingListAccount);
+        try {
+            $retentionCheck = WaitingListRetentionChecksService::createRetentionCheckRecord($this->waitingListAccount);
+        } catch (UniqueConstraintViolationException) {
+            // Only one pending retention check is allowed per waiting list account.
+            DB::rollBack();
+
+            Log::info('Skipping retention check as one is already pending', [
+                'account_id' => $this->waitingListAccount->account->id,
+                'waiting_list_account_id' => $this->waitingListAccount->id,
+            ]);
+
+            return;
+        }
 
         try {
             $this->waitingListAccount->account->notify(new WaitingListRetentionCheckAccountNotification($retentionCheck));
